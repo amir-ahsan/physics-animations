@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thin Lens — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 12 — Thin Lens Ray Diagram &amp; Lens Equation</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A converging lens of focal length <b>f</b> forms an image of an object placed a distance <b>d&#8338;</b> in front of it. Two rays fix the
+    image: one through the centre (undeviated) and one parallel to the axis (bent through the focal point). The lens equation
+    <span class="eq">1/d&#8338; + 1/d&#7522; = 1/f</span> gives the image distance, and the magnification is <span class="eq">m = &#8722;d&#7522;/d&#8338;</span>.
+    Move the object and watch the image slide, flip, and change size.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Object, lens &amp; image</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="180" viewBox="0 0 330 180">
+            <line x1="10" y1="90" x2="320" y2="90" stroke="#b8a983" stroke-width="1.5"/>
+            <path id="lens" d="M165 30 Q150 90 165 150 Q180 90 165 30 Z" fill="#cfe0ef" stroke="var(--blue)" stroke-width="1.5"/>
+            <circle id="fl" cx="130" cy="90" r="3" fill="#6b5a3a"/><text id="flt" x="125" y="106" font-size="10" fill="#6b5a3a">F</text>
+            <circle id="fr" cx="200" cy="90" r="3" fill="#6b5a3a"/><text id="frt" x="196" y="106" font-size="10" fill="#6b5a3a">F</text>
+            <line id="obj" x1="110" y1="90" x2="110" y2="50" stroke="var(--green)" stroke-width="3" marker-end="url(#lo)"/>
+            <text x="98" y="46" font-size="10" fill="var(--green)">object</text>
+            <line id="img" x1="230" y1="90" x2="230" y2="130" stroke="var(--red)" stroke-width="3" marker-end="url(#li)"/>
+            <text id="imgt" x="234" y="126" font-size="10" fill="var(--red)">image</text>
+            <defs>
+              <marker id="lo" markerWidth="9" markerHeight="9" refX="4" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="li" markerWidth="9" markerHeight="9" refX="4" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r"><span class="k">image distance d&#7522;</span> = <span class="vb" id="rdi">–</span></div>
+            <div class="r c-accent"><span class="k">magnification m</span> = <span class="vb" id="rm">–</span></div>
+            <div class="r c-red"><span class="k">image</span> = <span class="vb" id="rtype">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Green = object; red = image. It flips over (inverted) when it is real, on the far side of the lens.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Ray construction</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue lens line at x = 0; the two rays (through the centre and parallel-then-through-F) cross at the image tip.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="dot" style="background:var(--green)"></span><span><b>Object</b> at distance d&#8338; in front of the lens.</span></li>
+          <li><span class="dot" style="background:var(--red)"></span><span><b>Image</b> where the rays cross.</span></li>
+          <li><span class="sw" style="border-color:#6b5a3a"></span><span><b>Rays</b> — centre ray and parallel ray.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="f" data-min="1" data-max="8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Focal length f</label><span class="val"></span></div><input type="range"><div class="hint">Stronger lens = smaller f.</div>
+          </div>
+          <div class="ctl" data-var="do" data-min="1.5" data-max="12" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Object distance d&#8338;</label><span class="val"></span></div><input type="range"><div class="hint">Move the object toward or past the focal point.</div>
+          </div>
+          <div class="ctl" data-var="ho" data-min="0.5" data-max="4" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Object height h&#8338;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Move the object closer to the focal point from far away. What happens to the image distance?</li>
+      <li><b>Manipulate</b><span class="tag">d&#8338;</span> Change d&#8338; and watch the image move and change size.</li>
+      <li><b>Explain</b><span class="tag">the flip</span> Why is the image inverted when d&#7522; is positive (real) for a converging lens?</li>
+      <li><b>Calculate</b><span class="tag">f, d&#8338;</span> For f = 3 and d&#8338; = 6, calculate d&#7522; and the magnification, then check the readouts.</li>
+      <li><b>Extend</b><span class="tag">d&#8338; &lt; f</span> Set the object inside the focal point. Why do the ray extensions form a virtual, upright image?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'distance along axis (cm)', yAxisLabel:'height (cm)'});
+  calc.setExpressions([
+    {id:'f',latex:'f=3'}, {id:'do',latex:'d_o=6'}, {id:'ho',latex:'h_o=2'},
+    {id:'di',latex:'d_i=\\frac{1}{\\frac{1}{f}-\\frac{1}{d_o}}'}, {id:'m',latex:'m=-\\frac{d_i}{d_o}'}, {id:'hi',latex:'h_i=m h_o'},
+    {id:'lens',latex:'x=0\\left\\{-5\\le y\\le5\\right\\}', color:'#2f6fb0', lineWidth:2},
+    {id:'axis',latex:'y=0', color:'#c9beA0', lineWidth:1},
+    {id:'FL',latex:'(-f,0)', color:'#6b5a3a'}, {id:'FR',latex:'(f,0)', color:'#6b5a3a'},
+    {id:'Ob',latex:'(-d_o,0)', color:'#8a6f42'}, {id:'ObT',latex:'(-d_o,h_o)', color:'#2e8b57', showLabel:true, label:'object', labelSize:'small'},
+    {id:'Im',latex:'(d_i,0)', color:'#8a6f42'}, {id:'ImT',latex:'(d_i,h_i)', color:'#c0392b', showLabel:true, label:'image', labelSize:'small'},
+    {id:'objseg',latex:'\\operatorname{polygon}((-d_o,0),(-d_o,h_o))', color:'#2e8b57', lineWidth:3},
+    {id:'imgseg',latex:'\\operatorname{polygon}((d_i,0),(d_i,h_i))', color:'#c0392b', lineWidth:3},
+    {id:'Rcf',latex:'R_c(x)=-\\frac{h_o}{d_o}x', hidden:true, secret:true},
+    {id:'Rc',latex:'R_c(x)\\left\\{-d_o\\le x\\le d_i\\right\\}', color:'#6b5a3a', lineWidth:1.5},
+    {id:'Rp',latex:'h_o\\left\\{-d_o\\le x\\le0\\right\\}', color:'#6b5a3a', lineWidth:1.5},
+    {id:'Rif',latex:'R_i(x)=h_o+\\frac{(h_i-h_o)x}{d_i}', hidden:true, secret:true},
+    {id:'Ri',latex:'R_i(x)\\left\\{0\\le x\\le d_i\\right\\}', color:'#6b5a3a', lineWidth:1.5}
+  ]);
+
+  var S={f:3,do:6,ho:2};
+  function calcVals(){ var di=1/(1/S.f-1/S.do), m=-di/S.do, hi=m*S.ho; return {di:di,m:m,hi:hi}; }
+  function fit(){ var k=calcVals(); var xm=Math.max(S.do,Math.abs(k.di),S.f)+2, ym=Math.max(S.ho,Math.abs(k.hi),2)+1;
+    calc.setMathBounds({left:-xm, right:xm, bottom:-ym, top:ym}); }
+  function update(){
+    var k=calcVals();
+    document.getElementById('rdi').textContent=isFinite(k.di)?k.di.toFixed(2):'∞';
+    document.getElementById('rm').textContent=isFinite(k.m)?k.m.toFixed(2):'∞';
+    var real=k.di>0, inv=k.m<0, big=Math.abs(k.m)>1;
+    document.getElementById('rtype').textContent=(real?'real, ':'virtual, ')+(inv?'inverted, ':'upright, ')+(big?'enlarged':'reduced');
+    // schematic
+    var ax=90, cx=165, scale=Math.min(12, 120/Math.max(S.do,Math.abs(k.di),S.f));
+    // F points
+    document.getElementById('fl').setAttribute('cx',(cx-S.f*scale).toFixed(1)); document.getElementById('flt').setAttribute('x',(cx-S.f*scale-5).toFixed(1));
+    document.getElementById('fr').setAttribute('cx',(cx+S.f*scale).toFixed(1)); document.getElementById('frt').setAttribute('x',(cx+S.f*scale-4).toFixed(1));
+    // object arrow (up) at -do
+    var ox=cx-S.do*scale, oy=ax-S.ho*scale*3.2;
+    var ob=document.getElementById('obj'); ob.setAttribute('x1',ox.toFixed(1)); ob.setAttribute('x2',ox.toFixed(1)); ob.setAttribute('y1',ax); ob.setAttribute('y2',oy.toFixed(1));
+    // image arrow at di (down if inverted); if virtual (di<0) draw on left, dashed
+    var ix=cx+k.di*scale, iy=ax-k.hi*scale*3.2;
+    var im=document.getElementById('img'); im.setAttribute('x1',ix.toFixed(1)); im.setAttribute('x2',ix.toFixed(1)); im.setAttribute('y1',ax); im.setAttribute('y2',iy.toFixed(1));
+    im.setAttribute('stroke-dasharray', real?'':'4 3'); im.setAttribute('opacity', Math.abs(k.di)>15?0.3:1);
+    document.getElementById('imgt').setAttribute('x',(ix+4).toFixed(1)); document.getElementById('imgt').setAttribute('y',(k.hi<0?iy+4:iy-2).toFixed(1));
+  }
+
+  var LATEX={f:'f',do:'d_o',ho:'h_o'};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); fit(); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  fit(); update();
+})();
+</script>
+</body>
+</html>

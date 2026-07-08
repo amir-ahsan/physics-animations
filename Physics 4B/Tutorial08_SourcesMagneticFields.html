@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4B · Tutorial 8: Sources of Magnetic Fields — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4B &middot; Tutorial 8: Sources of Magnetic Fields</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4B TUTORIAL 8 — SOURCES OF MAGNETIC FIELDS
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+/* wire seen end-on: dot = out of page, cross = into page */
+function wireEnd(c, x, y, out, name, rpx=11){
+  const {M}=c; const g=el('g',{},c.svg);
+  el('circle',{cx:M.X(x),cy:M.Y(y),r:rpx,fill:'#F6EFDD',stroke:'#5C4B30','stroke-width':2.5},g);
+  if(out) el('circle',{cx:M.X(x),cy:M.Y(y),r:3.2,fill:'#5C4B30'},g);
+  else{ const s=rpx*0.55;
+    el('line',{x1:M.X(x)-s,y1:M.Y(y)-s,x2:M.X(x)+s,y2:M.Y(y)+s,stroke:'#5C4B30','stroke-width':2.5},g);
+    el('line',{x1:M.X(x)-s,y1:M.Y(y)+s,x2:M.X(x)+s,y2:M.Y(y)-s,stroke:'#5C4B30','stroke-width':2.5},g); }
+  if(name){ const t=el('text',{x:M.X(x),y:M.Y(y)+rpx+17,fill:'#5C4B30','font-size':13,
+    'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},g); t.textContent=name; }
+  if(!c.instant){g.setAttribute('opacity',0);tween(u=>g.setAttribute('opacity',u),400,false);}
+  return g;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||140;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  prompt:'Professor Ahsan surveys the main principles: the Biot–Savart law, the standard fields, forces between wires, and Ampère’s law.',
+  world:{x0:-5.5, x1:5.5, y0:-4, y1:4},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('circle',{cx:M.X(0),cy:M.Y(0),r:11,fill:'#F6EFDD',stroke:'#5C4B30','stroke-width':2.5},svg);
+    el('circle',{cx:M.X(0),cy:M.Y(0),r:3,fill:'#5C4B30'},svg);
+    for(const r of [1.5,2.6,3.7]){
+      el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(r)-M.X(0)),fill:'none',stroke:'#B5793B','stroke-width':2,'stroke-dasharray':'8,6'},svg);
+    }
+    arrow(ctx, 1.5,0.15, 1.48,0.45, {color:'#B5793B', w:2.5, dur:0});
+    const t=el('text',{x:M.X(0),y:M.Y(-3.5),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
+    t.textContent='currents wrap themselves in circles of B';
+  },
+  steps:[
+   { say:"Now currents MAKE fields. The fundamental brick is the BIOT–SAVART LAW: each element I d-ell contributes d-B proportional to d-ell cross r-hat over r squared, circling the wire by the right-hand rule — thumb along the current, fingers curl along B. Use it directly for arcs, finite segments, and loop axes — and pocket the freebie: radial segments contribute NOTHING at the centre, since d-ell is parallel to r-hat.",
+     pose:'talk',
+     board:['d\\vec B = \\frac{\\mu_0}{4\\pi}\\frac{I\\,d\\vec\\ell\\times\\hat r}{r^2}',
+            {t:'Radial legs: dℓ⃗ ∥ r̂ → zero contribution at the centre. Free marks.'}] },
+   { say:"The standard catalogue, worth memorising outright: the long straight wire, mu-nought I over 2 pi r; the full loop's centre, mu-nought I over 2 R; an arc of angle phi, the loop's field times phi over 2 pi; the solenoid interior, mu-nought n I, uniform; the toroid, mu-nought N I over 2 pi r.",
+     pose:'write',
+     board:['B_{\\rm wire} = \\frac{\\mu_0I}{2\\pi r}, \\quad B_{\\rm loop} = \\frac{\\mu_0I}{2R}, \\quad B_{\\rm arc} = \\frac{\\mu_0I\\varphi}{4\\pi R}',
+            'B_{\\rm solenoid} = \\mu_0nI, \\quad B_{\\rm toroid} = \\frac{\\mu_0NI}{2\\pi r}'] },
+   { say:"Two wires converse through their fields: parallel currents ATTRACT, antiparallel repel, at mu-nought I-one I-two over 2 pi d per metre — the geometry that once DEFINED the ampere. Field first, force second: never let a wire push on itself. Two wires, invisible handshake, measurable force — for a century this humble attraction WAS the legal definition of the ampere, the entire SI system resting on a pair of parallel wires being fond of each other.",
+     pose:'point',
+     board:['\\frac{F}{L} = \\frac{\\mu_0I_1I_2}{2\\pi d}\\quad(\\text{parallel attract, antiparallel repel})'] },
+   { say:"AMPÈRE'S LAW, the magnetic sibling of Gauss's law: the circulation of B around any closed path equals mu-nought times the threading current. Always true; useful when symmetry offers a loop on which B is constant — circles round cylinders and coax, rectangles for solenoids and sheets. The bookkeeping is I-enclosed: for spread-out currents, current density times enclosed area, signs by the right hand.",
+     solo:true, pose:'write',
+     board:['\\oint\\vec B\\cdot d\\vec\\ell = \\mu_0I_{\\rm enc}',
+            {t:'Symmetric & infinite → Ampère’s law with the matching loop. Finite & curved → Biot–Savart law.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(3.0),cy:M.Y(-2.1),r:6,fill:GOLD},c.svg);
+       el('circle',{cx:M.X(3.0),cy:M.Y(-2.1),r:Math.abs(M.X(1.5)-M.X(0)),fill:'none',stroke:PURPLE,'stroke-width':2.5,'stroke-dasharray':'7,5'},c.svg);
+       arrow(c, 4.5,-2.1, 4.5,-1.15, {color:PURPLE, w:2.2, label:'B·dl', fs:11});
+       textAt(c, 3.0,-3.95, 'Amperian loop rings the current', {fs:11.5, italic:true, anchor:'middle'});
+     } },
+   { say:"Now savour the reciprocity: yesterday, fields pushed on currents; today, currents MAKE fields. Every wire is wrapped in invisible circles of influence. And since atoms hide tiny current loops inside, every magnet on your refrigerator is electricity, running in circles, forever, without a battery. Perpetual motion is illegal — except apparently in every atom.",
+     pose:'think',
+     board:[{t:'A fridge magnet is a bottle of atomic currents that never tire. Ampère suspected as much.'}] },
+   { say:"And matter answers back: paramagnets lean in weakly, diamagnets lean away weakly, and FERROMAGNETS — iron, nickel, cobalt — amplify enormously through aligned domains, with the hysteresis that makes permanent magnets permanent. Strategy: classify the geometry first — symmetry gets Ampère's law, everything else gets the Biot–Savart law, and several wires get superposed as vectors, circulation arrows drawn before any arithmetic. To the examples.",
+     pose:'excited',
+     board:[{t:'Para/dia: weak. Ferro: domains, hysteresis, permanent magnets.'},
+            {t:'Strategy: symmetry? → Ampère loop. Arc/segment? → Biot–Savart law. Several wires? → superpose vectors, arrows first.'}] },
+  ]
+},
+
+
+/* ---------- Example 1: Two parallel wires, field between [Basic] ---------- */
+{
+  title:'Two parallel wires: field between.', diff:'Basic',
+  prompt:'Two long parallel wires 10 cm apart carry I₁ = 5.0 A and I₂ = 8.0 A, both out of the page. Find (a) B at the midpoint and (b) the point between the wires where B = 0.',
+  world:{x0:-4, x1:14, y0:-7, y1:7},
+  setup(ctx,w){
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    el('line',{x1:ctx.M.X(-3),y1:ctx.M.Y(0),x2:ctx.M.X(13),y2:ctx.M.Y(0),stroke:'#B0A488','stroke-width':1.5},ctx.svg);
+  },
+  steps:[
+   { say:"Currents MAKE fields — that is this tutorial's business. A long straight wire wraps itself in circles of magnetic field: B equals mu-nought I over 2 pi r, direction by the right-hand rule — thumb along the current, fingers curl along B. Two wires, both out of the page, and we shall superpose. Vectors again; the field never stopped being one.",
+     pose:'talk',
+     board:[{t:'Wires 10 cm apart, I₁ = 5.0 A and I₂ = 8.0 A, both out of the page.'},
+            'B = \\frac{\\mu_0 I}{2\\pi r}, \\qquad \\frac{\\mu_0}{2\\pi} = 2\\times10^{-7}\\ \\mathrm{T\\,m/A}'] },
+   { say:"The picture, and the right-hand rule twice. At the midpoint, wire one — current out of the page, to our LEFT — wraps counterclockwise circles, so its field at M points UP. Wire two, to our RIGHT, also counterclockwise — but M now sits on its left side, where those circles point DOWN. Opposition between like currents: remember it.",
+     pose:'point',
+     board:['\\text{At } M:\\ \\vec B_1 \\uparrow\\ (\\text{from } I_1), \\quad \\vec B_2 \\downarrow\\ (\\text{from } I_2)'],
+     action(c){
+       wireEnd(c, 0,0, true, 'I₁ = 5.0 A');
+       wireEnd(c, 10,0, true, 'I₂ = 8.0 A');
+       el('circle',{cx:c.M.X(5),cy:c.M.Y(0),r:4,fill:'#5C4B30'},c.svg);
+       textAt(c, 4.65,0.8, 'M', {fs:14, italic:true});
+       /* to scale: 1 world unit per 1e-5 T */
+       arrow(c, 5,0.6, 5,2.6, {color:GOLD, w:3.5, label:'B₁', vec:true, fs:14});
+       arrow(c, 5,-0.6, 5,-3.8, {color:BLUE, w:3.5, label:'B₂', vec:true, fs:14, side:-1});
+     } },
+   { say:"Magnitudes at 5 centimetres each: B-one, 2 times ten to the minus 7, times 5 amps, over 0.05 — 2 times ten to the minus 5 tesla. B-two, with 8 amps — 3.2 times ten to the minus 5. Subtract, since they oppose: 1.2 times ten to the minus 5 tesla, pointing DOWN. The stronger current wins the argument.",
+     pose:'write',
+     board:['B_1 = \\frac{(2\\times10^{-7})(5.0)}{0.050} = 2.0\\times10^{-5}\\ \\mathrm T, \\quad B_2 = \\frac{(2\\times10^{-7})(8.0)}{0.050} = 3.2\\times10^{-5}\\ \\mathrm T',
+            'B_M = B_2 - B_1 = 1.2\\times10^{-5}\\ \\mathrm T\\ (\\text{down})'],
+     action(c){
+       arrow(c, 6.2,0, 6.2,-1.2, {color:GREEN, w:4, label:'B', vec:true, fs:15});
+     } },
+   { say:"Part b: somewhere between them the tug-of-war ties. Set the magnitudes equal: I-one over x equals I-two over d minus x. Cross-multiply and solve: x equals d times I-one over the SUM — 10 centimetres times 5 thirteenths — 3.8 centimetres from the five-amp wire.",
+     pose:'write',
+     board:['\\frac{I_1}{x} = \\frac{I_2}{d-x} \\;\\Rightarrow\\; x = d\\,\\frac{I_1}{I_1+I_2} = (0.10)\\frac{5.0}{13.0} = 3.8\\ \\mathrm{cm}'],
+     action(c){
+       el('circle',{cx:c.M.X(3.8),cy:c.M.Y(0),r:5,fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
+       textAt(c, 2.6,-1.9, 'B = 0 here', {fs:12.5, italic:true, color:GREEN});
+     } },
+   { say:"Now comes the check: the zero sits CLOSER to the weaker current — 3.8 centimetres against 6.2 — as it must, since the weak wire needs home-field advantage to cancel the strong one. Any answer past the midpoint toward the 8-amp wire would have been algebra committing perjury.",
+     pose:'excited',
+     board:[{t:'Check: null point nearer the weaker current (3.8 < 5 cm) ✓ — the weak field only competes up close.'}] },
+  ]
+},
+
+/* ---------- Example 2: Force between parallel wires [Intermediate] ---------- */
+{
+  title:'Force between parallel wires.', diff:'Intermediate',
+  prompt:'Wires carrying I₁ = 15 A and I₂ = 10 A run parallel, 8.0 cm apart, currents in the same direction. Find the force per unit length on each wire and its direction.',
+  world:{x0:-6, x1:50, y0:-9, y1:17},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('line',{x1:M.X(0),y1:M.Y(12),x2:M.X(44),y2:M.Y(12),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(44),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},svg);
+    const t=el('text',{x:M.X(-2.5),y:M.Y(12)+5,fill:'#5C4B30','font-size':13,'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'},svg); t.textContent='I₁ = 15 A';
+    const t2=el('text',{x:M.X(-2.5),y:M.Y(0)+5,fill:'#5C4B30','font-size':13,'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'},svg); t2.textContent='I₂ = 10 A';
+  },
+  steps:[
+   { say:"Now the two-step that runs all of magnetostatics: wire one MAKES a field; wire two, sitting in that field, FEELS a force. Never let a wire feel its own field — it is as productive as lifting yourself by your collar. Field first, force second, always in that order.",
+     pose:'talk',
+     board:[{t:'Parallel wires, same direction: I₁ = 15 A, I₂ = 10 A, d = 8.0 cm. Find F/L.'},
+            'B_1 = \\frac{\\mu_0 I_1}{2\\pi d}\\ \\text{(at wire 2)}, \\qquad \\frac{F}{L} = I_2 B_1'] },
+   { say:"Step one: wire one's field down at wire two — mu-nought times 15, over 2 pi times 0.08. Step two: wire two, carrying 10 amps through that field, feels I-2 B-1 per metre. Multiply the whole chain: mu-nought I-one I-two over 2 pi d. The two-step discipline — field first, then force — is not pedantry; it is what prevents the classic nonsense of a wire acting on itself, which nature forbids and exams adore.",
+     pose:'write',
+     board:['\\frac{F}{L} = \\frac{\\mu_0 I_1 I_2}{2\\pi d} = \\frac{(2\\times10^{-7})(15)(10)}{0.080}',
+            '\\frac{F}{L} = 3.8\\times10^{-4}\\ \\mathrm{N/m}'] },
+   { say:"Direction: I d-ell cross B, worked with actual fingers. Wire one's field at wire two circles so it points — check it — INTO the page there; current along the wire, cross into-the-page field: the force points UP, toward wire one. Parallel currents ATTRACT. Antiparallel ones repel. Currents, unlike charges, prefer company that agrees with them.",
+     pose:'point',
+     board:[{t:'Same-direction currents attract; opposite repel. (Both from I dℓ⃗ × B⃗ — trust the hand.)'}],
+     action(c){
+       arrow(c, 6,12, 16,12, {color:RED, w:3, dur:600});
+       arrow(c, 6,0, 16,0, {color:RED, w:3, dur:600});
+       arrow(c, 22,1.2, 22,4.8, {color:PURPLE, w:3.5, label:'F on 2', vec:true, fs:13});
+       arrow(c, 22,10.8, 22,7.2, {color:PURPLE, w:3.5, label:'F on 1', vec:true, fs:13, side:-1});
+     } },
+   { say:"And Newton's third law reports for duty: wire one feels the same 0.38 millinewtons per metre, pulled DOWN toward wire two. Equal, opposite, and collinear — magnetism is exotic, but Newton still audits the books. However exotic the mediator — fields, virtual photons, what you will — the ledger of action and reaction closes exactly. Newton's third law did not retire when electromagnetism arrived; it merely learned new bookkeeping.",
+     pose:'write',
+     board:['\\text{Newton III: } \\left|\\frac{F}{L}\\right|_{\\text{on 1}} = \\left|\\frac{F}{L}\\right|_{\\text{on 2}} = 3.8\\times10^{-4}\\ \\mathrm{N/m}'] },
+   { say:"The perspective check: under a millinewton per metre from two healthy currents — feeble. Yet this exact geometry is aristocracy: two 1-amp currents, 1 metre apart, feel exactly 2 times ten to the minus 7 newtons per metre, and THAT sentence was the official DEFINITION of the ampere for 71 years. The humblest formula on this board once held the entire SI system on its shoulders.",
+     pose:'excited',
+     board:[{t:'Check: sub-mN/m at 15 A — small. But 2×10⁻⁷ N/m for twin 1 A wires at 1 m DEFINED the ampere (1948–2019).'}] },
+  ]
+},
+
+/* ---------- Example 3: Partial loop by Biot–Savart [Intermediate] ---------- */
+{
+  title:'Field at the centre of a partial loop (Biot–Savart law).', diff:'Intermediate',
+  prompt:'A wire carries I = 4.0 A around three quarters of a circle of radius R = 6.0 cm, closed by two straight radial legs. Find B at the centre.',
+  world:{x0:-11, x1:11, y0:-8.5, y1:8.5},
+  setup(ctx,w){},
+  steps:[
+   { say:"The Biot–Savart law — the law that builds fields element by element: each scrap of current contributes d-B proportional to I d-ell cross r-hat, over r squared. Usually an integral with opinions. But certain geometries surrender instantly, and the circular arc is the most cooperative of all. Watch for the freebie: the radial legs.",
+     pose:'talk',
+     board:[{t:'Three-quarter circle, R = 6.0 cm, I = 4.0 A, closed by two radial legs. Find B at centre C.'},
+            'd\\vec B = \\frac{\\mu_0}{4\\pi}\\,\\frac{I\\,d\\vec\\ell\\times\\hat r}{r^2}'] },
+   { say:"First, the freebie. Along each straight RADIAL leg, d-ell points along the very line to the centre — d-ell parallel to r-hat — and the cross product of parallel vectors is ZERO. The legs contribute nothing at C. Radial segments are always silent at the centre; recognising them is free marks.",
+     pose:'point',
+     board:['\\text{Radial legs: } d\\vec\\ell \\parallel \\hat r \\Rightarrow d\\vec\\ell\\times\\hat r = 0\\ \\text{(no contribution at } C)'],
+     action(c){
+       const {M}=c;
+       plotCurve(c, t=>[6*Math.cos(t), 6*Math.sin(t)], -Math.PI/2, Math.PI, {color:'#5C4B30', w:4, dur:1400});
+       el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(0),y2:M.Y(-6),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},c.svg);
+       el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(-6),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},c.svg);
+       el('circle',{cx:M.X(0),cy:M.Y(0),r:4,fill:'#5C4B30'},c.svg);
+       textAt(c, 0.5,0.7, 'C', {fs:15, italic:true});
+       arrow(c, 6.3,-0.5, 6.3,1.8, {color:RED, w:2.5, dur:600});
+       textAt(c, 6.9,0.3, 'I', {fs:14, italic:true, color:RED});
+       textAt(c, -5.6,-1.5, 'radial legs: silent', {fs:12, italic:true, color:PURPLE});
+     } },
+   { say:"On the ARC, life is even better: every element is exactly perpendicular to its radius, and all sit at the same distance R. The sine is 1, the R squared marches out of the integral, and the integral of d-ell is just the arc length R phi. B equals mu-nought I phi over 4 pi R — with phi equal to three-halves pi for our three-quarter lap.",
+     pose:'write',
+     board:['B = \\frac{\\mu_0}{4\\pi}\\int\\frac{I\\,d\\ell}{R^2} = \\frac{\\mu_0 I}{4\\pi R^2}(R\\varphi) = \\frac{\\mu_0 I\\varphi}{4\\pi R}, \\qquad \\varphi = \\frac{3\\pi}{2}'] },
+   { say:"Assemble: three quarters of the full-loop field mu-nought I over 2 R. Now we put in the numbers: 0.75, times 4 pi ten-to-the-minus-7 times 4 amps, over 0.12 — 3.1 times ten to the minus 5 tesla, OUT of the page, by curling the right hand along the counterclockwise current.",
+     pose:'write',
+     board:['B = \\frac{3}{4}\\cdot\\frac{\\mu_0 I}{2R} = 0.75\\,\\frac{(4\\pi\\times10^{-7})(4.0)}{2(0.060)} = 3.1\\times10^{-5}\\ \\mathrm T\\ (\\text{out of page})'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:9,fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:2.6,fill:GREEN},c.svg);
+       textAt(c, 3.7,3.3, 'B out of page', {fs:12.5, italic:true, color:GREEN});
+     } },
+   { say:"Now comes the check: set phi to a full 2 pi and the formula collapses to mu-nought I over 2 R — the textbook full-loop field, recovered on demand. An arc formula that forgets its own circle would be worthless; this one remembers. Fraction of the loop, fraction of the field: the arc integral is linear, and linearity is a gentleman.",
+     pose:'excited',
+     board:['\\varphi = 2\\pi \\Rightarrow B = \\frac{\\mu_0 I}{2R}\\ \\checkmark\\ \\text{(full loop recovered — the formula scales with the arc)}'] },
+  ]
+},
+
+/* ---------- Example 4: Ideal solenoid via Ampère [Challenging] ---------- */
+{
+  title:'The ideal solenoid via Ampère’s law.', diff:'Challenging',
+  prompt:'(a) Use Ampère’s law to derive B = μ₀nI inside an ideal solenoid. (b) Evaluate for n = 1200 turns/m and I = 2.5 A.',
+  world:{x0:-6, x1:50, y0:-10, y1:18},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    /* solenoid cross-section: two rows of wire-ends */
+    for(let i=0;i<11;i++){
+      const x=2+i*4;
+      el('circle',{cx:M.X(x),cy:M.Y(10),r:7,fill:'#F6EFDD',stroke:'#5C4B30','stroke-width':2},svg);
+      el('circle',{cx:M.X(x),cy:M.Y(10),r:2.2,fill:'#5C4B30'},svg);
+      el('circle',{cx:M.X(x),cy:M.Y(0),r:7,fill:'#F6EFDD',stroke:'#5C4B30','stroke-width':2},svg);
+      el('line',{x1:M.X(x)-4,y1:M.Y(0)-4,x2:M.X(x)+4,y2:M.Y(0)+4,stroke:'#5C4B30','stroke-width':2},svg);
+      el('line',{x1:M.X(x)-4,y1:M.Y(0)+4,x2:M.X(x)+4,y2:M.Y(0)-4,stroke:'#5C4B30','stroke-width':2},svg);
+    }
+    const t=el('text',{x:M.X(22),y:M.Y(14.2),fill:'#8A7D60','font-size':12,'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},svg);
+    t.textContent='solenoid cut lengthwise: top row out of page, bottom row into page';
+  },
+  steps:[
+   { say:"Ampère's law — Gauss's law's magnetic cousin: the line integral of B around ANY closed loop equals mu-nought times the current threading it. Like Gauss, it is always TRUE and occasionally USEFUL — useful precisely when symmetry lets us choose a loop on which B is constant or zero. The solenoid is its masterpiece.",
+     pose:'talk',
+     board:[{t:'Derive B = μ₀nI inside an ideal solenoid; evaluate for n = 1200 /m, I = 2.5 A.'},
+            '\\oint\\vec B\\cdot d\\vec\\ell = \\mu_0 I_{\\rm enc}'] },
+   { say:"The idealisation first: a LONG solenoid's field is axial and uniform inside, and essentially zero outside — the return flux is spread over the whole universe and dilutes to nothing. Now the chosen instrument: a RECTANGLE, one side of length ell riding inside along the axis, one side outside, two legs crossing the windings.",
+     pose:'point',
+     board:[{t:'Ideal solenoid: B uniform & axial inside; B ≈ 0 outside.'}],
+     action(c){
+       const {M}=c;
+       const r=el('rect',{x:M.X(8),y:M.Y(6.5),width:M.X(36)-M.X(8),height:M.Y(-6.5)-M.Y(6.5),
+         fill:'none',stroke:RED,'stroke-width':3,'stroke-dasharray':'8,6'},c.svg);
+       if(!c.instant){r.setAttribute('opacity',0);tween(u=>r.setAttribute('opacity',u),700,false);}
+       textAt(c, 17,-8.7, 'Amperian rectangle, inner side length ℓ', {fs:12.5, italic:true, color:RED});
+       for(const x of [12,20,28]) arrow(c, x,4, x+5,4, {color:GOLD, w:2.5, dur:800});
+       textAt(c, 33.5,3.2, 'B inside', {fs:12.5, italic:true, color:GOLD});
+     } },
+   { say:"Walk the rectangle and collect the four sides. Inside leg: B parallel to the path — contributes B ell. Outside leg: B is zero — nothing. The two crossing legs: B is PERPENDICULAR to the path where it exists at all — dot product zero, twice. The entire circulation is B ell, from one honest side and three convenient zeros.",
+     pose:'write',
+     board:['\\oint\\vec B\\cdot d\\vec\\ell = \\underbrace{B\\ell}_{\\rm inside} + \\underbrace{0}_{\\rm outside} + \\underbrace{0+0}_{\\perp\\ \\rm legs} = B\\ell'] },
+   { say:"The threading current: the rectangle catches n ell turns, each carrying I — n ell I in total. Ampère's law then reads: B ell equals mu-nought n ell I. The ell CANCELS — and that cancellation is the physics: B does not care how long a rectangle we drew, nor where inside we placed it, nor the solenoid's radius. Uniform, as advertised.",
+     pose:'write',
+     board:['B\\ell = \\mu_0(n\\ell I) \\;\\Rightarrow\\; B = \\mu_0 n I',
+            {t:'ℓ cancels → B uniform inside, independent of radius. The solenoid: the uniform-field workhorse.'}] },
+   { say:"Now we put in the numbers: 4 pi ten-to-the-minus-7, times 1200 turns per metre, times 2.5 amps — 3.8 millitesla. The check is the design philosophy itself: want double the field? Double the turns per metre, or the current — the formula has only two knobs, and engineers have been turning them since Faraday wore short trousers.",
+     pose:'excited',
+     board:['B = (4\\pi\\times10^{-7})(1200)(2.5) = 3.8\\times10^{-3}\\ \\mathrm T = 3.8\\ \\mathrm{mT}'] },
+  ]
+},
+
+/* ---------- Example 5: Coaxial cable B(r) [Challenging] ---------- */
+{
+  title:'Coaxial cable: B(r) in all four regions.', diff:'Challenging',
+  prompt:'Coax: solid inner conductor a = 1.0 mm carries I = 10 A out of the page (uniform J); shell b = 3.0 mm to c = 4.0 mm returns 10 A. Find B at r = 0.50, 2.0, 3.5, and 6.0 mm.',
+  world:{x0:-0.9, x1:7.2, y0:-4.5e-4, y1:23e-4, aniso:true},
+  setup(ctx,w){
+    axes2D(ctx.svg, ctx.M, w, {xlab:'r (mm)', ylab:'B (T)'});
+  },
+  steps:[
+   { say:"The grand finale: the coaxial cable, mapped completely. Cylindrical symmetry means B circles the axis everywhere, so Ampère with a circular loop reads B times 2 pi r equals mu-nought I-enclosed — in EVERY region. The whole problem is bookkeeping: how much current does a loop of radius r actually catch? Four regions, four ledgers.",
+     pose:'talk',
+     board:[{t:'Inner: a = 1 mm, I = 10 A out (uniform). Shell: b = 3 → c = 4 mm, 10 A back. Find B(r).'},
+            'B(2\\pi r) = \\mu_0 I_{\\rm enc}\\quad\\text{— everything is } I_{\\rm enc}(r)'] },
+   { say:"Region one, INSIDE the inner conductor. Uniform current density means the enclosed share grows with AREA: I times r squared over a squared. So B is mu-nought I r over 2 pi a squared — LINEAR in r, starting from zero at the axis. At half a millimetre: 1 millitesla.",
+     pose:'write',
+     board:['r<a:\\ I_{\\rm enc} = I\\frac{r^2}{a^2} \\Rightarrow B = \\frac{\\mu_0 I r}{2\\pi a^2}',
+            'B(0.5\\ \\mathrm{mm}) = \\frac{(2\\times10^{-7})(10)(5.0\\times10^{-4})}{(10^{-3})^2} = 1.0\\times10^{-3}\\ \\mathrm T'],
+     action(c){
+       plotCurve(c, r=>[r, 2e-7*10*(r*1e-3)/(1e-3)**2], 0, 1, {color:GOLD, w:3.5, dur:700});
+     } },
+   { say:"Region two, the gap. The loop now swallows the whole 10 amps: the classic B equals mu-nought I over 2 pi r, falling like one over r. At 2 millimetres — 1 millitesla again, by the accident of our numbers: the linear rise at half the radius matches the decay at double it.",
+     pose:'write',
+     board:['a<r<b:\\ I_{\\rm enc} = I \\Rightarrow B = \\frac{\\mu_0 I}{2\\pi r}',
+            'B(2.0\\ \\mathrm{mm}) = \\frac{(2\\times10^{-7})(10)}{2.0\\times10^{-3}} = 1.0\\times10^{-3}\\ \\mathrm T'],
+     action(c){
+       plotCurve(c, r=>[r, 2e-7*10/(r*1e-3)], 1, 3, {color:GOLD, w:3.5, dur:800});
+       dashLine(c, 2,0, 2,1.0e-3, {color:'#8A7D60'});
+     } },
+   { say:"Region three, INSIDE the return shell — the subtle one. The backward current cancels the ledger progressively, in proportion to the shell area already enclosed: r squared minus b squared, over c squared minus b squared. At 3 and a half millimetres, that fraction is 3.25 over 7 — so only 5.36 amps survive net, and B drops to 3.1 times ten to the minus 4 tesla.",
+     pose:'write',
+     board:['b<r<c:\\ I_{\\rm enc} = I\\Big[1 - \\frac{r^2-b^2}{c^2-b^2}\\Big]',
+            'r = 3.5:\\ I_{\\rm enc} = 10\\big[1-\\tfrac{3.25}{7.0}\\big] = 5.36\\ \\mathrm A \\Rightarrow B = \\frac{(2\\times10^{-7})(5.36)}{3.5\\times10^{-3}} = 3.1\\times10^{-4}\\ \\mathrm T'],
+     action(c){
+       plotCurve(c, r=>[r, 2e-7*10*(1-((r*r-9)/7))/(r*1e-3)], 3, 4, {color:GOLD, w:3.5, dur:700});
+     } },
+   { say:"Region four, outside: ten amps out, ten back — I-enclosed is ZERO, and B vanishes identically. The cable is magnetically SILENT outside, which is the entire reason your signal cables are coaxial: they keep their fields to themselves, and the neighbours' fields out. Now comes the check: evaluate each formula at the borders — a, b, and c — and the curve is continuous everywhere: rise, fall, die, silence. A complete biography of B, in four chapters.",
+     pose:'excited',
+     board:['r>c:\\ I_{\\rm enc} = 10 - 10 = 0 \\Rightarrow B = 0\\ \\text{— magnetically silent (the point of coax)}',
+            {t:'Check: B continuous at a, b, c ✓ — linear rise, 1/r fall, taper through shell, zero outside.'}],
+     action(c){
+       plotCurve(c, r=>[r, 0], 4, 7, {color:GOLD, w:3.5, dur:500});
+       textAt(c, 4.6,0.8e-4, 'B = 0 outside', {fs:12.5, italic:true, color:GREEN});
+     } },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

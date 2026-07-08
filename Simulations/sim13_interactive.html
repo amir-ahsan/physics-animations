@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photoelectric Effect — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 13 — Photoelectric Effect</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Light shining on a metal can knock electrons loose &#8212; but only if each <b>photon</b> carries enough energy. Below a
+    <b>threshold frequency</b> <span class="eq">f&#8320; = &#966;/h</span> nothing comes out, no matter how bright the light. Above it, the
+    maximum kinetic energy is <span class="eq">K<sub>max</sub> = hf &#8722; &#966;</span>. Brighter light (higher <b>intensity</b>) ejects
+    <em>more</em> electrons but does not give them <em>more</em> energy. Cross the threshold and watch emission switch on.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The phototube</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="180" viewBox="0 0 330 180">
+            <rect x="40" y="30" width="16" height="120" fill="#9aa4ad" stroke="#6b757d"/>
+            <text x="30" y="168" font-size="10" fill="#6b757d">metal</text>
+            <g id="photons"></g>
+            <g id="electrons"></g>
+            <text id="emsg" x="150" y="24" font-size="12" fill="var(--red)"></text>
+            <rect x="300" y="30" width="12" height="120" fill="#c9b98f" stroke="#8a7c58"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">threshold f&#8320; = &#966;/h</span> = <span class="vb" id="rf0">–</span></div>
+            <div class="r c-blue"><span class="k">K<sub>max</sub> = hf &#8722; &#966;</span> = <span class="vb" id="rkm">–</span> eV</div>
+            <div class="r"><span class="k">stopping voltage</span> = <span class="vb" id="rvs">–</span> V</div>
+            <div class="r c-red" id="remit">&#8212;</div>
+          </div>
+        </div>
+        <div class="cap">Photon colour tracks frequency. Electrons only fly off when photons clear the threshold; brighter light means more of them, not faster ones.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Maximum kinetic energy vs. frequency</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Grey line = the ideal hf &#8722; &#966;; blue = the measured K<sub>max</sub> (clamped at zero below threshold). The red dot is the current frequency; the dashed line marks f&#8320;.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:#9a9a9a"></span><span><b>Ideal line</b> hf &#8722; &#966; (extends below zero).</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Measured K<sub>max</sub></b> — zero below threshold, then rising.</span></li>
+          <li><span class="sw dash" style="border-color:#9a9a9a"></span><span><b>Threshold frequency</b> f&#8320;.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="p" data-min="1" data-max="5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Work function &#966; (eV)</label><span class="val"></span></div><input type="range"><div class="hint">Property of the metal; sets the threshold.</div>
+          </div>
+          <div class="ctl" data-var="F" data-min="0" data-max="20" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Light frequency f (&#215;10&#185;&#8308; Hz)</label><span class="val"></span></div><input type="range"><div class="hint">Move it across the threshold f&#8320;.</div>
+          </div>
+          <div class="ctl" data-var="I" data-min="0" data-max="5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Intensity (brightness)</label><span class="val"></span></div><input type="range"><div class="hint">More brightness → more electrons, same energy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Turn the intensity up while the frequency is below threshold. Are any electrons emitted?</li>
+      <li><b>Manipulate</b><span class="tag">f</span> Move f across f&#8320; and watch emission switch from off to on.</li>
+      <li><b>Explain</b><span class="tag">intensity</span> Why does more intensity give more electrons but not more energy, in the photon model?</li>
+      <li><b>Calculate</b><span class="tag">&#966;</span> For &#966; = 2.3 eV, calculate the threshold frequency f&#8320; (in &#215;10&#185;&#8308; Hz).</li>
+      <li><b>Extend</b><span class="tag">&#966;</span> Compare two metals by changing &#966; and noting how the whole line shifts.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var h=0.4136;
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'frequency f (×10¹⁴ Hz)', yAxisLabel:'max kinetic energy Kₘₐₓ (eV)'});
+  calc.setExpressions([
+    {id:'h',latex:'h=0.4136'}, {id:'p',latex:'p=2.3'}, {id:'F',latex:'F=8'}, {id:'I',latex:'I=1'},
+    {id:'F0',latex:'F_0=\\frac{p}{h}'},
+    {id:'Krf',latex:'K_r(x)=h x-p', hidden:true, secret:true},
+    {id:'Kmf',latex:'K_m(x)=\\left\\{x<F_0:0,h x-p\\right\\}', hidden:true, secret:true},
+    {id:'cKr',latex:'K_r(x)', color:'#9a9a9a', lineWidth:1.5, lineStyle:Desmos.Styles.DASHED},
+    {id:'cKm',latex:'K_m(x)', color:'#2f6fb0', lineWidth:2.5},
+    {id:'thr',latex:'x=F_0\\left\\{-2\\le y\\le8\\right\\}', color:'#9a9a9a', lineStyle:Desmos.Styles.DASHED, lineWidth:1.3},
+    {id:'dot',latex:'(F,K_m(F))', color:'#c0392b', pointSize:14, showLabel:true, label:'now', labelSize:'small'},
+    {id:'f0p',latex:'(F_0,0)', color:'#6b5a3a'}
+  ]);
+  calc.setMathBounds({left:0, right:20, bottom:-2, top:8});
+
+  var S={p:2.3,F:8,I:1};
+  function freqColor(f){ var t=Math.max(0,Math.min(1,f/20)); var r=Math.round(220-120*t), g=Math.round(80+20*t), b=Math.round(120+130*t); return 'rgb('+r+','+g+','+b+')'; }
+  function update(){
+    var F0=S.p/h, Km=Math.max(0,h*S.F-S.p), emit=S.F>=F0 && S.I>0;
+    document.getElementById('rf0').textContent=F0.toFixed(2);
+    document.getElementById('rkm').textContent=Km.toFixed(2);
+    document.getElementById('rvs').textContent=Km.toFixed(2);
+    document.getElementById('remit').textContent=emit?('emitting electrons ('+ (Math.round(S.I*1.6)) +')') : (S.I<=0?'no light':'below threshold — no emission');
+    // photons
+    var col=freqColor(S.F), pg=document.getElementById('photons'), ps='';
+    var nph=Math.max(1,Math.round(S.I*1.4)+1);
+    for(var i=0;i<Math.min(6,nph);i++){ var y=45+i*18; ps+='<line x1="90" y1="'+y+'" x2="60" y2="'+y+'" stroke="'+col+'" stroke-width="2.5" marker-end="url(#pho)"/>'; }
+    pg.innerHTML=ps+'<defs><marker id="pho" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="'+col+'"/></marker></defs>';
+    // electrons
+    var eg=document.getElementById('electrons'), es='';
+    if(emit){ var ne=Math.min(6,Math.round(S.I*1.6)+1), spd=Math.min(70,20+Km*14);
+      for(var k=0;k<ne;k++){ var ey=50+k*16; es+='<circle cx="70" cy="'+ey+'" r="4" fill="#2f6fb0"/>'+
+        '<line x1="76" y1="'+ey+'" x2="'+(76+spd)+'" y2="'+ey+'" stroke="#2f6fb0" stroke-width="2" marker-end="url(#ele)"/>'; }
+      es+='<defs><marker id="ele" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2f6fb0"/></marker></defs>';
+    }
+    eg.innerHTML=es;
+    document.getElementById('emsg').textContent=emit?'':'✕ no electrons';
+  }
+
+  var LATEX={p:'p',F:'F',I:'I'};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  update();
+})();
+</script>
+</body>
+</html>

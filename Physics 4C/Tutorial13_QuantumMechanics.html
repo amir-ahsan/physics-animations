@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4C · Tutorial 13: Quantum Mechanics — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4C &middot; Tutorial 13: Quantum Mechanics</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4C TUTORIAL 13 — QUANTUM MECHANICS
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||160;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+/* shade area under fn between a..b (instant-aware) */
+function shade(c, fn, a, b, opt={}){
+  const {svg,M}=c; const N=60; let d='M '+M.X(a)+' '+M.Y(0);
+  for(let i=0;i<=N;i++){const x=a+(b-a)*i/N; d+=' L '+M.X(x)+' '+M.Y(fn(x));}
+  d+=' L '+M.X(b)+' '+M.Y(0)+' Z';
+  const p=el('path',{d, fill:opt.color||'#B5793B', opacity:opt.op||0.30, stroke:'none'},svg);
+  if(!c.instant){p.setAttribute('opacity',0);tween(u=>p.setAttribute('opacity',u*(opt.op||0.30)),600,false);}
+  return p;
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  sim:{label:'infinite square well', url:'../Simulations/sim14_interactive.html'},
+  prompt:'Professor Ahsan surveys the main principles: the wave function and Born’s rule, the Schrödinger equation, the particle in a box, the harmonic oscillator, and tunneling.',
+  world:{x0:-2.2, x1:14.6, y0:-1.3, y1:11.2, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    /* infinite well with three levels and their standing waves */
+    el('line',{x1:M.X(0),y1:M.Y(10.8),x2:M.X(0),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(10),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(10),y1:M.Y(0),x2:M.X(10),y2:M.Y(10.8),stroke:'#5C4B30','stroke-width':4},svg);
+    const lv=[[1,1.0],[2,4.0],[3,9.0]];
+    for(const [n,e] of lv){
+      dashLine(c, 0,e, 10,e, {color:'#B0A488', dash:'4,5'});
+      const pts=[]; for(let i=0;i<=90;i++){const x=10*i/90;
+        pts.push(M.X(x)+','+M.Y(e+0.85*Math.sin(n*Math.PI*x/10)));}
+      el('polyline',{points:pts.join(' '),fill:'none',stroke:'#2E6DA4','stroke-width':2.8,'stroke-linejoin':'round'},svg);
+      textAt(c, 10.25,e, n===1?'E₁':(n===2?'4E₁':'9E₁'), {fs:12.5});
+    }
+    textAt(c, 5,10.4, 'the box: ψₙ drawn on its energy rung', {fs:12, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"Quantum mechanics proper. A particle’s entire biography is the WAVE FUNCTION, psi — and BORN’S RULE gives it meaning: the probability of finding the particle between a and b is the integral of psi squared over that interval, with the total integral normalised to one. Psi itself is not a probability — it can be negative, and its signs and nodes drive all interference. Predictions are EXPECTATION VALUES: averages of x, and of x squared, weighted by psi squared.",
+     pose:'talk',
+     board:['P(a\\le x\\le b) = \\int_a^b|\\psi|^2\\,dx, \\qquad \\int_{-\\infty}^{\\infty}|\\psi|^2dx = 1',
+            '\\langle x\\rangle = \\int x|\\psi|^2dx, \\qquad \\Delta x = \\sqrt{\\langle x^2\\rangle - \\langle x\\rangle^2}'] },
+   { say:"Position and momentum are FOURIER PARTNERS of the same wave, so squeezing one spreads the other: delta-x delta-p at least h-bar over two. Not clumsy measurement — anatomy. The working estimate: confinement to a region of size L costs a zero-point energy of order h-bar squared over two m L squared. Small boxes are expensive; that single fact sizes atoms.",
+     solo:true, pose:'write',
+     board:['\\Delta x\\,\\Delta p \\ge \\frac{\\hbar}{2}, \\qquad E_{\\rm zero{-}point} \\sim \\frac{\\hbar^2}{2mL^2}'],
+     action(c){
+       plotCurve(c, t=>[11.6+2.4*t, 6.2+1.1*Math.exp(-14*(t-0.5)*(t-0.5))*Math.sin(2*Math.PI*9*t)], 0, 1, {color:PURPLE, w:2.2, dur:900, N:140});
+       textAt(c, 12.8,4.6, 'narrow packet ⇒ many wavelengths inside', {fs:10.5, italic:true, anchor:'middle'});
+     } },
+   { say:"The law of motion is the SCHRÖDINGER EQUATION — for stationary states, minus h-bar squared over two m, times the second derivative of psi, plus U psi, equals E psi. Boundary conditions act exactly like the fixed ends of a string from Tutorial 5: only special energies fit. QUANTIZATION IS THE STANDING-WAVE CONDITION IN DISGUISE. For the infinite box on the stage: psi-n is root two over L, sine n pi x over L, with energies n squared times E-one — gaps that GROW, a ground floor that is not zero, and n minus one nodes in the n-th state.",
+     pose:'point',
+     board:['-\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + U\\psi = E\\psi',
+            '\\psi_n = \\sqrt{\\tfrac{2}{L}}\\sin\\tfrac{n\\pi x}{L}, \\qquad E_n = n^2\\frac{h^2}{8mL^2}'] },
+   { say:"The other exactly-solvable well — and secretly EVERY potential near its minimum — is the HARMONIC OSCILLATOR: energies n plus one half, times h-bar omega. Evenly spaced rungs, which is why a vibrating molecule absorbs at one fundamental frequency; and a zero-point energy of half a rung — a bound quantum particle can never sit perfectly still.",
+     solo:true, pose:'write',
+     board:['U = \\tfrac12m\\omega^2x^2:\\quad E_n = \\Big(n+\\tfrac12\\Big)\\hbar\\omega, \\quad n = 0,1,2,\\ldots'],
+     action(c){
+       for(let n=0;n<4;n++) dashLine(c, 11.2,0.9+1.05*n, 14.0,0.9+1.05*n, {color:GREEN});
+       textAt(c, 12.6,0.25, 'oscillator: even rungs, ħω apart', {fs:10.5, italic:true, anchor:'middle'});
+     } },
+   { say:"Let the tunnelling sink in: the Sun should not shine. Its protons lack the energy to breach their mutual repulsion — classically, the furnace is unlit. But the wave function leaks where particles cannot go, and that leak, multiplied by ten-to-the-56 protons, is daylight. Every sunrise is a quantum improbability, performed daily, on schedule.",
+     pose:'think',
+     board:[{t:'Classically the Sun is impossible. It shines anyway — by the exponential we just wrote down.'}] },
+   { say:"And where a classical particle turns back, the wave function refuses: inside a barrier taller than E it DECAYS exponentially with constant kappa — root of two m U-nought minus E, over h-bar — and a barrier of width L transmits with probability e to the minus two kappa L. That exponential is absurdly sensitive, and it runs the scanning tunnelling microscope, alpha decay, and the Sun. Strategy: identify the potential — box, oscillator, or barrier; compute the SCALE first, E-one or h-bar omega or kappa; photons connect levels by delta-E; probabilities are integrals of psi squared; and the classical limit must emerge at large n. To the examples.",
+     pose:'excited',
+     board:['\\kappa = \\frac{\\sqrt{2m(U_0-E)}}{\\hbar}, \\qquad T \\approx e^{-2\\kappa L}',
+            {t:'Strategy: which well? → scale first (E₁, ħω, κ) → photons bridge ΔE → probabilities are ∫|ψ|².'}],
+     action(c){
+       plotCurve(c, t=>[0.6+3.4*t, 6.6+0.75*Math.sin(2*Math.PI*4.5*t)], 0, 1, {color:GOLD, w:2.4, dur:600, N:90});
+       el('rect',{x:c.M.X(4.0),y:c.M.Y(8.1),width:c.M.X(5.6)-c.M.X(4.0),height:c.M.Y(5.1)-c.M.Y(8.1),fill:'#8A7D60',opacity:.30},c.svg);
+       plotCurve(c, t=>[4.0+1.6*t, 6.6+0.75*Math.exp(-2.2*t)], 0, 1, {color:GOLD, w:2.4, dur:400, N:40});
+       plotCurve(c, t=>[5.6+3.0*t, 6.6+0.16*Math.sin(2*Math.PI*4*t)], 0, 1, {color:GOLD, w:2.4, dur:500, N:80});
+       textAt(c, 4.8,8.6, 'oscillates — decays — leaks through!', {fs:11, italic:true, anchor:'middle'});
+     } },
+  ]
+},
+
+/* ---------- Example 1: Electron in a box [Basic] ---------- */
+{
+  title:'Electron in a box: the energy ladder.', diff:'Basic',
+  prompt:'An electron is confined to L = 0.250 nm. (a) Find E₁, E₂, E₃. (b) What photon wavelength drives the 1→2 transition? (c) Repeat for a 1.0 μg dust grain in a 1.0 mm box, and draw the moral.',
+  world:{x0:-2.2, x1:14.6, y0:-6, y1:60, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    el('line',{x1:M.X(0),y1:M.Y(58),x2:M.X(0),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(10),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(10),y1:M.Y(0),x2:M.X(10),y2:M.Y(58),stroke:'#5C4B30','stroke-width':4},svg);
+    textAt(c, 5,-4.2, 'L = 0.250 nm', {fs:12.5, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"An electron in an atom-sized box: a quarter of a nanometre. The energy ladder is n squared times E-one, so the whole problem is computing ONE number — the scale E-one — and multiplying by squares. This is the quantum habit worth acquiring immediately: compute the SCALE of a problem first, and the spectrum, the transitions, and the intuition all follow from that single number.",
+     pose:'talk',
+     board:[{t:'L = 0.250 nm; electron, m_ec² = 511 keV.'},
+            'E_n = n^2\\frac{h^2}{8mL^2} = n^2\\frac{(hc)^2}{8(m_ec^2)L^2}'] },
+   { say:"Compute the scale in spectroscopist’s units — h c squared over eight m c squared L squared: 1240 squared, over eight times five hundred and eleven thousand times 0.250 squared. Six point nought two electron-volts. Then the ladder: E-two is four E-one, twenty-four point one; E-three is nine E-one, fifty-four point two.",
+     pose:'write',
+     board:['E_1 = \\frac{(1240)^2}{8(511\\times10^3)(0.250)^2} = 6.02\\ \\mathrm{eV}',
+            'E_2 = 4E_1 = 24.1\\ \\mathrm{eV}, \\qquad E_3 = 9E_1 = 54.2\\ \\mathrm{eV}'],
+     action(c){
+       const {M}=c;
+       for(const [n,e] of [[1,6.02],[2,24.1],[3,54.2]]){
+         dashLine(c, 0,e, 10,e, {color:'#B0A488', dash:'4,5'});
+         const pts=[]; for(let i=0;i<=80;i++){const x=10*i/80;
+           pts.push(M.X(x)+','+M.Y(e+3.4*Math.sin(n*Math.PI*x/10)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.6},c.svg);
+         textAt(c, 10.3,e, `E${n===1?'₁':n===2?'₂':'₃'} = ${e} eV`, {fs:11.5});
+       }
+     } },
+   { say:"Part b: the photon that lifts the electron from rung one to rung two must carry the GAP, not either level: delta-E is three E-one — eighteen point one electron-volts. Wavelength: 1240 over 18.1 — sixty-eight point seven nanometres, far ultraviolet. Notice the accident that is not an accident: atom-sized boxes give electron-volt spacings — precisely the energy scale of chemistry and of visible-adjacent light. Same h squared over eight m L squared.",
+     pose:'point',
+     board:['\\Delta E_{12} = E_2 - E_1 = 3E_1 = 18.1\\ \\mathrm{eV}',
+            '\\lambda = \\frac{hc}{\\Delta E} = \\frac{1240}{18.1} = 68.7\\ \\mathrm{nm}\\ \\ (\\text{far UV})'],
+     action(c){
+       arrow(c, 5,6.02, 5,24.1, {color:GOLD, w:3, label:'hf = 3E₁', fs:12});
+     } },
+   { say:"For part c, the dust grain — one microgram in a one-millimetre box: E-one is h squared over eight m L squared with honest SI numbers — five point five ten-to-the-minus-53 joules. Thermal energy at room temperature exceeds this by thirty-two orders of magnitude. The ladder exists, but its rungs are so fine it is a RAMP.",
+     pose:'write',
+     board:['E_1 = \\frac{(6.626\\times10^{-34})^2}{8(10^{-9})(10^{-3})^2} = 5.5\\times10^{-53}\\ \\mathrm J',
+            {t:'k_BT ≈ 4×10⁻²¹ J: thermal energy dwarfs the rung by ~10³². The ladder is a ramp.'}] },
+   { say:"The moral, in one line: quantization is real for EVERYTHING and visible only where h squared over eight m L squared rivals the energies at play — electrons in atoms, yes; dust in millimetres, never. Newtonian mechanics is what a quantum ladder looks like from far away.",
+     pose:'excited',
+     board:[{t:'Same law, both regimes. Discreteness fades as mL² grows — the correspondence principle in numbers.'}] },
+  ]
+},
+
+/* ---------- Example 2: Solving the well from scratch [Challenging] ---------- */
+{
+  title:'Solving the infinite well from scratch.', diff:'Challenging',
+  prompt:'Solve −(ℏ²/2m)ψ″ = Eψ on [0, L] with ψ(0) = ψ(L) = 0; find the allowed energies and normalize the states.',
+  world:{x0:-2.2, x1:14.6, y0:-1.3, y1:11.2, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    el('line',{x1:M.X(0),y1:M.Y(10.8),x2:M.X(0),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(10),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(10),y1:M.Y(0),x2:M.X(10),y2:M.Y(10.8),stroke:'#5C4B30','stroke-width':4},svg);
+    textAt(c, 5,-0.9, 'U = 0 inside, ∞ at the walls', {fs:12, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"Now we EARN the box formulas: the Schrödinger equation, end to end. Inside the well U is zero, so the equation reads minus h-bar squared over two m, psi double-prime, equals E psi. The walls are infinitely tall, so psi must VANISH at x equals zero and x equals L — a quantum string, clamped at both ends.",
+     pose:'talk',
+     board:['-\\frac{\\hbar^2}{2m}\\psi^{\\prime\\prime} = E\\psi, \\qquad \\psi(0) = \\psi(L) = 0'] },
+   { say:"Step one, the general solution. Define k squared as two m E over h-bar squared, and the equation becomes psi double-prime equals minus k squared psi — the oscillator equation we have met in every wave chapter. General solution: A sine k x plus B cosine k x.",
+     pose:'write',
+     board:['\\psi^{\\prime\\prime} = -k^2\\psi, \\qquad k^2 \\equiv \\frac{2mE}{\\hbar^2}',
+            '\\psi(x) = A\\sin kx + B\\cos kx'] },
+   { say:"Step two, the boundaries do the quantizing. Psi of zero equals zero KILLS the cosine: B is zero. Psi of L equals zero then demands sine k L equals zero — k L must be a whole number of pi. n equals zero would erase the particle, so n runs one, two, three. There it is: quantization, appearing exactly as it did for the guitar string in Tutorial 5. The energies follow from k equals n pi over L: E-n equals n squared h squared over eight m L squared.",
+     pose:'point',
+     board:['\\psi(0)=0\\Rightarrow B=0; \\qquad \\psi(L)=0\\Rightarrow kL = n\\pi,\\ n=1,2,3,\\ldots',
+            'E_n = \\frac{\\hbar^2k^2}{2m} = \\frac{\\hbar^2\\pi^2n^2}{2mL^2} = n^2\\frac{h^2}{8mL^2}'],
+     action(c){
+       const {M}=c;
+       for(const [n,e] of [[1,1.0],[2,4.0],[3,9.0]]){
+         dashLine(c, 0,e, 10,e, {color:'#B0A488', dash:'4,5'});
+         const pts=[]; for(let i=0;i<=80;i++){const x=10*i/80;
+           pts.push(M.X(x)+','+M.Y(e+0.85*Math.sin(n*Math.PI*x/10)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.6},c.svg);
+       }
+       textAt(c, 10.3,4.0, 'kL = nπ: whole half-waves only', {fs:11, italic:true});
+     } },
+   { say:"Step three, normalisation — Born’s rule insists the particle is SOMEWHERE, so the integral of A squared sine squared must equal one. The half-angle identity does the work: sine squared is one minus cosine of twice the angle, over two. The cosine integrates to a sine evaluated at multiples of two pi — zero — leaving exactly L over two. So A is root two over L.",
+     pose:'write',
+     board:['\\int_0^L\\sin^2\\frac{n\\pi x}{L}dx = \\int_0^L\\frac{1-\\cos(2n\\pi x/L)}{2}dx = \\frac{L}{2}',
+            'A^2\\frac{L}{2} = 1\\ \\Rightarrow\\ A = \\sqrt{\\frac{2}{L}}'] },
+   { say:"Assembled: psi-n equals root two over L, sine n pi x over L, with E-n equals n squared h squared over eight m L squared. Solve, impose boundaries, normalise — three steps, and every box problem in this chapter is a corollary. Keep the recipe; the wells change, the ritual does not.",
+     pose:'excited',
+     board:['\\boxed{\\ \\psi_n = \\sqrt{\\tfrac{2}{L}}\\sin\\tfrac{n\\pi x}{L}, \\qquad E_n = n^2\\tfrac{h^2}{8mL^2}\\ }',
+            {t:'The ritual: solve → boundaries quantize → normalize. Everything else is interpretation.'}] },
+  ]
+},
+
+/* ---------- Example 3: Probability integrals [Challenging] ---------- */
+{
+  title:'Where is the particle? Born’s rule in action.', diff:'Challenging',
+  prompt:'For the ground state of the infinite well, find the probability of finding the particle (a) in [0, L/4] and (b) in [L/4, 3L/4]. Compare with the classical answers.',
+  world:{x0:-1.4, x1:12.8, y0:-0.35, y1:2.5, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    el('line',{x1:M.X(0),y1:M.Y(2.4),x2:M.X(0),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(10),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(10),y1:M.Y(0),x2:M.X(10),y2:M.Y(2.4),stroke:'#5C4B30','stroke-width':4},svg);
+    const pts=[]; for(let i=0;i<=100;i++){const x=10*i/100;
+      pts.push(M.X(x)+','+M.Y(2.0*Math.pow(Math.sin(Math.PI*x/10),2)));}
+    el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3.2,'stroke-linejoin':'round'},svg);
+    textAt(c, 5,2.25, '|ψ₁|²: one hump, piled in the middle', {fs:12, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"Born’s rule, put to work. The ground-state density psi-one squared is the single hump on the stage. Question a: how often is the particle found in the LEFT QUARTER of the box? Question b: in the middle half? A classical particle bouncing to and fro answers uniformly: a quarter and a half. Let us see what the quantum says.",
+     pose:'talk',
+     board:['P = \\int_0^{L/4}\\frac{2}{L}\\sin^2\\frac{\\pi x}{L}\\,dx\\ \\ \\text{vs classical } \\tfrac14'] },
+   { say:"Set up the integral with the half-angle identity — sine squared becomes one minus cosine two pi x over L, all over two. The one integrates to x; the cosine to a sine with the factor L over two pi in front. Evaluate from zero to L over four.",
+     pose:'write',
+     board:['P = \\frac{2}{L}\\int_0^{L/4}\\frac{1-\\cos(2\\pi x/L)}{2}dx = \\frac{1}{L}\\Big[x - \\frac{L}{2\\pi}\\sin\\frac{2\\pi x}{L}\\Big]_0^{L/4}'] },
+   { say:"At x equals L over four, the sine’s argument is pi over two — sine equals ONE, its maximum mischief. So P equals one quarter minus one over two pi: 0.250 minus 0.159 — nine point one per cent. The classical answer was twenty-five. The ground state genuinely SHUNS the walls, where its amplitude must die.",
+     pose:'point',
+     board:['P = \\frac{1}{L}\\Big(\\frac{L}{4} - \\frac{L}{2\\pi}\\Big) = \\frac14 - \\frac{1}{2\\pi} = 0.250 - 0.159 = 0.091'],
+     action(c){
+       shade(c, x=>2.0*Math.pow(Math.sin(Math.PI*x/10),2), 0, 2.5, {color:RED, op:0.4});
+       textAt(c, 1.25,0.5, '9.1%', {fs:13, anchor:'middle', color:'#8A3324'});
+     } },
+   { say:"Part b rides on symmetry: the RIGHT quarter matches the left, so the two outer quarters carry twice 0.091 — eighteen point two per cent — and the middle half claims the remaining EIGHTY-ONE POINT EIGHT. Classical: fifty. The quantum ground state piles up under its single antinode like a cat in the warmest spot of the house.",
+     pose:'write',
+     board:['P_{\\rm outer} = 2(0.091) = 0.182\\ \\Rightarrow\\ P_{\\rm mid} = 1 - 0.182 = 0.818',
+            {t:'Quantum: 9% · 82% · 9%. Classical: 25% · 50% · 25%.'}],
+     action(c){
+       shade(c, x=>2.0*Math.pow(Math.sin(Math.PI*x/10),2), 2.5, 7.5, {color:GREEN, op:0.35});
+       textAt(c, 5,0.5, '81.8%', {fs:13, anchor:'middle', color:'#2E5C3F'});
+     } },
+   { say:"And the reconciliation: excite the particle to large n, and psi-n squared oscillates so rapidly that any detector of finite width averages it to uniform — the classical quarter and half return. The correspondence principle, visible inside one integral. Where the wave has room for many wiggles, Newtonian mechanics wakes up.",
+     pose:'excited',
+     board:[{t:'Large n: |ψₙ|² wiggles average to uniform — classical probabilities recovered. Correspondence, again.'}] },
+  ]
+},
+
+/* ---------- Example 4: Expectation values [Challenging] ---------- */
+{
+  title:'Expectation values and Heisenberg’s check.', diff:'Challenging',
+  prompt:'For ψ₁ of the infinite well, compute ⟨x⟩, ⟨x²⟩, and Δx; combine with Δp = πℏ/L to test Δx·Δp ≥ ℏ/2.',
+  world:{x0:-1.4, x1:12.8, y0:-0.35, y1:2.5, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    el('line',{x1:M.X(0),y1:M.Y(2.4),x2:M.X(0),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(10),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(10),y1:M.Y(0),x2:M.X(10),y2:M.Y(2.4),stroke:'#5C4B30','stroke-width':4},svg);
+    const pts=[]; for(let i=0;i<=100;i++){const x=10*i/100;
+      pts.push(M.X(x)+','+M.Y(2.0*Math.pow(Math.sin(Math.PI*x/10),2)));}
+    el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3.2,'stroke-linejoin':'round'},svg);
+  },
+  steps:[
+   { say:"Time to audit the ground state against Heisenberg. We need its position spread delta-x — which requires the expectation of x and of x squared — and its momentum spread, which we are given: delta-p equals pi h-bar over L, since the average momentum is zero and p squared is fixed by the energy.",
+     pose:'talk',
+     board:['\\Delta x = \\sqrt{\\langle x^2\\rangle - \\langle x\\rangle^2}, \\qquad \\Delta p = \\hbar k_1 = \\frac{\\pi\\hbar}{L}'] },
+   { say:"The average position needs no integral: psi-one squared is symmetric about the centre, so x-average is L over two — the seesaw balances at its middle. Mark it. Symmetry arguments are the aristocracy of calculation — they answer before the integral is even written, and they are never wrong when their premise holds. Learn to spot the balanced seesaw.",
+     pose:'point',
+     board:['\\langle x\\rangle = \\frac{L}{2}\\ \\ (\\text{by symmetry})'],
+     action(c){
+       dashLine(c, 5,0, 5,2.1, {color:'#8A7D60'});
+       textAt(c, 5,-0.22, '⟨x⟩ = L/2', {fs:12, anchor:'middle'});
+     } },
+   { say:"X-squared demands honest calculus. Split with the half-angle identity: the average of x squared is one over L times the integral of x squared, MINUS one over L times the integral of x squared cosine two pi x over L. The first is L squared over three. The second surrenders to integration by parts — twice, each pass knocking one power off the x squared — and yields L squared over two pi squared.",
+     pose:'write',
+     board:['\\langle x^2\\rangle = \\frac{1}{L}\\int_0^Lx^2dx - \\frac{1}{L}\\int_0^Lx^2\\cos\\frac{2\\pi x}{L}dx',
+            '= \\frac{L^2}{3} - \\frac{L^2}{2\\pi^2}\\ \\ (\\text{parts, twice})'] },
+   { say:"Assemble the spread: delta-x squared is one third minus one over two pi squared, minus the square of one half — 0.0327 in units of L squared — so delta-x is 0.1808 L. Roughly a fifth of the box: the state is not AT the centre; it is a cloud AROUND it.",
+     pose:'write',
+     board:['\\Delta x = L\\sqrt{\\tfrac13 - \\tfrac{1}{2\\pi^2} - \\tfrac14} = L\\sqrt{0.0327} = 0.1808\\,L'],
+     action(c){
+       arrow(c, 5-1.808,1.0, 5+1.808,1.0, {color:PURPLE, w:2.5, label:'Δx = 0.18 L', fs:12});
+     } },
+   { say:"The confrontation: delta-x times delta-p is 0.1808 L times pi h-bar over L — the box size CANCELS — 0.568 h-bar. Heisenberg demands at least one half. We clear the floor by fourteen per cent: the box ground state is nearly as economical as nature permits — only the oscillator’s Gaussian achieves the bound exactly. Check.",
+     pose:'excited',
+     board:['\\Delta x\\,\\Delta p = (0.1808L)\\frac{\\pi\\hbar}{L} = 0.568\\,\\hbar > 0.5\\,\\hbar\\ \\checkmark',
+            {t:'Just 14% above the floor. Only the oscillator’s Gaussian ground state hits ℏ/2 exactly.'}] },
+  ]
+},
+
+/* ---------- Example 5: HCl as a quantum oscillator [Intermediate] ---------- */
+{
+  title:'A vibrating molecule as a quantum oscillator.', diff:'Intermediate',
+  prompt:'HCl vibrates at f = 8.66×10¹³ Hz. (a) Level spacing and zero-point energy. (b) Wavelength of the 0→1 absorption. (c) What fraction of molecules is vibrationally excited at room temperature?',
+  world:{x0:-1, x1:11, y0:-0.5, y1:4.6, aniso:true},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    plotCurve(c, x=>[x, 0.16*(x-5)*(x-5)], 1.4, 8.6, {color:'#8A7D60', w:2.5, dur:1});
+    el('circle',{cx:M.X(4.1),cy:M.Y(3.6),r:8,fill:'#B7BDC4',stroke:'#7A8288','stroke-width':2},svg);
+    el('circle',{cx:M.X(6.2),cy:M.Y(3.6),r:11,fill:GREEN,opacity:.7},svg);
+    el('line',{x1:M.X(4.35),y1:M.Y(3.6),x2:M.X(5.9),y2:M.Y(3.6),stroke:'#7A8288','stroke-width':3},svg);
+    textAt(c, 5.15,4.15, 'H — Cl, a quantum spring', {fs:12, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"Hydrogen chloride is two masses on a stiff quantum spring, vibrating at eight point six six ten-to-the-13 hertz. Near its minimum EVERY potential is a parabola, so the oscillator spectrum applies: rungs at n plus one half, h-bar omega. 'Every potential is a parabola near its minimum' is the most profitable half-truth in physics — it is why one solved oscillator retells the story of every molecule, bridge, and quartz watch in existence.",
+     pose:'talk',
+     board:[{t:'f = 8.66×10¹³ Hz.'},
+            'E_n = \\Big(n+\\tfrac12\\Big)hf'] },
+   { say:"Let us take part a. The rung spacing is simply h f: 4.136 ten-to-the-minus-15 times 8.66 ten-to-the-13 — nought point three five eight electron-volts. And the ground rung sits HALF a spacing above the well bottom: 0.179 e-V of zero-point energy. Even at absolute zero, H-C-l trembles — the uncertainty principle collecting rent on confinement.",
+     pose:'write',
+     board:['\\hbar\\omega = hf = (4.136\\times10^{-15})(8.66\\times10^{13}) = 0.358\\ \\mathrm{eV}',
+            'E_0 = \\tfrac12\\hbar\\omega = 0.179\\ \\mathrm{eV}\\ \\ (\\text{zero-point: motion at } T=0)'],
+     action(c){
+       for(let n=0;n<4;n++){
+         dashLine(c, 5-1.5-0.55*n,0.32+0.72*n, 5+1.5+0.55*n,0.32+0.72*n, {color:BLUE});
+         }
+       textAt(c, 8.6,0.9, 'even rungs: ħω', {fs:11.5, italic:true});
+     } },
+   { say:"On we go to part b. The zero-to-one absorption swallows one full rung: lambda equals 1240 over 0.358 — three thousand four hundred and sixty nanometres. Three and a half MICRONS: infrared. Molecular vibrations paint the infrared spectrum — the physics of both IR spectroscopy and the greenhouse effect, in one number.",
+     pose:'point',
+     board:['\\lambda = \\frac{hc}{\\Delta E} = \\frac{1240}{0.358} = 3.46\\times10^{3}\\ \\mathrm{nm} = 3.46\\ \\mu\\mathrm m\\ \\ (\\text{infrared})'],
+     action(c){
+       arrow(c, 5,0.32, 5,1.04, {color:GOLD, w:3, label:'hf', fs:12});
+     } },
+   { say:"For part c, the Boltzmann census: the excited population is e to the minus delta-E over k-B T — e to the minus 0.358 over 0.0253 — e to the minus fourteen point two: seven ten-to-the-minus-7. Fewer than one molecule in a million vibrates at room temperature.",
+     pose:'write',
+     board:['\\frac{N_1}{N_0} = e^{-\\Delta E/k_BT} = e^{-0.358/0.0253} = e^{-14.2} = 7\\times10^{-7}'] },
+   { say:"And here, quietly, Tutorial 2’s equipartition puzzle dissolves. Rotations, spaced a THOUSANDTH of an electron-volt, are liberally excited at room temperature; vibrations, at a third of an e-V, are frozen out. Each energy scale thaws at its own temperature — which is why diatomic heat capacities climb in steps rather than sitting at the classical value. Quantum mechanics was hiding in the steam tables all along.",
+     pose:'excited',
+     board:[{t:'Rotations (~10⁻³ eV): excited. Vibrations (0.358 eV): frozen. Equipartition fails one rung at a time.'}] },
+  ]
+},
+
+/* ---------- Example 6: Tunneling and the STM [Challenging] ---------- */
+{
+  title:'Tunneling and the scanning tunneling microscope.', diff:'Challenging',
+  prompt:'An electron with E = 5.0 eV meets a barrier U₀ = 10.0 eV. (a) Find κ and T ≈ e^(−2κL) for L = 0.50 and 0.60 nm. (b) If STM current ∝ T, what does retracting the tip 0.10 nm do? (c) Why don’t you tunnel through your chair?',
+  world:{x0:-1, x1:11, y0:-2.6, y1:2.6},
+  setup(ctx,w){
+    const {svg,M}=ctx; const c={svg,M,instant:true};
+    el('rect',{x:M.X(4.2),y:M.Y(1.9),width:M.X(6.0)-M.X(4.2),height:M.Y(-1.9)-M.Y(1.9),fill:'#8A7D60',opacity:.30},svg);
+    textAt(c, 5.1,2.15, 'U₀ = 10 eV, L', {fs:12, italic:true, anchor:'middle'});
+    plotCurve(c, t=>[0.4+3.8*t, 0.9*Math.sin(2*Math.PI*5*t)], 0, 1, {color:GOLD, w:2.5, dur:1, N:110});
+  },
+  steps:[
+   { say:"The exponential that images atoms. An electron of five electron-volts meets a ten-electron-volt wall. Classically: reflection, full stop. Quantum mechanically the wave function DECAYS inside the wall rather than dying — and whatever amplitude survives to the far side, leaks on.",
+     pose:'talk',
+     board:[{t:'E = 5.0 eV, U₀ = 10.0 eV, so U₀ − E = 5.0 eV.'},
+            '\\kappa = \\frac{\\sqrt{2m(U_0-E)}}{\\hbar}, \\qquad T \\approx e^{-2\\kappa L}'] },
+   { say:"For part a, the decay constant: root of two times the electron mass times five electron-volts in joules, over h-bar — one point one five ten-to-the-10 per metre. Its reciprocal says the wave function loses a factor of e every 0.087 nanometres — less than an atomic radius.",
+     pose:'write',
+     board:['\\kappa = \\frac{\\sqrt{2(9.11\\times10^{-31})(5.0)(1.60\\times10^{-19})}}{1.055\\times10^{-34}} = 1.15\\times10^{10}\\ \\mathrm{m^{-1}}',
+            {t:'One factor of e lost every 0.087 nm.'}],
+     action(c){
+       plotCurve(c, t=>[4.2+1.8*t, 0.9*Math.exp(-2.07*t)], 0, 1, {color:GOLD, w:2.5, dur:700});
+       plotCurve(c, t=>[6.0+4.4*t, 0.10*Math.sin(2*Math.PI*5*t)], 0, 1, {color:GOLD, w:2.5, dur:700, N:90});
+       textAt(c, 7.9,-1.0, 'small, but alive: T ≈ e^(−2κL)', {fs:11.5, italic:true, anchor:'middle'});
+     } },
+   { say:"The transmissions: at half a nanometre, two kappa L is eleven point five, and T is e to the minus 11.5 — one ten-to-the-minus-5. Widen the gap by ONE ANGSTROM — 0.60 nanometres — and two kappa L is 13.8: T drops to one ten-to-the-minus-6. One atom of extra distance, one full order of magnitude.",
+     pose:'point',
+     board:['L = 0.50\\ \\mathrm{nm}:\\ 2\\kappa L = 11.5,\\ T \\approx e^{-11.5} = 1.0\\times10^{-5}',
+            'L = 0.60\\ \\mathrm{nm}:\\ 2\\kappa L = 13.8,\\ T \\approx 1.0\\times10^{-6}'] },
+   { say:"Part b is already answered: retracting an STM tip by 0.10 nanometres divides the current by e to the two kappa times a tenth of a nanometre — about TEN. That savage sensitivity is the whole instrument: scan a tip across a surface holding the current constant, and the feedback signal traces out individual atoms. The 1986 Nobel Prize, riding on one exponent.",
+     pose:'write',
+     board:['\\frac{I(L)}{I(L+0.1\\ \\mathrm{nm})} = e^{2\\kappa(0.1\\ \\mathrm{nm})} = e^{2.3} \\approx 10',
+            {t:'One atomic diameter of gap = 10× the signal. That is how an STM feels atoms.'}] },
+   { say:"For part c, your chair. Scale the exponent: for seventy kilograms and any macroscopic barrier, two kappa L is of order ten-to-the-35, making T e to the minus ten-to-the-35 — a zero beyond all zeros, unvisited in the lifetime of any number of universes. The SAME formula runs a working microscope and guarantees your furniture. Only the exponent changes — and the exponent is everything.",
+     pose:'excited',
+     board:['\\text{you: } 2\\kappa L \\sim 10^{35}\\ \\Rightarrow\\ T \\sim e^{-10^{35}}',
+            {t:'Same law spans the STM and the impossibility of falling through chairs. Trust the exponent.'}] },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

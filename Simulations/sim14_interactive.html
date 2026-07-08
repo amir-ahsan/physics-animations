@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infinite Square Well — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 14 — Infinite Square Well: Energy Levels &amp; Wavefunctions</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A quantum particle trapped in a box of width <b>L</b> can only have certain <b>quantized energies</b>
+    <span class="eq">E&#8345; &#8733; n&#178;/L&#178;</span>. Its wavefunction must vanish at both walls, so only standing waves with a whole number
+    of half-wavelengths fit &#8212; giving <b>n &#8722; 1</b> internal nodes. The probability of finding the particle is the wavefunction
+    squared. Change n and L to see the levels spread out and the wiggles multiply.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The well &amp; its energy ladder</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="185" viewBox="0 0 330 185">
+            <rect x="55" y="10" width="8" height="165" fill="#6b5a3a"/>
+            <rect x="247" y="10" width="8" height="165" fill="#6b5a3a"/>
+            <line x1="63" y1="175" x2="247" y2="175" stroke="#8a7c58" stroke-width="1.5"/>
+            <g id="levels"></g>
+            <polyline id="wf14" points="" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
+            <text x="120" y="24" font-size="10" fill="#6b5a3a">V = &#8734;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-purple"><span class="k">level n</span> = <span class="vb" id="rn">–</span></div>
+            <div class="r c-accent"><span class="k">E&#8345; &#8733; n&#178;/L&#178;</span> = <span class="vb" id="ren">–</span></div>
+            <div class="r"><span class="k">internal nodes</span> = <span class="vb" id="rnodes">–</span></div>
+            <div class="r" style="opacity:.85">E&#8321;, E&#8322;, E&#8323; = <span id="re123">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Horizontal lines = allowed energy levels (spaced like n&#178;). The purple curve is the wavefunction for the chosen level.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Wavefunction &amp; probability density</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Each allowed energy is a horizontal line; the wavefunction (blue) and probability density (red) for level n are drawn sitting on that level.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:#9a9a9a"></span><span><b>Energy levels</b> E&#8345; &#8733; n&#178; (allowed energies).</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Wavefunction</b> &#968;&#8345;(x), drawn on its level.</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Probability density</b> |&#968;&#8345;|&#178; — where the particle is likely to be.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="L" data-min="4" data-max="12" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Well width L</label><span class="val"></span></div><input type="range"><div class="hint">Wider box → levels squeeze together.</div>
+          </div>
+          <div class="ctl" data-var="n" data-min="1" data-max="6" data-step="1" data-fixed="0">
+            <div class="row"><label>Quantum number n</label><span class="val"></span></div><input type="range"><div class="hint">Higher n → more wiggles, higher energy.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Raise n from 1 to 3. How many internal nodes will the wavefunction have?</li>
+      <li><b>Manipulate</b><span class="tag">L</span> Change L and watch how the spacing between energy levels changes.</li>
+      <li><b>Explain</b><span class="tag">the walls</span> Why must the wavefunction be exactly zero at both walls?</li>
+      <li><b>Calculate</b><span class="tag">n, L</span> With E&#8345; = n&#178;/L&#178;, calculate E&#8321;, E&#8322;, and E&#8323; for L = 8, then check the readout.</li>
+      <li><b>Extend</b><span class="tag">n = 1 vs 2</span> Compare the probability density for n = 1 and n = 2 &#8212; where is the particle most likely to be found?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'position x (arb. units)', yAxisLabel:'energy (arb. units)'});
+  calc.setExpressions([
+    {id:'L',latex:'L=8'}, {id:'n',latex:'n=1'},
+    {id:'pf',latex:'p(x)=\\sqrt{\\frac{2}{L}}\\sin\\left(\\frac{n\\pi x}{L}\\right)', hidden:true, secret:true},
+    {id:'Pf',latex:'P(x)=p(x)^2', hidden:true, secret:true},
+    {id:'En',latex:'E_n=\\frac{n^2}{L^2}'},
+    {id:'Aw',latex:'A_w=\\frac{1.2}{L^2}'},   // display amplitude so a wavefunction fits below the next level
+    {id:'psf',latex:'p_s(x)=A_w\\sin\\left(\\frac{n\\pi x}{L}\\right)+E_n', hidden:true, secret:true},
+    {id:'Psf',latex:'P_s(x)=1.6A_w\\sin^2\\left(\\frac{n\\pi x}{L}\\right)+E_n', hidden:true, secret:true},
+    {id:'cW',latex:'p_s(x)\\left\\{0\\le x\\le L\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cP',latex:'P_s(x)\\left\\{0\\le x\\le L\\right\\}', color:'#c0392b', lineWidth:2},
+    {id:'w0',latex:'y=0\\left\\{0\\le x\\le L\\right\\}', color:'#b8a983', lineWidth:1},
+    {id:'wl',latex:'x=0\\left\\{0\\le y\\le6\\right\\}', color:'#6b5a3a', lineWidth:2.5},
+    {id:'wr',latex:'x=L\\left\\{0\\le y\\le6\\right\\}', color:'#6b5a3a', lineWidth:2.5},
+    {id:'Nn',latex:'M=[1,2,3,4,5,6]', hidden:true, secret:true},
+    {id:'EL',latex:'E_L=\\frac{M^2}{L^2}', hidden:true, secret:true},
+    {id:'levels',latex:'y=E_L\\left\\{0\\le x\\le L\\right\\}', color:'#9a9a9a', lineWidth:1},
+    {id:'mark',latex:'(\\frac{L}{2},E_n)', color:'#6042a6', pointSize:10}
+  ]);
+  function fit(){ var top=1.3*36/(S.L*S.L); calc.setMathBounds({left:-0.6, right:S.L+0.6, bottom:-0.12*top, top:top}); }
+
+  var S={L:8,n:1};
+  function update(){
+    var En=S.n*S.n/(S.L*S.L);
+    document.getElementById('rn').textContent=S.n;
+    document.getElementById('ren').textContent=En.toFixed(2);
+    document.getElementById('rnodes').textContent=(S.n-1);
+    document.getElementById('re123').textContent=[1,2,3].map(function(k){return (k*k/(S.L*S.L)).toFixed(3);}).join(', ');
+    // schematic energy ladder (map E in [0..Emax] to y [175..20]); Emax at n=6
+    var Emax=36/(S.L*S.L), x0=63, x1=247, span=x1-x0;
+    function mapE(E){ return 175 - (E/Emax)*150; }
+    var lv=document.getElementById('levels'), s='';
+    for(var k=1;k<=6;k++){ var E=k*k/(S.L*S.L), y=mapE(E), on=(k===S.n);
+      s+='<line x1="'+x0+'" y1="'+y.toFixed(1)+'" x2="'+x1+'" y2="'+y.toFixed(1)+'" stroke="'+(on?'#6042a6':'#c9beA0')+'" stroke-width="'+(on?2:1)+'"/>';
+      s+='<text x="'+(x1+4)+'" y="'+(y+3).toFixed(1)+'" font-size="9" fill="'+(on?'#6042a6':'#a99'+'') +'">n='+k+'</text>'; }
+    lv.innerHTML=s;
+    // wavefunction on the current level
+    var yb=mapE(En), amp=Math.min(26, 60/S.L*3), pts='';
+    for(var i=0;i<=120;i++){ var xx=i/120*S.L; var val=Math.sin(S.n*Math.PI*xx/S.L);
+      var sx=x0+(xx/S.L)*span, sy=yb - val*amp; pts+=sx.toFixed(1)+','+sy.toFixed(1)+' '; }
+    document.getElementById('wf14').setAttribute('points',pts);
+  }
+
+  var LATEX={L:'L',n:'n'};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); fit(); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  fit(); update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charged Particle in a Uniform Magnetic Field — Desmos Simulation</title><style>
+  :root{--paper:#FBF6EA;--board:#2F4538;--chalk:#F2EEDC;--accent:#B5793B;--accent-dk:#8A5A24;--ink:#3E3428}
+  body{font-family:Georgia,serif;background:#EFE7D5;color:var(--ink);margin:0}
+  header{background:var(--board);color:var(--chalk);padding:16px 26px}
+  header h1{margin:0;font-size:1.3rem;font-weight:normal}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:3px}
+  header a{color:#D8C9A3}
+  main{max-width:900px;margin:0 auto;padding:20px 26px 60px}
+  .card{background:var(--paper);border:1px solid #D9CDB4;border-radius:12px;padding:16px 20px;margin:16px 0;box-shadow:1px 2px 0 rgba(0,0,0,.05)}
+  h2{font-size:1.05rem;color:var(--accent-dk);margin:4px 0 10px;font-weight:bold}
+  pre{background:var(--board);color:var(--chalk);padding:14px 16px;border-radius:10px;overflow-x:auto;font-size:.95rem;line-height:1.55}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;
+    font-family:inherit;font-size:.95rem;font-weight:bold;cursor:pointer;text-decoration:none;margin:4px 6px 4px 0}
+  .btn.secondary{background:#6E5A3A}
+  .notice{background:#FFF3D6;border-left:5px solid var(--accent);padding:10px 14px;border-radius:6px;font-size:.92rem}
+  ul{line-height:1.6} li{margin:4px 0}
+  .prompt b{color:var(--accent-dk)}
+  footer{max-width:900px;margin:0 auto;padding:0 26px 40px;font-size:.85rem;opacity:.7;font-style:italic}
+</style></head><body>
+<header><h1>Physics 4B · Desmos Simulation 7: Charged Particle in a Uniform Magnetic Field</h1>
+<div class="sub">Companion to the Professor Ahsan tutorials &middot; <a href="index.html">all simulations</a> &middot; <a href="../index.html">course hub</a></div></header>
+<main>
+<!-- ======================================================================
+     PASTE YOUR PUBLISHED DESMOS NOTEBOOK LINK BETWEEN THE QUOTES BELOW.
+     Once set, the button appears automatically. -->
+<script>const PUBLISHED_URL = "https://www.desmos.com/notebook/gxnedvd0wk";</script>
+<div class="card" id="pubcard">
+  <h2>Open the simulation</h2>
+  <div id="pubslot"></div>
+  <a class="btn secondary" href="https://www.desmos.com/notebook" target="_blank" rel="noopener">Open Desmos Notebook editor ▸</a>
+</div>
+<div class="card"><h2>Learning goal</h2><p>Show circular motion of a charged particle in a magnetic field and the dependence of radius on m, v, q, and B.</p>
+<p style="font-size:.9rem;opacity:.8"><b>Suggested window:</b> x-axis: -10 to 10; y-axis: -10 to 10. Use equal axis scaling.</p></div>
+<div class="card"><h2>Paste-ready Desmos expressions</h2>
+<p style="font-size:.9rem">Desmos Notebook is built in the web editor from text, expressions, sliders, and graph items — add a 2D graph from the Notebook sidebar and paste these lines into it, one per line. Create sliders when Desmos offers; press play beside <i>t</i> to animate.</p>
+<button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ex').textContent).then(()=>this.textContent='Copied ✓')">Copy all expressions</button>
+<pre id="ex">m=2
+q_0=1
+s_q=1
+B=1
+v=3
+O=q_0*B/m
+r=m*v/(q_0*B)
+t=0
+X(s)=r*sin(O*s)
+Y(s)=s_q*r*(cos(O*s)-1)
+(X(s),Y(s)){0&lt;=s&lt;=t}
+P=(X(t),Y(t))
+(X(s),Y(s)){0&lt;=s&lt;=2*pi/O}
+F_m=q_0*v*B
+(X(t)+u*0.5*v*cos(O*t),Y(t)-u*0.5*s_q*v*sin(O*t)){0&lt;=u&lt;=1}</pre></div>
+<div class="card"><h2>Sliders</h2><ul><li>t: 0 to 20, step 0.02, animate forward</li><li>m: 0.5 to 10, step 0.5</li><li>q_0: 0.5 to 5, step 0.5</li><li>s_q: -1 to 1, step 2</li><li>B: 0.2 to 5, step 0.1</li><li>v: 0.5 to 8, step 0.1</li></ul></div>
+<div class="card"><h2>Tutorial prompts — Predict · Manipulate · Explain · Calculate · Extend</h2><ul><li class="prompt"><b>Predict:</b> Predict what happens to the radius if the speed is doubled.</li><li class="prompt"><b>Manipulate:</b> Change s_q from +1 to -1 and observe the direction of curvature.</li><li class="prompt"><b>Explain:</b> Explain why the magnetic force changes direction but does no work.</li><li class="prompt"><b>Calculate:</b> For m=2, v=3, q_0=1, B=1 in scaled units, calculate r and compare with the circle.</li><li class="prompt"><b>Extend:</b> Add an electric field and ask what value of E gives a straight path in a velocity selector.</li></ul></div>
+<div class="card"><h2>Building the Notebook, step by step</h2><ol>
+<li>Open the <a href="https://www.desmos.com/notebook" target="_blank" rel="noopener">Desmos Notebook editor</a> (it combines text, expressions, sliders, and graphs; graphs are added and edited through the Notebook sidebar).</li>
+<li>Add the title and learning goal as a text item.</li>
+<li>Add the slider variables as expression items; use Variable Options → Add Slider with the ranges above.</li>
+<li>Add a 2D graph item and paste the expression list into its sidebar.</li>
+<li>Set the graph window to the suggested bounds.</li>
+<li>Add the Predict → Manipulate → Explain → Calculate → Extend prompts as text items.</li>
+<li>Preview, save, and share — then paste the share link into <code>PUBLISHED_URL</code> at the top of this page so the tutorial button goes straight to it.</li></ol>
+<p style="font-size:.88rem"><a href="notebook_build_templates/">Full build template (markdown)</a> is included in this folder.</p></div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+const slot=document.getElementById('pubslot');
+if (PUBLISHED_URL && PUBLISHED_URL.startsWith('http')){
+  slot.innerHTML = '<a class="btn" href="'+PUBLISHED_URL+'" target="_blank" rel="noopener">Open the published Desmos Notebook ▸</a>';
+} else {
+  slot.innerHTML = '<div class="notice">The published Notebook link has not been added yet. Build it with the recipe below, publish from the Desmos editor, then paste the share URL into <code>PUBLISHED_URL</code> at the top of this file.</div>';
+}
+</script>
+</body></html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P-V Diagram and Heat Engine Cycle — Desmos Simulation</title><style>
+  :root{--paper:#FBF6EA;--board:#2F4538;--chalk:#F2EEDC;--accent:#B5793B;--accent-dk:#8A5A24;--ink:#3E3428}
+  body{font-family:Georgia,serif;background:#EFE7D5;color:var(--ink);margin:0}
+  header{background:var(--board);color:var(--chalk);padding:16px 26px}
+  header h1{margin:0;font-size:1.3rem;font-weight:normal}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:3px}
+  header a{color:#D8C9A3}
+  main{max-width:900px;margin:0 auto;padding:20px 26px 60px}
+  .card{background:var(--paper);border:1px solid #D9CDB4;border-radius:12px;padding:16px 20px;margin:16px 0;box-shadow:1px 2px 0 rgba(0,0,0,.05)}
+  h2{font-size:1.05rem;color:var(--accent-dk);margin:4px 0 10px;font-weight:bold}
+  pre{background:var(--board);color:var(--chalk);padding:14px 16px;border-radius:10px;overflow-x:auto;font-size:.95rem;line-height:1.55}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 18px;
+    font-family:inherit;font-size:.95rem;font-weight:bold;cursor:pointer;text-decoration:none;margin:4px 6px 4px 0}
+  .btn.secondary{background:#6E5A3A}
+  .notice{background:#FFF3D6;border-left:5px solid var(--accent);padding:10px 14px;border-radius:6px;font-size:.92rem}
+  ul{line-height:1.6} li{margin:4px 0}
+  .prompt b{color:var(--accent-dk)}
+  footer{max-width:900px;margin:0 auto;padding:0 26px 40px;font-size:.85rem;opacity:.7;font-style:italic}
+</style></head><body>
+<header><h1>Physics 4C · Desmos Simulation 9: P-V Diagram and Heat Engine Cycle</h1>
+<div class="sub">Companion to the Professor Ahsan tutorials &middot; <a href="index.html">all simulations</a> &middot; <a href="../index.html">course hub</a></div></header>
+<main>
+<!-- ======================================================================
+     PASTE YOUR PUBLISHED DESMOS NOTEBOOK LINK BETWEEN THE QUOTES BELOW.
+     Once set, the button appears automatically. -->
+<script>const PUBLISHED_URL = "https://www.desmos.com/notebook/cma5pwil1u";</script>
+<div class="card" id="pubcard">
+  <h2>Open the simulation</h2>
+  <div id="pubslot"></div>
+  <a class="btn secondary" href="https://www.desmos.com/notebook" target="_blank" rel="noopener">Open Desmos Notebook editor ▸</a>
+</div>
+<div class="card"><h2>Learning goal</h2><p>Visualize thermodynamic processes on a P-V diagram and show work as the enclosed area of a clockwise cycle.</p>
+<p style="font-size:.9rem;opacity:.8"><b>Suggested window:</b> x-axis: 0 to 8; y-axis: 0 to 8. Use arbitrary but consistent pressure-volume units.</p></div>
+<div class="card"><h2>Paste-ready Desmos expressions</h2>
+<p style="font-size:.9rem">Desmos Notebook is built in the web editor from text, expressions, sliders, and graph items — add a 2D graph from the Notebook sidebar and paste these lines into it, one per line. Create sliders when Desmos offers; press play beside <i>t</i> to animate.</p>
+<button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('ex').textContent).then(()=>this.textContent='Copied ✓')">Copy all expressions</button>
+<pre id="ex">V_L=2
+V_H=6
+P_L=2
+P_H=5
+A=(V_L,P_H)
+B=(V_H,P_H)
+C=(V_H,P_L)
+D=(V_L,P_L)
+polygon(A,B,C,D)
+W_c=(P_H-P_L)*(V_H-V_L)
+nR=1
+T_H=P_H*V_L/nR
+T_C=P_L*V_H/nR
+P_1(V)=P_H*V_L/V
+P_2(V)=P_L*V_H/V
+P_1(x){V_L&lt;=x&lt;=V_H}
+P_2(x){V_L&lt;=x&lt;=V_H}
+e_C=1-(P_L*V_H)/(P_H*V_L)</pre></div>
+<div class="card"><h2>Sliders</h2><ul><li>V_L: 0.5 to 4, step 0.1</li><li>V_H: 4 to 8, step 0.1</li><li>P_L: 0.5 to 4, step 0.1</li><li>P_H: 4 to 8, step 0.1</li></ul></div>
+<div class="card"><h2>Tutorial prompts — Predict · Manipulate · Explain · Calculate · Extend</h2><ul><li class="prompt"><b>Predict:</b> Predict how the work changes if the rectangle becomes wider or taller.</li><li class="prompt"><b>Manipulate:</b> Change V_H and P_H and watch W_c.</li><li class="prompt"><b>Explain:</b> Explain why clockwise cycles represent positive net work done by the gas.</li><li class="prompt"><b>Calculate:</b> For V_L=2, V_H=6, P_L=2, and P_H=5, calculate the net work.</li><li class="prompt"><b>Extend:</b> Add an adiabatic curve P=P_0(V_0/V)^gamma and compare it with the isothermal curve.</li></ul></div>
+<div class="card"><h2>Building the Notebook, step by step</h2><ol>
+<li>Open the <a href="https://www.desmos.com/notebook" target="_blank" rel="noopener">Desmos Notebook editor</a> (it combines text, expressions, sliders, and graphs; graphs are added and edited through the Notebook sidebar).</li>
+<li>Add the title and learning goal as a text item.</li>
+<li>Add the slider variables as expression items; use Variable Options → Add Slider with the ranges above.</li>
+<li>Add a 2D graph item and paste the expression list into its sidebar.</li>
+<li>Set the graph window to the suggested bounds.</li>
+<li>Add the Predict → Manipulate → Explain → Calculate → Extend prompts as text items.</li>
+<li>Preview, save, and share — then paste the share link into <code>PUBLISHED_URL</code> at the top of this page so the tutorial button goes straight to it.</li></ol>
+<p style="font-size:.88rem"><a href="notebook_build_templates/">Full build template (markdown)</a> is included in this folder.</p></div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+const slot=document.getElementById('pubslot');
+if (PUBLISHED_URL && PUBLISHED_URL.startsWith('http')){
+  slot.innerHTML = '<a class="btn" href="'+PUBLISHED_URL+'" target="_blank" rel="noopener">Open the published Desmos Notebook ▸</a>';
+} else {
+  slot.innerHTML = '<div class="notice">The published Notebook link has not been added yet. Build it with the recipe below, publish from the Desmos editor, then paste the share URL into <code>PUBLISHED_URL</code> at the top of this file.</div>';
+}
+</script>
+</body></html>

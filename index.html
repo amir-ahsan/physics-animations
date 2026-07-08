@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics with Professor Ahsan — Animated Worked Examples</title>
+<style>
+  :root{--board:#2F4538;--chalk:#F2EEDC;--accent:#B5793B;--accent-dk:#8A5A24;--ink:#2B2317;
+        --green:#2E7D4F;--blue:#2E6DA4;--red:#C0392B}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:28px 30px;display:flex;align-items:center;gap:24px}
+  header svg{flex:0 0 auto}
+  header h1{margin:0;font-size:1.7rem;font-weight:normal}
+  header p{margin:6px 0 0;opacity:.8;font-size:.95rem;max-width:640px}
+  main{max-width:1080px;margin:0 auto;padding:26px 22px 60px}
+  h2{font-weight:normal;border-bottom:2px solid var(--accent);padding-bottom:6px;margin:34px 0 16px;font-size:1.25rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  a.card{display:block;background:#FAF6EE;border:1px solid #D9CDB4;border-radius:12px;padding:16px 18px;
+    text-decoration:none;color:var(--ink);box-shadow:1px 2px 0 rgba(0,0,0,.06);transition:.15s}
+  a.card:hover{transform:translateY(-2px);box-shadow:2px 5px 10px rgba(0,0,0,.12);border-color:var(--accent)}
+  .card .num{font-size:.75rem;letter-spacing:1px;color:var(--accent-dk);text-transform:uppercase}
+  .card h3{margin:4px 0 6px;font-size:1.05rem;font-weight:normal}
+  .card .meta{font-size:.82rem;color:#7A6E52}
+  .card .meta span{display:inline-block;margin-right:8px}
+  .soon{opacity:.55}
+  .soon .card,.soon a.card:hover{transform:none;box-shadow:1px 2px 0 rgba(0,0,0,.06);border-color:#D9CDB4;cursor:default}
+  .badge{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:9px;color:#fff;background:var(--green);
+    vertical-align:middle;margin-left:8px}
+  .badge.soon-b{background:#9A8C6B}
+  footer{text-align:center;font-size:.85rem;color:#8A7D60;padding:24px}
+</style>
+</head>
+<body>
+
+<header>
+  <!-- mini Professor Ahsan -->
+  <svg width="86" height="96" viewBox="30 20 160 190" aria-hidden="true">
+    <g transform="translate(22 0) scale(0.8 1)">
+    <g transform="translate(0 16)">
+    <g fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+      <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+      <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+      <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/><circle cx="168" cy="98" r="20"/>
+    </g>
+    <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/><ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+    <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+    <g stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+      <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+    </g>
+    <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/><ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+    <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/><circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+    <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+      <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+      <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+      <path d="M108,100 q2,-3 4,0" fill="none"/><path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+    </g>
+    <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+    <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+      <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+      <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+    </g>
+    <path d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+    </g>
+    <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+    <g transform="translate(22 0) scale(0.8 1)">
+    <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+    <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+    <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+    </g>
+    </g>
+  </svg>
+  <div>
+    <h1>Physics with Professor Ahsan</h1>
+    <p>Animated worked examples for Physics 4A, 4B, and 4C. Each tutorial is an interactive lecture:
+       press Play and the professor talks you through every step — sketches, algebra, and the check.
+       Always the check.</p>
+  </div>
+</header>
+
+<main>
+  <h2>Physics 4A &mdash; Mechanics <span class="badge">complete — all 14 tutorials</span></h2>
+  <div class="grid">
+    <a class="card" href="Physics 4A/Tutorial01_Vectors.html">
+      <div class="num">Tutorial 1</div><h3>Vectors</h3>
+      <div class="meta"><span>5 examples</span><span>components · dot &amp; cross products · 3-D geometry</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial02_Motion1D.html">
+      <div class="num">Tutorial 2</div><h3>Motion in a Straight Line</h3>
+      <div class="meta"><span>5 examples</span><span>braking · v–t graphs · calculus of motion · free fall</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial03_Motion2D3D.html">
+      <div class="num">Tutorial 3</div><h3>Motion in 2 and 3 Dimensions</h3>
+      <div class="meta"><span>5 examples</span><span>projectiles · relative velocity · circular motion</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial04_NewtonsLaws.html">
+      <div class="num">Tutorial 4</div><h3>Newton&rsquo;s Laws of Motion</h3>
+      <div class="meta"><span>5 examples</span><span>ΣF = ma · Atwood&rsquo;s machine · elevators · equilibrium</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial05_ApplicationsNewton.html">
+      <div class="num">Tutorial 5</div><h3>Applications of Newton&rsquo;s Laws</h3>
+      <div class="meta"><span>5 examples</span><span>friction · inclines · curves &amp; banking · drag</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial06_WorkKineticEnergy.html">
+      <div class="num">Tutorial 6</div><h3>Work and Kinetic Energy</h3>
+      <div class="meta"><span>5 examples</span><span>work–energy theorem · varying forces · springs · power</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial07_EnergyConservation.html">
+      <div class="num">Tutorial 7</div><h3>Potential Energy &amp; Conservation of Energy</h3>
+      <div class="meta"><span>5 examples</span><span>energy conservation · springs · friction losses · loop-the-loop</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial08_MomentumCOM.html">
+      <div class="num">Tutorial 8</div><h3>Linear Momentum &amp; Center of Mass</h3>
+      <div class="meta"><span>5 examples</span><span>recoil · impulse · ballistic pendulum · elastic &amp; 2-D collisions</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial09_Rotation.html">
+      <div class="num">Tutorial 9</div><h3>Fixed-Axis Rotation</h3>
+      <div class="meta"><span>5 examples</span><span>ω &amp; α · moment of inertia · torque · rolling race</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial10_AngularMomentum.html">
+      <div class="num">Tutorial 10</div><h3>Angular Momentum</h3>
+      <div class="meta"><span>5 examples</span><span>the skater · conservation · rolling · rotational collisions</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial11_StaticEquilibrium.html">
+      <div class="num">Tutorial 11</div><h3>Static Equilibrium &amp; Elasticity</h3>
+      <div class="meta"><span>5 examples</span><span>seesaw · beams · the ladder · stress &amp; strain · strut</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial12_Gravitation.html">
+      <div class="num">Tutorial 12</div><h3>Gravitation</h3>
+      <div class="meta"><span>5 examples</span><span>g on Mars · orbits · geosynchronous · escape speed</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial13_FluidMechanics.html">
+      <div class="num">Tutorial 13</div><h3>Fluid Mechanics</h3>
+      <div class="meta"><span>5 examples</span><span>Pascal · pressure &amp; depth · Archimedes · Bernoulli · Torricelli</span></div></a>
+    <a class="card" href="Physics 4A/Tutorial14_Oscillations.html">
+      <div class="num">Tutorial 14</div><h3>Oscillations</h3>
+      <div class="meta"><span>5 examples</span><span>pendulums · SHM · phase · physical pendulum · damping</span></div></a>
+  </div>
+
+
+  <h2>Physics 4B &mdash; Electricity &amp; Magnetism <span class="badge">complete — all 12 tutorials</span></h2>
+  <div class="grid">
+    <a class="card" href="Physics 4B/Tutorial01_ChargesFields.html">
+      <div class="num">Tutorial 1</div><h3>Electric Charges &amp; Fields</h3>
+      <div class="meta"><span>5 examples</span><span>Coulomb&rsquo;s law · superposition · charged pendulum · ring &amp; rod integrals</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial02_GaussLaw.html">
+      <div class="num">Tutorial 2</div><h3>Gauss&rsquo;s Law</h3>
+      <div class="meta"><span>5 examples</span><span>flux · charged spheres &amp; cylinders · conductors · nonuniform ρ</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial03_ElectricPotential.html">
+      <div class="num">Tutorial 3</div><h3>Electric Potential</h3>
+      <div class="meta"><span>5 examples</span><span>energy &amp; eV · scalar superposition · ring &amp; rod V · E = −∇V</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial04_Capacitance.html">
+      <div class="num">Tutorial 4</div><h3>Capacitance</h3>
+      <div class="meta"><span>5 examples</span><span>parallel plates · networks · dielectrics · coaxial &amp; spherical C</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial05_CurrentResistance.html">
+      <div class="num">Tutorial 5</div><h3>Current &amp; Resistance</h3>
+      <div class="meta"><span>5 examples</span><span>drift velocity · temperature effects · cone resistor · power &amp; energy</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial06_DCCircuits.html">
+      <div class="num">Tutorial 6</div><h3>DC Circuits</h3>
+      <div class="meta"><span>5 examples</span><span>terminal voltage · reduction · Kirchhoff · RC transients</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial07_MagneticForces.html">
+      <div class="num">Tutorial 7</div><h3>Magnetic Forces &amp; Fields</h3>
+      <div class="meta"><span>5 examples</span><span>qv×B · circular orbits · curved wires · dipoles · Hall effect</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial08_SourcesMagneticFields.html">
+      <div class="num">Tutorial 8</div><h3>Sources of Magnetic Fields</h3>
+      <div class="meta"><span>5 examples</span><span>parallel wires · Biot–Savart · solenoid · coaxial B(r)</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial09_Induction.html">
+      <div class="num">Tutorial 9</div><h3>Electromagnetic Induction</h3>
+      <div class="meta"><span>5 examples</span><span>Faraday &amp; Lenz · motional emf · generators · induced E</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial10_Inductance.html">
+      <div class="num">Tutorial 10</div><h3>Inductance</h3>
+      <div class="meta"><span>5 examples</span><span>back emf · RL transients · the inductive spike · LC oscillations</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial11_ACCircuits.html">
+      <div class="num">Tutorial 11</div><h3>AC Circuits</h3>
+      <div class="meta"><span>5 examples</span><span>rms · reactance · RLC phasors · resonance · transformers</span></div></a>
+    <a class="card" href="Physics 4B/Tutorial12_EMWaves.html">
+      <div class="num">Tutorial 12</div><h3>Electromagnetic Waves</h3>
+      <div class="meta"><span>5 examples</span><span>wave anatomy · displacement current · intensity · radiation pressure</span></div></a>
+  </div>
+
+  <h2>Physics 4C &mdash; Thermo, Waves, Optics &amp; Modern <span class="badge">complete — all 14 tutorials</span></h2>
+  <div class="grid">
+    <a class="card" href="Physics 4C/Tutorial01_TemperatureHeat.html">
+      <div class="num">Tutorial 1</div><h3>Temperature &amp; Heat</h3>
+      <div class="meta"><span>5 examples</span><span>expansion &amp; stress · calorimetry · conduction · Newton&rsquo;s cooling</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial02_KineticTheory.html">
+      <div class="num">Tutorial 2</div><h3>Kinetic Theory of Gases</h3>
+      <div class="meta"><span>5 examples</span><span>ideal gas law · rms speeds · mean free path · Maxwell&ndash;Boltzmann</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial03_FirstLaw.html">
+      <div class="num">Tutorial 3</div><h3>First Law of Thermodynamics</h3>
+      <div class="meta"><span>5 examples</span><span>pV work · isothermal &amp; adiabatic · cycles · the diesel · polytropes</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial04_SecondLaw.html">
+      <div class="num">Tutorial 4</div><h3>Second Law of Thermodynamics</h3>
+      <div class="meta"><span>6 examples</span><span>engines &amp; COPs · entropy of mixing · Carnot derived · free expansion · Otto cycle</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial05_Waves.html">
+      <div class="num">Tutorial 5</div><h3>Waves</h3>
+      <div class="meta"><span>5 examples</span><span>wave functions · string harmonics · wave power · the wave equation derived</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial06_Sound.html">
+      <div class="num">Tutorial 6</div><h3>Sound</h3>
+      <div class="meta"><span>6 examples</span><span>speed of sound · decibels · pipes · Doppler derived · bat echolocation</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial07_NatureOfLight.html">
+      <div class="num">Tutorial 7</div><h3>The Nature of Light</h3>
+      <div class="meta"><span>6 examples</span><span>laser fields · Snell &amp; TIR · polarizers · Brewster derived · solar sail</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial08_GeometricOptics.html">
+      <div class="num">Tutorial 8</div><h3>Geometric Optics &amp; Image Formation</h3>
+      <div class="meta"><span>6 examples</span><span>mirrors &amp; lenses · lensmaker · apparent depth · two-lens systems · telescope</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial09_Interference.html">
+      <div class="num">Tutorial 9</div><h3>Interference</h3>
+      <div class="meta"><span>6 examples</span><span>double slit · phasor intensity · thin films · the air wedge · Michelson</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial10_Diffraction.html">
+      <div class="num">Tutorial 10</div><h3>Diffraction</h3>
+      <div class="meta"><span>6 examples</span><span>single slit derived · gratings · resolving power · Rayleigh · Bragg</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial11_SpecialRelativity.html">
+      <div class="num">Tutorial 11</div><h3>Special Relativity</h3>
+      <div class="meta"><span>6 examples</span><span>the muon · length contraction · velocity addition derived · E² = (pc)² + (mc²)² · the twins by radio</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial12_PhotonsMatterWaves.html">
+      <div class="num">Tutorial 12</div><h3>Photons &amp; Matter Waves</h3>
+      <div class="meta"><span>6 examples</span><span>photon arithmetic · photoelectric effect · measuring h · Compton derived · de Broglie · uncertainty as veto</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial13_QuantumMechanics.html">
+      <div class="num">Tutorial 13</div><h3>Quantum Mechanics</h3>
+      <div class="meta"><span>6 examples</span><span>particle in a box · Schrödinger solved · Born’s rule · Heisenberg audit · the quantum oscillator · tunneling &amp; the STM</span></div></a>
+    <a class="card" href="Physics 4C/Tutorial14_NuclearPhysics.html">
+      <div class="num">Tutorial 14</div><h3>Nuclear Physics</h3>
+      <div class="meta"><span>6 examples</span><span>nuclear density · binding energy of iron · the decay law &amp; carbon dating · alpha recoil · fission bookkeeping · fusion, tokamak to Sun</span></div></a>
+  </div>
+
+
+  <h2>Interactive Simulations <span class="badge">14 simulations</span></h2>
+  <div class="grid">
+    <a class="card" href="Simulations/index.html">
+      <div class="num">Companion Lab</div><h3>Interactive Simulations</h3>
+      <div class="meta"><span>4A · 4B · 4C</span><span>drag the sliders and watch the physics respond — each has a labelled graph, a live diagram of the system, and guiding questions: kinematics · projectiles · inclines · fields · RC · flux · p-V cycles · waves · slits · lenses · photoelectric · quantum well</span></div></a>
+  </div>
+
+</main>
+
+<footer>Professor Ahsan insists you read the OpenStax text and then review the tutorial (read the tutorial PDF and watch the animation as a companion if you&rsquo;re up for the wit &mdash; which is optional) and then attempt the problem sets yourself; resist looking up solutions, for your own benefit. He also knows you won&rsquo;t.</footer>
+</body>
+</html>

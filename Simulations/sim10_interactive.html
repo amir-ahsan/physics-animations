@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveling &amp; Standing Waves — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 10 — Traveling &amp; Standing Waves</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A <b>traveling wave</b> <span class="eq">y = A sin(2&#960;(x/&#955; &#8722; ft))</span> moves steadily at speed <span class="eq">v = f&#955;</span>.
+    A <b>standing wave</b> is what you get when two such waves travel in opposite directions on a string fixed at both ends: the pattern
+    stays put, with <b>nodes</b> that never move and <b>antinodes</b> that oscillate. Only certain harmonics <b>n</b> fit. Press <b>Play</b>
+    and compare how the crests of one travel while the nodes of the other stay fixed.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The vibrating string (standing wave, harmonic n)</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="150" viewBox="0 0 330 150">
+            <line x1="20" y1="75" x2="310" y2="75" stroke="#e3d7b8" stroke-width="1"/>
+            <polyline id="rope" points="" fill="none" stroke="var(--purple)" stroke-width="3"/>
+            <g id="nodes" fill="var(--red)"></g>
+            <rect x="14" y="55" width="8" height="40" fill="#8a7c58"/>
+            <rect x="308" y="55" width="8" height="40" fill="#8a7c58"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">wave speed v = f&#955;</span> = <span class="vb" id="rv">–</span></div>
+            <div class="r c-purple"><span class="k">harmonic f&#8345;</span> = <span class="vb" id="rfn">–</span></div>
+            <div class="r"><span class="k">node spacing</span> = L/n = <span class="vb" id="rns">–</span></div>
+            <div class="r" style="opacity:.85"><span class="k">nodes</span> = <span id="rnn">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Red dots mark the nodes (always still). The string bulges between them at the antinodes.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Traveling wave (top) &amp; standing wave (bottom)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Black = traveling wave (its crests move as you play); purple = standing wave (its nodes stay fixed). Red dots = nodes.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:#111"></span><span><b>Traveling wave</b> — moves right at speed v = f&#955;.</span></li>
+          <li><span class="sw" style="border-color:var(--purple)"></span><span><b>Standing wave</b> — fixed pattern with n loops.</span></li>
+          <li><span class="dot" style="background:var(--red)"></span><span><b>Nodes</b> — points that never move.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="10" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="A" data-min="0.1" data-max="2" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Amplitude A</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="l" data-min="1" data-max="8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Wavelength &#955;</label><span class="val"></span></div><input type="range"><div class="hint">Traveling-wave wavelength.</div>
+          </div>
+          <div class="ctl" data-var="f" data-min="0.1" data-max="2" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Frequency f</label><span class="val"></span></div><input type="range"><div class="hint">Traveling-wave frequency (v = f&#955;).</div>
+          </div>
+          <div class="ctl" data-var="L" data-min="4" data-max="12" data-step="0.5" data-fixed="1">
+            <div class="row"><label>String length L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="1" data-max="6" data-step="1" data-fixed="0">
+            <div class="row"><label>Harmonic n</label><span class="val"></span></div><input type="range"><div class="hint">How many loops fit on the string.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If frequency increases while wavelength is held fixed, what happens to the wave speed?</li>
+      <li><b>Manipulate</b><span class="tag">t</span> Animate time and compare the moving crests of the traveling wave with the fixed nodes of the standing wave.</li>
+      <li><b>Explain</b><span class="tag">nodes</span> Why do the nodes of the standing wave stay perfectly still?</li>
+      <li><b>Calculate</b><span class="tag">L, n</span> For L = 10 and n = 2, calculate the positions of the nodes, then check the red dots.</li>
+      <li><b>Extend</b><span class="tag">n</span> Which harmonics are allowed for a string fixed at both ends, and which are not?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'position x (m)', yAxisLabel:'displacement y (arb. units)'});
+  calc.setExpressions([
+    {id:'A',latex:'A=1'}, {id:'l',latex:'l=4'}, {id:'f',latex:'f=0.5'}, {id:'t',latex:'t=0'},
+    {id:'L',latex:'L=10'}, {id:'n',latex:'n=2'}, {id:'vs',latex:'v_s=4'},
+    {id:'fn',latex:'f_n=\\frac{n v_s}{2L}'}, {id:'Ot',latex:'O_t=2.6'},
+    {id:'Ytf',latex:'Y_t(x)=A\\sin(2\\pi(\\frac{x}{l}-f t))', hidden:true, secret:true},
+    {id:'Ysf',latex:'Y_s(x)=2A\\sin(\\frac{n\\pi x}{L})\\cos(2\\pi f_n t)', hidden:true, secret:true},
+    {id:'cT',latex:'Y_t(x)+O_t\\left\\{0\\le x\\le12\\right\\}', color:'#111111', lineWidth:2.5},
+    {id:'cS',latex:'Y_s(x)-O_t\\left\\{0\\le x\\le L\\right\\}', color:'#6042a6', lineWidth:2.5},
+    {id:'Nn',latex:'M=[0,1,2,3,4,5,6]', hidden:true, secret:true},
+    {id:'nodes',latex:'(\\frac{M L}{n},-O_t)\\left\\{0\\le M\\le n\\right\\}', color:'#c0392b', pointSize:9},
+    {id:'axt',latex:'y=O_t\\left\\{0\\le x\\le12\\right\\}', color:'#ddd3b8', lineWidth:1},
+    {id:'axs',latex:'y=-O_t\\left\\{0\\le x\\le L\\right\\}', color:'#ddd3b8', lineWidth:1}
+  ]);
+  calc.setMathBounds({left:-0.5, right:12.5, bottom:-6, top:6});
+
+  var S={A:1,l:4,f:0.5,t:0,L:10,n:2,vs:4};
+  function update(){
+    var v=S.f*S.l, fn=S.n*S.vs/(2*S.L);
+    document.getElementById('rv').textContent=v.toFixed(2);
+    document.getElementById('rfn').textContent=fn.toFixed(3);
+    document.getElementById('rns').textContent=(S.L/S.n).toFixed(2);
+    // node x positions
+    var xs=[]; for(var k=0;k<=S.n;k++) xs.push((k*S.L/S.n).toFixed(2)); document.getElementById('rnn').textContent=xs.join(', ');
+    // schematic rope
+    var x0=22, x1=308, span=x1-x0, amp=Math.min(48, 20*S.A);
+    var pts='', cosf=Math.cos(2*Math.PI*fn*S.t);
+    for(var i=0;i<=100;i++){ var xx=i/100*S.L; var y=2*S.A*Math.sin(S.n*Math.PI*xx/S.L)*cosf;
+      var sx=x0+ (xx/S.L)*span, sy=75 - (y/ (2*S.A||1))*amp; pts+=sx.toFixed(1)+','+sy.toFixed(1)+' '; }
+    document.getElementById('rope').setAttribute('points',pts);
+    var g=document.getElementById('nodes'), ns='';
+    for(var k2=0;k2<=S.n;k2++){ var sx2=x0+(k2/S.n)*span; ns+='<circle cx="'+sx2.toFixed(1)+'" cy="75" r="4"/>'; }
+    g.innerHTML=ns;
+  }
+
+  var LATEX={A:'A',l:'l',f:'f',t:'t',L:'L',n:'n'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  update();
+
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.t, val=+s.input.value+0.05; if(val>10)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,40); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

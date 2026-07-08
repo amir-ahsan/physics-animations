@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1D Kinematics — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 1 — 1D Kinematics Graph Synchronizer</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A particle moves in one dimension with constant acceleration. Its position, velocity, and acceleration obey
+    <span class="eq">x(t) = x&#7522; + v&#7522;t + &#189;at&#178;</span>, <span class="eq">v(t) = v&#7522; + at</span>, and <span class="eq">a = constant</span>.
+    The three stacked graphs (position on top, velocity in the middle, acceleration at the bottom) share the same time axis, and the schematic shows the actual particle on its track. Watch how the <b>slope</b> of one graph becomes the <b>value</b> of the next.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The particle on its track</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="150" viewBox="0 0 330 150">
+            <line x1="20" y1="70" x2="315" y2="70" stroke="#b8a983" stroke-width="2"/>
+            <g id="ticks" stroke="#cbbd97" stroke-width="1"></g>
+            <text x="20" y="98" font-size="11" fill="#8a7c58">position x (m)</text>
+            <circle id="pdot" cx="167" cy="70" r="8" fill="var(--blue)"/>
+            <line id="varr" x1="167" y1="52" x2="200" y2="52" stroke="var(--green)" stroke-width="3" marker-end="url(#kah)"/>
+            <text x="24" y="46" font-size="11" fill="var(--green)">v</text>
+            <line id="aarr" x1="167" y1="118" x2="190" y2="118" stroke="var(--red)" stroke-width="3" marker-end="url(#kar)"/>
+            <text x="24" y="124" font-size="11" fill="var(--red)">a</text>
+            <defs>
+              <marker id="kah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="kar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">x(t)</span> = <span class="vb" id="rx">–</span> m</div>
+            <div class="r c-green"><span class="k">v(t)</span> = <span class="vb" id="rv">–</span> m/s</div>
+            <div class="r c-red"><span class="k">a</span> = <span class="vb" id="ra">–</span> m/s&#178;</div>
+            <div class="r" id="rstopwrap" style="opacity:.85">turns around at <span class="k">t</span> = <span id="rstop">–</span> s</div>
+          </div>
+        </div>
+        <div class="cap">Green arrow = velocity (points the way it moves, length ∝ speed). Red arrow = acceleration.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Position, velocity &amp; acceleration vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Top band = position, middle = velocity, bottom = acceleration (the lower two are shifted down onto their own baselines). The dots mark the present instant.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Position</b> x(t) — a parabola for constant acceleration.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Velocity</b> v(t) — a straight line; its slope is the acceleration.</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Acceleration</b> a — a flat line (constant).</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="10" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"><div class="hint">Sweeps the dots and the particle.</div>
+          </div>
+          <div class="ctl" data-var="xi" data-min="-10" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Initial position x&#7522;</label><span class="val"></span></div><input type="range"><div class="hint">Where it starts.</div>
+          </div>
+          <div class="ctl" data-var="vi" data-min="-10" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Initial velocity v&#7522;</label><span class="val"></span></div><input type="range"><div class="hint">How fast, and which way, at t = 0.</div>
+          </div>
+          <div class="ctl" data-var="a" data-min="-5" data-max="5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Acceleration a</label><span class="val"></span></div><input type="range"><div class="hint">Opposite sign to v&#7522; means it slows, stops, reverses.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> With v&#7522; positive and a negative, will the particle speed up, slow down, reverse, or keep going one way?</li>
+      <li><b>Manipulate</b><span class="tag">a</span> Flip a from positive to negative while holding v&#7522; fixed. Watch the velocity line and the particle.</li>
+      <li><b>Explain</b><span class="tag">the three bands</span> Why does the slope of x(t) equal v(t), and the slope of v(t) equal a?</li>
+      <li><b>Calculate</b><span class="tag">v&#7522;, a</span> For v&#7522; = 4 m/s and a = &#8722;0.6 m/s&#178;, find the time the particle momentarily stops, and check it against the "turns around" readout.</li>
+      <li><b>Extend</b><span class="tag">x&#7522;, v&#7522;, a</span> Choose values so the object returns to its starting point exactly at t = 8 s.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'time t (s)', yAxisLabel:''});  // three quantities stacked → each band is labelled on-graph
+  var Ov=-18, Oa=-32;
+  calc.setExpressions([
+    {id:'xi',latex:'x_i=0'}, {id:'vi',latex:'v_i=4'}, {id:'a',latex:'a=-0.6'},
+    {id:'t',latex:'t=0'}, {id:'T',latex:'T=10'},
+    {id:'Ov',latex:'O_v='+Ov}, {id:'Oa',latex:'O_a='+Oa},
+    {id:'Xf',latex:'X(s)=x_i+v_i s+0.5a s^2', hidden:true, secret:true},
+    {id:'Vf',latex:'V(s)=v_i+a s', hidden:true, secret:true},
+    {id:'cX',latex:'X(x)\\left\\{0\\le x\\le T\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cV',latex:'(V(x)+O_v)\\left\\{0\\le x\\le T\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'cA',latex:'(a+O_a)\\left\\{0\\le x\\le T\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'rv',latex:'y=O_v\\left\\{-0.5\\le x\\le10.5\\right\\}', color:'#9a9a9a', lineStyle:Desmos.Styles.DASHED, lineWidth:1.3},
+    {id:'ra',latex:'y=O_a\\left\\{-0.5\\le x\\le10.5\\right\\}', color:'#9a9a9a', lineStyle:Desmos.Styles.DASHED, lineWidth:1.3},
+    {id:'r0',latex:'y=0\\left\\{-0.5\\le x\\le10.5\\right\\}', color:'#c9beA0', lineStyle:Desmos.Styles.DASHED, lineWidth:1.1},
+    {id:'dX',latex:'(t,X(t))', color:'#2f6fb0', showLabel:true, label:'x', labelSize:'small'},
+    {id:'dV',latex:'(t,V(t)+O_v)', color:'#2e8b57', showLabel:true, label:'v', labelSize:'small'},
+    {id:'dA',latex:'(t,a+O_a)', color:'#c0392b', showLabel:true, label:'a', labelSize:'small'},
+    // static band labels (each stacked band carries its own quantity + units)
+    {id:'lblX',latex:'(-0.6,10)', color:'#2f6fb0', showLabel:true, label:'position x (m)', labelSize:'small', pointSize:5},
+    {id:'lblV',latex:'(-0.6,O_v)', color:'#2e8b57', showLabel:true, label:'velocity v (m/s)', labelSize:'small', pointSize:5},
+    {id:'lblA',latex:'(-0.6,O_a)', color:'#c0392b', showLabel:true, label:'accel a (m/s²)', labelSize:'small', pointSize:5}
+  ]);
+  calc.setMathBounds({left:-1, right:11, bottom:-40, top:22});
+
+  // ticks on the schematic track (position -12 .. 14)
+  var pmin=-12, pmax=14, sx0=25, sx1=310;
+  function mapx(p){ return sx0 + (p-pmin)/(pmax-pmin)*(sx1-sx0); }
+  (function(){
+    var g=document.getElementById('ticks'), s='';
+    for(var p=-10;p<=14;p+=2){ var x=mapx(p); s+='<line x1="'+x+'" y1="66" x2="'+x+'" y2="74"/>'; }
+    g.innerHTML=s;
+  })();
+
+  var S={xi:0,vi:4,a:-0.6,t:0};
+  function clamp(p){ return Math.max(pmin,Math.min(pmax,p)); }
+  function update(){
+    var x=S.xi+S.vi*S.t+0.5*S.a*S.t*S.t, v=S.vi+S.a*S.t;
+    document.getElementById('rx').textContent=x.toFixed(1);
+    document.getElementById('rv').textContent=v.toFixed(1);
+    document.getElementById('ra').textContent=S.a.toFixed(1);
+    var stopw=document.getElementById('rstopwrap');
+    if((S.vi>0&&S.a<0)||(S.vi<0&&S.a>0)){ stopw.style.display=''; document.getElementById('rstop').textContent=(-S.vi/S.a).toFixed(2); }
+    else stopw.style.display='none';
+    // schematic
+    var sx=mapx(clamp(x));
+    document.getElementById('pdot').setAttribute('cx',sx.toFixed(1));
+    var va=document.getElementById('varr'), vlen=Math.max(-90,Math.min(90,v*7));
+    va.setAttribute('x1',sx); va.setAttribute('x2',(sx+vlen).toFixed(1));
+    va.setAttribute('opacity', Math.abs(v)<0.05?0:1);
+    var aa=document.getElementById('aarr'), alen=Math.max(-70,Math.min(70,S.a*11));
+    aa.setAttribute('x1',sx); aa.setAttribute('x2',(sx+alen).toFixed(1));
+    aa.setAttribute('opacity', Math.abs(S.a)<0.02?0:1);
+  }
+
+  var LATEX={xi:'x_i',vi:'v_i',a:'a',t:'t'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val');
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
+    var fx=+c.dataset.fixed; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); update();
+    });
+    out.textContent=S[v].toFixed(fx);
+  });
+  update();
+
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.t, val=+s.input.value+0.08; if(val>10)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,45); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

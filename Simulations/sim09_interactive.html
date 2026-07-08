@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P–V Diagram &amp; Heat Engine — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 9 — P–V Diagram &amp; Heat Engine Cycle</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A gas is taken around a closed rectangular cycle on a pressure&#8211;volume diagram. The work done <em>by</em> the gas in one loop
+    is the <b>area enclosed</b>, <span class="eq">W = (P&#8259; &#8722; P&#8343;)(V&#8259; &#8722; V&#8343;)</span>, and a <b>clockwise</b> loop does positive net work.
+    Walk the piston around the cycle (A&#8594;B&#8594;C&#8594;D&#8594;A) and watch the state point trace the rectangle while the piston expands and compresses.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The gas in a piston</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="200" viewBox="0 0 300 200">
+            <!-- cylinder -->
+            <rect x="70" y="20" width="90" height="160" fill="#f4eeda" stroke="#8a7c58" stroke-width="2"/>
+            <rect id="gas" x="72" y="120" width="86" height="58" fill="#cfe2d6" stroke="none"/>
+            <rect id="piston" x="66" y="112" width="98" height="10" rx="2" fill="#8a6f42"/>
+            <line x1="115" y1="112" x2="115" y2="86" stroke="#8a6f42" stroke-width="4"/>
+            <text x="96" y="196" font-size="10" fill="#6b5a3a">gas</text>
+            <!-- pressure gauge bar -->
+            <rect x="200" y="40" width="20" height="140" fill="#f4eeda" stroke="#8a7c58"/>
+            <rect id="pbar" x="200" y="90" width="20" height="90" fill="var(--red)" opacity="0.8"/>
+            <text x="196" y="196" font-size="10" fill="var(--red)">P</text>
+            <text id="statelab" x="240" y="60" font-size="15" fill="var(--accent-dk)" font-weight="bold">A</text>
+            <text x="238" y="80" font-size="10" fill="#6b5a3a">state</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">net work / cycle</span> = <span class="vb" id="rW">–</span></div>
+            <div class="r" style="opacity:.9"><span id="rproc">–</span></div>
+            <div class="r"><span class="k">volume V</span> = <span class="vb" id="rV">–</span></div>
+            <div class="r c-red"><span class="k">pressure P</span> = <span class="vb" id="rP">–</span></div>
+            <div class="r" style="opacity:.85"><span class="k">T &#8733; PV</span> = <span id="rT">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The piston height shows the volume; the red bar shows the pressure. Follow them around A&#8594;B&#8594;C&#8594;D.</div>
+      </div>
+
+      <div class="panel">
+        <h3>The cycle on a P–V diagram</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Shaded rectangle = the cycle; its area is the net work. The thick highlighted edge is the process the gas is on right now; the dot is the current state.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Cycle</b> A&#8594;B&#8594;C&#8594;D — the enclosed area is the net work.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Isobars</b> (horizontal edges): work W = P·ΔV — positive on the top, negative on the bottom.</span></li>
+          <li><span class="sw" style="border-color:#9a9a9a"></span><span><b>Isochors</b> (vertical edges): volume fixed, so <b>W = 0</b>.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Run cycle</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="ph" data-min="0" data-max="4" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Position around cycle</label><span class="val"></span></div><input type="range"><div class="hint">0=A, 1=B, 2=C, 3=D, 4=back to A.</div>
+          </div>
+          <div class="ctl" data-var="VL" data-min="0.5" data-max="4" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Low volume V&#8343;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="VH" data-min="4" data-max="8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>High volume V&#8259;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="PL" data-min="0.5" data-max="4" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Low pressure P&#8343;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="PH" data-min="4" data-max="8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>High pressure P&#8259;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the rectangle becomes wider or taller, how does the net work change?</li>
+      <li><b>Manipulate</b><span class="tag">V&#8259;, P&#8259;</span> Change the high volume and high pressure and watch the net-work readout.</li>
+      <li><b>Explain</b><span class="tag">direction</span> Why does a clockwise cycle represent positive net work done <em>by</em> the gas?</li>
+      <li><b>Calculate</b><span class="tag">corners</span> For V&#8343;=2, V&#8259;=6, P&#8343;=2, P&#8259;=5, calculate the net work (area enclosed).</li>
+      <li><b>Extend</b><span class="tag">segments</span> Add up the work on all four edges (P·ΔV on the two isobars, 0 on the two isochors) and confirm it equals the enclosed area.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'volume V (arb. units)', yAxisLabel:'pressure P (arb. units)'});
+  calc.setExpressions([
+    {id:'VL',latex:'V_L=2'}, {id:'VH',latex:'V_H=6'}, {id:'PL',latex:'P_L=2'}, {id:'PH',latex:'P_H=5'},
+    {id:'Vc',latex:'V_c=2'}, {id:'Pc',latex:'P_c=5'},
+    {id:'A',latex:'A=(V_L,P_H)'}, {id:'Bp',latex:'B=(V_H,P_H)'}, {id:'Cp',latex:'C=(V_H,P_L)'}, {id:'Dp',latex:'D=(V_L,P_L)'},
+    {id:'poly',latex:'\\operatorname{polygon}(A,B,C,D)', color:'#B5793B', fillOpacity:0.18, lineWidth:2},
+    {id:'seg',latex:'\\operatorname{polygon}((V_L,P_H),(V_H,P_H))', color:'#2e8b57', lineWidth:6},
+    {id:'state',latex:'(V_c,P_c)', color:'#333333', pointSize:16, showLabel:true, label:'state', labelSize:'small'},
+    {id:'La',latex:'A', color:'#8a5a24', showLabel:true, label:'A', labelSize:'small'},
+    {id:'Lb',latex:'B', color:'#8a5a24', showLabel:true, label:'B', labelSize:'small'},
+    {id:'Lc',latex:'C', color:'#8a5a24', showLabel:true, label:'C', labelSize:'small'},
+    {id:'Ld',latex:'D', color:'#8a5a24', showLabel:true, label:'D', labelSize:'small'}
+  ]);
+  function fit(){ calc.setMathBounds({left:0, right:Math.max(S.VH+1,9), bottom:0, top:Math.max(S.PH+1,9)}); }
+
+  var S={VL:2,VH:6,PL:2,PH:5,ph:0};
+  var names=['A','B','C','D'];
+  function stateAt(ph){
+    var e=Math.floor(ph)%4, f=ph-Math.floor(ph), V,P;
+    if(e===0){ P=S.PH; V=S.VL+f*(S.VH-S.VL); }        // A->B expand at high P
+    else if(e===1){ V=S.VH; P=S.PH-f*(S.PH-S.PL); }   // B->C drop P
+    else if(e===2){ P=S.PL; V=S.VH-f*(S.VH-S.VL); }   // C->D compress at low P
+    else { V=S.VL; P=S.PL+f*(S.PH-S.PL); }            // D->A raise P
+    return {V:V,P:P,edge:e};
+  }
+  function update(){
+    var st=stateAt(S.ph), W=(S.PH-S.PL)*(S.VH-S.VL);
+    calc.setExpression({id:'Vc',latex:'V_c='+st.V.toFixed(3)});
+    calc.setExpression({id:'Pc',latex:'P_c='+st.P.toFixed(3)});
+    // highlight the current process edge and report its work
+    var VL=S.VL,VH=S.VH,PL=S.PL,PH=S.PH, seg, proc, iso;
+    if(st.edge===0){ seg=[[VL,PH],[VH,PH]]; iso=true; proc='isobaric (P=P_H): W = P·ΔV = +'+(PH*(VH-VL)).toFixed(2); }
+    else if(st.edge===1){ seg=[[VH,PH],[VH,PL]]; iso=false; proc='isochoric (V=V_H): W = 0'; }
+    else if(st.edge===2){ seg=[[VH,PL],[VL,PL]]; iso=true; proc='isobaric (P=P_L): W = P·ΔV = '+(PL*(VL-VH)).toFixed(2); }
+    else { seg=[[VL,PL],[VL,PH]]; iso=false; proc='isochoric (V=V_L): W = 0'; }
+    calc.setExpression({id:'seg', color: iso?'#2e8b57':'#9a9a9a',
+      latex:'\\operatorname{polygon}(('+seg[0][0].toFixed(3)+','+seg[0][1].toFixed(3)+'),('+seg[1][0].toFixed(3)+','+seg[1][1].toFixed(3)+'))'});
+    document.getElementById('rproc').textContent=proc;
+    document.getElementById('rW').textContent=W.toFixed(2);
+    document.getElementById('rV').textContent=st.V.toFixed(2);
+    document.getElementById('rP').textContent=st.P.toFixed(2);
+    document.getElementById('rT').textContent=(st.V*st.P).toFixed(1);
+    document.getElementById('statelab').textContent=(Math.abs(st.V-S.VL)<1e-6&&Math.abs(st.P-S.PH)<1e-6)?'A':names[st.edge];
+    // piston: map V in [VL..VH] to piston top y in [118..40]; gas fills below piston
+    var frac=(st.V-S.VL)/Math.max(0.1,(S.VH-S.VL));
+    var ptop=118-frac*70; var pis=document.getElementById('piston'); pis.setAttribute('y',ptop.toFixed(1));
+    var gas=document.getElementById('gas'); gas.setAttribute('y',(ptop+10).toFixed(1)); gas.setAttribute('height',(178-(ptop+10)).toFixed(1));
+    // pressure bar map P in [PL..PH] to height
+    var pf=(st.P-S.PL)/Math.max(0.1,(S.PH-S.PL)); var h=40+pf*100; var pb=document.getElementById('pbar');
+    pb.setAttribute('y',(180-h).toFixed(1)); pb.setAttribute('height',h.toFixed(1));
+  }
+
+  var LATEX={VL:'V_L',VH:'V_H',PL:'P_L',PH:'P_H'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=(v==='ph'?0:S[v]); sliders[v]={input:input,def:(v==='ph'?0:S[v])};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      if(v!=='ph'){ calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); fit(); }
+      update();
+    });
+    if(out) out.textContent=(v==='ph'?0:S[v]).toFixed(fx);
+  });
+  fit(); update();
+
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.ph, val=+s.input.value+0.04; if(val>4)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Run cycle'; if(playing)timer=setInterval(step,45); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Run cycle';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

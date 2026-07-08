@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RC Circuit — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 6 — RC Charging &amp; Discharging Curves</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A resistor <b>R</b> and capacitor <b>C</b> in series set the pace of charging and discharging. The capacitor voltage
+    follows <span class="eq">V = V&#8320;(1 &#8722; e<sup>&#8722;t/&#964;</sup>)</span> while charging and <span class="eq">V = V&#8320; e<sup>&#8722;t/&#964;</sup></span>
+    while discharging, where the time constant is <span class="eq">&#964; = RC</span>. The current does the opposite — largest at the
+    start, then fading. Press <b>Play</b>, switch between charging and discharging, and see the capacitor plates fill and empty.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The circuit</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="180" viewBox="0 0 330 180">
+            <!-- wire loop -->
+            <rect x="40" y="35" width="230" height="110" fill="none" stroke="#8a7c58" stroke-width="2.5"/>
+            <!-- battery (left) -->
+            <line x1="40" y1="82" x2="40" y2="98" stroke="#fffdf6" stroke-width="6"/>
+            <line x1="34" y1="76" x2="46" y2="76" stroke="#6b5a3a" stroke-width="3"/>
+            <line x1="37" y1="104" x2="43" y2="104" stroke="#6b5a3a" stroke-width="6"/>
+            <text x="8" y="94" font-size="11" fill="#6b5a3a">V&#8320;</text>
+            <!-- resistor (top zig) -->
+            <polyline points="120,35 128,27 138,43 148,27 158,43 168,27 176,35" fill="none" stroke="var(--red)" stroke-width="2.5"/>
+            <text x="132" y="20" font-size="11" fill="var(--red)">R</text>
+            <!-- capacitor (right) -->
+            <line x1="255" y1="35" x2="285" y2="35" stroke="#8a7c58" stroke-width="0"/>
+            <line x1="270" y1="72" x2="270" y2="82" stroke="#8a7c58" stroke-width="2.5"/>
+            <line x1="252" y1="82" x2="288" y2="82" stroke="var(--blue)" stroke-width="4"/>
+            <rect id="capfill" x="255" y="86" width="30" height="0" fill="var(--gold)" opacity="0.85"/>
+            <line x1="252" y1="98" x2="288" y2="98" stroke="var(--blue)" stroke-width="4"/>
+            <line x1="270" y1="98" x2="270" y2="108" stroke="#8a7c58" stroke-width="2.5"/>
+            <text x="294" y="94" font-size="11" fill="var(--blue)">C</text>
+            <!-- current arrow on bottom wire -->
+            <line id="iarr" x1="130" y1="145" x2="180" y2="145" stroke="var(--green)" stroke-width="4" marker-end="url(#rcI)"/>
+            <text x="146" y="164" font-size="11" fill="var(--green)">I</text>
+            <defs><marker id="rcI" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">V(t)</span> = <span class="vb" id="rVc">–</span> V</div>
+            <div class="r c-green"><span class="k">I(t)</span> = <span class="vb" id="rIc">–</span> A</div>
+            <div class="r c-accent"><span class="k">&#964; = RC</span> = <span class="vb" id="rtau">–</span> s</div>
+            <div class="r" style="opacity:.85">at t = &#964;: V reaches <span id="r63">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Gold fill = charge stored on the capacitor; green arrow = current (its length is the instantaneous current, and it reverses when discharging).</div>
+      </div>
+
+      <div class="panel">
+        <h3>Voltage &amp; current vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue = capacitor voltage, green = current. The dashed vertical line marks one time constant &#964; = RC.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Capacitor voltage</b> V(t) — rises to V&#8320; (charging) or decays to 0 (discharging).</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Current</b> I(t) — largest at t = 0, then fades; negative while discharging.</span></li>
+          <li><span class="sw dash" style="border-color:#9a9a9a"></span><span><b>&#964; = RC</b> — one time constant.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar">
+            <button class="btn" id="play">▶ Play</button>
+            <button class="btn sec" id="mode">Mode: Charging</button>
+            <button class="btn sec" id="reset">Reset</button>
+          </div>
+          <div class="ctl" data-var="t" data-min="0" data-max="10" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"><div class="hint">Sweeps the moving dot.</div>
+          </div>
+          <div class="ctl" data-var="V0" data-min="1" data-max="20" data-step="1" data-fixed="0">
+            <div class="row"><label>Battery voltage V&#8320;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Resistance R</label><span class="val"></span></div><input type="range"><div class="hint">Larger R → slower, gentler curve.</div>
+          </div>
+          <div class="ctl" data-var="C" data-min="0.2" data-max="5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Capacitance C</label><span class="val"></span></div><input type="range"><div class="hint">Larger C → more charge, slower.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If R is doubled, how does the charging curve change — faster, slower, higher, lower?</li>
+      <li><b>Manipulate</b><span class="tag">R, C</span> Change R and C separately while watching &#964; = RC in the readout.</li>
+      <li><b>Explain</b><span class="tag">the blue curve</span> Why does the capacitor charge quickly at first but only slowly approach V&#8320;?</li>
+      <li><b>Calculate</b><span class="tag">R, C</span> For R = 2 &#937; and C = 1 F, calculate the time to reach 63.2% of V&#8320;, and check it against the &#964; marker.</li>
+      <li><b>Extend</b><span class="tag">the graph</span> Cover up the sliders — can you estimate &#964; just by reading the curve?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'time t (s)', yAxisLabel:'voltage (V)   /   current (A)'});
+  calc.setExpressions([
+    {id:'V0',latex:'V_0=10'}, {id:'R',latex:'R=2'}, {id:'C',latex:'C=1'}, {id:'t',latex:'t=0'},
+    {id:'Tc',latex:'T_c=R C'},
+    {id:'Vcf',latex:'V_c(x)=V_0(1-e^{-x/T_c})', hidden:true, secret:true},
+    {id:'Vdf',latex:'V_d(x)=V_0 e^{-x/T_c}', hidden:true, secret:true},
+    {id:'Icf',latex:'I_c(x)=\\frac{V_0}{R}e^{-x/T_c}', hidden:true, secret:true},
+    {id:'Idf',latex:'I_d(x)=-\\frac{V_0}{R}e^{-x/T_c}', hidden:true, secret:true},
+    {id:'cV',latex:'V_c(x)\\left\\{0\\le x\\le10\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cI',latex:'I_c(x)\\left\\{0\\le x\\le10\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'tau',latex:'x=T_c\\left\\{-2\\le y\\le25\\right\\}', color:'#9a9a9a', lineStyle:Desmos.Styles.DASHED, lineWidth:1.4},
+    {id:'dV',latex:'(t,V_c(t))', color:'#2f6fb0', showLabel:true, label:'V', labelSize:'small'},
+    {id:'dI',latex:'(t,I_c(t))', color:'#2e8b57', showLabel:true, label:'I', labelSize:'small'}
+  ]);
+
+  var S={V0:10,R:2,C:1,t:0}, charging=true;
+  function fit(){
+    var top=1.15*Math.max(S.V0, S.V0/S.R), bot=charging?-0.06*top:-1.15*S.V0/S.R;
+    calc.setMathBounds({left:-0.3, right:10, bottom:bot, top:top});
+  }
+  function setMode(){
+    calc.setExpression({id:'cV', latex:(charging?'V_c(x)':'V_d(x)')+'\\left\\{0\\le x\\le10\\right\\}'});
+    calc.setExpression({id:'cI', latex:(charging?'I_c(x)':'I_d(x)')+'\\left\\{0\\le x\\le10\\right\\}'});
+    calc.setExpression({id:'dV', latex:'(t,'+(charging?'V_c(t)':'V_d(t)')+')'});
+    calc.setExpression({id:'dI', latex:'(t,'+(charging?'I_c(t)':'I_d(t)')+')'});
+    document.getElementById('mode').textContent='Mode: '+(charging?'Charging':'Discharging');
+    fit();
+  }
+  function update(){
+    var tau=S.R*S.C, V=charging?S.V0*(1-Math.exp(-S.t/tau)):S.V0*Math.exp(-S.t/tau);
+    var I=(charging?1:-1)*(S.V0/S.R)*Math.exp(-S.t/tau);
+    document.getElementById('rVc').textContent=V.toFixed(2);
+    document.getElementById('rIc').textContent=I.toFixed(2);
+    document.getElementById('rtau').textContent=tau.toFixed(2);
+    document.getElementById('r63').textContent=(charging?(0.632*S.V0).toFixed(2)+' V (63%)':(0.368*S.V0).toFixed(2)+' V (37%)');
+    // capacitor fill ~ charge = C*V, normalized to C*V0
+    var frac=Math.max(0,Math.min(1, V/S.V0)); var h=28*frac;
+    var cf=document.getElementById('capfill'); cf.setAttribute('y',(98-2-h).toFixed(1)); cf.setAttribute('height',h.toFixed(1));
+    // current arrow length & direction
+    // current arrow: green line + tip, length ∝ |I|, direction flips (charging points one way, discharging the other)
+    var ia=document.getElementById('iarr'), L=Math.max(-46,Math.min(46, -I*9));
+    ia.setAttribute('x1',155); ia.setAttribute('x2',(155+L).toFixed(1)); ia.setAttribute('opacity',Math.abs(I)<0.02?0.15:1);
+  }
+
+  var LATEX={V0:'V_0',R:'R',C:'C',t:'t'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); if(v!=='t')fit(); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  setMode(); update();
+
+  document.getElementById('mode').addEventListener('click',function(){ charging=!charging; setMode(); update(); });
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.t, val=+s.input.value+0.08; if(val>10)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,45); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

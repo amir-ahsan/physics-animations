@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4B · Tutorial 12: Electromagnetic Waves — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4B &middot; Tutorial 12: Electromagnetic Waves</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4B TUTORIAL 12 — ELECTROMAGNETIC WAVES
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||160;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  prompt:'Professor Ahsan surveys the main principles: displacement current, the electromagnetic wave, energy transport, and radiation pressure.',
+  world:{x0:-0.7, x1:11, y0:-3.4, y1:3.4},
+  setup(ctx,w){
+    axes2D(ctx.svg, ctx.M, w, {xlab:'x', ylab:''});
+    const e=[]; const b=[];
+    for(let i=0;i<=90;i++){const x=10.4*i/90;
+      e.push(ctx.M.X(x)+','+ctx.M.Y(2.4*Math.sin(1.8*x)));
+      b.push(ctx.M.X(x)+','+ctx.M.Y(1.2*Math.sin(1.8*x)));}
+    el('polyline',{points:e.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3},ctx.svg);
+    el('polyline',{points:b.join(' '),fill:'none',stroke:'#2E6DA4','stroke-width':2.5,'stroke-dasharray':'7,5'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(8.2),y:ctx.M.Y(2.9),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    t.textContent='E and B: in phase, perpendicular, self-propelled';
+  },
+  steps:[
+   { say:"The finale of electromagnetism. Ampère's law had a gap — between charging capacitor plates flows no charge, yet a magnetic field circles anyway — and MAXWELL repaired it with pure thought: a changing electric flux acts as a current, the displacement current epsilon-nought d-phi-E d-t. With that term, the four equations close into a loop: changing E makes B, changing B makes E.",
+     pose:'talk',
+     board:['I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt}, \\qquad \\oint\\vec B\\cdot d\\vec\\ell = \\mu_0(I + I_d)'] },
+   { say:"And a loop that closes can RUN: the pair bootstraps itself through empty space at a speed built entirely from the constants of electricity and magnetism — one over root mu-nought epsilon-nought — which computes to three times ten to the eighth metres per second. The speed of light, derived from tabletop constants. Maxwell measured the units and discovered what light IS.",
+     pose:'write',
+     board:['c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} = 3.00\\times10^{8}\\ \\mathrm{m/s}, \\qquad c = \\lambda f'] },
+   { say:"The wave's anatomy, on the stage: E and B perpendicular to each other and to the travel direction, IN PHASE — peaks together, zeros together, no quarter-cycle lag — with magnitudes locked by E equals c B, and E cross B pointing the way forward. From radio to gamma rays, one physics at wildly different wavelengths.",
+     pose:'point',
+     board:['E = cB, \\qquad \\vec E\\perp\\vec B\\perp\\hat v, \\qquad \\hat v \\parallel \\vec E\\times\\vec B',
+            {t:'In PHASE — not 90° apart. Spectrum: radio → micro → IR → visible → UV → X → γ.'}] },
+   { say:"Energy rides the wave. The POYNTING vector E cross B over mu-nought is the power per area, and its time average is the INTENSITY: half epsilon-nought c E-nought squared. The electric and magnetic accounts hold exactly equal shares, always — the c that shrinks B is repaid, squared, in the energy.",
+     solo:true, pose:'write',
+     board:['\\vec S = \\frac{\\vec E\\times\\vec B}{\\mu_0}, \\qquad I = \\tfrac12\\varepsilon_0cE_0^2 = \\frac{E_0B_0}{2\\mu_0}',
+            {t:'u_E = u_B: equal shares, every instant.'}],
+     action(c){
+       arrow(c, 6.8,-2.2, 9.8,-2.2, {color:GOLD, w:3, label:'S', vec:true, fs:12});
+       arrow(c, 7.3,-2.2, 7.3,-0.9, {color:RED, w:2.2, label:'E', vec:true, fs:11, side:-1});
+       arrow(c, 7.3,-2.2, 7.9,-3.1, {color:BLUE, w:2.2, label:'B', vec:true, fs:11});
+     } },
+   { say:"And here the course’s longest joke lands its punchline: E makes B, B makes E, and the pair bootstrap themselves across the void at a speed Maxwell computed from two constants measured with wires and jars on a bench. The number came out as the speed of light — because it IS light. Every sunbeam is electromagnetism, applauding itself across a vacuum for eight minutes.",
+     pose:'think',
+     board:[{t:'Maxwell multiplied two bench-top constants and out fell the speed of light. Few equations have earned more.'}] },
+   { say:"And light PUSHES: it carries momentum, energy over c, so absorption presses with I over c and REFLECTION with twice that — reversing the light's momentum costs double, which is why solar sails wear mirrors. Feeble, tireless, and propellant-free. Strategy: intensity from power over area; fields from inverting I; pressure from I over c, doubled for mirrors. And with that, the electromagnetic term stands complete. To the examples.",
+     pose:'excited',
+     board:['P_{\\rm abs} = \\frac{I}{c}, \\qquad P_{\\rm refl} = \\frac{2I}{c}',
+            {t:'Strategy: I = P/A → E₀, B₀ from I → pressure I/c (×2 mirrored). Maxwell closes the course.'}] },
+  ]
+},
+
+
+/* ---------- Example 1: Anatomy of a radio wave [Basic] ---------- */
+{
+  title:'Anatomy of a radio wave.', diff:'Basic',
+  prompt:'An FM station broadcasts at 98.1 MHz; at your antenna E₀ = 0.12 V/m. Find (a) the wavelength, (b) the magnetic-field amplitude, and (c) the geometry of E, B, and the propagation direction.',
+  world:{x0:-0.7, x1:7.5, y0:-2.6, y1:2.6},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'x (m)', ylab:''}); },
+  steps:[
+   { say:"The finale of electromagnetism — the discovery that the two fields, chasing each other's changes through empty space, ARE light. A changing E makes B; a changing B makes E; and the pair bootstraps itself forward at exactly c — three hundred million metres per second, a number that falls straight out of mu-nought and epsilon-nought. Today we dissect one specimen: an FM radio wave.",
+     pose:'talk',
+     board:[{t:'FM: f = 98.1 MHz, E₀ = 0.12 V/m at the antenna.'},
+            'c = \\lambda f = 3.00\\times10^{8}\\ \\mathrm{m/s}, \\qquad E_0 = cB_0'] },
+   { say:"For part a, the wavelength: c over f — 3 ten-to-the-8 over 98.1 million — 3.06 metres. And there is the engineering hiding in the arithmetic: FM antennas are metre-scale BECAUSE the waves are — an antenna is happiest at a neat fraction of the wavelength it must catch.",
+     pose:'write',
+     board:['\\lambda = \\frac{c}{f} = \\frac{3.00\\times10^{8}}{98.1\\times10^{6}} = 3.06\\ \\mathrm m',
+            {t:'Metre waves → metre antennas. Your car aerial is doing wavelength arithmetic.'}] },
+   { say:"For part b, the magnetic partner: B-nought is E-nought over c — 0.12 over 3 ten-to-the-8 — 4 ten-to-the-minus-10 tesla. Ten thousand times feebler than Earth's field — yet, and remember this, the wave's magnetic ENERGY is exactly EQUAL to its electric energy. The c in the denominator of B is repaid, squared, in the energy formula.",
+     pose:'write',
+     board:['B_0 = \\frac{E_0}{c} = \\frac{0.12}{3.00\\times10^{8}} = 4.0\\times10^{-10}\\ \\mathrm T',
+            'u_E = \\tfrac12\\varepsilon_0E^2 = \\frac{B^2}{2\\mu_0} = u_B\\ \\text{(equal shares, always)}'] },
+   { say:"For part c, the geometry — watch the wave assemble. E oscillates vertically; B horizontally, in and out of the page, drawn to its own scale; both perpendicular to the travel direction and to each other, in perfect phase — crests together, zeros together. And the cross product E cross B points exactly along the propagation: the wave carries its own signpost.",
+     pose:'point',
+     board:['\\vec E \\perp \\vec B \\perp \\hat k, \\qquad \\vec E\\times\\vec B \\parallel \\hat k\\ \\text{(propagation)}'],
+     action(c){
+       plotCurve(c, x=>[x, 1.8*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:GOLD, w:3.5, dur:1800});
+       plotCurve(c, x=>[x, 0.9*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:BLUE, w:2.5, dash:'6,5', dur:1800});
+       textAt(c, 0.55,2.1, 'E (in-page, vertical)', {fs:12.5, italic:true, color:GOLD});
+       textAt(c, 2.2,-1.75, 'B (⊥ page, drawn to own scale)', {fs:12, italic:true, color:BLUE});
+       arrow(c, 5.6,2.0, 7.1,2.0, {color:GREEN, w:3.5, label:'c', vec:true, fs:14});
+     } },
+   { say:"The check is the phase: many students draw E and B a quarter-cycle apart, by false analogy with the capacitor and inductor of last week. In a travelling wave they rise and fall TOGETHER — equal energy at every instant, both vanishing at the same nodes. In phase, perpendicular, self-propelled: that is the complete anatomy.",
+     pose:'excited',
+     board:[{t:'E⃗ and B⃗ in PHASE (not 90° apart!) — crests coincide; E⃗×B⃗ always points forward ✓'}] },
+  ]
+},
+
+/* ---------- Example 2: Displacement current [Intermediate] ---------- */
+{
+  title:'Displacement current in a charging capacitor.', diff:'Intermediate',
+  prompt:'A capacitor with circular plates of radius R = 3.0 cm is charged by a wire current I = 0.50 A. Find (a) the displacement current between the plates, and B between the plates at (b) r = 2.0 cm and (c) r = R.',
+  world:{x0:-13, x1:13, y0:-8.5, y1:8.5},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    /* two plates edge-on, wire feeding */
+    el('line',{x1:M.X(-12),y1:M.Y(0),x2:M.X(-1.2),y2:M.Y(0),stroke:'#5C4B30','stroke-width':3.5},svg);
+    el('line',{x1:M.X(1.2),y1:M.Y(0),x2:M.X(12),y2:M.Y(0),stroke:'#5C4B30','stroke-width':3.5},svg);
+    el('line',{x1:M.X(-1.2),y1:M.Y(-6),x2:M.X(-1.2),y2:M.Y(6),stroke:'#C0392B','stroke-width':5,'stroke-linecap':'round'},svg);
+    el('line',{x1:M.X(1.2),y1:M.Y(-6),x2:M.X(1.2),y2:M.Y(6),stroke:'#2E6DA4','stroke-width':5,'stroke-linecap':'round'},svg);
+    textAt({svg,M,instant:true}, -8.2,1.0, 'I = 0.50 A', {fs:13, italic:true, color:'#5C4B30'});
+    textAt({svg,M,instant:true}, -3.6,6.8, 'plates, R = 3 cm', {fs:12, italic:true});
+  },
+  steps:[
+   { say:"Maxwell's masterstroke — the term he added to Ampère's law with nothing but logic for apparatus. Charge a capacitor and ask: does a magnetic field circle the GAP, where no charge flows? Ampère alone says no; experiment says yes. Maxwell's repair: a changing electric FLUX acts exactly like a current — the displacement current, epsilon-nought d-phi-E d-t.",
+     pose:'talk',
+     board:[{t:'Circular plates, R = 3.0 cm, wire current I = 0.50 A. Find I_d and B in the gap.'},
+            'I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt}, \\qquad \\oint\\vec B\\cdot d\\vec\\ell = \\mu_0(I + I_d)_{\\rm enc}'] },
+   { say:"Let us take part a. Between the plates, E is sigma over epsilon-nought, so the flux is E times the plate area — Q over epsilon-nought, precisely. Differentiate: epsilon-nought d-phi d-t equals d-Q d-t — which IS the wire current. Half an ampere of displacement current flows through the gap, continuing the wire's half ampere without a coulomb actually crossing. The circuit is seamless; Ampère's law is rescued.",
+     pose:'write',
+     board:['\\Phi_E = EA = \\frac{\\sigma}{\\varepsilon_0}A = \\frac{Q}{\\varepsilon_0}',
+            'I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt} = \\frac{dQ}{dt} = I = 0.50\\ \\mathrm A'] },
+   { say:"On we go to part b. Now use it. An Amperian circle of radius 2 centimetres between the plates, centred on the axis. The growing E is uniform across the gap, so our circle catches only the FRACTION r-squared over R-squared of the flux — four ninths of the displacement current. B times 2 pi r equals mu-nought times that.",
+     pose:'point',
+     board:['B(2\\pi r) = \\mu_0 I_d\\frac{r^2}{R^2} \\;\\Rightarrow\\; B = \\frac{\\mu_0 I_d\\,r}{2\\pi R^2}'],
+     action(c){
+       const {M}=c;
+       el('ellipse',{cx:M.X(0),cy:M.Y(0),rx:Math.abs(M.X(0.85)-M.X(0)),ry:Math.abs(M.Y(4)-M.Y(0)),
+         fill:'none',stroke:RED,'stroke-width':2.5,'stroke-dasharray':'7,5'},c.svg);
+       textAt(c, 1.7,-4.6, 'Amperian circle, radius r (seen edge-on)', {fs:12, italic:true, color:RED});
+       for(const y of [-4.5,-1.5,1.5,4.5]) arrow(c, -0.85,y, 0.85,y, {color:GOLD, w:2, dur:700});
+       textAt(c, -0.7,-7.6, 'E growing', {fs:12, italic:true, color:GOLD});
+     } },
+   { say:"Now we put in the numbers: 2 ten-to-the-minus-7, times a half ampere, times 2 centimetres, over 3 centimetres squared — 2.2 microtesla, circling the axis inside the gap. A magnetic field, in a region containing NO moving charge whatsoever — manufactured entirely by the changing E.",
+     pose:'write',
+     board:['B(0.020) = \\frac{(2\\times10^{-7})(0.50)(0.020)}{(0.030)^2} = 2.2\\times10^{-6}\\ \\mathrm T'] },
+   { say:"For part c, the boundary: at r equals R the circle catches ALL the displacement current, and B is mu-nought I-d over 2 pi R — 3.3 microtesla — EXACTLY the field the same distance from the feeding wire. The check is that seamlessness: field lines circle wire, then gap, with identical strength, and no instrument at the rim could tell you where the conduction ended and the displacement began. Changing E makes B precisely as current does — and THAT symmetry, E begetting B as B begets E, is what lets light exist. Maxwell added a term; the universe added illumination.",
+     pose:'excited',
+     board:['B(R) = \\frac{\\mu_0 I_d}{2\\pi R} = \\frac{(2\\times10^{-7})(0.50)}{0.030} = 3.3\\times10^{-6}\\ \\mathrm T\\ \\text{— same as beside the wire}\\ \\checkmark',
+            {t:'Seamless across the gap. dE/dt → B (Maxwell) + dB/dt → E (Faraday) = light.'}] },
+  ]
+},
+
+/* ---------- Example 3: Laser-pointer fields [Intermediate] ---------- */
+{
+  title:'Laser-pointer fields.', diff:'Intermediate',
+  prompt:'A 5.0 mW laser pointer produces a beam 2.0 mm in diameter. Find (a) the intensity, (b) E₀ and B₀, (c) compare with bright sunlight (~1.4 kW/m²).',
+  world:{x0:-8, x1:104, y0:-14, y1:50},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    /* laser body + beam */
+    el('rect',{x:M.X(0),y:M.Y(30),width:M.X(20)-M.X(0),height:M.Y(18)-M.Y(30),fill:'#8A5A24',rx:4},svg);
+    el('rect',{x:M.X(20),y:M.Y(26.5),width:M.X(98)-M.X(20),height:M.Y(21.5)-M.Y(26.5),fill:'#C0392B',opacity:.65},svg);
+    textAt({svg,M,instant:true}, 2,33.5, '5.0 mW pointer', {fs:12.5, italic:true, color:'#5C4B30'});
+    textAt({svg,M,instant:true}, 55,29.5, 'beam ∅ 2.0 mm', {fs:12, italic:true, color:RED});
+  },
+  steps:[
+   { say:"Energy transport, made quantitative. A light beam carries power through every cross-section, and the INTENSITY — watts per square metre — is the honest measure: I equals half epsilon-nought c E-nought squared. Today's patient: the humble lecture-hall laser pointer, five milliwatts of apparent innocence.",
+     pose:'talk',
+     board:[{t:'P = 5.0 mW, beam diameter 2.0 mm. Find I, E₀, B₀; compare to sunlight.'},
+            'I = \\frac{P}{A} = \\tfrac12\\varepsilon_0 c E_0^2'] },
+   { say:"Let us take part a. The beam's cross-section: pi times 1 millimetre squared — 3.14 ten-to-the-minus-6 square metres. Intensity: 5 milliwatts over that — 1600 watts per square metre. Hold that number while part c prepares the ambush. Sixteen hundred watts per square metre — brighter than noon sunlight, from a pocket laser — because intensity is power CONCENTRATED, and a millimetre of beam is a very small parish to fund.",
+     pose:'write',
+     board:['A = \\pi(1.0\\times10^{-3})^2 = 3.14\\times10^{-6}\\ \\mathrm{m^2}',
+            'I = \\frac{5.0\\times10^{-3}}{3.14\\times10^{-6}} = 1.6\\times10^{3}\\ \\mathrm{W/m^2}'] },
+   { say:"For part b, invert for the fields. E-nought is the root of 2 I over epsilon-nought c: root of 2 times 1592, over 8.85 ten-to-the-minus-12 times 3 ten-to-the-8 — 1.1 KILOVOLTS per metre, oscillating in that little red thread. And B-nought, dutifully, E over c: 3.7 microtesla.",
+     pose:'write',
+     board:['E_0 = \\sqrt{\\frac{2I}{\\varepsilon_0 c}} = \\sqrt{\\frac{2(1592)}{(8.85\\times10^{-12})(3.00\\times10^{8})}} = 1.1\\times10^{3}\\ \\mathrm{V/m}',
+            'B_0 = \\frac{E_0}{c} = 3.7\\times10^{-6}\\ \\mathrm T'] },
+   { say:"For part c, the ambush: 1600 watts per square metre — MORE than bright noon sunlight's 1400. Your five-milliwatt pointer outshines the Sun, per square metre. No contradiction: the Sun delivers its kilowatt spread over every metre of beach, while the pointer crams its five milliwatts into three square millimetres. Watch the comparison.",
+     pose:'point',
+     board:['I_{\\rm laser} \\approx 1600\\ \\mathrm{W/m^2} \\; > \\; I_{\\rm sun} \\approx 1400\\ \\mathrm{W/m^2}'],
+     action(c){
+       const {M}=c;
+       /* sun patch vs laser dot, intensities as shading */
+       el('rect',{x:M.X(28),y:M.Y(14),width:M.X(52)-M.X(28),height:M.Y(-10)-M.Y(14),fill:GOLD,opacity:.5,rx:4},c.svg);
+       textAt(c, 30,-12.6, 'sunlight: 1.4 kW spread over 1 m²', {fs:12, italic:true, color:'#8A5A24'});
+       el('circle',{cx:M.X(70),cy:M.Y(2),r:5,fill:RED},c.svg);
+       textAt(c, 74,1, '5 mW in 3 mm² — denser!', {fs:12, italic:true, color:RED});
+     } },
+   { say:"And that is the safety lesson wearing physics: CONCENTRATION, not power, is what endangers eyes — the lens of your eye concentrates it further still, onto micrometres of retina. Now comes the check: work backwards — 1600 watts per square metre times 3.14 ten-to-the-minus-6 recovers 5 milliwatts exactly. The energy books balance; keep the beam out of faces.",
+     pose:'excited',
+     board:[{t:'Check: I·A = (1592)(3.14×10⁻⁶) = 5.0 mW ✓. Lasers are dangerous by concentration, not wattage.'}] },
+  ]
+},
+
+/* ---------- Example 4: Sunlight and the planetary budget [Challenging] ---------- */
+{
+  title:'Sunlight: fields, energy, and the planetary power budget.', diff:'Challenging',
+  prompt:'Sunlight above the atmosphere: I = 1.36 kW/m². Find (a) E₀ and B₀; (b) energy per hour on a 1.5 m² solar panel; (c) total power intercepted by Earth (R_E = 6.37×10⁶ m).',
+  world:{x0:-30, x1:30, y0:-20, y1:20},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    /* sun rays from left, Earth on right */
+    el('circle',{cx:M.X(16),cy:M.Y(0),r:Math.abs(M.X(8)-M.X(0)),fill:'#CBDCEB',stroke:'#2E6DA4','stroke-width':2.5},svg);
+    textAt({svg,M,instant:true}, 13.4,-1, 'Earth', {fs:13, italic:true, color:'#1D4568'});
+  },
+  steps:[
+   { say:"The same bookkeeping, scaled to a planet. Sunlight arrives above our atmosphere at 1360 watts per square metre — the solar constant, the single most consequential number in Earth's economy. Three questions: the fields, a rooftop's harvest, and the planetary total.",
+     pose:'talk',
+     board:[{t:'I = 1.36 kW/m². (a) E₀, B₀; (b) energy/hour on 1.5 m²; (c) Earth’s total intercept.'},
+            'I = \\tfrac12\\varepsilon_0 c E_0^2'] },
+   { say:"Let us take part a. Invert for E-nought: root of 2 times 1360 over epsilon-nought c — one full KILOVOLT per metre. And B-nought: 3.4 microtesla. You are strolling, at this moment, through kilovolt-per-metre fields — comfortably, because they reverse a quadrillion times a second, far too fast to push your sluggish ions anywhere. They cannot shove matter; they can only DELIVER energy. Hence sunburn rather than electrocution.",
+     pose:'write',
+     board:['E_0 = \\sqrt{\\frac{2(1360)}{(8.85\\times10^{-12})(3.00\\times10^{8})}} = 1.0\\times10^{3}\\ \\mathrm{V/m}',
+            'B_0 = \\frac{E_0}{c} = 3.4\\times10^{-6}\\ \\mathrm T'] },
+   { say:"For part b, the rooftop. Energy is intensity times area times time: 1360, times 1.5 square metres, times 3600 seconds — 7.3 megajoules per hour, about 2 kilowatt-hours of raw sunshine. A real panel at twenty percent efficiency banks perhaps 0.4 — the gap between the physics and the engineering, measured in your electricity bill.",
+     pose:'write',
+     board:['U = IAt = (1360)(1.5)(3600) = 7.3\\times10^{6}\\ \\mathrm J \\approx 2\\ \\mathrm{kWh}',
+            {t:'Real panel ~20% → ~0.4 kWh per hour. Physics sets the ceiling; engineering rents below it.'}] },
+   { say:"Part c — and here is the classic trap: Earth intercepts sunlight with its DISK, not its hemisphere. The sun's parallel rays see a silhouette — a circle of radius R-E — so the catch is I times pi R-E squared. Watch the shadow construction: the sphere presents its cross-section.",
+     pose:'point',
+     board:['P = I\\,\\pi R_E^2\\quad(\\text{the DISK — parallel rays see a silhouette})'],
+     action(c){
+       const {M}=c;
+       for(const y of [-14,-7,0,7,14]) arrow(c, -28,y, 5.5,y, {color:GOLD, w:2.2, dur:900});
+       el('line',{x1:M.X(16),y1:M.Y(8),x2:M.X(16),y2:M.Y(-8),stroke:PURPLE,'stroke-width':3.5,'stroke-dasharray':'7,5'},c.svg);
+       textAt(c, 17.2,-10.5, 'effective catch: disk πR_E²', {fs:12, italic:true, color:PURPLE});
+     } },
+   { say:"The number: 1360 times pi times 6.37 ten-to-the-6 squared — 1.7 times ten to the SEVENTEENTH watts, continuously. For scale: all of humanity runs on 2 ten-to-the-13 — ONE TEN-THOUSANDTH of what the Sun deposits for free. Now comes the check: had we wrongly used the hemisphere's surface, 2 pi R squared, we would be high by exactly a factor of 2 — the classic error, worth flagging on the board and in memory. The Sun sees our shadow, nothing more.",
+     pose:'excited',
+     board:['P = (1360)\\,\\pi(6.37\\times10^{6})^2 = 1.7\\times10^{17}\\ \\mathrm W\\ \\ (\\approx 10^4\\times\\ \\text{humanity})',
+            {t:'Check: disk πR², NOT hemisphere 2πR² (off by 2×) — the Sun sees a silhouette ✓'}] },
+  ]
+},
+
+/* ---------- Example 5: Solar sail [Challenging] ---------- */
+{
+  title:'Radiation pressure: a solar sail.', diff:'Challenging',
+  prompt:'A perfectly reflecting 100 m × 100 m sail faces the Sun at Earth’s distance (I = 1.36 kW/m²); craft mass 50 kg. Find (a) the radiation pressure and force, (b) the acceleration, (c) both for a perfectly absorbing (black) sail.',
+  world:{x0:-30, x1:30, y0:-20, y1:20},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('line',{x1:M.X(4),y1:M.Y(15),x2:M.X(4),y2:M.Y(-15),stroke:'#B0A488','stroke-width':6,'stroke-linecap':'round'},svg);
+    el('line',{x1:M.X(4),y1:M.Y(15),x2:M.X(4),y2:M.Y(-15),stroke:'#F2EEDC','stroke-width':3,'stroke-linecap':'round'},svg);
+    textAt({svg,M,instant:true}, 5.5,15.5, 'sail (edge-on), 100 m × 100 m', {fs:12, italic:true});
+  },
+  steps:[
+   { say:"The parting gift of electromagnetism: light PUSHES. An electromagnetic wave carries momentum — energy over c — so shining on a surface exerts pressure: I over c if the light is swallowed, TWICE that if it is reflected, since reversing the light's momentum costs double. The numbers are famously pitiful. The application is famously not.",
+     pose:'talk',
+     board:[{t:'Reflecting sail 100×100 m, I = 1.36 kW/m², m = 50 kg.'},
+            'P_{\\rm abs} = \\frac{I}{c}, \\qquad P_{\\rm refl} = \\frac{2I}{c}'] },
+   { say:"Let us take part a. Reflecting: 2 times 1360 over 3 ten-to-the-8 — 9.1 MICROPASCALS. Over the full hectare of sail — ten thousand square metres — the force is 0.091 newtons. A tenth of a newton: the weight of a strawberry, pressing on a sail the size of two football pitches.",
+     pose:'write',
+     board:['P_{\\rm rad} = \\frac{2(1360)}{3.00\\times10^{8}} = 9.1\\times10^{-6}\\ \\mathrm{Pa}',
+            'F = P_{\\rm rad}A = (9.07\\times10^{-6})(10^{4}) = 9.1\\times10^{-2}\\ \\mathrm N'],
+     action(c){
+       for(const y of [-12,-6,0,6,12]) arrow(c, -26,y, 2,y, {color:GOLD, w:2.2, dur:900});
+       for(const y of [-9,-3,3,9]) arrow(c, 2,y, -10,y, {color:'#C9A227', w:1.6, dur:900});
+       arrow(c, 6,0, 15,0, {color:GREEN, w:4, label:'F', vec:true, fs:15});
+       textAt(c, -27,-15.5, 'incident + reflected: momentum reversed → double push', {fs:12, italic:true});
+     } },
+   { say:"Part b: divide by 50 kilograms — 1.8 millimetres per second, per second. Pathetic? Watch the arithmetic of patience: that acceleration never stops, burns nothing, and after a single day has quietly banked 157 metres per second of velocity change. After a month, five kilometres per second. Chemical rockets shout for minutes; sunlight whispers forever — and forever wins.",
+     pose:'write',
+     board:['a = \\frac{F}{m} = \\frac{0.0907}{50} = 1.8\\times10^{-3}\\ \\mathrm{m/s^2}',
+            '\\Delta v = at = (1.8\\times10^{-3})(86\\,400) \\approx 157\\ \\mathrm{m/s\\ per\\ day,\\ no\\ propellant}'] },
+   { say:"For part c, the black sail: absorption transfers only the light's own momentum, not the rebound — half the pressure, half the force: 0.045 newtons, 0.9 millimetres per second squared. Hence every real sail is mirrored: the shinier the sail, the harder the light shoves. A tilted sail, mind, catches less area AND redirects the rebound — the geometry is the sailor's rigging.",
+     pose:'write',
+     board:['\\text{Absorbing: } F = \\frac{IA}{c} = 4.5\\times10^{-2}\\ \\mathrm N, \\quad a = 9.1\\times10^{-4}\\ \\mathrm{m/s^2}\\ (\\text{half})',
+            {t:'Mirror your sail: reflection doubles the push. Tilt matters too — area and geometry.'}] },
+   { say:"The final check of the course: trace the chain and notice how little it needed — momentum flux equals energy flux over c; force equals flux times area; acceleration equals force over mass. Nothing else entered. From Coulomb's first law to a spacecraft riding sunlight: eleven tutorials, four equations of Maxwell, and one continuous argument. The electromagnetic term rests its case.",
+     pose:'excited',
+     board:[{t:'Check the chain: p-flux = I/c → F = (2I/c)A → a = F/m — nothing else needed ✓'},
+            {t:'From Coulomb to solar sailing: Maxwell’s four equations, one unbroken argument. End of Physics 4B tutorials.'}] },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

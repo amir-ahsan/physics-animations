@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work-Energy Theorem — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 4 — Work-Energy Theorem &amp; Area Under F(x)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A block of mass <b>m</b> starts with speed <b>v&#7522;</b> and is pushed by a position-dependent force
+    <span class="eq">F(x) = F&#8320; &#8722; kx</span>. The work done is the <b>area under the F&#8211;x graph</b>,
+    <span class="eq">W = &#8747;F dx</span>, and the work-energy theorem says that area equals the change in kinetic energy,
+    <span class="eq">W = &#189;mv&#8339;&#178; &#8722; &#189;mv&#7522;&#178;</span>. Slide the probe (or press Play) to sweep the push and watch the shaded work
+    build up and the kinetic-energy meter respond.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Block being pushed</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="150" viewBox="0 0 330 150">
+            <line x1="15" y1="112" x2="315" y2="112" stroke="#b8a983" stroke-width="2"/>
+            <g id="hatch4" stroke="#d8cba6" stroke-width="1"></g>
+            <rect id="blk4" x="150" y="82" width="34" height="30" rx="3" fill="#cdb488" stroke="#8a6f42" stroke-width="1.5"/>
+            <line id="farr" x1="150" y1="97" x2="200" y2="97" stroke="var(--red)" stroke-width="4" marker-end="url(#wF)"/>
+            <text id="fl4" x="205" y="92" font-size="11" fill="var(--red)">F</text>
+            <!-- KE meter -->
+            <rect x="292" y="30" width="18" height="82" fill="#efe4c8" stroke="#b8a983"/>
+            <rect id="kebar" x="292" y="70" width="18" height="42" fill="var(--green)"/>
+            <text x="286" y="126" font-size="10" fill="#6b5a3a">KE</text>
+            <defs><marker id="wF" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">work so far</span> = <span class="vb" id="rW">–</span> J</div>
+            <div class="r c-green"><span class="k">KE</span> = <span class="vb" id="rKE">–</span> J</div>
+            <div class="r c-green"><span class="k">speed</span> = <span class="vb" id="rv4">–</span> m/s</div>
+            <div class="r" style="opacity:.85"><span class="k">total W</span> = <span id="rWt">–</span> J, <span class="k">v&#8339;</span> = <span id="rvf">–</span> m/s</div>
+          </div>
+        </div>
+        <div class="cap">Red arrow = the push F at the block's current position (it flips when F turns negative). Green bar = kinetic energy.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Force vs. position — work is the shaded area</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue line = F(x). The filled area from the start to the probe is the work done so far; area above the axis adds energy, area below removes it.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Force</b> F(x) = F&#8320; &#8722; kx acting on the block.</span></li>
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Shaded area</b> = work done from the start to the probe = change in kinetic energy.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="fp" data-min="0" data-max="1" data-step="0.01" data-fixed="2">
+            <div class="row"><label>Probe (fraction of push)</label><span class="val"></span></div><input type="range"><div class="hint">Sweeps from the start to the end of the push.</div>
+          </div>
+          <div class="ctl" data-var="F0" data-min="-20" data-max="20" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Force at start F&#8320;</label><span class="val"></span></div><input type="range"><div class="hint">Where the force line begins.</div>
+          </div>
+          <div class="ctl" data-var="k" data-min="-4" data-max="4" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Slope k</label><span class="val"></span></div><input type="range"><div class="hint">How fast the force falls off (or grows).</div>
+          </div>
+          <div class="ctl" data-var="xi" data-min="-5" data-max="8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Start x&#7522;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="xf" data-min="-5" data-max="10" data-step="0.1" data-fixed="1">
+            <div class="row"><label>End x&#8355;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="vi" data-min="0" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Initial speed v&#7522;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the force becomes negative before the end of the push, what happens to the final speed?</li>
+      <li><b>Manipulate</b><span class="tag">x&#8355;</span> Move the end point so the shaded area grows, shrinks, or changes sign.</li>
+      <li><b>Explain</b><span class="tag">the shading</span> Why does area above the axis increase kinetic energy while area below decreases it?</li>
+      <li><b>Calculate</b><span class="tag">F&#8320;, k</span> For F(x) = 10 &#8722; 1.2x from x = 0 to 6 m, calculate W and v&#8339;, then check the readouts.</li>
+      <li><b>Extend</b><span class="tag">k</span> Imagine a nonlinear force such as F&#8320; &#8722; kx&#178;. Would the same endpoints do more or less work?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'position x (m)', yAxisLabel:'force F (N)'});
+  calc.setExpressions([
+    {id:'F0',latex:'F_0=10'}, {id:'k',latex:'k=1.2'}, {id:'xi',latex:'x_i=0'}, {id:'xf',latex:'x_f=6'},
+    {id:'m',latex:'m=2'}, {id:'vi',latex:'v_i=2'}, {id:'fp',latex:'f_p=1'},
+    {id:'xp',latex:'x_p=x_i+f_p(x_f-x_i)'},
+    {id:'Ff',latex:'F(x)=F_0-k x', hidden:true, secret:true},
+    {id:'aFull',latex:'\\min(0,F(x))\\le y\\le\\max(0,F(x))\\left\\{x_i\\le x\\le x_f\\right\\}', color:'#B5793B', fillOpacity:0.12, lines:false},
+    {id:'aWork',latex:'\\min(0,F(x))\\le y\\le\\max(0,F(x))\\left\\{x_i\\le x\\le x_p\\right\\}', color:'#B5793B', fillOpacity:0.45, lines:false},
+    {id:'cF',latex:'F(x)', color:'#2f6fb0', lineWidth:2.5},
+    {id:'pi',latex:'(x_i,0)', color:'#8a6f42'}, {id:'pf',latex:'(x_f,0)', color:'#8a6f42'},
+    {id:'pp',latex:'(x_p,F(x_p))', color:'#c0392b', showLabel:true, label:'F', labelSize:'small'}
+  ]);
+
+  (function(){ var s=''; for(var x=18;x<=312;x+=14){ s+='<line x1="'+x+'" y1="112" x2="'+(x-8)+'" y2="122"/>'; } document.getElementById('hatch4').innerHTML=s; })();
+
+  var S={F0:10,k:1.2,xi:0,xf:6,m:2,vi:2,fp:1};
+  function Fat(x){ return S.F0-S.k*x; }
+  function workTo(x){ // integral of (F0 - k x) from xi to x
+    function prim(u){ return S.F0*u - 0.5*S.k*u*u; } return prim(x)-prim(S.xi);
+  }
+  function fit(){
+    var xl=Math.min(S.xi,S.xf), xr=Math.max(S.xi,S.xf);
+    var ym=1.25*Math.max(Math.abs(Fat(S.xi)),Math.abs(Fat(S.xf)),1);
+    calc.setMathBounds({left:xl-1.2, right:xr+1.2, bottom:-ym, top:ym});
+  }
+  function update(){
+    var xp=S.xi+S.fp*(S.xf-S.xi);
+    var Wso=workTo(xp), Wtot=workTo(S.xf);
+    var Ki=0.5*S.m*S.vi*S.vi, KE=Math.max(0,Ki+Wso), Kf=Math.max(0,Ki+Wtot);
+    document.getElementById('rW').textContent=Wso.toFixed(1);
+    document.getElementById('rKE').textContent=KE.toFixed(1);
+    document.getElementById('rv4').textContent=Math.sqrt(2*KE/S.m).toFixed(2);
+    document.getElementById('rWt').textContent=Wtot.toFixed(1);
+    document.getElementById('rvf').textContent=Math.sqrt(2*Kf/S.m).toFixed(2);
+    // schematic: block position along fraction, force arrow, KE bar
+    var bx=40+S.fp*236, blk=document.getElementById('blk4'); blk.setAttribute('x',(bx-17).toFixed(1));
+    var F=Fat(xp), fa=document.getElementById('farr'), fl=Math.max(-90,Math.min(90,F*6.5));
+    fa.setAttribute('x1',bx.toFixed(1)); fa.setAttribute('x2',(bx+fl).toFixed(1)); fa.setAttribute('opacity',Math.abs(F)<0.1?0:1);
+    document.getElementById('fl4').setAttribute('x',(bx+fl+(fl>=0?4:-12)).toFixed(1));
+    var h=Math.max(0,Math.min(82, KE*2)); var bar=document.getElementById('kebar');
+    bar.setAttribute('y',(112-h).toFixed(1)); bar.setAttribute('height',h.toFixed(1));
+  }
+
+  var LATEX={F0:'F_0',k:'k',xi:'x_i',xf:'x_f',m:'m',vi:'v_i',fp:'f_p'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)});
+      if(v!=='fp') fit(); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  fit(); update();
+
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.fp, val=+s.input.value+0.02; if(val>1)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,50); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

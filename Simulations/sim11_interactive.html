@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diffraction &amp; Interference — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 11 — Single-Slit Diffraction &amp; Double-Slit Interference</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Light of wavelength <b>&#955;</b> passes through slits of width <b>a</b> separated by <b>d</b>, and lands on a screen a distance <b>L</b> away.
+    A single slit spreads the light into a broad <b>diffraction envelope</b> whose central peak narrows as the slit widens. Two slits add
+    closely spaced <b>interference fringes</b> inside that envelope. Change a and d separately to see the envelope and the fringes respond
+    independently.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Slit geometry</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="180" viewBox="0 0 330 180">
+            <g id="fronts" stroke="var(--field)" stroke-width="1.5" opacity="0.6"></g>
+            <text x="18" y="16" font-size="10" fill="var(--field)">incoming light</text>
+            <!-- barrier -->
+            <rect x="150" y="15" width="10" height="150" fill="#6b5a3a"/>
+            <rect id="slitA" x="149" y="70" width="12" height="16" fill="#fffdf6"/>
+            <rect id="slitB" x="149" y="94" width="12" height="16" fill="#fffdf6"/>
+            <!-- screen -->
+            <rect x="308" y="15" width="6" height="150" fill="#b8a983"/>
+            <text x="286" y="178" font-size="10" fill="#8a7c58">screen (L)</text>
+            <g id="rays" stroke="var(--gold)" stroke-width="1" opacity="0.5"></g>
+            <line id="dbar" x1="168" y1="78" x2="168" y2="102" stroke="var(--red)" stroke-width="1.5"/>
+            <text x="172" y="93" font-size="10" fill="var(--red)">d</text>
+          </svg>
+          <div class="readouts">
+            <div class="r"><span class="k">&#955;</span> = <span class="vb" id="rl">–</span>, <span class="k">a</span> = <span id="ra">–</span>, <span class="k">d</span> = <span id="rd">–</span></div>
+            <div class="r c-blue"><span class="k">central-max half-width</span> &#8776; &#955;L/a = <span class="vb" id="ry1">–</span></div>
+            <div class="r c-gold"><span class="k">fringe spacing</span> &#8776; &#955;L/d = <span class="vb" id="rDf">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Wider slits (a) narrow the diffraction envelope; larger separation (d) squeezes the fringes closer together.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Intensity pattern on the screen</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue = single-slit diffraction envelope; red = the double-slit pattern (fringes) sitting inside that envelope.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Diffraction envelope</b> from one slit of width a.</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Interference fringes</b> from two slits, modulated by the envelope.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="l" data-min="0.40" data-max="0.75" data-step="0.01" data-fixed="2">
+            <div class="row"><label>Wavelength &#955;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="a" data-min="5" data-max="50" data-step="1" data-fixed="0">
+            <div class="row"><label>Slit width a</label><span class="val"></span></div><input type="range"><div class="hint">Narrower slit → wider central peak.</div>
+          </div>
+          <div class="ctl" data-var="d" data-min="20" data-max="150" data-step="1" data-fixed="0">
+            <div class="row"><label>Slit separation d</label><span class="val"></span></div><input type="range"><div class="hint">Larger separation → finer fringes.</div>
+          </div>
+          <div class="ctl" data-var="L" data-min="500" data-max="2000" data-step="50" data-fixed="0">
+            <div class="row"><label>Screen distance L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the slit width a decreases, what happens to the width of the central maximum?</li>
+      <li><b>Manipulate</b><span class="tag">a, d</span> Change a and d separately to tell the diffraction envelope apart from the fringe spacing.</li>
+      <li><b>Explain</b><span class="tag">the two colours</span> Why is the double-slit pattern modulated by the single-slit envelope?</li>
+      <li><b>Calculate</b><span class="tag">&#955;, L, a</span> Estimate the first single-slit minimum from y = &#955;L/a and compare with the graph.</li>
+      <li><b>Extend</b><span class="tag">d &#8776; a</span> What happens to the pattern when d becomes only slightly larger than a?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'screen position (arb. units)', yAxisLabel:'relative intensity I/I₀'});
+  calc.setExpressions([
+    {id:'l',latex:'l=0.60'}, {id:'a',latex:'a=20'}, {id:'d',latex:'d=80'}, {id:'L',latex:'L=1000'},
+    {id:'Tf',latex:'T(y)=\\arctan\\left(\\frac{y}{L}\\right)', hidden:true, secret:true},
+    {id:'Sf',latex:'S(z)=\\left\\{\\left|z\\right|<0.001:1,\\frac{\\sin(z)}{z}\\right\\}', hidden:true, secret:true},
+    {id:'A1',latex:'A_1(y)=\\frac{\\pi a\\sin(T(y))}{l}', hidden:true, secret:true},
+    {id:'B1',latex:'B_1(y)=\\frac{\\pi d\\sin(T(y))}{l}', hidden:true, secret:true},
+    {id:'I1',latex:'I_1(y)=S(A_1(y))^2', hidden:true, secret:true},
+    {id:'I2',latex:'I_2(y)=I_1(y)\\cos(B_1(y))^2', hidden:true, secret:true},
+    {id:'cEnv',latex:'I_1(x)', color:'#2f6fb0', lineWidth:2},
+    {id:'cPat',latex:'I_2(x)', color:'#c0392b', lineWidth:1.8},
+    {id:'m1',latex:'\\left(\\frac{l L}{a},0\\right)', color:'#2f6fb0', pointSize:8},
+    {id:'m2',latex:'\\left(-\\frac{l L}{a},0\\right)', color:'#2f6fb0', pointSize:8}
+  ]);
+  calc.setMathBounds({left:-80, right:80, bottom:0, top:1.2});
+
+  // static incoming wavefronts
+  (function(){ var s=''; for(var i=0;i<5;i++){ var x=30+i*22; s+='<line x1="'+x+'" y1="20" x2="'+x+'" y2="160"/>'; } document.getElementById('fronts').innerHTML=s; })();
+
+  var S={l:0.60,a:20,d:80,L:1000};
+  function update(){
+    document.getElementById('rl').textContent=S.l.toFixed(2);
+    document.getElementById('ra').textContent=S.a;
+    document.getElementById('rd').textContent=S.d;
+    document.getElementById('ry1').textContent=(S.l*S.L/S.a).toFixed(0);
+    document.getElementById('rDf').textContent=(S.l*S.L/S.d).toFixed(0);
+    // slit geometry: gaps of height ~a, separation ~d (scaled to fit)
+    var cy=90, ah=Math.max(4,Math.min(34, S.a*0.6)), sep=Math.max(ah+4,Math.min(70, S.d*0.5));
+    var yA=cy-sep/2-ah/2, yB=cy+sep/2-ah/2;
+    var sa=document.getElementById('slitA'), sb=document.getElementById('slitB');
+    sa.setAttribute('y',yA.toFixed(1)); sa.setAttribute('height',ah.toFixed(1));
+    sb.setAttribute('y',yB.toFixed(1)); sb.setAttribute('height',ah.toFixed(1));
+    var db=document.getElementById('dbar'); db.setAttribute('y1',(cy-sep/2).toFixed(1)); db.setAttribute('y2',(cy+sep/2).toFixed(1));
+    // rays from slit centres to screen
+    var g=document.getElementById('rays'), r='';
+    [cy-sep/2, cy+sep/2].forEach(function(sy){ for(var k=-2;k<=2;k++){ r+='<line x1="160" y1="'+sy.toFixed(1)+'" x2="308" y2="'+(90+k*28)+'"/>'; } });
+    g.innerHTML=r;
+  }
+
+  var LATEX={l:'l',a:'a',d:'d',L:'L'};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  update();
+})();
+</script>
+</body>
+</html>

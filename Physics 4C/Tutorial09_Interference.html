@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4C · Tutorial 9: Interference — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4C &middot; Tutorial 9: Interference</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4C TUTORIAL 9 — INTERFERENCE
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||180;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+/* fringe strip: alternating bright/dark bands */
+function fringes(c, x0, x1, y0, y1, n){
+  const {M}=c;
+  for(let i=0;i<n;i++){
+    const xa=x0+(x1-x0)*i/n;
+    el('rect',{x:M.X(xa),y:M.Y(y1),width:(M.X(x1)-M.X(x0))/n,height:M.Y(y0)-M.Y(y1),
+      fill: i%2? '#2B2317':'#E8D9A8', opacity: i%2? .75:.9},c.svg);
+  }
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  sim:{label:'single- and double-slit patterns', url:'../Simulations/sim11_interactive.html'},
+  prompt:'Professor Ahsan surveys the main principles: path difference, Young’s double slit, intensity by phasors, thin films, and interferometers.',
+  world:{x0:-0.4, x1:10.6, y0:-0.6, y1:4.6},
+  setup(ctx,w){
+    axes2D(ctx.svg, ctx.M, w, {xlab:'sinθ (in units of λ/d)', ylab:'I'});
+    const pts=[]; for(let i=0;i<=200;i++){const x=10.2*i/200;
+      pts.push(ctx.M.X(x)+','+ctx.M.Y(4*Math.pow(Math.cos(Math.PI*x/2),2)));}
+    el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3,'stroke-linejoin':'round'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(7.4),y:ctx.M.Y(4.3),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    t.textContent='two slits: 4I₀ cos²(φ/2) — the cosine-squared comb';
+  },
+  steps:[
+   { say:"Interference: the chapter where light finally behaves as the wave Maxwell promised, and one plus one ranges anywhere from four to zero. When two coherent waves meet, their FIELDS add — not their intensities — so everything turns on the PATH DIFFERENCE: a whole number of wavelengths gives constructive brilliance; an extra half wavelength, perfect darkness.",
+     pose:'talk',
+     board:['\\Delta = m\\lambda:\\ \\text{bright}, \\qquad \\Delta = \\big(m+\\tfrac12\\big)\\lambda:\\ \\text{dark}'] },
+   { say:"Young's double slit is the archetype. Two slits a distance d apart send waves to a screen; toward angle theta the lower slit's journey is longer by d sine theta — that is the entire geometry. Bright fringes where d sine theta equals m lambda; on a screen at distance L, in the small-angle regime, the fringes fall equally spaced, lambda L over d apart.",
+     solo:true, pose:'write',
+     board:['d\\sin\\theta = m\\lambda\\ (\\text{bright}), \\qquad \\Delta y = \\frac{\\lambda L}{d}\\ (\\text{small angles})'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(6.9),y1:M.Y(4.4),x2:M.X(6.9),y2:M.Y(0.4),stroke:'#5C4B30','stroke-width':3.5},c.svg);
+       el('rect',{x:M.X(6.86),y:M.Y(3.15),width:6,height:8,fill:'#F2E8CF'},c.svg);
+       el('rect',{x:M.X(6.86),y:M.Y(1.85),width:6,height:8,fill:'#F2E8CF'},c.svg);
+       arrow(c, 7.0,3.1, 9.6,3.9, {color:GOLD, w:2, dur:500});
+       arrow(c, 7.0,1.8, 9.6,3.7, {color:GOLD, w:2, dur:500});
+       textAt(c, 8.3,0.9, 'path difference d sinθ decides', {fs:11, italic:true, anchor:'middle'});
+     } },
+   { say:"For the full portrait, add the AMPLITUDES with a phase difference phi equal to 2 pi over lambda, times the path difference: the resultant intensity is 4 I-nought cosine squared of phi over two — the cosine-squared comb on the stage, which we shall derive honestly in Example 3. Note the crest: FOUR times one slit's intensity, not two — and the average is exactly two. Interference redistributes; it never embezzles.",
+     pose:'point',
+     board:['I = 4I_0\\cos^2\\frac{\\phi}{2}, \\qquad \\phi = \\frac{2\\pi d\\sin\\theta}{\\lambda}'] },
+   { say:"THIN FILMS play the same game with reflections. Two extra rules: inside a film the wavelength is lambda over n; and a reflection off a HIGHER-index medium flips the phase by half a wavelength — a bounce off a denser wall. Count the flips first, always: zero or two flips leave the ordinary conditions; ONE flip swaps bright and dark wholesale.",
+     pose:'write',
+     board:['2nt = m\\lambda\\ \\text{or}\\ \\big(m+\\tfrac12\\big)\\lambda\\quad(\\text{which is which depends on the FLIP count})',
+            {t:'Reflection off higher n: half-wave flip. Count flips FIRST; one flip swaps the rules.'}] },
+   { say:"Interference is light’s confession that it is a wave — and the confession is extracted with astonishing delicacy. A soap film reports its thickness in colours, to a precision of nanometres, using equipment no fancier than sunlight and your eye. When light plus light can equal darkness, you have left common sense and entered optics; the compensation is that the mathematics is beautiful.",
+     pose:'think',
+     board:[{t:'A soap bubble is an interferometer you can blow for free — precision measured in billionths of a metre.'}] },
+   { say:"And the INTERFEROMETER weaponises all of it: split one beam, send the halves on different errands, reunite them, and count fringes — each fringe one wavelength of optical-path change. Michelson measured with it; LIGO, its descendant, hears colliding black holes. Strategy: path difference in wavelengths, flips counted, amplitudes before intensities. To the examples.",
+     pose:'excited',
+     board:['\\Delta(\\text{optical path}) = N\\lambda\\ \\ (\\text{one fringe per wavelength})',
+            {t:'Strategy: Δ in λ’s → count flips → add amplitudes, then square.'}] },
+  ]
+},
+
+/* ---------- Example 1: Young’s double slit [Basic] ---------- */
+{
+  title:'Young’s double slit with laser light.', diff:'Basic',
+  prompt:'Slits d = 0.250 mm apart are lit with λ = 589 nm; the screen is L = 1.80 m away. Find (a) the fringe spacing, (b) the third-order bright fringe position, and (c) the effect of immersing everything in water (n = 1.33).',
+  world:{x0:-0.4, x1:10.6, y0:-0.6, y1:4.6},
+  setup(ctx,w){
+    fringes({svg:ctx.svg, M:ctx.M, instant:true}, 0.4, 10.2, 3.4, 4.4, 21);
+    textAt({svg:ctx.svg, M:ctx.M, instant:true}, 5.3,2.9, 'the screen, striped by arithmetic', {fs:12.5, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"The experiment that settled a century of argument, on our bench with a sodium-yellow laser: slits a quarter millimetre apart, a screen at arm's length. Three questions, each one line of the same geometry. Quarter-millimetre slits and an arm's length of distance — Young's apparatus is barely more than cardboard and patience, which makes it all the more outrageous that it dethroned Newton's corpuscles.",
+     pose:'talk',
+     board:[{t:'d = 0.250 mm, λ = 589 nm, L = 1.80 m.'},
+            '\\Delta y = \\frac{\\lambda L}{d}'] },
+   { say:"For part a, the fringe spacing, symbol first: lambda L over d — 589 nanometres times 1.8 metres, over 0.25 millimetres — four point two four millimetres between bright stripes. Visible to the naked eye: a wavelength of half a MICRON, amplified into millimetres by pure leverage of geometry.",
+     pose:'write',
+     board:['\\Delta y = \\frac{(589\\times10^{-9})(1.80)}{0.250\\times10^{-3}} = 4.24\\times10^{-3}\\ \\mathrm m = 4.24\\ \\mathrm{mm}',
+            {t:'The ratio L/d ≈ 7000 is the magnifying lever.'}] },
+   { say:"Part b: the third bright fringe sits at three spacings — twelve point seven millimetres off centre. And the professional's audit of the small-angle premise: sine theta-three is 3 lambda over d, seven parts in a thousand — an angle of less than half a degree. The approximation is not merely safe; it is luxurious.",
+     pose:'point',
+     board:['y_3 = 3\\,\\Delta y = 12.7\\ \\mathrm{mm}',
+            '\\text{check: } \\sin\\theta_3 = \\frac{3\\lambda}{d} = 7.1\\times10^{-3}\\ \\checkmark\\ (\\text{tiny — small angles hold})'] },
+   { say:"For part c, the plunge: immerse the entire apparatus in water. Inside the medium the wavelength contracts to lambda over n, and the pattern — whose every dimension is proportional to lambda — contracts with it: 4.24 over 1.33, three point one nine millimetres. Same slits, same screen, same colour of light at the source; the fringes simply huddle closer.",
+     pose:'write',
+     board:['\\lambda_n = \\frac{\\lambda}{n} \\;\\Rightarrow\\; \\Delta y\\prime = \\frac{4.24}{1.33} = 3.19\\ \\mathrm{mm}'] },
+   { say:"The check is conceptual and worth keeping: the FREQUENCY never changed — the colour is untouched — yet the pattern shrank, because interference cares about path difference measured in WAVELENGTHS, and the wavelength is the medium's business. Fringes are rulers marked in lambda; change the ruler, move the marks.",
+     pose:'excited',
+     board:[{t:'Check: pattern scales with λ, and λ shrinks by n underwater ✓. Fringes are rulers graduated in wavelengths.'}] },
+  ]
+},
+
+/* ---------- Example 2: How many fringes exist? [Intermediate] ---------- */
+{
+  title:'How many fringes exist?', diff:'Intermediate',
+  prompt:'Slits with d = 0.0400 mm are lit by a HeNe laser (λ = 632.8 nm). (a) What is the highest-order bright fringe? (b) At what angle does m = 20 appear — and does the small-angle formula still serve?',
+  world:{x0:-0.4, x1:10.6, y0:-0.6, y1:4.6},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'', ylab:''}); },
+  steps:[
+   { say:"A question students rarely think to ask: does the fringe ladder climb forever? It does not — and the ceiling is built into the geometry. The bright-fringe condition demands sine theta equal to m lambda over d, and sines, whatever their ambitions, cannot exceed one.",
+     pose:'talk',
+     board:[{t:'d = 0.0400 mm, λ = 632.8 nm (HeNe red).'},
+            '\\sin\\theta = \\frac{m\\lambda}{d} \\le 1'] },
+   { say:"Part a: the cap is d over lambda — forty microns over 632.8 nanometres — sixty-three point two. The order must be a whole number, so m-max is SIXTY-THREE. Order sixty-four would require a path difference longer than the slit separation itself can offer at any angle — geometry simply runs out of stock.",
+     pose:'write',
+     board:['m_{\\max} \\le \\frac{d}{\\lambda} = \\frac{0.0400\\times10^{-3}}{632.8\\times10^{-9}} = 63.2 \\;\\Rightarrow\\; m_{\\max} = 63'] },
+   { say:"For part b, the twentieth fringe: sine theta is twenty times lambda over d — 0.3164 — an angle of eighteen point four degrees. No longer a small angle by any polite standard. The small-angle approximation is a loyal servant with a strict contract — always CHECK the angle before renewing its employment, as we are about to.",
+     pose:'point',
+     board:['\\sin\\theta_{20} = \\frac{20(632.8\\times10^{-9})}{4.00\\times10^{-5}} = 0.3164 \\;\\Rightarrow\\; \\theta_{20} = 18.4^{\\circ}'],
+     action(c){
+       plotCurve(c, x=>[x, 4*Math.pow(Math.cos(Math.PI*x/1.1),2)*Math.exp(-x*0.12)], 0, 10.2, {color:GOLD, w:2.5, dur:1400});
+       textAt(c, 6.8,3.6, 'fringes crowd and tilt at large θ', {fs:12, italic:true});
+     } },
+   { say:"And here the small-angle formula must be retired with thanks: at eighteen degrees, tangent theta is 0.334 — five per cent away from the sine. On a FLAT screen the position is L tangent theta, exactly, while the fringe CONDITION lives in sine theta; the two no longer chaperone each other, and the fringes spread unevenly toward the edges.",
+     pose:'write',
+     board:['\\tan18.4^{\\circ} = 0.334\\ \\text{vs}\\ \\sin18.4^{\\circ} = 0.316:\\ 5\\%\\ \\text{apart}',
+            'y = L\\tan\\theta\\ (\\text{exact}) \\ne \\frac{m\\lambda L}{d}\\ (\\text{small-angle only})'] },
+   { say:"The check is the habit this example installs: every convenience formula carries a jurisdiction. Lambda L over d is a loyal servant below a few degrees and a quiet liar beyond ten. Know where your approximations live, visit the exact geometry when you leave that neighbourhood, and the double slit will never surprise you.",
+     pose:'excited',
+     board:[{t:'Check: m stops at d/λ ✓; small-angle drifts ~5% by 18° — switch to exact geometry there.'}] },
+  ]
+},
+
+/* ---------- Example 3: Deriving the intensity [Challenging] ---------- */
+{
+  title:'Deriving the fringe intensity (phasor addition).', diff:'Challenging',
+  prompt:'The slits contribute E₁ = E₀ sin ωt and E₂ = E₀ sin(ωt + φ) at the screen. Derive I(φ), and locate the points where I = 2I₀.',
+  world:{x0:-0.4, x1:10.6, y0:-0.6, y1:4.6},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'φ (in units of π)', ylab:'I / I₀'}); },
+  steps:[
+   { say:"Now the honest derivation behind the comb. Each slit delivers a field at the screen — identical amplitudes, phases offset by phi, the memory of the path difference. The commandment of all wave optics: add the FIELDS first; square LAST. Intensities never add; amplitudes do.",
+     pose:'talk',
+     board:['E_1 = E_0\\sin\\omega t, \\qquad E_2 = E_0\\sin(\\omega t+\\phi)',
+            {t:'Fields add; intensities do not. Square at the very end.'}] },
+   { say:"The sum-to-product identity does the work in one line: sine A plus sine B is twice the cosine of half the difference times the sine of the mean. Our resultant: 2 E-nought cosine phi over two, oscillating at the original frequency with a shifted phase. The AMPLITUDE — the part the eye's time-average cares about — is 2 E-nought, times the magnitude of cosine phi over two.",
+     pose:'write',
+     board:['E = 2E_0\\cos\\frac{\\phi}{2}\\,\\sin\\!\\Big(\\omega t+\\frac{\\phi}{2}\\Big) \\;\\Rightarrow\\; E_R = 2E_0\\Big|\\cos\\frac{\\phi}{2}\\Big|'] },
+   { say:"Square for intensity: four I-nought cosine squared phi over two, with phi equal to 2 pi d sine theta over lambda. There is the comb, derived — crests of FOUR single-slit intensities where the phases agree, zeros where they quarrel by pi. Note where the four came from: amplitudes DOUBLE where phases agree, and intensity is amplitude squared — two slits deliver four times one slit's brightness at the crests, paid for by the darkness in between. Interference redistributes; it never creates.",
+     pose:'point',
+     board:['I = 4I_0\\cos^2\\frac{\\phi}{2}, \\qquad \\phi = \\frac{2\\pi d\\sin\\theta}{\\lambda}'],
+     action(c){
+       plotCurve(c, x=>[x, 4*Math.pow(Math.cos(Math.PI*x/2),2)], 0, 10.2, {color:GOLD, w:3, dur:1500});
+       dashLine(c, 0,2, 10.2,2, {color:GREEN, dash:'6,5'});
+       textAt(c, 8.6,2.25, 'I = 2I₀', {fs:12, color:GREEN});
+     } },
+   { say:"The half-maximum points, where I equals 2 I-nought: cosine squared must be one half, so phi is pi over two — a path difference of exactly one QUARTER wavelength. On the screen: d sine theta equals m plus-or-minus one quarter lambda. A quarter wave out of step is the exact midpoint of the intensity's journey from brilliance to black.",
+     pose:'write',
+     board:['4I_0\\cos^2\\frac{\\phi}{2} = 2I_0 \\;\\Rightarrow\\; \\phi = \\frac{\\pi}{2} \\;\\Rightarrow\\; d\\sin\\theta = \\Big(m\\pm\\tfrac14\\Big)\\lambda'] },
+   { say:"And the energy audit that certifies the whole theory: the average of cosine squared is one half, so the mean intensity across the pattern is 2 I-nought — precisely two slits' honest contribution. The bright fringes hold nothing but what the dark fringes surrendered; interference is a redistribution scheme with impeccable books. Nature moves the light about, but she never loses a receipt.",
+     pose:'excited',
+     board:['\\langle I\\rangle = 4I_0\\,\\overline{\\cos^2} = 2I_0\\ \\checkmark\\ (\\text{energy conserved — merely redistributed})'] },
+  ]
+},
+
+/* ---------- Example 4: Anti-reflection coating [Intermediate] ---------- */
+{
+  title:'An anti-reflection coating.', diff:'Intermediate',
+  prompt:'A camera lens (n = 1.50) is coated with magnesium fluoride (n = 1.38). Find the minimum thickness that suppresses reflection at λ = 550 nm.',
+  world:{x0:-6, x1:6, y0:-4.5, y1:4.5},
+  setup(ctx,w){
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    const {svg,M}=ctx;
+    el('rect',{x:M.X(-5.6),y:M.Y(0.8),width:M.X(5.6)-M.X(-5.6),height:M.Y(-0.8)-M.Y(0.8),fill:'#D9D3E8',opacity:.7},svg);
+    el('rect',{x:M.X(-5.6),y:M.Y(-0.8),width:M.X(5.6)-M.X(-5.6),height:M.Y(-4.2)-M.Y(-0.8),fill:'#B8D4E8',opacity:.5},svg);
+    textAt(c, 4.3,0.0, 'MgF₂ 1.38', {fs:12, italic:true});
+    textAt(c, 4.3,-2.4, 'glass 1.50', {fs:12, italic:true});
+    textAt(c, 4.3,2.2, 'air 1.00', {fs:12, italic:true});
+  },
+  steps:[
+   { say:"Why do camera lenses gleam faintly purple? Because someone did this calculation. Every air-glass surface steals about four per cent of the light by reflection; a modern zoom has a dozen such surfaces, and untreated would be a hall of ghosts. The cure is a film of magnesium fluoride, tuned so its two reflections MURDER each other.",
+     pose:'talk',
+     board:[{t:'Air 1.00 / MgF₂ 1.38 / glass 1.50; suppress reflection at λ = 550 nm.'}] },
+   { say:"Count the flips first — always first. Top surface: air to MgF-two, low to HIGH index — flip. Bottom surface: MgF-two to glass, 1.38 to 1.50, higher again — flip. TWO flips, which cancel each other entirely, leaving the path difference alone in charge. For destructive reflection we therefore need the round trip through the film to supply the half-wavelength mismatch itself.",
+     pose:'point',
+     board:[{t:'Flip count: air→MgF₂ (flip) + MgF₂→glass (flip) = 2 flips → cancel.'},
+            '2nt = \\Big(m+\\tfrac12\\Big)\\lambda\\ \\ (\\text{destructive, two flips})'],
+     action(c){
+       arrow(c, -2.6,3.6, -1.5,0.8, {color:GOLD, w:2.5});
+       arrow(c, -1.5,0.8, -0.4,3.6, {color:GOLD, w:2, dash:'5,4'});
+       arrow(c, -1.5,0.8, -0.7,-0.8, {color:GOLD, w:2.5});
+       arrow(c, -0.7,-0.8, 0.1,0.8, {color:PURPLE, w:2});
+       arrow(c, 0.1,0.8, 1.2,3.6, {color:PURPLE, w:2, dash:'5,4'});
+       textAt(c, 0.4,3.0, 'two reflections, half a wave apart', {fs:11.5, italic:true});
+     } },
+   { say:"The minimum thickness takes m equal to zero: t equals lambda over four n — 550 nanometres over four times 1.38 — ninety-nine point six nanometres. The famous QUARTER-WAVE coating: the lower reflection travels down a quarter wave and back up a quarter wave, arriving exactly half a wavelength behind its rival, and the two extinguish.",
+     pose:'write',
+     board:['t = \\frac{\\lambda}{4n} = \\frac{550}{4(1.38)} = 99.6\\ \\mathrm{nm}\\quad(\\text{the quarter-wave coating})'] },
+   { say:"Where does the murdered light go? Nowhere sinister: THROUGH the lens. Energy that cannot leave by reflection is transmitted — the coating does not destroy light, it redirects the vote. Your photographs are brighter by every photon the ghosts surrendered.",
+     pose:'write',
+     board:[{t:'Suppressed reflection = enhanced transmission. The energy books, as ever, balance.'}] },
+   { say:"And the check is the purple gleam itself: the coating is tuned to 550 nanometres, the green centre of vision, so cancellation falters at the spectrum's red and violet ends — and those leftovers mix to the mauve sheen on every coated lens. When an instrument's flaws are this well-chosen, they become its signature.",
+     pose:'excited',
+     board:[{t:'Check: tuned to green → red + violet leak → the purple tint of coated optics ✓'}] },
+  ]
+},
+
+/* ---------- Example 5: The wedge of air [Challenging] ---------- */
+{
+  title:'The wedge of air.', diff:'Challenging',
+  prompt:'Two flat glass plates, 12.0 cm long, touch at one edge and are separated at the other by a 48.0 μm hair. Under λ = 589 nm light from above: (a) how many bright fringes appear, and (b) is the contact-line fringe bright or dark?',
+  world:{x0:-1, x1:13, y0:-1.5, y1:5.5},
+  setup(ctx,w){
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    const {svg,M}=ctx;
+    el('line',{x1:M.X(0),y1:M.Y(0.5),x2:M.X(12),y2:M.Y(0.5),stroke:'#5A88A8','stroke-width':5},svg);
+    el('line',{x1:M.X(0),y1:M.Y(0.6),x2:M.X(12),y2:M.Y(2.6),stroke:'#5A88A8','stroke-width':5},svg);
+    el('circle',{cx:M.X(12.2),cy:M.Y(1.55),r:7,fill:'#8A5A24'},svg);
+    textAt(c, 12.2,0.4, 'hair, 48 μm', {fs:11.5, italic:true, anchor:'middle'});
+    textAt(c, 1.2,3.4, 'contact line', {fs:11.5, italic:true});
+  },
+  steps:[
+   { say:"Two flat plates, kissing at one edge and propped apart at the other by a single human hair — and the sliver of AIR between them becomes a thin film of smoothly varying thickness. Light from above reflects off both faces of that air wedge, and the result is a barcode that measures the hair.",
+     pose:'talk',
+     board:[{t:'Plates 12.0 cm; air gap 0 → D = 48.0 μm; λ = 589 nm from above.'}] },
+   { say:"Flips first: the top of the air film is a glass-to-air reflection — high to LOW — no flip. The bottom is air-to-glass — low to HIGH — one flip. ONE flip total, so the rules swap: brightness now demands 2t equal to m plus one half lambda, and darkness the whole-number condition. The swap is the entire personality of this problem.",
+     pose:'point',
+     board:[{t:'Top: glass→air, no flip. Bottom: air→glass, FLIP. One flip → rules swapped.'},
+            '\\text{bright: } 2t = \\Big(m+\\tfrac12\\Big)\\lambda, \\qquad \\text{dark: } 2t = m\\lambda\\quad(n_{\\rm film}=1)'] },
+   { say:"For part a, the census. The thickness climbs linearly from zero to forty-eight microns, and each bright fringe sits at its own thickness t-m. The highest order fits when 2D over lambda, minus a half, is not exceeded: two times forty-eight microns over 589 nanometres is 163.0 — so m runs from zero to one hundred and sixty-two: ONE HUNDRED AND SIXTY-THREE bright fringes, evenly spaced, because a linear wedge grows its thickness at a constant rate.",
+     pose:'write',
+     board:['m \\le \\frac{2D}{\\lambda} - \\frac12 = \\frac{2(48.0\\times10^{-6})}{589\\times10^{-9}} - 0.5 = 163.0 - 0.5',
+            'm = 0,1,\\ldots,162:\\ \\ 163\\ \\text{bright fringes, evenly spaced}'],
+     action(c){
+       fringes(c, 0.3, 11.7, 4.0, 4.9, 27);
+       textAt(c, 6,5.15, 'the wedge’s barcode (schematic)', {fs:11.5, italic:true, anchor:'middle'});
+     } },
+   { say:"For part b, the contact line, where the thickness is exactly zero. No path difference at all — yet ONE phase flip remains, unpartnered. The reflections meet half a wave apart and cancel: the contact fringe is DARK. Two plates touching in perfect optical contact reflect nothing along that line — darkness precisely where naive intuition promises the brightest agreement.",
+     pose:'write',
+     board:['t = 0:\\ \\Delta_{\\rm path} = 0\\ \\text{but one flip} \\Rightarrow \\text{destructive: DARK at contact}'] },
+   { say:"The check is a classic of the laboratory: Newton's rings — a lens resting on a flat — show the same dark CENTRE for the same reason, one lonely flip. And the working optician reads these fringes daily: a perfectly flat pair of plates draws perfectly straight, even stripes, and every wiggle in the barcode betrays a bump of a quarter wavelength. You have just built a surface gauge accurate to a ten-thousandth of a millimetre from two pieces of glass and a hair.",
+     pose:'excited',
+     board:[{t:'Check: dark contact fringe = Newton’s dark centre (one flip) ✓. Fringe straightness = flatness gauge to λ/4.'}] },
+  ]
+},
+
+/* ---------- Example 6: Michelson measures a gas [Challenging] ---------- */
+{
+  title:'Measuring the index of a gas (Michelson).', diff:'Challenging',
+  prompt:'A cell of interior length ℓ = 3.00 cm sits in one arm of a Michelson interferometer (λ = 589 nm). As the cell is evacuated, N = 29 fringes sweep past. Find the refractive index of the gas.',
+  world:{x0:-1, x1:13, y0:-1, y1:9},
+  setup(ctx,w){
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    const {svg,M}=ctx;
+    el('rect',{x:M.X(5.4),y:M.Y(5.2),width:M.X(7.4)-M.X(5.4),height:M.Y(3.8)-M.Y(5.2),fill:'#D4E2EE',stroke:'#5A88A8','stroke-width':2},svg);
+    el('line',{x1:M.X(3.4),y1:M.Y(3.4),x2:M.X(4.6),y2:M.Y(4.6),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(4),y1:M.Y(4),x2:M.X(4),y2:M.Y(8.4),stroke:GOLD,'stroke-width':2.5},svg);
+    el('line',{x1:M.X(0.4),y1:M.Y(4),x2:M.X(11.6),y2:M.Y(4),stroke:GOLD,'stroke-width':2.5},svg);
+    el('line',{x1:M.X(11.6),y1:M.Y(3),x2:M.X(11.6),y2:M.Y(5),stroke:'#5C4B30','stroke-width':4},svg);
+    el('line',{x1:M.X(3),y1:M.Y(8.4),x2:M.X(5),y2:M.Y(8.4),stroke:'#5C4B30','stroke-width':4},svg);
+    textAt(c, 6.4,5.7, 'gas cell, ℓ = 3 cm', {fs:11.5, italic:true, anchor:'middle'});
+    textAt(c, 4,2.9, 'beam splitter', {fs:11, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"The finale belongs to the instrument that turned interference into a measuring device of absurd delicacy: the MICHELSON INTERFEROMETER. One beam becomes two at a half-silvered mirror; the twins travel separate arms, reunite, and interfere. Any change in either arm's OPTICAL path — physical length times index — marches fringes past the detector, one fringe per wavelength. Today we weigh the refractive index of a gas with it.",
+     pose:'talk',
+     board:[{t:'Cell ℓ = 3.00 cm in one arm; λ = 589 nm; evacuating sweeps N = 29 fringes.'}] },
+   { say:"The bookkeeping, and the factor everyone forgets: light traverses the cell TWICE per round trip — out to the mirror and back. Full of gas, each pass has optical length n ell; evacuated, just ell. The total change of optical path as the pump runs is therefore two ell times n minus one.",
+     pose:'point',
+     board:['\\Delta(\\text{optical path}) = 2\\ell(n-1)\\quad(\\text{the arm is traversed TWICE})'] },
+   { say:"Each fringe that glides past is one wavelength of change — twenty-nine fringes, twenty-nine wavelengths. Set 2 ell n minus one equal to N lambda and solve: n equals one plus N lambda over 2 ell. Counting fringes is interferometry's entire business model: convert an invisible change — a whisker of gas, a nanometre of mirror travel — into a countable parade of bright and dark. The eye becomes a micrometer.",
+     pose:'write',
+     board:['2\\ell(n-1) = N\\lambda \\;\\Rightarrow\\; n = 1 + \\frac{N\\lambda}{2\\ell}'] },
+   { say:"Now we put in the numbers: twenty-nine times 589 nanometres, over six centimetres — 2.85 ten-to-the-minus-4. The index: one point nought nought nought two eight five. The tabulated value for air is 1.000293 — we have measured a deviation from unity of three parts in ten thousand, on a bench, by counting stripes.",
+     pose:'write',
+     board:['n = 1 + \\frac{29(589\\times10^{-9})}{2(0.0300)} = 1 + 2.85\\times10^{-4} = 1.000285',
+            {t:'Tabulated air: 1.000293 — bench-top agreement to parts in 10⁴.'}] },
+   { say:"The perspective, and the course's finest closing check: the total path change here was seventeen MICRONS, rendered as twenty-nine countable events — the interferometer is a micrometre with a wavelength for a vernier. Stretch the arms to four kilometres, refine the counting by twelve orders of magnitude, and this same instrument — as LIGO — hears the space-time shudder of black holes colliding a billion light-years away. From a gas cell to gravitational waves: one geometry, scaled by audacity. Interference rests.",
+     pose:'excited',
+     board:[{t:'Check: Δpath = 29λ ≈ 17 μm, counted exactly. Same geometry + 10¹² refinement = LIGO.'}] },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projectile Motion — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 2 — Projectile Motion with Velocity Components</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A projectile is launched with speed <b>v&#8320;</b> at angle <b>&#952;</b> from height <b>y&#8320;</b>. The motion splits into two
+    independent pieces: horizontal velocity <span class="eq">v&#8339; = v&#8320;cos&#952;</span> stays <em>constant</em>, while vertical velocity
+    <span class="eq">v&#8342; = v&#8320;sin&#952; &#8722; gt</span> changes under gravity. Together they trace a parabola. Press <b>Play</b> to fly the shot
+    and watch the velocity split into a fixed horizontal arrow and a shrinking-then-growing vertical arrow.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Launch geometry</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="170" viewBox="0 0 330 170">
+            <line x1="15" y1="140" x2="315" y2="140" stroke="#b8a983" stroke-width="2"/>
+            <g id="hatch" stroke="#d8cba6" stroke-width="1"></g>
+            <line id="v0" x1="45" y1="140" x2="150" y2="70" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#pah)"/>
+            <line id="vx" x1="45" y1="140" x2="150" y2="140" stroke="var(--green)" stroke-width="2.5" marker-end="url(#pgx)"/>
+            <line id="vy" x1="150" y1="140" x2="150" y2="70" stroke="var(--red)" stroke-width="2.5" stroke-dasharray="4 3" marker-end="url(#pry)"/>
+            <path id="ang" d="" fill="none" stroke="#6b5a3a" stroke-width="1.5"/>
+            <text id="v0l" x="120" y="86" font-size="12" fill="var(--accent-dk)" font-style="italic">v&#8320;</text>
+            <text id="vxl" x="92" y="154" font-size="11" fill="var(--green)">v&#8339;</text>
+            <text id="vyl" x="154" y="108" font-size="11" fill="var(--red)">v&#8342;</text>
+            <text id="dl" x="70" y="132" font-size="11" fill="#6b5a3a" font-style="italic">&#952;</text>
+            <defs>
+              <marker id="pah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--accent-dk)"/></marker>
+              <marker id="pgx" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="pry" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-green"><span class="k">v&#8339;</span> = <span class="vb" id="rvx">–</span> m/s <span style="opacity:.7">(constant)</span></div>
+            <div class="r c-red"><span class="k">v&#8342;&#8320;</span> = <span class="vb" id="rvy">–</span> m/s</div>
+            <div class="r c-accent"><span class="k">range R</span> = <span class="vb" id="rR">–</span> m</div>
+            <div class="r c-accent"><span class="k">max height H</span> = <span class="vb" id="rH">–</span> m</div>
+            <div class="r" style="opacity:.85"><span class="k">flight time T</span> = <span id="rT">–</span> s</div>
+          </div>
+        </div>
+        <div class="cap">Caramel = launch velocity v&#8320;; green = its constant horizontal part; red = its vertical part.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Trajectory</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Purple = full path; red = distance covered so far; dashed line = maximum height; the small arrows at the projectile are its live velocity components.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--purple)"></span><span><b>Full trajectory</b> — the complete parabola from launch to landing.</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Path travelled so far</b> up to the current time t.</span></li>
+          <li><span class="dot" style="background:var(--accent-dk)"></span><span><b>Projectile</b> with green (horizontal) and red (vertical) velocity arrows.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="3.6" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"><div class="hint">Flies the projectile along the path.</div>
+          </div>
+          <div class="ctl" data-var="v0" data-min="5" data-max="40" data-step="1" data-fixed="0">
+            <div class="row"><label>Launch speed v&#8320;</label><span class="val"></span></div><input type="range"><div class="hint">Faster launch → longer, higher flight.</div>
+          </div>
+          <div class="ctl" data-var="D" data-min="0" data-max="90" data-step="1" data-fixed="0">
+            <div class="row"><label>Launch angle &#952; (degrees)</label><span class="val"></span></div><input type="range"><div class="hint">Try complementary angles like 30° and 60°.</div>
+          </div>
+          <div class="ctl" data-var="y0" data-min="0" data-max="30" data-step="1" data-fixed="0">
+            <div class="row"><label>Launch height y&#8320;</label><span class="val"></span></div><input type="range"><div class="hint">Launch from a cliff.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For launch and landing at the same height, which gives more range — 30° or 60°?</li>
+      <li><b>Manipulate</b><span class="tag">&#952;, y&#8320;=0</span> With y&#8320; = 0, compare complementary angles such as 30° and 60°. What do you notice about the ranges?</li>
+      <li><b>Explain</b><span class="tag">the arrows</span> Why does the horizontal velocity stay constant while the vertical velocity changes linearly?</li>
+      <li><b>Calculate</b><span class="tag">v&#8320;, &#952;</span> For v&#8320; = 25 m/s and &#952; = 45°, calculate the range and maximum height, then check them against the readouts.</li>
+      <li><b>Extend</b><span class="tag">y&#8320;</span> Turn on a nonzero launch height. Why do complementary angles no longer give equal ranges?</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var g=9.8;
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'horizontal distance x (m)', yAxisLabel:'height y (m)'});
+  calc.setExpressions([
+    {id:'g',latex:'g=9.8'}, {id:'v0',latex:'v_0=25'}, {id:'D',latex:'D=45'}, {id:'y0',latex:'y_0=0'}, {id:'t',latex:'t=0'},
+    {id:'p',latex:'p=\\frac{D\\pi}{180}'},               // angle in radians (name 'r' avoided)
+    {id:'vx',latex:'v_x=v_0\\cos(p)'},
+    {id:'T',latex:'T=\\frac{v_0\\sin(p)+\\sqrt{(v_0\\sin(p))^2+2g y_0}}{g}'},
+    {id:'R',latex:'R=v_x T'}, {id:'H',latex:'H=y_0+\\frac{(v_0\\sin(p))^2}{2g}'},
+    {id:'Xf',latex:'X(s)=v_x s', hidden:true, secret:true},
+    {id:'Yf',latex:'Y(s)=y_0+v_0\\sin(p)s-0.5g s^2', hidden:true, secret:true},
+    {id:'vyf',latex:'w(s)=v_0\\sin(p)-g s', hidden:true, secret:true},
+    // explicit parabola in x (renders reliably)
+    {id:'cPath',latex:'y_0+\\tan(p)x-\\frac{g x^2}{2v_x^2}\\left\\{0\\le x\\le R\\right\\}', color:'#6042a6', lineWidth:2.5},
+    {id:'cTrav',latex:'y_0+\\tan(p)x-\\frac{g x^2}{2v_x^2}\\left\\{0\\le x\\le v_x t\\right\\}', color:'#c0392b', lineWidth:3},
+    {id:'Hl',latex:'y=H\\left\\{0\\le x\\le R\\right\\}', color:'#9a9a9a', lineStyle:Desmos.Styles.DASHED, lineWidth:1.3},
+    {id:'land',latex:'(R,0)', color:'#8a5a24'},
+    {id:'P',latex:'P=(X(t),Y(t))', color:'#8a5a24', showLabel:true, label:'', pointSize:12},
+    {id:'avx',latex:'\\operatorname{polygon}((X(t),Y(t)),(X(t)+0.18v_x,Y(t)))', color:'#2e8b57', lineWidth:3},
+    {id:'avy',latex:'\\operatorname{polygon}((X(t),Y(t)),(X(t),Y(t)+0.18w(t)))', color:'#c0392b', lineWidth:3}
+  ]);
+
+  // ground hatching in schematic
+  (function(){ var s=''; for(var x=18;x<=312;x+=14){ s+='<line x1="'+x+'" y1="140" x2="'+(x-8)+'" y2="150"/>'; } document.getElementById('hatch').innerHTML=s; })();
+
+  var S={v0:25,D:45,y0:0,t:0};
+  function fit(){
+    var p=S.D*Math.PI/180, vx=S.v0*Math.cos(p), vy=S.v0*Math.sin(p);
+    var T=(vy+Math.sqrt(vy*vy+2*g*S.y0))/g, R=vx*T, H=S.y0+vy*vy/(2*g);
+    var xmax=Math.max(R*1.1,5), ymax=Math.max(H*1.25,S.y0*1.3,5);
+    calc.setMathBounds({left:-0.06*xmax, right:xmax, bottom:-0.08*ymax, top:ymax});
+    return {vx:vx,vy:vy,T:T,R:R,H:H};
+  }
+  function scene(k){
+    var p=S.D*Math.PI/180, L=Math.min(105, S.v0*3.0), ox=45, oy=140;
+    var tx=ox+L*Math.cos(p), ty=oy-L*Math.sin(p);
+    document.getElementById('v0').setAttribute('x2',tx.toFixed(1)); document.getElementById('v0').setAttribute('y2',ty.toFixed(1));
+    document.getElementById('vx').setAttribute('x2',tx.toFixed(1));
+    document.getElementById('vy').setAttribute('x1',tx.toFixed(1)); document.getElementById('vy').setAttribute('x2',tx.toFixed(1)); document.getElementById('vy').setAttribute('y2',ty.toFixed(1));
+    document.getElementById('v0l').setAttribute('x',(ox+L*0.55*Math.cos(p)-14).toFixed(1)); document.getElementById('v0l').setAttribute('y',(oy-L*0.55*Math.sin(p)-4).toFixed(1));
+    document.getElementById('vxl').setAttribute('x',(ox+L*Math.cos(p)*0.5-6).toFixed(1));
+    document.getElementById('vyl').setAttribute('x',(tx+5).toFixed(1)); document.getElementById('vyl').setAttribute('y',(oy-L*Math.sin(p)*0.5).toFixed(1));
+    var Rr=26; document.getElementById('ang').setAttribute('d', S.D<0.5?'':'M '+(ox+Rr)+' '+oy+' A '+Rr+' '+Rr+' 0 0 0 '+(ox+Rr*Math.cos(p)).toFixed(1)+' '+(oy-Rr*Math.sin(p)).toFixed(1));
+    document.getElementById('rvx').textContent=k.vx.toFixed(1);
+    document.getElementById('rvy').textContent=k.vy.toFixed(1);
+    document.getElementById('rR').textContent=k.R.toFixed(1);
+    document.getElementById('rH').textContent=k.H.toFixed(1);
+    document.getElementById('rT').textContent=k.T.toFixed(2);
+  }
+
+  var LATEX={v0:'v_0',D:'D',y0:'y_0',t:'t'};
+  var sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){
+      S[v]=+input.value; out.textContent=(+input.value).toFixed(fx)+(v==='D'?'°':'');
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)});
+      if(v!=='t'){ var k=fit(); scene(k); sliders.t.input.max=Math.max(0.2,k.T.toFixed(2)); }
+      else scene(fit());
+    });
+    out.textContent=S[v].toFixed(fx)+(v==='D'?'°':'');
+  });
+  var k0=fit(); scene(k0); sliders.t.input.max=k0.T.toFixed(2);
+
+  var playing=false, timer=null, btn=document.getElementById('play');
+  function step(){ var s=sliders.t, val=+s.input.value+(+s.input.max)/60; if(val>+s.input.max)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,45); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

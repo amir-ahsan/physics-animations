@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4C · Tutorial 6: Sound — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4C &middot; Tutorial 6: Sound</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4C TUTORIAL 6 — SOUND
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||140;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+/* expanding circular wavefronts from a (possibly moving) source */
+function wavefronts(c, x0, y0, vx, n, dur){
+  const {M}=c; const rings=[];
+  for(let k=0;k<n;k++) rings.push(el('circle',{cx:M.X(x0),cy:M.Y(y0),r:0,fill:'none',stroke:'#B5793B','stroke-width':2,opacity:.8},c.svg));
+  const sc = Math.abs(M.X(1)-M.X(0));
+  tween(u=>{ rings.forEach((rg,k)=>{ const tk = u - k/n; if(tk<=0){ rg.setAttribute('r',0); return; }
+    rg.setAttribute('cx', M.X(x0 + vx*(k/n)));           /* emitted where the source WAS */
+    rg.setAttribute('r', 5.2*sc*tk); rg.setAttribute('opacity', .85*(1-tk)); }); }, dur, c.instant);
+  return rings;
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  prompt:'Professor Ahsan surveys the main principles: the speed of sound, intensity and decibels, standing waves in pipes, and the Doppler effect.',
+  world:{x0:-1, x1:11, y0:-4.5, y1:4.5},
+  setup(ctx,w){
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    for(const r of [1.1,2.2,3.3,4.2]) el('circle',{cx:ctx.M.X(3.4),cy:ctx.M.Y(0),r:Math.abs(ctx.M.X(r)-ctx.M.X(0)),fill:'none',stroke:'#B5793B','stroke-width':2,opacity:.75},ctx.svg);
+    el('circle',{cx:ctx.M.X(3.4),cy:ctx.M.Y(0),r:6,fill:'#5C4B30'},ctx.svg);
+    textAt(c, 3.4,-4.1, 'pressure ripples, spreading at v', {fs:12.5, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"Sound: the travelling wave of last tutorial, now running through AIR as ripples of pressure. Its speed is set entirely by the medium — root of gamma R T over M for an ideal gas — about three hundred and forty-three metres per second at room temperature, rising with the square root of the kelvin temperature and caring nothing for the loudness or pitch of the message.",
+     pose:'talk',
+     board:['v = \\sqrt{\\frac{\\gamma RT}{M}} \\approx 343\\ \\mathrm{m/s}\\ (20^{\\circ}\\mathrm C), \\qquad v \\propto \\sqrt{T}'] },
+   { say:"Loudness is INTENSITY — power per area — and a point source spreads its power over spheres: I equals P over 4 pi r squared, the inverse square law. Because ears work in ratios, we measure in DECIBELS: beta equals ten log I over I-nought, with the reference ten-to-the-minus-12 watts per square metre at the threshold of hearing.",
+     pose:'write',
+     board:['I = \\frac{P}{4\\pi r^2}, \\qquad \\beta = 10\\log\\frac{I}{I_0}, \\quad I_0 = 10^{-12}\\ \\mathrm{W/m^2}',
+            {t:'dB changes depend only on RATIOS: ×10 in I ⇒ +10 dB; ×2 ⇒ +3 dB.'}] },
+   { say:"Pipes are strings for air. OPEN ends host antinodes, CLOSED ends host nodes. Open-open pipes fit half-wavelengths and sound every harmonic, f-n equals n v over 2 L; open-closed pipes fit QUARTER wavelengths and sound only the ODD harmonics, f-n equals n v over 4 L. Same length, different boundary, an octave apart — flute and clarinet, in one formula.",
+     solo:true, pose:'point',
+     board:['\\text{open–open: } f_n = \\frac{nv}{2L}\\ (n=1,2,3\\ldots) \\qquad \\text{open–closed: } f_n = \\frac{nv}{4L}\\ (n=1,3,5\\ldots)'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(6.6),y:M.Y(3.9),width:M.X(10.4)-M.X(6.6),height:M.Y(2.3)-M.Y(3.9),fill:'none',stroke:'#8A5A24','stroke-width':2.5,rx:3},c.svg);
+       plotCurve(c, x=>[x, 3.1+0.7*Math.sin(Math.PI*(x-6.6)/3.8)], 6.6, 10.4, {color:GOLD, w:2.5, dur:700});
+       plotCurve(c, x=>[x, 3.1-0.7*Math.sin(Math.PI*(x-6.6)/3.8)], 6.6, 10.4, {color:GOLD, w:2, dur:700});
+       textAt(c, 8.5,1.7, 'open pipe: antinodes at both ends', {fs:11, italic:true, anchor:'middle'});
+     } },
+   { say:"Motion bends pitch: the DOPPLER effect. One formula rules all four cases — f-observed equals f-source times v plus-or-minus v-observer, over v minus-or-minus v-source — and the signs are chosen by one honest question per motion: does it bring the parties TOGETHER, raising the pitch, or apart, lowering it? Ask the question; never memorise the matrix.",
+     pose:'write',
+     board:['f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}',
+            {t:'One question per sign: approaching → higher f; receding → lower f.'}] },
+   { say:"Sound is intimacy disguised as physics: someone speaks, and thirty feet away a membrane in YOUR ear moves less than the width of an atom — and you not only detect it, you recognise the voice, the mood, the sarcasm. The decibel scale is logarithmic because your hearing spans a trillion-fold range of power. Evolution built a better instrument than anything in this laboratory.",
+     pose:'think',
+     board:[{t:'Your eardrum reads displacements smaller than an atom, across 12 orders of magnitude. Respect the hardware.'}] },
+   { say:"And mind the asymmetry we shall derive in Example 5: a moving SOURCE squeezes the wavelengths themselves; a moving OBSERVER merely harvests crests at a different rate. Same relative speed, different formulas — because sound lives in a medium, and the medium keeps score. Strategy: kelvin for speed, ratios for decibels, boundaries for pipes, and the together-or-apart question for every Doppler sign. To the examples.",
+     pose:'excited',
+     board:[{t:'Source motion changes λ; observer motion changes the encounter rate. The medium keeps score.'},
+            {t:'Strategy: v from T → dB from ratios → pipes from boundaries → Doppler signs by “together or apart?”'}] },
+  ]
+},
+
+/* ---------- Example 1: Speed of sound [Basic] ---------- */
+{
+  title:'The speed of sound, from the gas up.', diff:'Basic',
+  prompt:'(a) Compute v in air (γ = 1.40, M = 28.97 g/mol) at 20.0 °C and at 35.0 °C. (b) A thunderclap arrives 4.0 s after the flash; how far away was the strike?',
+  world:{x0:-1, x1:11, y0:-4.5, y1:4.5},
+  setup(ctx,w){},
+  steps:[
+   { say:"We open by computing the most famous speed in everyday physics from the gas itself. Sound is a pressure wave carried by molecular collisions, so its speed comes from kinetic theory's constants: root of gamma R T over M — with T in kelvin and M in kilograms per mole, the two unit traps of the term standing shoulder to shoulder.",
+     pose:'talk',
+     board:[{t:'Air: γ = 1.40, M = 28.97 g/mol = 0.02897 kg/mol.'},
+            'v = \\sqrt{\\frac{\\gamma RT}{M}}'] },
+   { say:"At twenty celsius — 293.15 kelvin: 1.4 times 8.314 times 293.15, over 0.02897 — the root of 1.178 ten-to-the-fifth — three hundred and forty-three metres per second. The number every physicist carries as pocket change. Three hundred and forty-three metres per second — commit it to memory alongside your own birthday; between thunderstorms, echoes, and concert halls, you will consult it more often.",
+     pose:'write',
+     board:['v_{293} = \\sqrt{\\frac{(1.40)(8.314)(293.15)}{0.02897}} = \\sqrt{1.178\\times10^{5}} = 343\\ \\mathrm{m/s}'] },
+   { say:"At thirty-five degrees, deploy the professional's shortcut: the speed scales as ROOT T, so simply multiply by root of 308 over 293 — three hundred and fifty-two metres per second. No constants revisited; ratios spare you the arithmetic and its opportunities for error. Sound runs faster on hot days, which is why distant motorways murmur differently in summer.",
+     pose:'point',
+     board:['v_{308} = 343\\sqrt{\\frac{308.15}{293.15}} = 352\\ \\mathrm{m/s}\\quad(\\text{the } \\sqrt{T}\\ \\text{shortcut})'] },
+   { say:"For part b, the storm. Light crosses the distance essentially instantly; the sound trudges behind at 343. Four seconds of gap means d equals v t — one point four kilometres. Watch the wavefronts crawl. The flash-to-thunder count is genuine field physics: three seconds per kilometre, five per mile — a measuring instrument distributed free with every storm.",
+     pose:'write',
+     board:['d = vt = (343)(4.0) = 1.4\\times10^{3}\\ \\mathrm m = 1.4\\ \\mathrm{km}'],
+     action(c){
+       wavefronts(c, 1.2, 0, 0, 4, 2800);
+       textAt(c, 8.4,-3.2, 'flash… one, two, three, four… boom', {fs:12, italic:true, anchor:'middle'});
+     } },
+   { say:"The check is folklore made quantitative: three seconds per kilometre, five per mile — the counting rule every scout learns is just v equals 343 wearing hiking boots. When the count shrinks between flashes, the storm is closing; physics as weather advice.",
+     pose:'excited',
+     board:[{t:'Check: 343 m/s ≈ 1 km per 3 s ≈ 1 mile per 5 s — the thunder-counting rule ✓'}] },
+  ]
+},
+
+/* ---------- Example 2: Decibels and inverse square [Intermediate] ---------- */
+{
+  title:'Decibels and the inverse square law.', diff:'Intermediate',
+  prompt:'A speaker radiates P = 0.500 W uniformly. (a) Find I and β at r = 3.00 m. (b) At what distance does the level fall to 60.0 dB? (c) What does doubling the distance always do to β?',
+  world:{x0:-15, x1:230, y0:-12, y1:108, aniso:true},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'r (m)', ylab:'β (dB)'}); },
+  steps:[
+   { say:"Half a watt of sound — a modest speaker — and the two bookkeeping systems that describe it: intensity, honest watts per square metre; and decibels, the logarithmic currency our ears actually trade in. A point source butters its power over ever-larger spheres, so intensity falls as one over r squared.",
+     pose:'talk',
+     board:[{t:'P = 0.500 W, uniform. (a) I and β at 3.00 m; (b) r for 60.0 dB; (c) doubling r.'},
+            'I = \\frac{P}{4\\pi r^2}, \\qquad \\beta = 10\\log\\frac{I}{I_0}'] },
+   { say:"Let us take part a. At three metres the sphere has area 4 pi times nine: I equals 0.5 over that — 4.42 ten-to-the-minus-3 watts per square metre. Into decibels: ten log of that over ten-to-the-minus-12 — ten log of 4.42 ten-to-the-9 — ninety-six and a half decibels. Rock-concert territory from half a watt; the ear is an astonishing instrument.",
+     pose:'write',
+     board:['I = \\frac{0.500}{4\\pi(3.00)^2} = 4.42\\times10^{-3}\\ \\mathrm{W/m^2}',
+            '\\beta = 10\\log(4.42\\times10^{9}) = 96.5\\ \\mathrm{dB}'] },
+   { say:"Part b runs the machine backwards. Sixty decibels — conversation level — means I equals I-nought times ten to the six: one microwatt per square metre. Invert the inverse square law: r equals root of P over 4 pi I — one hundred and ninety-nine metres. Watch the curve: the level falls fast near the speaker and ever more grudgingly far away — the logarithm flattening the inverse square.",
+     pose:'point',
+     board:['I = 10^{-12}\\times10^{6.00} = 1.00\\times10^{-6}\\ \\mathrm{W/m^2}',
+            'r = \\sqrt{\\frac{P}{4\\pi I}} = \\sqrt{\\frac{0.500}{4\\pi(1.00\\times10^{-6})}} = 199\\ \\mathrm m'],
+     action(c){
+       plotCurve(c, r=>[r, 10*Math.log10(0.5/(4*Math.PI*r*r)/1e-12)], 1.5, 220, {color:GOLD, w:3.5, dur:1800});
+       el('circle',{cx:c.M.X(3),cy:c.M.Y(96.5),r:5,fill:RED},c.svg);
+       textAt(c, 10,99, '96.5 dB at 3 m', {fs:12, color:RED});
+       el('circle',{cx:c.M.X(199),cy:c.M.Y(60),r:5,fill:GREEN},c.svg);
+       textAt(c, 158,52, '60 dB at 199 m', {fs:12, color:GREEN});
+     } },
+   { say:"For part c, the universal rule. Double any distance: intensity quarters, and ten log of one quarter is MINUS six decibels — always, from any starting point. Decibel arithmetic cares only about ratios, which is precisely why engineers adore it: the same minus six applies at three metres or three hundred.",
+     pose:'write',
+     board:['r \\to 2r:\\ I \\to \\frac{I}{4}, \\qquad \\Delta\\beta = 10\\log\\frac14 = -6.0\\ \\mathrm{dB}\\ (\\text{always})'] },
+   { say:"The check, and a health warning wrapped in a logarithm: ninety-six decibels at three metres but sixty at two hundred means the inverse square law is your hearing's best friend — distance is free attenuation. Every plus-ten decibels is a factor of TEN in intensity; the scale hides violence behind small numbers. Respect the exponent, and stand back from the speakers.",
+     pose:'excited',
+     board:[{t:'Check: (199/3)² ≈ 4400 ≈ 10^3.65 → 36.5 dB drop: 96.5 − 36.5 = 60 ✓'}] },
+  ]
+},
+
+/* ---------- Example 3: One pipe, two personalities [Intermediate] ---------- */
+{
+  title:'One pipe, two personalities.', diff:'Intermediate',
+  prompt:'A pipe is L = 0.620 m long. Find its first three resonant frequencies when (a) both ends are open, and (b) one end is closed.',
+  world:{x0:-0.06, x1:0.72, y0:-2.6, y1:2.6},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('line',{x1:M.X(0),y1:M.Y(1.15),x2:M.X(0.62),y2:M.Y(1.15),stroke:'#8A7D60','stroke-width':3},svg);
+    el('line',{x1:M.X(0),y1:M.Y(-1.15),x2:M.X(0.62),y2:M.Y(-1.15),stroke:'#8A7D60','stroke-width':3},svg);
+    textAt({svg,M,instant:true}, 0.31,-2.3, 'the same 0.620 m of pipe — two boundary conditions', {fs:12.5, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"One length of pipe, two musical personalities, decided entirely at the ends. An OPEN end lets the air swing freely — a displacement antinode; a CLOSED end pins it — a node. The boundary conditions choose which standing waves may live inside, and therefore what the pipe is permitted to sing.",
+     pose:'talk',
+     board:[{t:'L = 0.620 m, v = 343 m/s. (a) open–open; (b) open–closed.'},
+            {t:'Open end: antinode. Closed end: node.'}] },
+   { say:"Open-open first: antinodes at BOTH ends means half-wavelengths fit exactly — the string's arithmetic transplanted to air. The fundamental: v over 2 L — 343 over 1.24 — two hundred and seventy-seven hertz, with every integer multiple welcome above it: 553, 830, the full harmonic congregation.",
+     pose:'write',
+     board:['f_1 = \\frac{v}{2L} = \\frac{343}{1.240} = 277\\ \\mathrm{Hz}, \\quad f_2 = 553\\ \\mathrm{Hz}, \\quad f_3 = 830\\ \\mathrm{Hz}'],
+     action(c){
+       plotCurve(c, x=>[x, 0.9*Math.cos(Math.PI*x/0.62)+1.15+0], 0, 0.62, {color:GOLD, w:3, dur:900});
+       textAt(c, 0.31,2.2, 'open–open fundamental: antinode to antinode', {fs:12, italic:true, anchor:'middle'});
+     } },
+   { say:"Now cork one end. The closed end demands a NODE, the open end still an antinode — so the gentlest resident is a QUARTER wavelength. The fundamental drops to v over 4 L — one hundred and thirty-eight hertz — a full octave below its open-open self. Same pipe, half the pitch, by one cork.",
+     pose:'point',
+     board:['f_1 = \\frac{v}{4L} = \\frac{343}{2.480} = 138\\ \\mathrm{Hz}'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-0.015),y:M.Y(-0.65),width:8,height:M.Y(-1.65)-M.Y(-0.65),fill:'#5C4B30'},c.svg);
+       plotCurve(c, x=>[x, -1.15+0.9*Math.sin(Math.PI*x/(2*0.62))], 0, 0.62, {color:BLUE, w:3, dur:900});
+       textAt(c, 0.31,-1.95, 'open–closed: node at the cork, quarter wave', {fs:12, italic:true, anchor:'middle'});
+     } },
+   { say:"And the spectrum thins: the node-antinode pairing only accommodates ODD quarter-wave counts, so the overtones are three and five times the fundamental — 415 and 691 hertz — with the even harmonics simply forbidden. Half the family, exiled by a boundary condition.",
+     pose:'write',
+     board:['f_3 = 3f_1 = 415\\ \\mathrm{Hz}, \\qquad f_5 = 5f_1 = 691\\ \\mathrm{Hz}\\quad(\\text{odd only!})'] },
+   { say:"The check is in the orchestra. A clarinet's reed end behaves closed; a flute is open at both ends — and that is why a clarinet plays nearly an octave deeper than a flute of similar length, and why its tone is hollower: the missing even harmonics are audible as timbre. You have just derived woodwind personality from a boundary condition. Music is applied eigenvalue theory, and nobody tells the musicians.",
+     pose:'excited',
+     board:[{t:'Check: closing one end halves f₁ (277 → 138 Hz) and deletes even harmonics — the clarinet/flute contrast ✓'}] },
+  ]
+},
+
+/* ---------- Example 4: The ambulance drives by [Intermediate] ---------- */
+{
+  title:'The ambulance drives by.', diff:'Intermediate',
+  prompt:'An ambulance siren emits 850 Hz while driving at 33.0 m/s. Find the frequency heard by (a) a stationary pedestrian ahead, (b) the same pedestrian after it passes, and (c) a cyclist riding at 6.0 m/s toward the approaching ambulance.',
+  world:{x0:-1, x1:11, y0:-4.5, y1:4.5},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('circle',{cx:M.X(9.3),cy:M.Y(0),r:7,fill:'#5C4B30'},svg);
+    textAt({svg,M,instant:true}, 9.3,-1.1, 'pedestrian', {fs:12, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"The Doppler effect, performed daily on every high street. The siren sings eight hundred and fifty hertz in its own rest frame; motion does the rest. For every part we ask the ONE question: is this motion bringing source and listener together, or pulling them apart? Together, higher; apart, lower. The formula's signs follow obediently.",
+     pose:'talk',
+     board:[{t:'f_s = 850 Hz, v_s = 33.0 m/s, v = 343 m/s.'},
+            'f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}'] },
+   { say:"Part a: source approaching, listener still. The approach compresses the wavefronts ahead — watch them bunch on the stage — so we SHRINK the denominator: 343 minus 33. f-observed equals 850 times 343 over 310 — nine hundred and forty hertz. A minor third above the truth.",
+     pose:'point',
+     board:['f_o = 850\\,\\frac{343}{343 - 33.0} = 850\\,\\frac{343}{310.0} = 940\\ \\mathrm{Hz}'],
+     action(c){
+       wavefronts(c, 1.2, 0, 0.9, 5, 3000);
+       arrow(c, 1.2,-2.6, 3.4,-2.6, {color:RED, w:3, label:'v_s', fs:13});
+       textAt(c, 6.9,3.1, 'wavefronts bunch ahead → higher pitch', {fs:12, italic:true, anchor:'middle'});
+     } },
+   { say:"Part b: the ambulance passes and recedes; the wavefronts behind are STRETCHED, so the denominator grows: 343 plus 33. Eight hundred and fifty times 343 over 376 — seven hundred and seventy-five hertz. The famous drive-by swoop, 940 down to 775 — a factor 0.825, roughly three semitones of pure kinematics: the eee-yow of every action film.",
+     pose:'write',
+     board:['f_o = 850\\,\\frac{343}{343 + 33.0} = 850\\,\\frac{343}{376.0} = 775\\ \\mathrm{Hz}',
+            {t:'The drive-by: 940 → 775 Hz, ≈ 3 semitones.'}] },
+   { say:"Part c: now the listener pedals TOWARD the approaching siren at six metres per second. Two motions, two questions, both answering 'together': boost the numerator with plus v-observer AND shrink the denominator with minus v-source. 850 times 349 over 310 — nine hundred and fifty-seven hertz.",
+     pose:'write',
+     board:['f_o = 850\\,\\frac{343 + 6.0}{343 - 33.0} = 850\\,\\frac{349}{310} = 957\\ \\mathrm{Hz}'] },
+   { say:"Now comes the check: every answer landed on the correct side of 850 — approaching cases above, receding below — which is the first thing to verify in ANY Doppler problem before trusting the arithmetic. Sign by physics, number by algebra, sanity by comparison. In that order, always.",
+     pose:'excited',
+     board:[{t:'Check: 940, 957 > 850 (approach) ✓; 775 < 850 (recede) ✓. Choose signs by physics, then compute.'}] },
+  ]
+},
+
+/* ---------- Example 5: Deriving Doppler [Challenging] ---------- */
+{
+  title:'Deriving the Doppler formulas by counting wavefronts.', diff:'Challenging',
+  prompt:'Derive f_o = f_s(v ± v_o)/(v ∓ v_s) from first principles — and see why source and observer motion enter differently.',
+  world:{x0:-1, x1:11, y0:-4.5, y1:4.5},
+  setup(ctx,w){},
+  steps:[
+   { say:"Now we EARN the formula, by counting crests. Two derivations, deliberately separate — because a moving source and a moving observer are physically different events, and the algebra is about to tell us so. The distinction earns its keep at high speed: a source rushing AT you can pile crests without limit — hence sonic booms — while a rushing observer merely collects them faster. Symmetry breaks, and the medium is the reason.",
+     pose:'talk',
+     board:[{t:'Goal: f_o = f_s(v ± v_o)/(v ∓ v_s), by counting wavefronts.'}] },
+   { say:"The MOVING SOURCE. In one period T-s, a crest sails ahead a distance v T-s — but the source chases it, advancing v-s T-s before releasing the next crest. The spacing ahead is therefore squeezed: lambda-prime equals v minus v-s, all over f-s. The wavelengths themselves are manufactured shorter — a change stamped into the air itself. Watch the rings crowd forward.",
+     pose:'point',
+     board:['\\lambda\\prime = vT_s - v_sT_s = \\frac{v - v_s}{f_s}\\quad(\\text{ahead of the source})'],
+     action(c){
+       wavefronts(c, 2.2, 0, 1.1, 5, 3200);
+       arrow(c, 2.2,-2.8, 4.4,-2.8, {color:RED, w:3, label:'v_s', fs:13});
+     } },
+   { say:"A stationary listener receives those shortened crests arriving at the usual speed v, so the frequency is v over lambda-prime: f-s times v over v minus v-s. Behind the source the sign flips — plus v-s — wavelengths stretched, pitch lowered. Half the formula, from pure geometry.",
+     pose:'write',
+     board:['f_o = \\frac{v}{\\lambda\\prime} = f_s\\,\\frac{v}{v - v_s}\\quad(\\text{behind: } v+v_s)'] },
+   { say:"The MOVING OBSERVER meets an entirely ordinary wave — lambda equals v over f-s, unmolested — but running toward the source, she harvests crests at the enhanced closing speed v plus v-o. Her frequency: v plus v-o over lambda — f-s times v plus v-o over v. No wavelength changed hands; only the RATE of collection. Compose the two effects and the general formula assembles itself.",
+     pose:'write',
+     board:['f_o = \\frac{v + v_o}{\\lambda} = f_s\\,\\frac{v + v_o}{v}',
+            'f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}\\ \\ (\\text{both effects composed})'] },
+   { say:"And now the deep check — WHY are the two cases different, when only relative motion seems to matter? Because sound propagates through a MEDIUM, and the air keeps score: a source at thirty metres per second reshapes the wave pattern; an observer at thirty merely samples it differently. The asymmetry is the medium's fingerprint. For light in vacuum there is no medium, only relative velocity survives — and resolving THAT tension is special relativity, waiting for us in Tutorial 11. Consider the fuse lit.",
+     pose:'excited',
+     board:[{t:'Source motion alters λ in the air; observer motion alters the sampling rate — the medium distinguishes them.'},
+            {t:'Light has no medium → only relative v matters → special relativity (Tutorial 11).'}] },
+  ]
+},
+
+/* ---------- Example 6: Bat echolocation [Challenging] ---------- */
+{
+  title:'Bat echolocation: a double Doppler shift.', diff:'Challenging',
+  prompt:'A bat flying at 9.00 m/s straight toward a wall emits chirps at 52.0 kHz. What frequency does it hear in the echo?',
+  world:{x0:-1, x1:11, y0:-4.5, y1:4.5},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    el('line',{x1:M.X(10),y1:M.Y(-4),x2:M.X(10),y2:M.Y(4),stroke:'#5C4B30','stroke-width':6},svg);
+    textAt({svg,M,instant:true}, 9.5,-4.3, 'wall', {fs:12.5, italic:true, anchor:'middle'});
+  },
+  steps:[
+   { say:"The virtuoso finale: a bat, screaming at fifty-two kilohertz, dives toward a wall at nine metres per second and listens for its own echo. The echo is DOPPLER-SHIFTED TWICE — once on the way out, once on the way back — and the bat's brain does this calculation in flight, in the dark, while hunting. We shall do it seated.",
+     pose:'talk',
+     board:[{t:'v_b = 9.00 m/s toward a wall; f_s = 52.0 kHz. Find the echo frequency heard by the bat.'}] },
+   { say:"Step one: the WALL as observer. The wall stands still while the source approaches, so only the denominator moves: f-wall equals 52 times 343 over 334. Leave it as a fraction — resist the intermediate decimal; it is about to repay the courtesy.",
+     pose:'point',
+     board:['f_{\\rm wall} = f_s\\,\\frac{v}{v - v_b} = 52.0\\,\\frac{343}{334}\\ \\mathrm{kHz}'],
+     action(c){
+       wavefronts(c, 2.0, 0, 1.0, 4, 2600);
+       arrow(c, 2.0,-2.8, 4.0,-2.8, {color:RED, w:3, label:'bat, 9 m/s', fs:12});
+     } },
+   { say:"Step two: the wall RE-EMITS the echo as a stationary source, and now the BAT is a moving observer, closing at nine metres per second — boost the numerator: f-echo equals f-wall times 343 plus 9, over 343. Multiply the two stages and watch the 343 cancel between them, leaving the elegant closed form: f-s times v plus v-b over v minus v-b.",
+     pose:'write',
+     board:['f_{\\rm echo} = f_{\\rm wall}\\,\\frac{v + v_b}{v} = 52.0\\,\\frac{343}{334}\\cdot\\frac{352}{343} = 52.0\\,\\frac{352}{334}',
+            'f_{\\rm echo} = f_s\\,\\frac{v + v_b}{v - v_b} = 54.8\\ \\mathrm{kHz}'] },
+   { say:"Fifty-four point eight kilohertz: a shift of two point eight upward, and that number IS the bat's speedometer — its auditory cortex converts echo shift to closing speed as reflexively as your eye converts colour. The same double-shift arithmetic runs police radar, with light, and medical Doppler ultrasound, with sound in tissue reading blood flow. One bat trick, three industries.",
+     pose:'write',
+     board:[{t:'Δf = 2.8 kHz → closing speed. Same principle: police radar (light), Doppler ultrasound (blood flow).'}] },
+   { say:"The check, by the low-speed approximation: for v-b much less than v, the double shift is approximately 2 f-s v-b over v — two, times 52, times 9, over 343 — two point seven three kilohertz, in tidy agreement with the exact 2.8. The factor of TWO is the fingerprint of any echo measurement: the motion is counted once out and once home. And with that, sound rests its case — next stop, the nature of light.",
+     pose:'excited',
+     board:['\\text{Check: } \\Delta f \\approx \\frac{2f_sv_b}{v} = \\frac{2(52.0)(9.00)}{343} = 2.73\\ \\mathrm{kHz} \\approx 2.8\\ \\checkmark',
+            {t:'The echo factor of 2: out AND back. Radar guns bill you twice, correctly.'}] },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

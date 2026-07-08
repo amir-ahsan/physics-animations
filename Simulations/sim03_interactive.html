@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incline &amp; Friction — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 3 — Incline Free-Body Diagram &amp; Acceleration</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A block of mass <b>m</b> rests on a plane tilted at angle <b>&#952;</b>. Gravity <span class="eq">W = mg</span> splits into a piece
+    pressing into the surface, <span class="eq">N = mg cos&#952;</span>, and a piece pulling it down the slope, <span class="eq">mg sin&#952;</span>.
+    While the block is at rest, <b>static friction</b> rises to exactly cancel that pull (up to its limit <span class="eq">&#956;&#8347;N</span>), so it never
+    exceeds mg sin&#952;. Once <span class="eq">mg sin&#952; &gt; &#956;&#8347;N</span> the block breaks free and slides, and <b>kinetic friction</b>
+    <span class="eq">&#956;&#8342;N</span> takes over, giving <span class="eq">a = g(sin&#952; &#8722; &#956;&#8342; cos&#952;)</span>.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Free-body diagram</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="185" viewBox="0 0 330 185">
+            <path id="wedge" d="" fill="#efe4c8" stroke="#b8a983" stroke-width="1.5"/>
+            <path id="ang" d="" fill="none" stroke="#6b5a3a" stroke-width="1.5"/>
+            <text id="angL" font-size="13" fill="#6b5a3a" font-style="italic">&#952;</text>
+            <rect id="block" x="0" y="0" width="34" height="24" rx="3" fill="#cdb488" stroke="#8a6f42" stroke-width="1.5" transform=""/>
+            <g stroke-width="3" fill="none">
+              <line id="fW" marker-end="url(#iW)" stroke="var(--purple)"/>
+              <line id="fN" marker-end="url(#iN)" stroke="var(--blue)"/>
+              <line id="fP" marker-end="url(#iP)" stroke="var(--red)"/>
+              <line id="fF" marker-end="url(#iF)" stroke="var(--green)"/>
+            </g>
+            <text id="lW" font-size="11" fill="var(--purple)">W</text>
+            <text id="lN" font-size="11" fill="var(--blue)">N</text>
+            <text id="lP" font-size="11" fill="var(--red)">mg&#8202;sin&#952;</text>
+            <text id="lF" font-size="11" fill="var(--green)">f</text>
+            <defs>
+              <marker id="iW" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--purple)"/></marker>
+              <marker id="iN" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="iP" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker>
+              <marker id="iF" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">N</span> = <span class="vb" id="rN">–</span> N</div>
+            <div class="r c-red"><span class="k">mg&#8202;sin&#952;</span> = <span class="vb" id="rP">–</span> N</div>
+            <div class="r c-green"><span id="rFlab">friction</span> = <span class="vb" id="rF">–</span> N</div>
+            <div class="r c-accent"><span class="k">a</span> = <span class="vb" id="ra">–</span> m/s&#178;</div>
+            <div class="r vb" id="rstate" style="opacity:.95">–</div>
+            <div class="r" style="opacity:.8">breaks free past <span class="k">&#952;&#8330;</span> = arctan&#8202;&#956;&#8347; = <span id="rc">–</span>°</div>
+          </div>
+        </div>
+        <div class="cap">Purple = weight; blue = normal force; red = gravity along the slope; green = friction (static while at rest, kinetic once sliding). Every arrow's length is proportional to its size.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Driving force vs. friction, as the angle changes</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Where the red curve (gravity along the slope) rises above the blue curve (maximum static friction), the block breaks free; beyond that, green kinetic friction resists the slide.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Gravity along the slope</b> mg&#8202;sin&#952; — the force trying to slide the block.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Maximum static friction</b> &#956;&#8347;mg&#8202;cos&#952; — the most the surface can hold before sliding.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Kinetic friction</b> &#956;&#8342;mg&#8202;cos&#952; — resists motion once the block is sliding.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="D" data-min="0" data-max="90" data-step="1" data-fixed="0">
+            <div class="row"><label>Tilt angle &#952; (degrees)</label><span class="val"></span></div><input type="range"><div class="hint">Now goes all the way to vertical (90°).</div>
+          </div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"><div class="hint">Scales every force — but not the acceleration.</div>
+          </div>
+          <div class="ctl" data-var="us" data-min="0" data-max="1" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Static coefficient &#956;&#8347;</label><span class="val"></span></div><input type="range"><div class="hint">Sets the break-free angle, arctan&#8202;&#956;&#8347;.</div>
+          </div>
+          <div class="ctl" data-var="uk" data-min="0" data-max="1" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Kinetic coefficient &#956;&#8342;</label><span class="val"></span></div><input type="range"><div class="hint">Always &#8804; &#956;&#8347; (kept there automatically); acts only while sliding.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Starting from a shallow angle, what must happen to mg&#8202;sin&#952; and &#956;&#8347;N before the block moves?</li>
+      <li><b>Manipulate</b><span class="tag">&#952;</span> Slowly raise &#952; and find the exact angle where the block breaks free — compare it with arctan&#8202;&#956;&#8347;.</li>
+      <li><b>Explain</b><span class="tag">static vs kinetic</span> Why does static friction equal mg&#8202;sin&#952; (never more) while at rest, but kinetic friction equal &#956;&#8342;N once sliding?</li>
+      <li><b>Calculate</b><span class="tag">&#952;, &#956;&#8342;</span> For &#952; = 30° and &#956;&#8342; = 0.20, calculate the sliding acceleration, then check the readout.</li>
+      <li><b>Extend</b><span class="tag">&#956;&#8347;, &#956;&#8342;</span> Set &#956;&#8347; well above &#956;&#8342;. Notice the block holds until a steeper angle, then accelerates suddenly once it lets go.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var g=9.8;
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'incline angle θ (degrees)', yAxisLabel:'force (N)'});
+  calc.setExpressions([
+    {id:'m',latex:'m=2'}, {id:'D',latex:'D=30'}, {id:'us',latex:'u_s=0.40'}, {id:'uk',latex:'u_k=0.20'}, {id:'g',latex:'g=9.8'},
+    {id:'Pf',latex:'P(x)=m g\\sin\\left(\\frac{x\\pi}{180}\\right)', hidden:true, secret:true},
+    {id:'Fsf',latex:'S(x)=u_s m g\\cos\\left(\\frac{x\\pi}{180}\\right)', hidden:true, secret:true},
+    {id:'Fkf',latex:'K(x)=u_k m g\\cos\\left(\\frac{x\\pi}{180}\\right)', hidden:true, secret:true},
+    {id:'cP',latex:'P(x)\\left\\{0\\le x\\le90\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'cS',latex:'S(x)\\left\\{0\\le x\\le90\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cK',latex:'K(x)\\left\\{0\\le x\\le90\\right\\}', color:'#2e8b57', lineWidth:2},
+    {id:'dP',latex:'(D,P(D))', color:'#c0392b'},
+    {id:'dS',latex:'(D,S(D))', color:'#2f6fb0'},
+    {id:'dK',latex:'(D,K(D))', color:'#2e8b57'},
+    {id:'vline',latex:'x=D\\left\\{0\\le y\\le400\\right\\}', color:'#c9beA0', lineStyle:Desmos.Styles.DASHED, lineWidth:1.2}
+  ]);
+  function fitY(){ calc.setMathBounds({left:-4, right:94, bottom:-2, top:Math.max(6, S.m*g*1.05)}); }
+
+  var S={D:30,m:2,us:0.40,uk:0.20};
+  var ax=45, ay=150, Lsurf=130;
+  function scene(){
+    var p=S.D*Math.PI/180, cs=Math.cos(p), sn=Math.sin(p);
+    // wedge: apex A (bottom-left pivot), foot F (bottom-right), top T (above F). Fixed hypotenuse length → works to 90°.
+    var fx=ax+Lsurf*cs, tx=fx, ty=ay-Lsurf*sn;
+    document.getElementById('wedge').setAttribute('d','M '+ax+' '+ay+' L '+fx.toFixed(1)+' '+ay+' L '+tx.toFixed(1)+' '+ty.toFixed(1)+' Z');
+    // angle arc at apex, between horizontal (+x) and the incline surface
+    var R=30, ex=ax+R*cs, ey=ay-R*sn;
+    document.getElementById('ang').setAttribute('d', S.D<1?'':'M '+(ax+R)+' '+ay+' A '+R+' '+R+' 0 0 0 '+ex.toFixed(1)+' '+ey.toFixed(1));
+    var mid=p/2; document.getElementById('angL').setAttribute('x',(ax+(R+10)*Math.cos(mid)).toFixed(1)); document.getElementById('angL').setAttribute('y',(ay-(R+10)*Math.sin(mid)+4).toFixed(1));
+    // block on the surface at distance d from apex
+    var d=88, bx=ax+d*cs, by=ay-d*sn;
+    document.getElementById('block').setAttribute('transform','translate('+(bx-17).toFixed(1)+' '+(by-30).toFixed(1)+') rotate('+(-S.D)+' 17 12)');
+    var ox=bx, oy=by-12;
+    // physics: static vs kinetic
+    var N=S.m*g*cs, driving=S.m*g*sn, maxS=S.us*N;
+    var sliding = driving > maxS + 1e-9;
+    var fric = sliding ? S.uk*N : driving;         // static friction = driving (balances), never exceeds mg sinθ
+    var a = sliding ? g*(sn - S.uk*cs) : 0;
+    var sc=3.6, cap=95;
+    function set(id,dx,dy,lx,ly,lid){ var e=document.getElementById(id);
+      e.setAttribute('x1',ox.toFixed(1)); e.setAttribute('y1',oy.toFixed(1));
+      e.setAttribute('x2',(ox+dx).toFixed(1)); e.setAttribute('y2',(oy+dy).toFixed(1));
+      var L=document.getElementById(lid); L.setAttribute('x',(ox+dx+lx).toFixed(1)); L.setAttribute('y',(oy+dy+ly).toFixed(1));
+      e.setAttribute('opacity', (Math.abs(dx)+Math.abs(dy)<1)?0:1);
+    }
+    set('fW',0, Math.min(cap,N*0+S.m*g*sc), 3, 4,'lW');        // weight straight down
+    set('fN',-Math.min(cap,N*sc)*sn, -Math.min(cap,N*sc)*cs, -14, -2,'lN');
+    set('fP',-Math.min(cap,driving*sc)*cs, Math.min(cap,driving*sc)*sn, -30, 6,'lP');
+    set('fF', Math.min(cap,fric*sc)*cs, -Math.min(cap,fric*sc)*sn, 4, 0,'lF');  // friction up-slope
+    document.getElementById('lF').textContent = sliding ? 'fₖ' : 'fₛ';   // f_k or f_s
+    document.getElementById('rN').textContent=N.toFixed(1);
+    document.getElementById('rP').textContent=driving.toFixed(1);
+    document.getElementById('rF').textContent=fric.toFixed(1);
+    document.getElementById('rFlab').innerHTML = sliding ? '<span class="k">kinetic f&#8342;</span>' : '<span class="k">static f&#8347;</span>';
+    document.getElementById('ra').textContent=a.toFixed(2);
+    document.getElementById('rstate').textContent = sliding ? 'SLIDING — kinetic friction acts' : 'AT REST — static friction holds it';
+    document.getElementById('rstate').style.color = sliding ? 'var(--red)' : 'var(--green)';
+    document.getElementById('rc').textContent=(Math.atan(S.us)*180/Math.PI).toFixed(1);
+  }
+
+  var LATEX={D:'D',m:'m',us:'u_s',uk:'u_k'};
+  var sliders={};
+  function setVar(v,val){ S[v]=val; calc.setExpression({id:v,latex:LATEX[v]+'='+val}); if(sliders[v]){ sliders[v].input.value=val; sliders[v].out.textContent=val.toFixed(sliders[v].fx)+(v==='D'?'°':''); } }
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,out:out,fx:fx,def:S[v]};
+    input.addEventListener('input',function(){
+      setVar(v,+input.value);
+      // enforce kinetic coefficient never exceeds static coefficient
+      if(v==='uk' && S.uk>S.us) setVar('uk',S.us);
+      if(v==='us' && S.uk>S.us) setVar('uk',S.us);
+      if(v==='m') fitY();
+      scene();
+    });
+    out.textContent=S[v].toFixed(fx)+(v==='D'?'°':'');
+  });
+  fitY(); scene();
+})();
+</script>
+</body>
+</html>

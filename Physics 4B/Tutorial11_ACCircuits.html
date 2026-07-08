@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics 4B · Tutorial 11: Alternating-Current Circuits — Animated Worked Examples</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
+    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
+  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
+  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
+  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
+  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
+  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
+    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
+  nav button:hover{background:#3a5245}
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
+  /* ---- professor column ---- */
+  .prof-col{display:flex;flex-direction:column;gap:10px}
+  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
+    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
+  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
+    border-top-color:var(--accent-dk)}
+  /* highlighted link to the next example, shown when an example finishes */
+  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
+    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
+    animation:pulseLink 1.6s ease-in-out infinite}
+  .next-link:hover{background:var(--accent-dk)}
+  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
+    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
+  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
+  /* ---- stage & board ---- */
+  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
+    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
+  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
+    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
+  .prompt .simlink:hover{background:#1D4568}
+  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
+    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
+  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
+  .diff.review{background:#7B4FA0}
+  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
+  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
+  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
+    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
+  #stage{width:100%;height:auto;display:block}
+  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
+    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
+  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
+    transition:opacity .5s,transform .5s}
+  #board .katex{font-size:1em}
+  #board .line.show{opacity:1;transform:none}
+  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  #board .katex{color:var(--chalk)}
+  /* ---- controls: pinned to the bottom of the window, always visible ---- */
+  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
+    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
+    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
+  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
+  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
+  .controls button:hover{background:#F3E7D2}
+  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
+  .controls button.primary:hover{background:var(--accent-dk)}
+  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
+  .controls .voice.on{background:var(--board);color:var(--chalk)}
+  /* ---- professor animation ---- */
+  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
+  .pose-point #armR{transform:rotate(-118deg)}
+  .pose-write #armR{transform:rotate(-62deg)}
+  .pose-think #armR{transform:rotate(-152deg)}
+  .pose-excited #armR{transform:rotate(-146deg)}
+  .pose-excited #armL{transform:rotate(146deg)}
+  #brows{transition:transform .3s}
+  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
+  #mouth{transform-box:fill-box;transform-origin:center}
+  .talking #mouth{animation:talk .28s infinite alternate}
+  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
+  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
+  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
+    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
+    border:8px solid transparent;border-right-color:var(--accent-dk)}
+    .stage-row{flex-direction:column}#stagebox{flex:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Physics 4B &middot; Tutorial 11: Alternating-Current Circuits</h1>
+  <div class="sub">Animated worked examples &mdash; with Professor Ahsan</div>
+</header>
+
+<nav id="tabs"></nav>
+
+<div class="wrap">
+  <div class="prof-col">
+    <div class="bubble" id="bubble"></div>
+    <div class="prof-box">
+      <!-- ============ PROFESSOR AHSAN ============ -->
+      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
+        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
+        <g id="slim" transform="translate(22 0) scale(0.8 1)">
+        <!-- head group: shifted down to halve the visible neck -->
+        <g id="headG" transform="translate(0 16)">
+        <!-- wild cloud-like hair (the original) -->
+        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+          <circle cx="168" cy="98" r="20"/>
+        </g>
+        <!-- ears -->
+        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+        <!-- face -->
+        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+        <!-- brows -->
+        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+        </g>
+        <!-- eyes -->
+        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+        <g id="lids" fill="#B5793B">
+          <rect x="83" y="94" width="18" height="14" rx="6"/>
+          <rect x="119" y="94" width="18" height="14" rx="6"/>
+        </g>
+        <!-- round glasses: bold black frames.
+             Each lens carries a 1.25× x counter-scale about its own centre, so after the
+             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
+             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
+        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+          <path d="M108,100 q2,-3 4,0" fill="none"/>
+          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+        </g>
+        <!-- nose -->
+        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+        <!-- mustache: two combed lobes with a center part -->
+        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+        </g>
+        <!-- lip area: philtrum shadow, mouth, lower lip -->
+        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+        </g><!-- /headG -->
+        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
+        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
+        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+        <!-- torso: tweed jacket (collar raised to meet the neck) -->
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+        <!-- vest + shirt -->
+        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+        <!-- lapels -->
+        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+        <!-- left arm (screen left) -->
+        <g id="armL">
+          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+        </g>
+        <!-- right arm (screen right) — the pointing arm -->
+        <g id="armR">
+          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+        </g>
+        </g><!-- /bodyG -->
+        </g><!-- /slim -->
+      </svg>
+    </div>
+  </div>
+
+  <div class="main-col">
+    <div class="prompt" id="prompt"></div>
+    <div class="stage-row">
+      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="boardwrap"><div id="board"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="controls"><div class="controls-inner">
+  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
+  <button id="btnPrev" title="Previous step">&#9664; Back</button>
+  <button id="btnPlay" class="primary">&#9654; Play</button>
+  <button id="btnNext" title="Next step">Next &#9654;</button>
+  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
+  <span class="stepinfo" id="stepinfo"></span>
+</div></div>
+
+<script>
+/* ================================================================
+   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
+   ================================================================ */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), board = $('board'), bubble = $('bubble');
+
+function el(tag, attrs, parent){
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs){
+    let v = attrs[k];
+    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
+    e.setAttribute(k, v);
+  }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+/* --- world→screen mapper: stage is 600×400 --- */
+function makeMapper(w){
+  const W=600, H=400, p=w.pad ?? 44;
+  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
+  const s = Math.min(sx, sy);
+  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
+  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
+  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
+}
+
+/* --- animation manager (respects instant mode) --- */
+const running = [];
+function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
+function tween(draw, dur, instant, done){
+  if (instant){ draw(1); if(done) done(); return; }
+  const t0 = performance.now();
+  function frame(t){
+    let u = Math.min(1,(t-t0)/dur);
+    draw(1-Math.pow(1-u,3));            // ease-out cubic
+    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
+  }
+  running.push(requestAnimationFrame(frame));
+}
+
+/* --- drawing helpers --- */
+function headPts(x,y,ang,s){
+  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
+          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
+         .map(p=>p.join(',')).join(' ');
+}
+/* animated vector arrow in world coords */
+function arrow(ctx, x1,y1,x2,y2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
+  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
+  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
+    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
+    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
+  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
+  tween(u=>{
+    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
+    line.setAttribute('x2',x); line.setAttribute('y2',y);
+    head.setAttribute('points',headPts(x,y,ang,hs));
+  }, opt.dur||800, instant);
+  if (opt.label){
+    /* Place the label ADJACENT to the arrow, never on it: offset the
+       midpoint perpendicular to the arrow's direction (upper side by
+       default; pass side:-1 for the other side; dx/dy fine-tune). */
+    const t0 = opt.lt ?? 0.55;
+    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
+    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
+    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
+    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
+    if (opt.side === -1){ nx = -nx; ny = -ny; }
+    const fs  = opt.fs || 19;
+    /* clearance grows with label width when the offset is horizontal,
+       so wide labels (e.g. "3.00 km") clear vertical arrows too */
+    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
+    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
+    const lg = el('g',{},g);
+    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
+      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
+    t.textContent = opt.label;
+    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
+      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
+      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
+        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
+      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
+    }
+    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
+  }
+  return g;
+}
+/* animated angle arc (angles in degrees, world coords center) */
+function arc(ctx, cx,cy,r, a1,a2, opt={}){
+  const {svg,M,instant} = ctx;
+  const g = el('g',{},svg);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const R = r*M.s;
+  function d(a2c){
+    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
+    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
+    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
+    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
+    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
+  }
+  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  if (opt.label){
+    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
+    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
+      fill:opt.color||'#666','font-size':16,'font-style':'italic',
+      'font-family':'Georgia,serif','text-anchor':'middle'},g);
+    t.textContent=opt.label;
+  }
+  return g;
+}
+function label(ctx, x,y, txt, opt={}){
+  const g = el('g',{},ctx.svg);
+  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
+  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
+    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
+  t.textContent = txt;
+  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
+    const hw = String(txt).length*fs*0.28;
+    const cx = opt.anchor==='middle' ? lx : lx+hw;
+    const ay = ly - fs*0.95;
+    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
+      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
+    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
+  }
+  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
+  return t;
+}
+function dashLine(ctx, x1,y1,x2,y2, opt={}){
+  const {M}=ctx;
+  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
+    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
+  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
+  return l;
+}
+/* standard 2-D axes with grid */
+function axes2D(svg, M, w, opt={}){
+  const g = el('g',{},svg);
+  if (opt.grid){
+    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
+      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
+    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
+      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
+  }
+  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
+  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
+  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
+  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
+  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
+  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
+  return g;
+}
+/* oblique 3-D projection: world (x,y,z) → planar 2-D */
+const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
+function axes3D(svg, M, ext, opt={}){
+  const g = el('g',{},svg);
+  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
+  for (const [x,y,z,name] of A){
+    const [px,py]=proj(x,y,z);
+    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
+    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
+    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
+    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
+    t.textContent=name;
+  }
+  return g;
+}
+
+/* --- KaTeX board --- */
+const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+function addBoardLine(item, animate){
+  const div = document.createElement('div');
+  div.className = 'line' + (item.t !== undefined ? ' note' : '');
+  if (item.t !== undefined) div.textContent = item.t;
+  else if (window.katex){
+    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
+    catch(e){ div.textContent = item; }
+  } else div.textContent = item;  /* offline fallback: raw LaTeX */
+  board.appendChild(div);
+  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
+}
+
+/* --- professor: poses, speech, TTS --- */
+const prof = $('prof');
+function setPose(p){
+  prof.className.baseVal = '';
+  prof.classList.add('pose-'+(p||'talk'));
+}
+/* --- voice selection: smooth, soothing British English (en-GB).
+       IMPORTANT: browsers (Chrome especially) load voices late and can
+       invalidate cached voice objects, silently reverting to the default
+       voice. So we re-select a fresh voice on EVERY utterance. --- */
+function britishVoice(){
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
+      || vs.find(v=>/en[-_]GB/i.test(v.lang))
+      || vs.find(v=>/en[-_]AU/i.test(v.lang))
+      || null;
+}
+if ('speechSynthesis' in window){
+  speechSynthesis.getVoices();                       /* trigger async load */
+  speechSynthesis.onvoiceschanged = ()=>britishVoice();
+}
+let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
+let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
+function speakNext(gen){
+  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
+  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
+  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
+  const v = britishVoice();                            /* fresh pick every time */
+  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
+  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
+  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
+  u.onerror = u.onend;
+  utter = u;
+  speechSynthesis.speak(u);
+  clearInterval(ttsKeepAlive);
+  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
+    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+    else { speechSynthesis.pause(); speechSynthesis.resume(); }
+  }, 12000);
+}
+/* bubble display: real greek letters instead of spelled-out phonetics */
+function greekify(t){
+  return t
+   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
+   .replace(/\bh-bar\b/gi,'\u0127')
+   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
+   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
+   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
+   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
+   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
+   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
+   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
+   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
+   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
+   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
+   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
+   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
+}
+function speak(text, animate){
+  clearInterval(typeTimer);
+  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
+  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
+  speechSynthesis.cancel();
+  prof.classList.add('talking');
+  const shown = greekify(text);
+  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
+  bubble.textContent='';
+  let i=0;
+  typeTimer = setInterval(()=>{
+    bubble.textContent = shown.slice(0,++i);
+    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
+  },16);
+  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
+    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
+    const spoken = text
+      .replace(/[°]/g,' degrees ')
+      .replace(/\s*[—–]\s*/g,', ')
+      .replace(/\.\.\./g,',')
+      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
+      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
+      .replace(/\bk-hat\b/gi,'k hat')
+      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
+      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
+      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
+      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
+    /* split into sentences: one utterance each, with a breath between them */
+    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    sentIdx = 0;
+    /* small delay after cancel() — Chrome otherwise falls back to default voice */
+    const gen = speakGen;
+    setTimeout(()=>speakNext(gen), 60);
+  }
+}
+
+/* --- playback state --- */
+const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
+function queueAdvance(ms){
+  clearTimeout(state.timer);
+  let stalled = 0;   /* guards against TTS engines that never start speaking */
+  state.timer = setTimeout(function tick(){
+    /* NEVER advance over active speech — that cuts the professor off
+       mid-sentence. If he is still talking, check again shortly. */
+    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
+      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
+      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
+        state.timer = setTimeout(tick, 400);
+        return;
+      }
+    }
+    const ex = EXAMPLES[state.ex];
+    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
+    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
+  }, ms);
+}
+/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
+function exLabel(i){
+  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
+}
+/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
+function showNextLink(){
+  /* finish the bubble typing first — otherwise its ticks overwrite the link */
+  clearInterval(typeTimer);
+  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
+  prof.classList.remove('talking');
+  if (state.ex >= EXAMPLES.length-1){
+    const d = document.createElement('div');
+    d.className = 'next-link';
+    d.style.animation = 'none';
+    d.textContent = 'Tutorial complete ✓';
+    bubble.appendChild(d);
+    return;
+  }
+  const a = document.createElement('div');
+  a.className = 'next-link';
+  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
+  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
+  bubble.appendChild(a);
+}
+/* ---- declutter: keep every sketch label visible and collision-free ----
+   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
+   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
+function declutter(svg){
+  const W=600, H=400, PAD=3;
+  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
+  if(!texts.length) return;
+  const items=texts.map(t=>{
+    let b; try{ b=t.getBBox(); }catch(e){ return null; }
+    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
+  }).filter(Boolean);
+  const lines=[...svg.querySelectorAll('line')].map(l=>({
+    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
+    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
+    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
+  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
+  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
+  for(const it of items){
+    for(const L of lines){
+      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
+      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
+      /* distance from bbox centre to the segment */
+      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
+      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
+      const px=L.x1+u*vx, py=L.y1+u*vy;
+      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
+      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
+      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
+        const need=clear-d+3;
+        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
+        else it.dy-=Math.min(need,18);
+      }
+    }
+  }
+  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
+  for(let pass=0;pass<4;pass++){
+    let moved=false;
+    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
+      const a=box(items[i]), b=box(items[j]);
+      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+      if(ox>4 && oy>3){
+        if(ox<=oy){                                          /* separate along the smaller overlap */
+          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
+          const nx=b.x+dir*(ox+PAD);
+          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
+          items[j].dx+=dir*(ox+PAD);
+        } else {
+          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
+          const ny=b.y+dir*(oy+PAD);
+          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
+            items[j].dy+=dir*(oy+PAD);
+          } else {                                          /* j pinned at the edge: move i instead */
+            const di=-dir, niy=a.y+di*(oy+PAD);
+            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
+            else items[j].dy+=dir*(oy+PAD);
+          }
+        }
+        moved=true;
+      }
+    }
+    if(!moved) break;
+  }
+  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
+  for(const it of items){
+    const b=box(it);
+    if(b.x<PAD) it.dx+=PAD-b.x;
+    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
+    if(b.y<PAD) it.dy+=PAD-b.y;
+    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
+  }
+  /* apply: move the label's own group (keeps vector accents attached) or the text */
+  for(const it of items){
+    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
+    const par=it.t.parentNode;
+    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
+                  && par.childNodes.length<=3) ? par : it.t;
+    const prev=target.getAttribute('transform')||'';
+    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
+  }
+}
+
+function renderStep(animate){
+  cancelAnims(); clearTimeout(state.timer);
+  const ex = EXAMPLES[state.ex];
+  /* stage: rebuild — past steps instant, current step animated */
+  stage.innerHTML='';
+  const M = makeMapper(ex.world);
+  ex.setup({svg:stage, M, instant:true}, ex.world);
+  /* Concept Reviews present one sketch at a time — each diagram appears as
+     its topic comes up, never stacked on its predecessors. Examples accumulate.
+     A review step marked solo:true clears the stage entirely and presents its
+     own diagram alone — a fresh slide rather than an annotation. */
+  const curStep = ex.steps[state.step];
+  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
+  const seqStart = ex.tab ? state.step : 0;
+  for (let i=seqStart;i<=state.step;i++){
+    const st = ex.steps[i];
+    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
+  }
+  declutter(stage);                       /* keep labels visible and collision-free */
+  /* board: cumulative */
+  board.innerHTML='';
+  for (let i=0;i<=state.step;i++)
+    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
+  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
+  /* professor */
+  const st = ex.steps[state.step];
+  setPose(st.pose);
+  speak(st.say, animate);
+  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
+  /* auto-advance: ALWAYS schedule a timed advance while playing.
+     With voice on, the utterance's onend advances sooner; this timer is
+     the fallback so playback never stalls if speech fails to fire. */
+  if (state.playing){
+    const ms = voiceOn ? Math.max(5200, st.say.length*88)
+                       : Math.max(4000, st.say.length*70);
+    queueAdvance(ms);
+  }
+}
+function loadExample(i, autoplay){
+  state.ex=i; state.step=0; state.pendingNext=false;
+  const ex = EXAMPLES[i];
+  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
+  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
+  setPlaying(!!autoplay);
+  renderStep(true);
+}
+function setPlaying(p){
+  state.playing=p;
+  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
+  if (!p){ clearTimeout(state.timer); }
+}
+/* --- controls --- */
+$('btnPlay').onclick = ()=>{
+  if (state.playing){
+    /* PAUSE: freeze speech and auto-advance exactly where they stand */
+    setPlaying(false);
+    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
+    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
+      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
+  } else {
+    const ex=EXAMPLES[state.ex];
+    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
+      /* RESUME: continue from the very word where he was paused */
+      setPlaying(true);
+      speechSynthesis.resume();
+      clearInterval(ttsKeepAlive);
+      ttsKeepAlive = setInterval(()=>{
+        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
+        else { speechSynthesis.pause(); speechSynthesis.resume(); }
+      }, 12000);
+      /* fallback advance re-armed; queueAdvance never cuts active speech */
+      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
+    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
+      /* paused between sentences: pick the narration up at the next sentence */
+      setPlaying(true);
+      speakNext(speakGen);
+      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
+    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
+               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
+      state.step=0;                                     /* finished example: replay from start */
+      setPlaying(true);
+      renderStep(true);
+    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
+      /* this step's narration already finished: continue forward */
+      setPlaying(true);
+      queueAdvance(1200);
+    } else {
+      /* step not yet narrated (fresh page load or manual browsing):
+         start it properly — animation AND voice from the first word */
+      setPlaying(true);
+      renderStep(true);
+    }
+  }
+};
+$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  const ex=EXAMPLES[state.ex];
+  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
+$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
+  if (state.step>0){ state.step--; renderStep(false); } };
+$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
+$('btnVoice').onclick = function(){
+  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
+  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
+  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
+};
+document.addEventListener('keydown',e=>{
+  if (e.key==='ArrowRight') $('btnNext').click();
+  if (e.key==='ArrowLeft') $('btnPrev').click();
+  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
+});
+
+/* ================================================================
+   4B TUTORIAL 11 — AC CIRCUITS
+   ================================================================ */
+const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+
+function textAt(c, x, y, txt, opt={}){
+  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
+    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
+    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
+  t.textContent=txt;
+  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
+  return t;
+}
+function plotCurve(c, fn, t0, t1, opt={}){
+  const {svg,M,instant}=c; const N=opt.N||160;
+  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
+    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
+  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
+  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
+  return pl;
+}
+
+const EXAMPLES = [
+{
+  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
+  prompt:'Professor Ahsan surveys the main principles: rms values, reactance, RLC impedance, power, resonance, and transformers.',
+  world:{x0:-1, x1:11, y0:-3.6, y1:3.6},
+  setup(ctx,w){
+    axes2D(ctx.svg, ctx.M, w, {xlab:'t', ylab:'v'});
+    const pts=[]; for(let i=0;i<=80;i++){const t=10.6*i/80; pts.push(ctx.M.X(t)+','+ctx.M.Y(2.8*Math.sin(1.5*t)));}
+    el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3,'stroke-linecap':'round'},ctx.svg);
+    dashLine(ctx, 0,1.98, 10.6,1.98, {color:'#2E7D4F'});
+    const t=el('text',{x:ctx.M.X(8.9),y:ctx.M.Y(2.45),fill:'#2E7D4F','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    t.textContent='rms = peak/√2';
+  },
+  steps:[
+   { say:"Alternating current: the source sings a sine, V-nought sine omega t, and since the average of a sine is a useless zero, we quote ROOT-MEAN-SQUARE values — peak over root 2. The socket's '120 volts' is rms; the peak is quietly 170. With rms in hand, AC power arithmetic dresses like DC.",
+     pose:'talk',
+     board:['V_{\\rm rms} = \\frac{V_0}{\\sqrt2}, \\qquad I_{\\rm rms} = \\frac{I_0}{\\sqrt2}'] },
+   { say:"Each element opposes current in its own style. The resistor: R, voltage and current in step. The inductor: reactance omega L, voltage LEADING by ninety degrees. The capacitor: one over omega C, voltage LAGGING by ninety. The mnemonic that has carried generations: ELI the ICE man. And the frequency behaviour is opposite — inductors smother the fast, capacitors block the slow.",
+     pose:'write',
+     board:['X_L = \\omega L\\ (\\text{ELI: V leads I}), \\qquad X_C = \\frac{1}{\\omega C}\\ (\\text{ICE: V lags I})',
+            {t:'X_L grows with f; X_C shrinks. Filters are built from this opposition.'}] },
+   { say:"Series RLC: all elements share the current, so draw the voltages as PHASORS — V-R along the current, V-L at plus ninety, V-C at minus ninety — and add as vectors. Out falls the impedance: Z equals root of R squared plus X-L minus X-C squared, with the phase angle from their ratio. Element voltages add as VECTORS, mind — their arithmetic sum can cheerfully exceed the source.",
+     pose:'point',
+     board:['V_0 = I_0Z, \\qquad Z = \\sqrt{R^2+(X_L-X_C)^2}, \\qquad \\tan\\varphi = \\frac{X_L-X_C}{R}'] },
+   { say:"Power: only the RESISTOR spends. Inductors and capacitors borrow energy half of each cycle and return it in the other half, immaculate lenders. The average power is I-rms V-rms times the POWER FACTOR cosine phi — R over Z — the number utilities watch like hawks.",
+     pose:'write',
+     board:['P_{\\rm avg} = I_{\\rm rms}V_{\\rm rms}\\cos\\varphi = I_{\\rm rms}^2R, \\qquad \\cos\\varphi = \\frac{R}{Z}'] },
+   { say:"Alternating current is physics set to a metronome, and resonance is the payoff: tune omega to one over root L C and the circuit sings. Every radio ever built finds its station this way — a little LC circuit agreeing enthusiastically with one frequency and snubbing all others. Selective enthusiasm: the engineering term is Q factor; the human term is taste.",
+     pose:'think',
+     board:[{t:'Resonance is a circuit with taste — it applauds one frequency and ignores the rest.'}] },
+   { say:"RESONANCE: at omega-nought equals one over root L C the reactances cancel, Z collapses to bare R, the current peaks, and the internal voltages V-L and V-C — equal, opposite, cancelling — can each dwarf the source. Sharpness is Q equals omega-nought L over R; radio tuning is a high-Q needle. And TRANSFORMERS: shared flux scales voltage by the turns ratio at constant power — voltage traded for current — which is why the grid ships kilovolts on AC and why Edison lost. To the examples.",
+     solo:true, pose:'excited',
+     board:['\\omega_0 = \\frac{1}{\\sqrt{LC}}, \\qquad Q = \\frac{\\omega_0L}{R}, \\qquad \\frac{V_s}{V_p} = \\frac{N_s}{N_p},\\ I_sV_s = I_pV_p',
+            {t:'Strategy: reactances at the given ω → Z and φ → power via cos φ → resonance check.'}],
+     action(c){
+       plotCurve(c, w=>[w, -3.3+2.6/Math.sqrt(1+14*Math.pow(w/7.6-7.6/w,2))], 5.2, 10.6, {color:RED, w:2.5, dur:900});
+       dashLine(c, 7.6,-3.3, 7.6,-0.7, {color:'#8A7D60'});
+       textAt(c, 7.6,-0.4, 'ω₀: current peaks, Z = R', {fs:11.5, italic:true, anchor:'middle'});
+     } },
+  ]
+},
+
+
+/* ---------- Example 1: Outlet and heater [Basic] ---------- */
+{
+  title:'An outlet and a heater.', diff:'Basic',
+  prompt:'A US outlet delivers v(t) = (170 V) sin(377 t). A 45 Ω heater is plugged in. Find (a) V_rms and f, (b) I_rms, (c) the average power.',
+  world:{x0:-0.004, x1:0.042, y0:-215, y1:215, aniso:true},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'t (s)', ylab:'v (V)'}); },
+  steps:[
+   { say:"Alternating current — the shape of every wall in the building. The outlet's voltage is a sine: peak 170 volts, angular frequency 377 radians per second. Because the average of a sine is uselessly zero, we quote the ROOT-MEAN-SQUARE: square it, average, root it — the DC-equivalent value that heats resistors identically. For a sine, rms is peak over root 2.",
+     pose:'talk',
+     board:[{t:'v(t) = 170 sin(377t) V, heater R = 45 Ω.'},
+            'V_{\\rm rms} = \\frac{V_0}{\\sqrt2}, \\qquad f = \\frac{\\omega}{2\\pi}'] },
+   { say:"Part a: 170 over root 2 — 120 volts. There is the number on the socket, and note what it is NOT: not the peak, which is 170. Frequency: 377 over 2 pi — 60 hertz. Watch the wave, with its rms level ruled across it like a tide mark. The socket's 120 is thus a diplomatic average of a wave that spends its life swinging between plus and minus 170 — modesty enforced by the mathematics of heating.",
+     pose:'point',
+     board:['V_{\\rm rms} = \\frac{170}{\\sqrt2} = 1.2\\times10^{2}\\ \\mathrm V, \\qquad f = \\frac{377}{2\\pi} = 60\\ \\mathrm{Hz}'],
+     action(c){
+       plotCurve(c, t=>[t, 170*Math.sin(377*t)], 0, 0.04, {color:GOLD, w:3.5, dur:2200});
+       dashLine(c, 0,120, 0.04,120, {color:GREEN, dash:'7,5'});
+       dashLine(c, 0,170, 0.04,170, {color:'#B0A488', dash:'3,5'});
+       textAt(c, 0.0335,135, 'V_rms = 120 V', {fs:12.5, color:GREEN});
+       textAt(c, 0.034,185, 'peak 170 V', {fs:12, color:'#8A7D60'});
+     } },
+   { say:"On we go to part b. A heater is a pure resistor, and for resistors the rms values obey Ohm exactly as DC would: 120 over 45 — 2.7 amperes rms. Resistors are the one element that never learned about phase — for them, AC is merely DC that keeps changing its mind, and Ohm's law follows along obligingly.",
+     pose:'write',
+     board:['I_{\\rm rms} = \\frac{V_{\\rm rms}}{R} = \\frac{120}{45} = 2.7\\ \\mathrm A'] },
+   { say:"And now, part c. Average power: V-rms times I-rms — 320 watts. That is the entire point of rms: it makes AC power arithmetic look like DC. No phase factor needed here, because in a resistor voltage and current rise and fall in perfect step. Perfect step means every volt delivered does honest work every instant — resistors are the only members of the AC orchestra who never play out of time.",
+     pose:'write',
+     board:['P = V_{\\rm rms}I_{\\rm rms} = I_{\\rm rms}^2R = (2.67)^2(45) = 3.2\\times10^{2}\\ \\mathrm W'] },
+   { say:"The check, and the caveat that launches the whole tutorial: for a PURE RESISTOR, cosine phi equals one and rms behaves exactly like DC. Keep the qualifier in view — the next example introduces the two components for which none of this innocence survives.",
+     pose:'excited',
+     board:[{t:'Resistor: v and i in phase, cos φ = 1, rms = honorary DC. Capacitors and inductors: see Example 2…'}] },
+  ]
+},
+
+/* ---------- Example 2: Reactance, one element at a time [Intermediate] ---------- */
+{
+  title:'Reactance: one element at a time.', diff:'Intermediate',
+  prompt:'At f = 60 Hz and V_rms = 120 V, find the rms current through (a) only a 15 μF capacitor, (b) only a 0.25 H inductor. (c) Give each current’s phase and the effect of doubling f.',
+  world:{x0:-0.004, x1:0.042, y0:-2.1, y1:2.1, aniso:true},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'t (s)', ylab:'(scaled)'}); },
+  steps:[
+   { say:"Capacitors and inductors resist AC too — but with a twist, literally. Their opposition is called REACTANCE, measured in ohms, and it depends on FREQUENCY: X-C is one over omega C — capacitors loathe slow wiggles; X-L is omega L — inductors loathe fast ones. And unlike resistance, reactance shifts the current a quarter cycle out of phase.",
+     pose:'talk',
+     board:[{t:'f = 60 Hz (ω = 377), V_rms = 120 V. (a) C = 15 μF alone; (b) L = 0.25 H alone.'},
+            'X_C = \\frac{1}{\\omega C}, \\qquad X_L = \\omega L\\quad(\\text{both in ohms})'] },
+   { say:"For part a, the capacitor: one over 377 times 15 micro — 177 ohms. Current: 120 over that — 0.68 amperes rms. And the phase: the current LEADS the voltage by 90 degrees — the mnemonic is ICE: I before E, in a C. Charge must flow IN before the voltage can build; the current is always one step ahead of the argument.",
+     pose:'write',
+     board:['X_C = \\frac{1}{(377)(15\\times10^{-6})} = 1.8\\times10^{2}\\ \\Omega, \\qquad I = \\frac{120}{176.8} = 0.68\\ \\mathrm A',
+            {t:'Current LEADS by 90° — “ICE”.'}] },
+   { say:"For part b, the inductor: 377 times 0.25 — 94 ohms. Current: 1.3 amperes rms — but now LAGGING the voltage by 90 degrees: ELI, E before I, in an L. The back-emf resists every change, so the current arrives fashionably late. Watch both waves against the voltage: one ahead, one behind, perfectly symmetric sins.",
+     pose:'point',
+     board:['X_L = (377)(0.25) = 94\\ \\Omega, \\qquad I = \\frac{120}{94.2} = 1.3\\ \\mathrm A',
+            {t:'Current LAGS by 90° — “ELI”.'}],
+     action(c){
+       plotCurve(c, t=>[t, 1.6*Math.sin(377*t)], 0, 0.04, {color:'#8A7D60', w:2.5, dash:'6,5', dur:1800});
+       plotCurve(c, t=>[t, 1.0*Math.sin(377*t+Math.PI/2)], 0, 0.04, {color:BLUE, w:3, dur:1800});
+       plotCurve(c, t=>[t, 1.0*Math.sin(377*t-Math.PI/2)], 0, 0.04, {color:PURPLE, w:3, dur:1800});
+       textAt(c, 0.0335,1.85, 'v(t)', {fs:12.5, italic:true, color:'#8A7D60'});
+       textAt(c, 0.0005,1.35, 'I_C leads', {fs:12.5, italic:true, color:BLUE});
+       textAt(c, 0.0075,-1.75, 'I_L lags', {fs:12.5, italic:true, color:PURPLE});
+     } },
+   { say:"For part c, the frequency knob. DOUBLE f: X-C halves, so the capacitor's current DOUBLES — high frequencies slip through capacitors like gossip. X-L doubles, so the inductor's current HALVES — inductors smother the fast stuff. Opposite slopes; that opposition is the entire art of filter design, from tone knobs to tower transmitters.",
+     pose:'write',
+     board:['f\\to2f:\\ X_C\\to\\tfrac{X_C}{2}\\ (I_C\\ \\text{doubles}); \\qquad X_L\\to2X_L\\ (I_L\\ \\text{halves})'] },
+   { say:"The closing subtlety — the check on all of it: NEITHER element dissipates any average power. A quarter-cycle phase shift means the element absorbs energy for half of each cycle and returns every joule in the other half — a lender, never a spender. Only resistance ever converts watts to heat. Reactance is opposition without consumption; economists would call it a deposit.",
+     pose:'excited',
+     board:[{t:'⟨P⟩ = 0 for pure C or L: energy borrowed and repaid each cycle. Only R spends.'}] },
+  ]
+},
+
+/* ---------- Example 3: Series RLC off resonance [Challenging] ---------- */
+{
+  title:'Series RLC circuit, off resonance.', diff:'Challenging',
+  prompt:'R = 60 Ω, L = 0.30 H, C = 8.0 μF in series, driven at f = 60 Hz, V_rms = 120 V. Find (a) Z and I_rms, (b) the phase angle, (c) rms voltage across each element, (d) the power two ways.',
+  world:{x0:-300, x1:150, y0:-260, y1:120},
+  setup(ctx,w){
+    axes2D(ctx.svg, ctx.M, w, {xlab:'', ylab:''});
+    textAt({svg:ctx.svg, M:ctx.M, instant:true}, -290,100, 'phasor diagram (volts)', {fs:13, italic:true});
+  },
+  steps:[
+   { say:"All three elements in series — and the bookkeeping instrument is the PHASOR: each rms voltage drawn as a vector whose angle is its phase. The resistor's voltage points along the current; the inductor's points 90 ahead; the capacitor's, 90 behind. The source voltage is their VECTOR sum. AC analysis is Tutorial 4A-1 vectors, rotated into the time domain.",
+     pose:'talk',
+     board:[{t:'R = 60 Ω, L = 0.30 H, C = 8.0 μF, f = 60 Hz, V = 120 V rms.'},
+            'Z = \\sqrt{R^2 + (X_L - X_C)^2}, \\qquad I = \\frac{V}{Z}'] },
+   { say:"The reactances first. X-L: 377 times 0.3 — 113 ohms. X-C: one over 377 times 8 micro — 332 ohms. The capacitor dominates heavily: this circuit, at 60 hertz, is capacitive territory. The impedance: root of 60 squared plus the difference, minus 218, squared — 227 ohms. Current: 120 over that — 0.53 amperes.",
+     pose:'write',
+     board:['X_L = 113\\ \\Omega, \\qquad X_C = \\frac{1}{(377)(8.0\\times10^{-6})} = 332\\ \\Omega',
+            'Z = \\sqrt{60^2 + (113-332)^2} = 227\\ \\Omega, \\qquad I_{\\rm rms} = \\frac{120}{226.6} = 0.53\\ \\mathrm A'] },
+   { say:"For part b, the phase: arctangent of the reactance difference over R — arctangent of minus 218 over 60 — minus 75 degrees. The voltage LAGS the current by three quarters of a right angle: deeply capacitive, exactly as the reactances warned. A negative phase angle is the circuit telling you its personality: capacitive, current-led, starved of inductance — diagnosis by arctangent.",
+     pose:'write',
+     board:['\\varphi = \\tan^{-1}\\frac{X_L - X_C}{R} = \\tan^{-1}\\frac{-218.5}{60} = -75^{\\circ}\\ (\\text{V lags I — capacitive})'] },
+   { say:"For part c, each element's share: V-R is I R — 32 volts; V-L is I X-L — 60 volts; V-C is I X-C — 176 volts. Yes: ONE HUNDRED SEVENTY-SIX volts across the capacitor, from a 120-volt source — perfectly legal, because phasors add as vectors, not as arithmetic. Watch the diagram: V-L up, V-C down, their difference teaming with V-R to close on exactly 120.",
+     pose:'point',
+     board:['V_R = 32\\ \\mathrm V, \\quad V_L = 60\\ \\mathrm V, \\quad V_C = 176\\ \\mathrm V\\ (!)',
+            '\\sqrt{V_R^2 + (V_L - V_C)^2} = \\sqrt{31.8^2 + 115.7^2} = 120\\ \\mathrm V\\ \\checkmark'],
+     action(c){
+       /* phasors to scale (volts): VR along +x, VL +y, VC −y, source = sum */
+       arrow(c, 0,0, 31.8,0, {color:GOLD, w:3.5, label:'V_R', vec:true, fs:14});
+       arrow(c, 0,0, 0,60, {color:BLUE, w:3.5, label:'V_L', vec:true, fs:14});
+       arrow(c, 0,0, 0,-176, {color:PURPLE, w:3.5, label:'V_C', vec:true, fs:14, side:-1});
+       dashLine(c, 31.8,0, 31.8,-115.7, {color:'#B0A488'});
+       arrow(c, 0,0, 31.8,-115.7, {color:GREEN, w:4.5, label:'V = 120', vec:true, fs:15});
+       arc(c, 0,0, 42, 0, -74.6, {color:'#888', label:'φ'});
+     } },
+   { say:"Part d, the power, audited twice. I squared R: 0.53 squared times 60 — 17 watts. And V I cosine phi: 120 times 0.53 times cosine 75 — 17 watts again. Only 17 watts from a circuit boasting '120 volts, half an ampere' — because the power factor, cosine phi, is a dismal 0.27. Most of the current is just sloshing energy in and out of the reactances, billing nobody. Utilities despise circuits like this one; the fix is called resonance, and it is the next example.",
+     pose:'excited',
+     board:['P = I^2R = (0.5297)^2(60) = 17\\ \\mathrm W = VI\\cos\\varphi = (120)(0.5297)(0.266)\\ \\checkmark',
+            {t:'Power factor 0.27 — dreadful. The cure: drive it at resonance → Example 4.'}] },
+  ]
+},
+
+/* ---------- Example 4: Same circuit at resonance [Intermediate] ---------- */
+{
+  title:'The same circuit at resonance.', diff:'Intermediate',
+  prompt:'For the circuit of Example 3: (a) find f₀; (b) I_rms, phase, and power at resonance; (c) V_L and V_C at resonance; (d) the quality factor Q = ω₀L/R.',
+  world:{x0:-25, x1:320, y0:-0.4, y1:2.6, aniso:true},
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'f (Hz)', ylab:'I (A)'}); },
+  steps:[
+   { say:"Same circuit, new question: at what frequency does it WAKE UP? Resonance — where X-L equals X-C, the two reactances cancel each other's phase shifts completely, and the impedance collapses to plain R. The condition: omega-nought equals one over root L C — the very same frequency at which the LC pair would oscillate on its own. Drive a system at its own heartbeat and it answers with everything it has.",
+     pose:'talk',
+     board:[{t:'Same R = 60 Ω, L = 0.30 H, C = 8.0 μF. Find f₀ and the circuit’s behaviour there.'},
+            'X_L = X_C \\;\\Rightarrow\\; \\omega_0 = \\frac{1}{\\sqrt{LC}}, \\quad f_0 = \\frac{1}{2\\pi\\sqrt{LC}}'] },
+   { say:"Part a: one over 2 pi root of 0.3 times 8 micro — 103 hertz, call it 1.0 times ten squared. Just above the 60 hertz where Example 3 was suffering. Resonant frequencies are where the circuit's private preferences and the source's demands finally coincide — above it the inductor rules, below it the capacitor, and precisely at it, neither.",
+     pose:'write',
+     board:['f_0 = \\frac{1}{2\\pi\\sqrt{(0.30)(8.0\\times10^{-6})}} = 1.0\\times10^{2}\\ \\mathrm{Hz}\\ (102.7\\ \\mathrm{Hz})'] },
+   { say:"On we go to part b. At resonance Z equals R — 60 ohms, nothing more — so the current leaps to 120 over 60: TWO amperes, nearly four times the off-resonance value. Phase: zero — voltage and current in lockstep. Power: I squared R — 240 watts, every watt the source can give, at power factor one. Watch the resonance curve: the current peaks precisely at f-nought.",
+     pose:'point',
+     board:['Z = R = 60\\ \\Omega, \\quad I = 2.0\\ \\mathrm A, \\quad \\varphi = 0, \\quad P = I^2R = 2.4\\times10^{2}\\ \\mathrm W'],
+     action(c){
+       plotCurve(c, f=>{ const w=2*Math.PI*f, XL=w*0.3, XC=1/(w*8e-6);
+         return [f, 120/Math.sqrt(3600+(XL-XC)*(XL-XC))]; }, 20, 300, {color:GOLD, w:3.5, dur:2000});
+       dashLine(c, 102.7,0, 102.7,2, {color:'#8A7D60'});
+       el('circle',{cx:c.M.X(102.7),cy:c.M.Y(2),r:5,fill:RED},c.svg);
+       textAt(c, 112,2.15, 'f₀ = 103 Hz: I = 2.0 A', {fs:12.5, color:RED});
+       el('circle',{cx:c.M.X(60),cy:c.M.Y(0.53),r:4,fill:BLUE},c.svg);
+       textAt(c, 33,0.75, '60 Hz: 0.53 A (Ex. 3)', {fs:12, color:BLUE});
+     } },
+   { say:"For part c, the shock. At resonance, X-L equals X-C equals 194 ohms, so V-L and V-C are each 2 amps times 194 — THREE HUNDRED NINETY volts apiece, across elements fed by a 120-volt source. Legal, again: the two phasors point in exactly opposite directions and cancel to the volt in the loop sum, leaving the resistor holding a clean 120. Resonance hides kilovolt-scale drama inside a polite exterior — respect capacitor ratings.",
+     pose:'write',
+     board:['\\omega_0 = 645\\ \\mathrm{rad/s}, \\quad X_L = X_C = 194\\ \\Omega',
+            'V_L = V_C = (2.0)(193.6) = 3.9\\times10^{2}\\ \\mathrm V\\ \\text{each — opposite phases, cancelling}\\ \\checkmark'] },
+   { say:"Part d, the quality factor: omega-nought L over R — 645 times 0.3 over 60 — 3.2. Q measures how sharp the resonant peak is, and how much the internal voltages exceed the source. Ours is a modest hill; a radio tuner wants Q near a hundred, a needle sharp enough to pick one station from the crowded dial. Now comes the check: V-L over V-source — 390 over 120 — is 3.2. Q, measured two ways, agreeing: the resonance is certified.",
+     pose:'excited',
+     board:['Q = \\frac{\\omega_0 L}{R} = \\frac{(645)(0.30)}{60} = 3.2',
+            {t:'Check: V_L/V = 390/120 = 3.2 = Q ✓. Radio tuners: Q ~ 100.'}] },
+  ]
+},
+
+/* ---------- Example 5: Transformers and transmission [Challenging] ---------- */
+{
+  title:'Transformers and transmission lines.', diff:'Challenging',
+  prompt:'A plant ships P = 50 kW through lines of total resistance 10 Ω. Compare line losses at (a) 120 V and (b) 12 kV (stepped up and down by transformers). (c) Find the turns ratio and line current in case (b).',
+  world:{x0:-8, x1:108, y0:-12, y1:66},
+  setup(ctx,w){
+    const {svg,M}=ctx;
+    /* plant, line, town */
+    el('rect',{x:M.X(0),y:M.Y(30),width:M.X(14)-M.X(0),height:M.Y(12)-M.Y(30),fill:'#D9C6A5',stroke:'#8A5A24','stroke-width':2.5,rx:3},svg);
+    textAt({svg,M,instant:true}, 1.5,20, 'plant', {fs:12.5, italic:true, color:'#5C4B30'});
+    el('rect',{x:M.X(86),y:M.Y(30),width:M.X(100)-M.X(86),height:M.Y(12)-M.Y(30),fill:'#D9C6A5',stroke:'#8A5A24','stroke-width':2.5,rx:3},svg);
+    textAt({svg,M,instant:true}, 88,20, 'town', {fs:12.5, italic:true, color:'#5C4B30'});
+    el('line',{x1:M.X(14),y1:M.Y(24),x2:M.X(86),y2:M.Y(24),stroke:'#5C4B30','stroke-width':2.5},svg);
+    el('line',{x1:M.X(14),y1:M.Y(18),x2:M.X(86),y2:M.Y(18),stroke:'#5C4B30','stroke-width':2.5},svg);
+    textAt({svg,M,instant:true}, 38,27.5, 'R_line = 10 Ω total', {fs:12.5, italic:true});
+  },
+  steps:[
+   { say:"We end with the example that explains the power grid — and the war Edison lost. A plant must ship 50 kilowatts to a town through lines totalling 10 ohms. The one law that rules everything: for a fixed shipment of power, the line current is P over V. Ship at LOW voltage and the current — and the I-squared-R funeral pyre — is enormous. Watch the arithmetic demolish direct current at appliance voltage.",
+     pose:'talk',
+     board:[{t:'P = 50 kW, R_line = 10 Ω. Compare losses at 120 V vs 12 kV.'},
+            'I = \\frac{P}{V}, \\qquad P_{\\rm loss} = I^2R_{\\rm line}'] },
+   { say:"Case a: 120 volts. The current: 50 thousand over 120 — 417 amperes. The line loss: 417 squared times 10 — 1.7 MEGAWATTS. To deliver 0.05 megawatts. The line burns 34 times what the town receives; the delivery is not inefficient, it is a bonfire with a billing department.",
+     pose:'write',
+     board:['I = \\frac{50\\,000}{120} = 417\\ \\mathrm A',
+            'P_{\\rm loss} = (416.7)^2(10) = 1.7\\times10^{6}\\ \\mathrm W\\ (34\\times\\ \\text{the delivered power!})'],
+     action(c){
+       vBarLoss(c, 30, 52, RED, '1.7 MW lost');
+       function vBarLoss(c,x,h,color,lbl){
+         const {M}=c;
+         const r=el('rect',{x:M.X(x)-14,y:M.Y(h),width:28,height:M.Y(0)-M.Y(h),fill:color,opacity:0,rx:3},c.svg);
+         tween(u=>r.setAttribute('opacity',.7*u),700,c.instant);
+         textAt(c, x, h+2.5, lbl, {fs:12, anchor:'middle', color});
+       }
+     } },
+   { say:"Case b: step up to 12 kilovolts with a transformer. Same 50 kilowatts, but now the current is 50 thousand over 12 thousand — 4.2 amperes. The loss: 4.2 squared times 10 — 170 WATTS. A third of one percent. Raising the voltage a hundredfold cut the loss by a hundred SQUARED — ten thousand — because the current enters the loss twice.",
+     pose:'point',
+     board:['I = \\frac{50\\,000}{12\\,000} = 4.2\\ \\mathrm A, \\qquad P_{\\rm loss} = (4.167)^2(10) = 1.7\\times10^{2}\\ \\mathrm W',
+            'P_{\\rm loss} \\propto \\frac{1}{V^2}:\\ \\ 100\\times V \\Rightarrow 10^{4}\\times \\text{ smaller loss}'],
+     action(c){
+       const {M}=c;
+       const r=el('rect',{x:M.X(44)-14,y:M.Y(0.6),width:28,height:Math.max(2,M.Y(0)-M.Y(0.6)),fill:GREEN,opacity:0,rx:2},c.svg);
+       tween(u=>r.setAttribute('opacity',.85*u),700,c.instant);
+       textAt(c, 44, 3.6, '170 W lost', {fs:12, anchor:'middle', color:GREEN});
+       textAt(c, 22, 58, 'losses, to scale:', {fs:12.5, italic:true});
+     } },
+   { say:"For part c, the machinery. The transformer's turns ratio equals its voltage ratio: 12 thousand over 120 — one hundred to one, step-up at the plant, and its mirror image steps back down at the town. Ideally it trades voltage for current at constant power: I-s V-s equals I-p V-p. Nothing is free; the 4.2 amperes at 12 kV were bought by surrendering the 417 at 120.",
+     pose:'write',
+     board:['\\frac{N_s}{N_p} = \\frac{V_s}{V_p} = \\frac{12\\,000}{120} = 100\\quad(\\text{and } 100:1 \\text{ down at the town})',
+            'I_sV_s = I_pV_p\\ \\text{(ideal transformer: constant power, traded terms)}'] },
+   { say:"And the final check is history itself. Transformers run on CHANGING flux — Faraday's law — so this entire scheme demands AC. That single physical fact decided the War of the Currents: Edison's DC could not be stepped up, Westinghouse and Tesla's AC could, and the continental grid hums at 60 hertz to this day. One law of induction; one civilisation's wiring diagram. End of tutorial — and of the magnetic term's grand argument.",
+     pose:'excited',
+     board:[{t:'Transformers need dΦ/dt → AC only. Hence: the grid is AC, at hundreds of kV between cities. Faraday won the War of the Currents.'}] },
+  ]
+},
+];
+
+/* ---------------- init ---------------- */
+EXAMPLES.forEach((ex,i)=>{
+  const b=document.createElement('button');
+  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
+  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
+  $('tabs').appendChild(b);
+});
+loadExample(0,false);                     /* start paused — user clicks Play */
+</script>
+</body>
+</html>

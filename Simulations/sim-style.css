@@ -1,0 +1,60 @@
+/* Shared styles for the Professor Ahsan interactive Desmos simulation pages */
+:root{
+  --paper:#FBF6EA; --board:#2F4538; --chalk:#F2EEDC;
+  --accent:#B5793B; --accent-dk:#8A5A24; --ink:#3E3428;
+  --blue:#2f6fb0; --red:#c0392b; --green:#2e8b57; --purple:#6042a6;
+  --field:#3a7bd5; --gold:#c9a13b;
+}
+*{box-sizing:border-box}
+body{font-family:Georgia,serif;background:#EFE7D5;color:var(--ink);margin:0}
+header{background:var(--board);color:var(--chalk);padding:14px 24px}
+header h1{margin:0;font-size:1.22rem;font-weight:normal}
+header .sub{font-size:.82rem;opacity:.75;margin-top:3px}
+header a{color:#D8C9A3}
+main{max-width:1180px;margin:0 auto;padding:18px 22px 60px}
+.phys{background:var(--paper);border:1px solid #D9CDB4;border-radius:12px;padding:14px 18px;margin:0 0 16px;
+      box-shadow:1px 2px 0 rgba(0,0,0,.05);line-height:1.55}
+.phys h2{font-size:1.02rem;color:var(--accent-dk);margin:0 0 6px}
+.phys .eq{font-family:"Cambria Math",Georgia,serif;font-style:italic;background:#fff;border:1px solid #e6dcc4;
+          border-radius:6px;padding:2px 8px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1px solid #D9CDB4;border-radius:12px;padding:14px 16px;margin-bottom:16px;
+       box-shadow:1px 2px 0 rgba(0,0,0,.05)}
+.panel:last-child{margin-bottom:0}
+.calc{width:100%;height:400px;border-radius:10px;border:1px solid #cdbf9f;overflow:hidden}
+.cap{font-size:.82rem;opacity:.75;margin-top:8px;font-style:italic}
+h3{font-size:.98rem;color:var(--accent-dk);margin:2px 0 10px}
+/* schematic */
+.schematic{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.scene{flex:none;background:#fffdf6;border:1px solid #e6dcc4;border-radius:10px}
+.readouts{font-size:.9rem;line-height:1.5;min-width:170px}
+.readouts .r{margin:5px 0}
+.readouts .k{font-family:"Cambria Math",Georgia,serif}
+.readouts .vb{font-weight:bold}
+.c-blue{color:var(--blue)} .c-red{color:var(--red)} .c-green{color:var(--green)}
+.c-purple{color:var(--purple)} .c-accent{color:var(--accent-dk)} .c-gold{color:#9a7b1f}
+/* legend + controls */
+.legend{list-style:none;padding:0;margin:0 0 16px}
+.legend li{display:flex;align-items:flex-start;gap:9px;margin:7px 0;font-size:.93rem;line-height:1.4}
+.sw{flex:none;width:26px;height:0;border-top-width:4px;border-top-style:solid;margin-top:9px;border-radius:2px}
+.sw.dash{border-top-style:dashed}
+.dot{flex:none;width:14px;height:14px;border-radius:50%;margin-top:2px}
+.ctl{margin:11px 0}
+.ctl .row{display:flex;justify-content:space-between;align-items:baseline}
+.ctl label{font-weight:bold;color:var(--ink);font-size:.92rem}
+.ctl .val{font-family:"Cambria Math",Georgia,serif;font-size:.92rem;color:var(--accent-dk)}
+.ctl .hint{font-size:.78rem;opacity:.7;margin-top:1px}
+input[type=range]{width:100%;accent-color:var(--accent);margin-top:4px}
+.playbar{display:flex;gap:8px;align-items:center;margin:4px 0 2px;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 15px;
+     font-family:inherit;font-size:.9rem;font-weight:bold;cursor:pointer}
+.btn.sec{background:#6E5A3A}
+.qs{background:var(--paper);border:1px solid #D9CDB4;border-radius:12px;padding:14px 18px;margin:16px 0 0;
+    box-shadow:1px 2px 0 rgba(0,0,0,.05)}
+.qs h2{font-size:1.02rem;color:var(--accent-dk);margin:0 0 8px}
+.qs ul{margin:0;padding-left:18px;line-height:1.55}
+.qs li{margin:6px 0}
+.qs b{color:var(--accent-dk)}
+.qs .tag{font-size:.76rem;background:#efe2c6;border-radius:5px;padding:1px 6px;margin-left:4px;font-style:italic}
+footer{max-width:1180px;margin:0 auto;padding:6px 24px 40px;font-size:.83rem;opacity:.7;font-style:italic}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electric Field &amp; Potential — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 5 — Electric Field &amp; Potential from Two Point Charges</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two point charges <b>q&#8321;</b> and <b>q&#8322;</b> sit on the x-axis. Each creates a potential
+    <span class="eq">V = k&#8202;q/r</span>, and the total potential is the <b>sum</b> of the two. The curves are
+    <b>equipotentials</b> (lines of constant V). At any sample point the electric field is the sum of the two
+    Coulomb fields, and it always points <b>perpendicular to the equipotentials</b>, from high to low potential.
+    Move the sample point and the charges to explore superposition.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Superposition at the sample point</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="200" viewBox="0 0 330 200">
+            <line x1="10" y1="100" x2="320" y2="100" stroke="#e3d7b8" stroke-width="1"/>
+            <line x1="165" y1="10" x2="165" y2="190" stroke="#e3d7b8" stroke-width="1"/>
+            <circle id="c1" cx="120" cy="100" r="11" fill="var(--red)"/>
+            <text id="c1t" x="116" y="104" font-size="13" fill="#fff">+</text>
+            <circle id="c2" cx="210" cy="100" r="11" fill="var(--blue)"/>
+            <text id="c2t" x="206" y="104" font-size="13" fill="#fff">&#8722;</text>
+            <line id="e1" stroke="var(--red)" stroke-width="2" marker-end="url(#qe1)"/>
+            <line id="e2" stroke="var(--blue)" stroke-width="2" marker-end="url(#qe2)"/>
+            <line id="er" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#qer)"/>
+            <circle id="sp" cx="165" cy="60" r="4" fill="#333"/>
+            <text id="sl" x="170" y="58" font-size="11" fill="#333">S</text>
+            <defs>
+              <marker id="qe1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+              <marker id="qe2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="qer" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--accent-dk)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-red"><span class="k">E&#8321;</span> from q&#8321;</div>
+            <div class="r c-blue"><span class="k">E&#8322;</span> from q&#8322;</div>
+            <div class="r c-accent"><span class="k">E = E&#8321;+E&#8322;</span></div>
+            <div class="r" style="opacity:.85"><span class="k">|E|</span> at S = <span class="vb" id="rE">–</span></div>
+            <div class="r" style="opacity:.85"><span class="k">V</span> at S = <span class="vb" id="rV">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The caramel arrow is the total field at S — the vector sum of the red and blue contributions.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Equipotential map &amp; field vector</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Green curves = positive potential, blue curves = negative; the caramel arrow at the sample point is the electric field. Notice it crosses the equipotentials at right angles.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Equipotentials</b> V = +V&#8320;, +2V&#8320; (constant-potential curves).</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Equipotentials</b> V = &#8722;V&#8320;, &#8722;2V&#8320;.</span></li>
+          <li><span class="dot" style="background:var(--accent-dk)"></span><span><b>Field vector</b> at the sample point S.</span></li>
+        </ul>
+
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q1" data-min="-3" data-max="3" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Charge q&#8321;</label><span class="val"></span></div><input type="range"><div class="hint">Sign and size of the left charge.</div>
+          </div>
+          <div class="ctl" data-var="q2" data-min="-3" data-max="3" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Charge q&#8322;</label><span class="val"></span></div><input type="range"><div class="hint">Try opposite signs (dipole) vs. same sign.</div>
+          </div>
+          <div class="ctl" data-var="x1" data-min="-5" data-max="0" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Position of q&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x2" data-min="0" data-max="5" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Position of q&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="xs" data-min="-7" data-max="7" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Sample point x&#8347;</label><span class="val"></span></div><input type="range"><div class="hint">Move the probe left/right.</div>
+          </div>
+          <div class="ctl" data-var="ys" data-min="-5" data-max="5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Sample point y&#8347;</label><span class="val"></span></div><input type="range"><div class="hint">Move the probe up/down.</div>
+          </div>
+          <div class="ctl" data-var="V0" data-min="0.1" data-max="2" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Equipotential value V&#8320;</label><span class="val"></span></div><input type="range"><div class="hint">Which potential levels to draw.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For equal and opposite charges, which way does the field point at the midpoint?</li>
+      <li><b>Manipulate</b><span class="tag">x&#8347;, y&#8347;</span> Move the sample point S and watch how the field vector lines up with the equipotential curves.</li>
+      <li><b>Explain</b><span class="tag">the arrow</span> Why is the electric field always perpendicular to the equipotential curves?</li>
+      <li><b>Calculate</b><span class="tag">q&#8321;, x&#8347;</span> Pick a point on the x-axis and calculate E from Coulomb's law, then compare with the displayed vector.</li>
+      <li><b>Extend</b><span class="tag">q&#8322;</span> Flip q&#8322; from negative to positive and compare the dipole map with the like-charge map.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var ke=1, c=0.15;
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'x position (arb. units)', yAxisLabel:'y position (arb. units)'});
+  calc.setExpressions([
+    {id:'ke',latex:'k_e=1'}, {id:'c',latex:'c=0.15'},
+    {id:'q1',latex:'q_1=1'}, {id:'q2',latex:'q_2=-1'},
+    {id:'x1',latex:'x_1=-2'}, {id:'x2',latex:'x_2=2'},
+    {id:'xs',latex:'x_s=0'}, {id:'ys',latex:'y_s=2'}, {id:'V0',latex:'V_0=0.4'}, {id:'sc',latex:'s_c=1'},
+    {id:'r1',latex:'d_1(x,y)=\\sqrt{(x-x_1)^2+y^2+c^2}', hidden:true, secret:true},
+    {id:'r2',latex:'d_2(x,y)=\\sqrt{(x-x_2)^2+y^2+c^2}', hidden:true, secret:true},
+    {id:'Vf',latex:'V(x,y)=k_e\\left(\\frac{q_1}{d_1(x,y)}+\\frac{q_2}{d_2(x,y)}\\right)', hidden:true, secret:true},
+    {id:'Exf',latex:'E_x(x,y)=k_e\\left(\\frac{q_1(x-x_1)}{d_1(x,y)^3}+\\frac{q_2(x-x_2)}{d_2(x,y)^3}\\right)', hidden:true, secret:true},
+    {id:'Eyf',latex:'E_y(x,y)=k_e\\left(\\frac{q_1 y}{d_1(x,y)^3}+\\frac{q_2 y}{d_2(x,y)^3}\\right)', hidden:true, secret:true},
+    {id:'eq1',latex:'V(x,y)=V_0', color:'#2e8b57', lineWidth:2},
+    {id:'eq2',latex:'V(x,y)=2V_0', color:'#2e8b57', lineWidth:1.4},
+    {id:'eq3',latex:'V(x,y)=-V_0', color:'#2f6fb0', lineWidth:2},
+    {id:'eq4',latex:'V(x,y)=-2V_0', color:'#2f6fb0', lineWidth:1.4},
+    {id:'vecShaft',latex:'\\operatorname{polygon}((0,0),(0,0))', color:'#8a5a24', lineWidth:3.5},
+    {id:'vecHead',latex:'\\operatorname{polygon}((0,0),(0,0),(0,0))', color:'#8a5a24', fillOpacity:1, lineWidth:1},
+    {id:'Sp',latex:'(x_s,y_s)', color:'#333333', showLabel:true, label:'S', labelSize:'small'},
+    {id:'Q1',latex:'(x_1,0)', color:'#c0392b', pointSize:16},
+    {id:'Q2',latex:'(x_2,0)', color:'#2f6fb0', pointSize:16}
+  ]);
+  calc.setMathBounds({left:-8, right:8, bottom:-6, top:6});
+
+  var S={q1:1,q2:-1,x1:-2,x2:2,xs:0,ys:2,V0:0.4};
+  // schematic mapping: x in [-8,8]->[15,315], y in [-6,6]->[190,10]
+  function mx(x){ return 165 + x*18.75; }
+  function my(y){ return 100 - y*15; }
+  function field(qx, q, sx, sy){ // E from a single charge at (qx,0)
+    var dx=sx-qx, dy=sy, d=Math.sqrt(dx*dx+dy*dy+c*c); var f=ke*q/(d*d*d); return [f*dx, f*dy];
+  }
+  function update(){
+    // colours of charge markers by sign
+    calc.setExpression({id:'Q1', color: S.q1>=0?'#c0392b':'#2f6fb0'});
+    calc.setExpression({id:'Q2', color: S.q2>=0?'#c0392b':'#2f6fb0'});
+    // schematic
+    document.getElementById('c1').setAttribute('cx',mx(S.x1)); document.getElementById('c1t').setAttribute('x',mx(S.x1)-4);
+    document.getElementById('c1').setAttribute('fill', S.q1>=0?'var(--red)':'var(--blue)');
+    document.getElementById('c1t').textContent = S.q1>=0?'+':'−';
+    document.getElementById('c2').setAttribute('cx',mx(S.x2)); document.getElementById('c2t').setAttribute('x',mx(S.x2)-4);
+    document.getElementById('c2').setAttribute('fill', S.q2>=0?'var(--red)':'var(--blue)');
+    document.getElementById('c2t').textContent = S.q2>=0?'+':'−';
+    var sx=mx(S.xs), sy=my(S.ys);
+    document.getElementById('sp').setAttribute('cx',sx); document.getElementById('sp').setAttribute('cy',sy);
+    document.getElementById('sl').setAttribute('x',sx+6); document.getElementById('sl').setAttribute('y',sy-4);
+    var e1=field(S.x1,S.q1,S.xs,S.ys), e2=field(S.x2,S.q2,S.xs,S.ys);
+    var er=[e1[0]+e2[0], e1[1]+e2[1]];
+    // --- Desmos field-vector arrow (shaft + filled arrowhead); length grows with |E| ---
+    (function(){
+      var Em=Math.hypot(er[0],er[1]), f=function(n){return n.toFixed(3);};
+      if(Em<1e-4){ calc.setExpression({id:'vecShaft',latex:'\\operatorname{polygon}((x_s,y_s),(x_s,y_s))'});
+                   calc.setExpression({id:'vecHead',latex:'\\operatorname{polygon}((x_s,y_s),(x_s,y_s),(x_s,y_s))'}); return; }
+      var ux=er[0]/Em, uy=er[1]/Em, Ld=Math.max(0.6,Math.min(4.5,Em*6));
+      var tx=S.xs+ux*Ld, ty=S.ys+uy*Ld, hl=Math.min(0.55,0.32*Ld), hw=hl*0.6;
+      var bx=tx-ux*hl, by=ty-uy*hl, px=-uy, py=ux;
+      calc.setExpression({id:'vecShaft',latex:'\\operatorname{polygon}(('+f(S.xs)+','+f(S.ys)+'),('+f(bx)+','+f(by)+'))'});
+      calc.setExpression({id:'vecHead',latex:'\\operatorname{polygon}(('+f(tx)+','+f(ty)+'),('+f(bx+px*hw)+','+f(by+py*hw)+'),('+f(bx-px*hw)+','+f(by-py*hw)+'))'});
+    })();
+    var sc=150, cap=72;
+    function draw(id,v){ var e=document.getElementById(id), L=Math.hypot(v[0],v[1])*sc, ang=Math.atan2(-v[1],v[0]);
+      if(L>cap)L=cap; var ex=sx+L*Math.cos(ang), ey=sy+L*Math.sin(ang);
+      e.setAttribute('x1',sx); e.setAttribute('y1',sy); e.setAttribute('x2',ex.toFixed(1)); e.setAttribute('y2',ey.toFixed(1));
+      e.setAttribute('opacity', L<1?0:1);
+    }
+    draw('e1',e1); draw('e2',e2); draw('er',er);
+    var d1=Math.sqrt((S.xs-S.x1)**2+S.ys**2+c*c), d2=Math.sqrt((S.xs-S.x2)**2+S.ys**2+c*c);
+    document.getElementById('rV').textContent=(ke*(S.q1/d1+S.q2/d2)).toFixed(2);
+    document.getElementById('rE').textContent=Math.hypot(er[0],er[1]).toFixed(2);
+  }
+
+  var LATEX={q1:'q_1',q2:'q_2',x1:'x_1',x2:'x_2',xs:'x_s',ys:'y_s',V0:'V_0'};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(cc){
+    var v=cc.dataset.var, input=cc.querySelector('input'), out=cc.querySelector('.val'), fx=+cc.dataset.fixed;
+    input.min=+cc.dataset.min; input.max=+cc.dataset.max; input.step=+cc.dataset.step; input.value=S[v];
+    input.addEventListener('input',function(){
+      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); update();
+    });
+    if(out) out.textContent=S[v].toFixed(fx);
+  });
+  update();
+})();
+</script>
+</body>
+</html>
