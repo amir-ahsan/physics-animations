@@ -311,8 +311,10 @@ function arrow(ctx, x1,y1,x2,y2, opt={}){
 function arc(ctx, cx,cy,r, a1,a2, opt={}){
   const {svg,M,instant} = ctx;
   const g = el('g',{},svg);
-  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
+  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2,'stroke-linecap':'round'},g);
   const R = r*M.s;
+  const head = opt.head ? el('polygon',{fill:opt.color||'#666',points:''},g) : null;
+  const dir = a2>=a1 ? 1 : -1;              /* +1 = counter-clockwise */
   function d(a2c){
     const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
     const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
@@ -320,7 +322,16 @@ function arc(ctx, cx,cy,r, a1,a2, opt={}){
     const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
     return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
   }
-  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
+  tween(u=>{
+    const a2c=a1+(a2-a1)*u;
+    path.setAttribute('d', d(a2c));
+    if(head){                               /* arrowhead at the leading end, tangent to the arc */
+      const A=a2c*Math.PI/180;
+      const ex=M.X(cx)+R*Math.cos(A), ey=M.Y(cy)-R*Math.sin(A);
+      const tang=Math.atan2(-Math.cos(A)*dir, -Math.sin(A)*dir);
+      head.setAttribute('points', headPts(ex,ey,tang, opt.hs||10));
+    }
+  }, opt.dur||700, instant);
   if (opt.label){
     const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
     const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
@@ -785,7 +796,7 @@ const EXAMPLES = [
     el('circle',{cx:M.X(0),cy:M.Y(0),r:4,fill:'#5C4B30'},svg);
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(1.85),y2:M.Y(-1.85),stroke:'#8A7D60','stroke-width':2.5},svg);
     arrow(ctx, 1.85,-1.85, 3.1,-0.6, {color:'#B5793B', w:3, label:'v = rω', vec:true, fs:13});
-    arc(ctx, 0,0, 3.3, 20, 75, {color:'#7B4FA0', label:'ω'});
+    arc(ctx, 0,0, 3.3, 12, 96, {color:'#7B4FA0', label:'ω', head:true, w:2.6, hs:11});
     const t=el('text',{x:M.X(0),y:M.Y(-3.5),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='kinematics returns, wearing Greek';
   },
@@ -936,9 +947,10 @@ const EXAMPLES = [
        const {M}=c;
        el('circle',{cx:M.X(0),cy:M.Y(0),r:0.6*M.s,fill:'#D9C6A5',stroke:'#8A7D60','stroke-width':3},c.svg);
        el('circle',{cx:M.X(0),cy:M.Y(0),r:4,fill:'#5C4B30'},c.svg);
-       el('line',{x1:M.X(0.6),y1:M.Y(0),x2:M.X(0.6),y2:M.Y(-1.6),stroke:'#5C4B30','stroke-width':2},c.svg);
+       const cord=el('line',{x1:M.X(0.6),y1:M.Y(0),x2:M.X(0.6),y2:M.Y(-1.6),stroke:'#5C4B30','stroke-width':2},c.svg);
        const b=boxAt(c, 0.6,-2.3, 0.7,0.7, {});
-       tween(u=>{ b.setAttribute('y', c.M.Y(-2.3+0.7-0.8*u*u)); }, 1800, c.instant);
+       /* the cord stays attached to the block's top and lengthens as it unwinds */
+       tween(u=>{ const topY=-1.6-0.8*u*u; b.setAttribute('y', c.M.Y(topY)); cord.setAttribute('y2', c.M.Y(topY)); }, 1800, c.instant);
        arrow(c, 1.35,-1.9, 1.35,-1.0, {color:BLUE, label:'T', vec:true, fs:15});
        arrow(c, 1.35,-2.4, 1.35,-3.2, {color:RED, label:'mg', vec:true, fs:14, side:-1});
      } },
@@ -980,7 +992,7 @@ const EXAMPLES = [
        const {M}=c; const bx=1.15, by=1.19;
        el('circle',{cx:M.X(bx+0.08),cy:M.Y(by+0.13),r:0.16*M.s,fill:'#C98F52',stroke:'#8A5A24','stroke-width':2.5},c.svg);
        arrow(c, bx+0.08,by+0.13, bx+0.08,by-0.75, {color:RED, w:3, label:'Mg', vec:true, fs:14, side:-1});
-       arrow(c, bx+0.08,by+0.13, bx-0.34,by+0.86, {color:BLUE, w:3, label:'n', vec:true, fs:14});
+       arrow(c, bx+0.08,by+0.13, bx+0.505,by+0.866, {color:BLUE, w:3, label:'n', vec:true, fs:14});  /* ⟂ incline: dir (sin30,cos30) */
        arrow(c, bx-0.05,by+0.35, bx-0.75,by+0.75, {color:PURPLE, w:3, label:'f_s', vec:true, fs:14});
      } },
    { say:"Eliminate friction and behold: a equals g sine theta over 1 plus I over M R squared. Mass gone. Radius gone. Only the SHAPE FACTOR survives — two fifths for a solid sphere, a full 1 for a hoop, which keeps every gram at maximum distance like a miser hiding coins in the walls.",
