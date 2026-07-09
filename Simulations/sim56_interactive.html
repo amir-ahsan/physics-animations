@@ -83,25 +83,35 @@
 <script>
 (function(){
   var calc = SimCore.makeCalc('calc','volume V','pressure P');
-  // Illustrative closed loop: two isotherms P=Th/V (hot, upper) and P=Tc/V (cold, lower), joined by adiabats at Va and Vc
+  // Closed Carnot loop: hot isotherm A->B, adiabat B->C, cold isotherm C->D, adiabat D->A.
+  // Adiabat exponent gamma; the corner volumes are chosen so PVᵞ matches at every join:
+  //   Vc = Vb (Th/Tc)^(1/(γ-1)),  Vd = Va (Th/Tc)^(1/(γ-1))  → the four curves connect exactly.
+  var ga=1.667;
   calc.setExpressions([
     {id:'Th',latex:'T_h=6'}, {id:'Tc',latex:'T_c=3'},
+    {id:'ga',latex:'g_a='+ga, hidden:true, secret:true},
     {id:'Va',latex:'V_a=1.5', hidden:true, secret:true}, {id:'Vb',latex:'V_b=3', hidden:true, secret:true},
-    {id:'hot',latex:'y=\\frac{T_h}{x}\\left\\{V_a\\le x\\le V_b\\right\\}', color:'#c0392b', lineWidth:2.5},
-    {id:'cold',latex:'y=\\frac{T_c}{x}\\left\\{V_a\\cdot\\frac{T_h}{T_c}\\le x\\le V_b\\cdot\\frac{T_h}{T_c}\\right\\}', color:'#2f6fb0', lineWidth:2.5},
-    {id:'ad1',latex:'y=\\frac{T_h V_b^{0.4}}{x^{1.4}}\\left\\{V_b\\le x\\le V_b\\frac{T_h}{T_c}\\right\\}', color:'#8A5A24', lineWidth:1.6},
-    {id:'ad2',latex:'y=\\frac{T_h V_a^{0.4}}{x^{1.4}}\\left\\{V_a\\le x\\le V_a\\frac{T_h}{T_c}\\right\\}', color:'#8A5A24', lineWidth:1.6}
+    {id:'px',latex:'p_x=\\frac{1}{g_a-1}', hidden:true, secret:true},
+    {id:'Vc',latex:'V_c=V_b\\left(\\frac{T_h}{T_c}\\right)^{p_x}', hidden:true, secret:true},
+    {id:'Vd',latex:'V_d=V_a\\left(\\frac{T_h}{T_c}\\right)^{p_x}', hidden:true, secret:true},
+    {id:'hot',latex:'y=\\frac{T_h}{x}\\left\\{V_a\\le x\\le V_b\\right\\}', color:'#c0392b', lineWidth:3},
+    {id:'adBC',latex:'y=\\frac{T_h V_b^{g_a-1}}{x^{g_a}}\\left\\{V_b\\le x\\le V_c\\right\\}', color:'#8A5A24', lineWidth:2.5},
+    {id:'cold',latex:'y=\\frac{T_c}{x}\\left\\{V_d\\le x\\le V_c\\right\\}', color:'#2f6fb0', lineWidth:3},
+    {id:'adDA',latex:'y=\\frac{T_h V_a^{g_a-1}}{x^{g_a}}\\left\\{V_a\\le x\\le V_d\\right\\}', color:'#8A5A24', lineWidth:2.5},
+    {id:'pA',latex:'\\left(V_a,\\frac{T_h}{V_a}\\right)', color:'#c0392b', pointSize:11, showLabel:true, label:'A'},
+    {id:'pB',latex:'\\left(V_b,\\frac{T_h}{V_b}\\right)', color:'#c0392b', pointSize:11, showLabel:true, label:'B'},
+    {id:'pC',latex:'\\left(V_c,\\frac{T_c}{V_c}\\right)', color:'#2f6fb0', pointSize:11, showLabel:true, label:'C'},
+    {id:'pD',latex:'\\left(V_d,\\frac{T_c}{V_d}\\right)', color:'#2f6fb0', pointSize:11, showLabel:true, label:'D'}
   ]);
   var S={Th:6,Tc:3,Qh:10};
   function update(){
-    var eta=1-S.Tc/S.Th, W=eta*S.Qh;
+    var eta=1-S.Tc/S.Th, W=eta*S.Qh, Qc=S.Qh-W;
     document.getElementById('reta56').textContent=(eta*100).toFixed(1)+' %';
     document.getElementById('rqh56').textContent=S.Qh.toFixed(0);
     document.getElementById('rw56').textContent=W.toFixed(2);
-    calc.setMathBounds({left:0,right:8,bottom:0,top:6});
-    // arrow lengths reflect Qh, W, Qc
-    var Qc=S.Qh-W;
-    document.querySelector('#reta56'); // no-op
+    // fit the view to the actual loop extent (Vc grows as Th/Tc grows)
+    var Vc=3*Math.pow(S.Th/S.Tc,1/(ga-1));
+    calc.setMathBounds({left:0,right:Math.max(6,Vc*1.1),bottom:0,top:S.Th/1.5*1.15});
   }
   SimCore.wireSliders(calc,S,{Th:'T_h',Tc:'T_c'},function(v){ update(); });
   update();
