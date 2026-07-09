@@ -77,13 +77,11 @@
   var calc = SimCore.makeCalc('calc','x (units)','y (units)');
   calc.setExpressions([
     {id:'q1',latex:'q_1=2'}, {id:'q2',latex:'q_2=-2'}, {id:'V0',latex:'V_0=0.8'},
-    {id:'d1',latex:'d_1(x,y)=\\sqrt{(x+2)^2+y^2+0.02}', hidden:true, secret:true},
-    {id:'d2',latex:'d_2(x,y)=\\sqrt{(x-2)^2+y^2+0.02}', hidden:true, secret:true},
-    {id:'Vf',latex:'V(x,y)=\\frac{q_1}{d_1(x,y)}+\\frac{q_2}{d_2(x,y)}', hidden:true, secret:true},
-    {id:'e1',latex:'V(x,y)=V_0', color:'#2e8b57', lineWidth:1.6},
-    {id:'e2',latex:'V(x,y)=2V_0', color:'#2e8b57', lineWidth:1.2},
-    {id:'e3',latex:'V(x,y)=-V_0', color:'#2f6fb0', lineWidth:1.6},
-    {id:'e4',latex:'V(x,y)=-2V_0', color:'#2f6fb0', lineWidth:1.2},
+    // equipotentials: inline the full potential so the embed's implicit plotter renders them
+    {id:'e1',latex:'\\frac{q_1}{\\sqrt{(x+2)^2+y^2+0.02}}+\\frac{q_2}{\\sqrt{(x-2)^2+y^2+0.02}}=V_0', color:'#2e8b57', lineWidth:1.8},
+    {id:'e2',latex:'\\frac{q_1}{\\sqrt{(x+2)^2+y^2+0.02}}+\\frac{q_2}{\\sqrt{(x-2)^2+y^2+0.02}}=2V_0', color:'#2e8b57', lineWidth:1.2},
+    {id:'e3',latex:'\\frac{q_1}{\\sqrt{(x+2)^2+y^2+0.02}}+\\frac{q_2}{\\sqrt{(x-2)^2+y^2+0.02}}=-V_0', color:'#2f6fb0', lineWidth:1.8},
+    {id:'e4',latex:'\\frac{q_1}{\\sqrt{(x+2)^2+y^2+0.02}}+\\frac{q_2}{\\sqrt{(x-2)^2+y^2+0.02}}=-2V_0', color:'#2f6fb0', lineWidth:1.2},
     {id:'p1',latex:'(-2,0)', color:'#c0392b', pointSize:14}, {id:'p2',latex:'(2,0)', color:'#2f6fb0', pointSize:14}
   ]);
   var S={q1:2,q2:-2,V0:0.8};
