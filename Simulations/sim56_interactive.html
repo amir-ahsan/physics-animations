@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carnot Cycle — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 56 — Carnot Cycle</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>The Carnot cycle is the most efficient possible heat engine between two temperatures. It runs two isotherms (heat in at T_hot, heat out at
+    T_cold) joined by two adiabats, forming a closed loop on the P–V diagram. The enclosed area is the net work per cycle, and the efficiency is
+    <span class="eq">&eta; = 1 &minus; T_cold/T_hot</span> — set only by the two reservoir temperatures.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Heat-engine flow</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="190" viewBox="0 0 300 190">
+            <rect x="90" y="12" width="120" height="26" fill="var(--red)" opacity="0.75"/><text x="120" y="30" font-size="12" fill="#fff">hot reservoir T_h</text>
+            <rect x="110" y="70" width="80" height="46" fill="var(--accent)" opacity="0.85"/><text x="132" y="98" font-size="12" fill="#fff">engine</text>
+            <rect x="90" y="150" width="120" height="26" fill="var(--blue)" opacity="0.75"/><text x="118" y="168" font-size="12" fill="#fff">cold reservoir T_c</text>
+            <line x1="150" y1="40" x2="150" y2="68" stroke="var(--red)" stroke-width="3" marker-end="url(#a56)"/><text x="156" y="58" font-size="10" fill="var(--red)">Q_h</text>
+            <line x1="150" y1="118" x2="150" y2="148" stroke="var(--blue)" stroke-width="3" marker-end="url(#b56)"/><text x="156" y="138" font-size="10" fill="var(--blue)">Q_c</text>
+            <line x1="192" y1="93" x2="240" y2="93" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#c56)"/><text x="210" y="86" font-size="10" fill="var(--accent-dk)">W</text>
+            <defs>
+              <marker id="a56" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+              <marker id="b56" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="c56" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-dk)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">efficiency η = 1 − T_c/T_h</span> = <span class="vb" id="reta56">–</span></div>
+            <div class="r c-red"><span class="k">heat in Q_h</span> = <span class="vb" id="rqh56">–</span></div>
+            <div class="r c-purple"><span class="k">net work W = ηQ_h</span> = <span class="vb" id="rw56">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Heat Q_h enters from the hot reservoir; part becomes work W, the rest Q_c is dumped to the cold reservoir.</div>
+      </div>
+      <div class="panel">
+        <h3>P–V loop (area = net work)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Two isotherms (red hot, blue cold) joined by two adiabats. The enclosed area is the work per cycle.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Hot isotherm</b> at T_h.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Cold isotherm</b> at T_c.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="Th" data-min="2" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Hot temperature T_h</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Tc" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Cold temperature T_c</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Qh" data-min="2" data-max="12" data-step="1" data-fixed="0"><div class="row"><label>Heat input Q_h</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> To raise efficiency, should you increase T_h or increase T_c?</li>
+      <li><b>Manipulate</b><span class="tag">T_c</span> Lower the cold temperature. What happens to efficiency and to the loop's height?</li>
+      <li><b>Explain</b><span class="tag">why max</span> Why can no real engine beat the Carnot efficiency between the same two temperatures?</li>
+      <li><b>Calculate</b><span class="tag">η</span> For T_h = 6, T_c = 3 (units), find the efficiency and W if Q_h = 10.</li>
+      <li><b>Extend</b><span class="tag">η = 1?</span> What would it take to reach 100% efficiency, and why is that impossible?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  // Illustrative closed loop: two isotherms P=Th/V (hot, upper) and P=Tc/V (cold, lower), joined by adiabats at Va and Vc
+  calc.setExpressions([
+    {id:'Th',latex:'T_h=6'}, {id:'Tc',latex:'T_c=3'},
+    {id:'Va',latex:'V_a=1.5', hidden:true, secret:true}, {id:'Vb',latex:'V_b=3', hidden:true, secret:true},
+    {id:'hot',latex:'y=\\frac{T_h}{x}\\left\\{V_a\\le x\\le V_b\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'cold',latex:'y=\\frac{T_c}{x}\\left\\{V_a\\cdot\\frac{T_h}{T_c}\\le x\\le V_b\\cdot\\frac{T_h}{T_c}\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'ad1',latex:'y=\\frac{T_h V_b^{0.4}}{x^{1.4}}\\left\\{V_b\\le x\\le V_b\\frac{T_h}{T_c}\\right\\}', color:'#8A5A24', lineWidth:1.6},
+    {id:'ad2',latex:'y=\\frac{T_h V_a^{0.4}}{x^{1.4}}\\left\\{V_a\\le x\\le V_a\\frac{T_h}{T_c}\\right\\}', color:'#8A5A24', lineWidth:1.6}
+  ]);
+  var S={Th:6,Tc:3,Qh:10};
+  function update(){
+    var eta=1-S.Tc/S.Th, W=eta*S.Qh;
+    document.getElementById('reta56').textContent=(eta*100).toFixed(1)+' %';
+    document.getElementById('rqh56').textContent=S.Qh.toFixed(0);
+    document.getElementById('rw56').textContent=W.toFixed(2);
+    calc.setMathBounds({left:0,right:8,bottom:0,top:6});
+    // arrow lengths reflect Qh, W, Qc
+    var Qc=S.Qh-W;
+    document.querySelector('#reta56'); // no-op
+  }
+  SimCore.wireSliders(calc,S,{Th:'T_h',Tc:'T_c'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackbody Radiation — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 70 — Blackbody Radiation</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Every warm object glows with a characteristic spectrum set only by its temperature. The Planck curve shifts and grows with T: hotter objects
+    peak at shorter wavelengths (Wien's law, <span class="eq">&lambda;_peak &prop; 1/T</span>) and radiate far more total power (Stefan–Boltzmann,
+    <span class="eq">P &prop; T&#8308;</span>). This is why a heated iron goes from red to orange to white as it gets hotter.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Glowing object</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="150" viewBox="0 0 300 150">
+            <circle id="glow70" cx="150" cy="75" r="48" fill="#ff5522"/>
+            <text x="120" y="140" font-size="10" fill="var(--ink)">color ≈ apparent glow</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">peak wavelength (Wien)</span> = <span class="vb" id="rlp70">–</span></div>
+            <div class="r c-purple"><span class="k">total power ∝ T⁴</span> = <span class="vb" id="rP70">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The disc's tint approximates the object's glow. As T rises it brightens and moves from deep red toward blue-white.</div>
+      </div>
+      <div class="panel">
+        <h3>Spectral curve (Planck)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Intensity vs. wavelength. Raise T and the peak moves left (shorter λ) while the whole curve climbs steeply.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Planck curve</b> at temperature T.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>λ_peak</b> — Wien's displacement.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="T" data-min="3000" data-max="9000" data-step="250" data-fixed="0" data-suffix=" K"><div class="row"><label>Temperature T</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> As the object gets hotter, does its peak color shift toward red or blue?</li>
+      <li><b>Manipulate</b><span class="tag">T</span> Double the temperature. By roughly what factor does total power grow?</li>
+      <li><b>Explain</b><span class="tag">UV catastrophe</span> Why did classical physics fail at short wavelengths, and how did Planck fix it?</li>
+      <li><b>Calculate</b><span class="tag">λ_peak</span> For T = 5800 K (the Sun), estimate the peak wavelength (b = 2.9×10⁻³ m·K).</li>
+      <li><b>Extend</b><span class="tag">stars</span> How do astronomers use a star's color to find its temperature?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var b=2.9e-3, hc_k=0.0143878; // hc/k in m·K
+  var calc = SimCore.makeCalc('calc','wavelength λ (µm)','spectral intensity');
+  calc.setExpressions([
+    {id:'T',latex:'T_b=5800'},
+    // Planck in µm units (scaled): I ∝ 1/λ^5 * 1/(e^{c2/(λT)}-1), c2=14388 µm·K
+    {id:'cP',latex:'y=\\frac{3\\cdot10^{6}}{x^5}\\cdot\\frac{1}{e^{\\frac{14388}{x T_b}}-1}\\left\\{0.1\\le x\\le3\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'wp',latex:'x=\\frac{2898}{T_b}', color:'#2e8b57', lineWidth:1.6, lineStyle:Desmos.Styles.DASHED}
+  ]);
+  var S={T:5800};
+  function tempColor(T){
+    // rough blackbody tint
+    if(T<3800) return '#ff4a1a';
+    if(T<4600) return '#ff7733';
+    if(T<5400) return '#ffb066';
+    if(T<6200) return '#ffe0b0';
+    if(T<7200) return '#fff4e6';
+    if(T<8200) return '#eaf0ff';
+    return '#cdd8ff';
+  }
+  function update(){
+    var lp=b/S.T*1e6;   // µm
+    document.getElementById('rlp70').textContent=lp.toFixed(3)+' µm';
+    document.getElementById('rP70').textContent=(Math.pow(S.T/5800,4)).toFixed(2)+' × Sun';
+    // scale y to keep peak on screen: peak intensity grows ~T^5
+    var top=3e6/Math.pow(lp,5)/(Math.exp(14388/(lp*S.T))-1)*1.2;
+    calc.setMathBounds({left:0,right:3,bottom:0,top:top});
+    document.getElementById('glow70').setAttribute('fill',tempColor(S.T));
+    document.getElementById('glow70').setAttribute('r',30+ (S.T-3000)/6000*24);
+  }
+  SimCore.wireSliders(calc,S,{T:'T_b'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

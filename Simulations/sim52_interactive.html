@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isothermal Process — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 52 — Isothermal Process</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An isothermal process holds temperature constant, so the gas moves along one hyperbola <span class="eq">PV = nRT</span>. Because the internal
+    energy of an ideal gas depends only on T, <span class="eq">&Delta;U = 0</span>, and every joule of heat added becomes work done by the gas:
+    <span class="eq">Q = W = nRT&thinsp;ln(V_f/V_i)</span>. The shaded area under the curve is that work.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Expanding at constant T</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <rect id="cyl52" x="60" y="40" width="120" height="110" fill="#eef2ee" stroke="var(--ink)" stroke-width="2"/>
+            <rect id="pis52" x="60" y="36" width="120" height="8" fill="var(--accent-dk)"/>
+            <line x1="200" y1="95" x2="240" y2="95" stroke="var(--red)" stroke-width="2" marker-end="url(#q52)"/><text x="205" y="86" font-size="10" fill="var(--red)">heat in</text>
+            <defs><marker id="q52" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">work W = nRT ln(V_f/V_i)</span> = <span class="vb" id="rW52">–</span></div>
+            <div class="r c-red"><span class="k">heat Q = W (ΔU = 0)</span> = <span class="vb" id="rQ52">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Heat flows in exactly as fast as the gas does work, keeping temperature — and internal energy — unchanged.</div>
+      </div>
+      <div class="panel">
+        <h3>P–V diagram (work = shaded area)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">The gas moves along one isotherm from V_i to V_f; the area under it is the work done.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>Isotherm</b> P = nRT/V with the work area shaded.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="Vi" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Initial volume V_i</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Vf" data-min="2" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Final volume V_f</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="T" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Temperature T</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="0.5" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Moles n</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the gas expands isothermally, is heat absorbed or released?</li>
+      <li><b>Manipulate</b><span class="tag">V_f</span> Increase the final volume. How does the work (shaded area) grow?</li>
+      <li><b>Explain</b><span class="tag">ΔU = 0</span> Why is the internal-energy change zero even though heat flows in?</li>
+      <li><b>Calculate</b><span class="tag">W</span> For n = 1, T = 3, V_i = 2, V_f = 4 (R = 1), find the work.</li>
+      <li><b>Extend</b><span class="tag">compression</span> What are the signs of W and Q for an isothermal compression?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var R=1;
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  calc.setExpressions([
+    {id:'n',latex:'n_m=1'}, {id:'T',latex:'T_g=3'}, {id:'Vi',latex:'V_i=2'}, {id:'Vf',latex:'V_f=4'},
+    {id:'cP',latex:'y=\\frac{n_m T_g}{x}\\left\\{0.5\\le x\\le10\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'area',latex:'0\\le y\\le\\frac{n_m T_g}{x}\\left\\{V_i\\le x\\le V_f\\right\\}', color:'#B5793B', fillOpacity:0.25, lineWidth:0},
+    {id:'pi',latex:'\\left(V_i,\\frac{n_m T_g}{V_i}\\right)', color:'#2f6fb0', pointSize:12},
+    {id:'pf',latex:'\\left(V_f,\\frac{n_m T_g}{V_f}\\right)', color:'#c0392b', pointSize:12}
+  ]);
+  var S={Vi:2,Vf:4,T:3,n:1};
+  function update(){
+    if(S.Vf<S.Vi){ /* keep sensible */ }
+    var W=S.n*R*S.T*Math.log(S.Vf/S.Vi);
+    document.getElementById('rW52').textContent=W.toFixed(2);
+    document.getElementById('rQ52').textContent=W.toFixed(2);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:Math.max(4,S.n*S.T/0.5*0.6)});
+    var w=Math.min(150,40+S.Vf*14); var cyl=document.getElementById('cyl52');
+    cyl.setAttribute('width',w); document.getElementById('pis52').setAttribute('width',w);
+  }
+  SimCore.wireSliders(calc,S,{Vi:'V_i',Vf:'V_f',T:'T_g',n:'n_m'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

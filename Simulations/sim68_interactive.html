@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirror Equation — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 68 — Concave &amp; Convex Mirrors</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A curved mirror forms images according to <span class="eq">1/f = 1/d_o + 1/d_i</span>, with magnification <span class="eq">m = &minus;d_i/d_o</span>.
+    A concave mirror (f &gt; 0) can make real, inverted images or, up close, magnified virtual ones. A convex mirror (f &lt; 0) always makes small, upright,
+    virtual images — the wide-angle "objects are closer than they appear" mirror. Move the object and watch the image jump.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Ray diagram</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="180" viewBox="0 0 320 180">
+            <line x1="10" y1="90" x2="310" y2="90" stroke="var(--ink)" stroke-width="1"/>
+            <path id="mirror68" d="M260,40 Q285,90 260,140" fill="none" stroke="var(--blue)" stroke-width="3"/>
+            <circle id="focus68" cx="200" cy="90" r="3" fill="var(--green)"/><text x="195" y="106" font-size="9" fill="var(--green)">F</text>
+            <line id="obj68" x1="120" y1="90" x2="120" y2="50" stroke="var(--red)" stroke-width="3" marker-end="url(#o68)"/>
+            <line id="img68" x1="180" y1="90" x2="180" y2="130" stroke="var(--purple)" stroke-width="3" marker-end="url(#o68p)"/>
+            <defs>
+              <marker id="o68" markerWidth="8" markerHeight="8" refX="3" refY="6" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--red)"/></marker>
+              <marker id="o68p" markerWidth="8" markerHeight="8" refX="3" refY="6" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--purple)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">image distance d_i</span> = <span class="vb" id="rdi68">–</span></div>
+            <div class="r c-purple"><span class="k">magnification m</span> = <span class="vb" id="rm68">–</span></div>
+            <div class="r vb" id="rtype68" style="opacity:.85">–</div>
+          </div>
+        </div>
+        <div class="cap">Red = object, purple = image. Below the axis means inverted; a virtual image sits behind the mirror.</div>
+      </div>
+      <div class="panel">
+        <h3>Image distance vs. object distance</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">d_i = f·d_o/(d_o − f). Note the blow-up as the object nears the focal point. The dot marks your object.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>d_i(d_o)</b> — image vs. object distance.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="f" data-min="-6" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Focal length f (+concave/−convex)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="do" data-min="1" data-max="12" data-step="0.5" data-fixed="1"><div class="row"><label>Object distance d_o</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="ho" data-min="1" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Object height h_o</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For a concave mirror, what kind of image forms when the object is beyond the center of curvature?</li>
+      <li><b>Manipulate</b><span class="tag">d_o</span> Move the object toward the focal point. What happens to the image distance?</li>
+      <li><b>Explain</b><span class="tag">convex</span> Why does a convex mirror always give an upright, reduced image?</li>
+      <li><b>Calculate</b><span class="tag">d_i</span> For f = 3, d_o = 6 (units), find d_i and m.</li>
+      <li><b>Extend</b><span class="tag">sign</span> How do the signs of d_i and m tell you real vs. virtual and upright vs. inverted?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','object distance d_o','image distance d_i');
+  calc.setExpressions([
+    {id:'f',latex:'f_m=3'}, {id:'do',latex:'d_o=6'},
+    {id:'cD',latex:'y=\\frac{f_m x}{x-f_m}\\left\\{1\\le x\\le12\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(d_o,\\frac{f_m d_o}{d_o-f_m}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={f:3,do:6,ho:2};
+  function update(){
+    var di=S.f*S.do/(S.do-S.f), m=-di/S.do;
+    document.getElementById('rdi68').textContent=isFinite(di)?di.toFixed(2):'∞';
+    document.getElementById('rm68').textContent=isFinite(m)?m.toFixed(2):'∞';
+    var real=di>0;
+    document.getElementById('rtype68').textContent = !isFinite(di)?'image at infinity':(real?'real, '+(m<0?'inverted':'upright'):'virtual, upright');
+    calc.setMathBounds({left:0,right:12,bottom:-12,top:12});
+    // mirror shape
+    document.getElementById('mirror68').setAttribute('d', S.f>0?'M260,40 Q285,90 260,140':'M260,40 Q235,90 260,140');
+    document.getElementById('focus68').setAttribute('cx', S.f>0?260-Math.min(120,S.f*18):260+Math.min(50,-S.f*10));
+    // object
+    var ox=260-Math.min(150,S.do*18), oh=S.ho*12;
+    document.getElementById('obj68').setAttribute('x1',ox); document.getElementById('obj68').setAttribute('x2',ox); document.getElementById('obj68').setAttribute('y2',90-oh);
+    // image
+    var ix=260-Math.max(-55,Math.min(150,di*18)), ih=Math.max(-45,Math.min(45,m*S.ho*12));
+    var img=document.getElementById('img68'); img.setAttribute('x1',ix); img.setAttribute('x2',ix); img.setAttribute('y2',90-ih);
+    img.setAttribute('opacity',isFinite(di)?1:0);
+  }
+  SimCore.wireSliders(calc,S,{f:'f_m',do:'d_o'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

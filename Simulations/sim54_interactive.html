@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isochoric Process — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 54 — Isochoric Process</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An isochoric (constant-volume) process locks the piston in place. Since the volume never changes, the gas does <b>no work</b>
+    (<span class="eq">W = P&Delta;V = 0</span>), and all the heat added goes straight into internal energy: <span class="eq">Q = &Delta;U = nC_v&Delta;T</span>.
+    On the P–V diagram the path is a vertical line — pressure rises as you heat, but the gas can't expand.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Sealed rigid container</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <rect x="80" y="45" width="110" height="105" fill="#eef2ee" stroke="var(--ink)" stroke-width="3"/>
+            <line x1="80" y1="45" x2="190" y2="45" stroke="var(--ink)" stroke-width="5"/>
+            <text x="96" y="40" font-size="9" fill="var(--ink)">bolted lid</text>
+            <g id="mol54" fill="var(--red)"></g>
+            <line x1="205" y1="98" x2="245" y2="98" stroke="var(--red)" stroke-width="2" marker-end="url(#q54)"/><text x="208" y="89" font-size="10" fill="var(--red)">heat in</text>
+            <defs><marker id="q54" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">work W = PΔV</span> = <span class="vb" id="rW54">0.00 (fixed V)</span></div>
+            <div class="r c-red"><span class="k">heat Q = ΔU = nC_vΔT</span> = <span class="vb" id="rQ54">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The lid is bolted down: molecules speed up and hit harder (pressure climbs), but the walls never move, so no work is done.</div>
+      </div>
+      <div class="panel">
+        <h3>P–V diagram (vertical path)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">A vertical line at constant V from P_i to P_f. No area under a vertical line means no work.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>Isochor</b> V = constant; pressure changes with heating.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="V" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Volume V (fixed)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Pi" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Initial pressure P_i</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Pf" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Final pressure P_f</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> How much work does the gas do when its volume can't change?</li>
+      <li><b>Manipulate</b><span class="tag">P_f</span> Heat the gas so pressure rises. Where does all that heat energy go?</li>
+      <li><b>Explain</b><span class="tag">no work</span> Why is W = 0 even though the pressure is large?</li>
+      <li><b>Calculate</b><span class="tag">Q</span> If nC_vΔT corresponds to a pressure rise from 2 to 5 at V = 3 (R = 1, C_v = 3/2), find Q.</li>
+      <li><b>Extend</b><span class="tag">first law</span> Confirm ΔU = Q here directly from the first law.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var R=1, Cv=1.5;
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  calc.setExpressions([
+    {id:'V',latex:'V_g=3'}, {id:'Pi',latex:'P_i=2'}, {id:'Pf',latex:'P_f=5'},
+    {id:'line',latex:'x=V_g\\left\\{P_i\\le y\\le P_f\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'pi',latex:'(V_g,P_i)', color:'#2f6fb0', pointSize:12}, {id:'pf',latex:'(V_g,P_f)', color:'#c0392b', pointSize:12}
+  ]);
+  var S={V:3,Pi:2,Pf:5}, mols=[];
+  function build(){ mols=[]; for(var i=0;i<14;i++) mols.push({x:Math.random(),y:Math.random(),vx:Math.random()-0.5,vy:Math.random()-0.5}); }
+  function draw(){ var g=document.getElementById('mol54'), s='';
+    mols.forEach(function(m){ s+='<circle cx="'+(88+m.x*94).toFixed(1)+'" cy="'+(53+m.y*90).toFixed(1)+'" r="2.6"/>'; }); g.innerHTML=s; }
+  function update(){
+    var ndT=(S.Pf-S.Pi)*S.V/R, Q=Cv*ndT;
+    document.getElementById('rQ54').textContent=Q.toFixed(2);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:9});
+  }
+  SimCore.wireSliders(calc,S,{V:'V_g',Pi:'P_i',Pf:'P_f'},function(v){ update(); });
+  build();
+  setInterval(function(){ var sp=0.5+(S.Pf)*0.4;
+    mols.forEach(function(m){ m.x+=m.vx*sp*0.012; m.y+=m.vy*sp*0.012;
+      if(m.x<0||m.x>1){m.vx*=-1;m.x=Math.max(0,Math.min(1,m.x));}
+      if(m.y<0||m.y>1){m.vy*=-1;m.y=Math.max(0,Math.min(1,m.y));} }); draw(); },50);
+  update();
+})();
+</script>
+</body>
+</html>

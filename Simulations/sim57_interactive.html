@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxwell–Boltzmann Distribution — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 57 — Maxwell–Boltzmann Speed Distribution</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Gas molecules don't all move at the same speed — they follow the Maxwell–Boltzmann distribution. The curve shows how many molecules have each
+    speed. Raise the temperature and the whole distribution shifts right and flattens (faster, more spread out); use heavier molecules and it shifts
+    left (slower). The peak is the most probable speed <span class="eq">v_p = &radic;(2kT/m)</span>.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Molecules at this temperature</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="150" viewBox="0 0 300 150">
+            <rect x="20" y="20" width="260" height="110" fill="#eef2ee" stroke="var(--ink)" stroke-width="1.5"/>
+            <g id="mol57" fill="var(--red)"></g>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">most probable speed v_p</span> = <span class="vb" id="rvp57">–</span></div>
+            <div class="r c-blue"><span class="k">rms speed v_rms</span> = <span class="vb" id="rvr57">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Faster molecules are drawn brighter/longer-tailed. Their spread of speeds is exactly the curve on the right.</div>
+      </div>
+      <div class="panel">
+        <h3>Speed distribution f(v)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">f(v) ∝ v²e^(−mv²/2kT). Hotter or lighter gas → peak moves right; the area under the curve is fixed.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>f(v)</b> — fraction of molecules at each speed.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>v_p</b> — most probable speed (peak).</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="T" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Temperature T</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Molecular mass m</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you heat the gas, does the peak of the curve move left or right?</li>
+      <li><b>Manipulate</b><span class="tag">m</span> Switch to heavier molecules at the same T. How does the distribution shift?</li>
+      <li><b>Explain</b><span class="tag">shape</span> Why does the curve start at zero at v = 0 rather than peaking there?</li>
+      <li><b>Calculate</b><span class="tag">v_p</span> For 2kT/m = 4 (units), find the most probable speed.</li>
+      <li><b>Extend</b><span class="tag">ordering</span> Rank v_p, average speed, and v_rms from smallest to largest.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var k=1;
+  var calc = SimCore.makeCalc('calc','speed v','f(v)');
+  calc.setExpressions([
+    {id:'T',latex:'T_g=3'}, {id:'m',latex:'m_g=1'},
+    {id:'A',latex:'A_n=4\\pi\\left(\\frac{m_g}{2\\pi T_g}\\right)^{1.5}', hidden:true, secret:true},
+    {id:'cf',latex:'y=A_n x^2 e^{-\\frac{m_g x^2}{2T_g}}\\left\\{0\\le x\\le12\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'vp',latex:'x=\\sqrt{\\frac{2T_g}{m_g}}', color:'#2e8b57', lineWidth:1.6, lineStyle:Desmos.Styles.DASHED}
+  ]);
+  var S={T:3,m:1}, mols=[];
+  function build(){ mols=[]; for(var i=0;i<26;i++) mols.push({x:Math.random(),y:Math.random(),vx:Math.random()-0.5,vy:Math.random()-0.5}); }
+  function draw(){ var g=document.getElementById('mol57'), s='';
+    mols.forEach(function(m){ s+='<circle cx="'+(26+m.x*248).toFixed(1)+'" cy="'+(26+m.y*98).toFixed(1)+'" r="2.6"/>'; }); g.innerHTML=s; }
+  function update(){
+    var vp=Math.sqrt(2*k*S.T/S.m), vr=Math.sqrt(3*k*S.T/S.m);
+    document.getElementById('rvp57').textContent=vp.toFixed(2);
+    document.getElementById('rvr57').textContent=vr.toFixed(2);
+    calc.setMathBounds({left:0,right:12,bottom:0,top:Math.max(0.3,Math.pow(S.m/S.T,0.5)*0.6)});
+  }
+  SimCore.wireSliders(calc,S,{T:'T_g',m:'m_g'},function(v){ update(); });
+  build();
+  setInterval(function(){ var sp=Math.sqrt(S.T/S.m);
+    mols.forEach(function(m){ m.x+=m.vx*sp*0.012; m.y+=m.vy*sp*0.02;
+      if(m.x<0||m.x>1){m.vx*=-1;m.x=Math.max(0,Math.min(1,m.x));}
+      if(m.y<0||m.y>1){m.vy*=-1;m.y=Math.max(0,Math.min(1,m.y));} }); draw(); },50);
+  update();
+})();
+</script>
+</body>
+</html>

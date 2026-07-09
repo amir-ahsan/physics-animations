@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Source Interference — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 64 — Two-Source (Double-Slit) Interference</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two coherent sources send out waves that overlap and interfere. Where the path difference is a whole number of wavelengths the waves add
+    (bright fringe, <span class="eq">d&thinsp;sin&thinsp;&theta; = m&lambda;</span>); where it's a half-integer they cancel (dark). On a distant screen this
+    makes evenly spaced fringes with spacing <span class="eq">&Delta;y &approx; &lambda;L/d</span>. Closer slits or longer wavelength spread the fringes apart.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Interference pattern &amp; screen</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="200" viewBox="0 0 320 200">
+            <g id="ripple64" fill="none"></g>
+            <circle id="s1_64" cx="60" cy="80" r="4" fill="var(--red)"/><circle id="s2_64" cx="60" cy="120" r="4" fill="var(--red)"/>
+            <rect x="292" y="20" width="6" height="160" fill="var(--ink)"/>
+            <g id="fringes64"></g>
+            <text x="40" y="16" font-size="10" fill="var(--ink)">two sources</text>
+            <text x="250" y="16" font-size="10" fill="var(--ink)">screen →</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">fringe spacing Δy ≈ λL/d</span> = <span class="vb" id="rdy64">–</span></div>
+            <div class="r c-blue"><span class="k">first-order angle θ₁</span> = <span class="vb" id="rth64">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Bright dots on the screen are constructive fringes. Their even spacing is the double-slit signature.</div>
+      </div>
+      <div class="panel">
+        <h3>Intensity on the screen</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">I(y) ∝ cos²(πd·y / λL). Peaks are bright fringes; zeros are dark. The dot marks the central maximum.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>I(y)</b> — intensity vs. position on screen.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="lam" data-min="0.4" data-max="0.7" data-step="0.02" data-fixed="2" data-suffix=" µm"><div class="row"><label>Wavelength λ</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="d" data-min="10" data-max="60" data-step="5" data-fixed="0" data-suffix=" µm"><div class="row"><label>Slit separation d</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.5" data-max="3" data-step="0.25" data-fixed="2" data-suffix=" m"><div class="row"><label>Screen distance L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Do the fringes spread apart or bunch together if you bring the slits closer?</li>
+      <li><b>Manipulate</b><span class="tag">λ</span> Switch from blue to red light. Which way do the fringes move?</li>
+      <li><b>Explain</b><span class="tag">path difference</span> Why is a bright fringe located where d sin θ = mλ?</li>
+      <li><b>Calculate</b><span class="tag">Δy</span> For λ = 0.5 µm, d = 20 µm, L = 1 m, find the fringe spacing.</li>
+      <li><b>Extend</b><span class="tag">single vs double</span> How does adding single-slit diffraction modulate this pattern?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','screen position y (mm)','intensity');
+  calc.setExpressions([
+    {id:'lam',latex:'\\lambda_l=0.5'}, {id:'d',latex:'d_s=20'}, {id:'L',latex:'L_s=1'},
+    // Δy(mm) = λ(µm)*L(m)/d(µm) *1000µm/mm? λL/d in meters: (0.5e-6 * 1)/(20e-6)=0.025 m=25mm. keep unit consistent:
+    {id:'dy',latex:'D_y=\\frac{\\lambda_l L_s}{d_s}', hidden:true, secret:true},
+    {id:'cI',latex:'y=\\cos^2\\left(\\frac{\\pi x}{D_y}\\right)', color:'#B5793B', lineWidth:2},
+    {id:'c0',latex:'(0,1)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={lam:0.5,d:20,L:1};
+  function update(){
+    var dy=S.lam*S.L/S.d;           // in mm (µm·m/µm = m? actually µm/µm=1, times L(m) -> m). treat as mm scale
+    var th=Math.asin(Math.min(1,S.lam/S.d))*180/Math.PI;
+    document.getElementById('rdy64').textContent=(dy).toFixed(3)+' (rel)';
+    document.getElementById('rth64').textContent=th.toFixed(3)+' °';
+    calc.setMathBounds({left:-4*dy,right:4*dy,bottom:0,top:1.15});
+    // ripples
+    var g=document.getElementById('ripple64'), s='';
+    [[60,80],[60,120]].forEach(function(src){ for(var i=1;i<=6;i++){ s+='<circle cx="'+src[0]+'" cy="'+src[1]+'" r="'+(i*16)+'" stroke="rgba(120,150,190,0.5)" stroke-width="1"/>'; } });
+    g.innerHTML=s;
+    document.getElementById('s1_64').setAttribute('cy',100-S.d*0.6); document.getElementById('s2_64').setAttribute('cy',100+S.d*0.6);
+    // fringes on screen
+    var fr=document.getElementById('fringes64'), sf='', spacing=Math.max(6,dy*40);
+    for(var k=-4;k<=4;k++){ var yy=100+k*spacing; if(yy>22&&yy<178) sf+='<circle cx="295" cy="'+yy.toFixed(1)+'" r="3" fill="var(--gold)"/>'; }
+    fr.innerHTML=sf;
+  }
+  SimCore.wireSliders(calc,S,{lam:'\\lambda_l',d:'d_s',L:'L_s'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radioactive Decay — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 74 — Radioactive Decay</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Radioactive nuclei decay at random, but in bulk they follow <span class="eq">N(t) = N&#8320;e<sup>&minus;&lambda;t</sup></span>. Each half-life
+    <span class="eq">t&#189; = ln2/&lambda;</span> the population halves — after one half-life half remain, after two a quarter, and so on. The decay
+    constant &lambda; sets the pace: larger &lambda; means faster decay and a shorter half-life.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Sample of nuclei</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="150" viewBox="0 0 300 150">
+            <rect x="20" y="15" width="260" height="120" fill="#eef2ee" stroke="var(--ink)" stroke-width="1.5"/>
+            <g id="nuc74"></g>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">half-life t½ = ln2/λ</span> = <span class="vb" id="rth74">–</span></div>
+            <div class="r c-blue"><span class="k">fraction remaining N/N₀</span> = <span class="vb" id="rfr74">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Red dots are undecayed nuclei; faded dots have decayed. Scrub time to watch the sample thin out.</div>
+      </div>
+      <div class="panel">
+        <h3>Population vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">N(t) = N₀e^(−λt). Dashed lines mark successive half-lives where the curve halves. The dot tracks the current time.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>N(t)</b> — surviving nuclei over time.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>half-lives</b> where N halves.</span></li>
+        </ul>
+        <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn" id="reset">Reset</button></div>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="lam" data-min="0.1" data-max="1.5" data-step="0.1" data-fixed="1"><div class="row"><label>Decay constant λ</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="10" data-step="0.1" data-fixed="1"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> After three half-lives, what fraction of the original sample remains?</li>
+      <li><b>Manipulate</b><span class="tag">λ</span> Increase λ. Does the half-life get longer or shorter?</li>
+      <li><b>Explain</b><span class="tag">randomness</span> How can individual decays be random yet the whole sample follow a smooth exponential?</li>
+      <li><b>Calculate</b><span class="tag">t½</span> For λ = 0.693 per year, find the half-life.</li>
+      <li><b>Extend</b><span class="tag">dating</span> How does carbon-14's half-life let archaeologists date organic remains?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t','nuclei remaining N');
+  calc.setExpressions([
+    {id:'lam',latex:'\\lambda_d=0.5'}, {id:'t',latex:'t_p=0'},
+    {id:'cN',latex:'y=100 e^{-\\lambda_d x}\\left\\{0\\le x\\le10\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'th1',latex:'x=\\frac{\\ln2}{\\lambda_d}', color:'#2e8b57', lineWidth:1.2, lineStyle:Desmos.Styles.DASHED},
+    {id:'th2',latex:'x=\\frac{2\\ln2}{\\lambda_d}', color:'#2e8b57', lineWidth:1.2, lineStyle:Desmos.Styles.DASHED},
+    {id:'dot',latex:'(t_p,100 e^{-\\lambda_d t_p})', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={lam:0.5,t:0}, seeds=[];
+  function build(){ seeds=[]; for(var i=0;i<80;i++) seeds.push({x:26+Math.random()*248, y:21+Math.random()*108, r:Math.random()}); }
+  function draw(){ var frac=Math.exp(-S.lam*S.t), g=document.getElementById('nuc74'), s='';
+    seeds.forEach(function(p){ var alive=p.r<frac; s+='<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3" fill="'+(alive?'var(--red)':'#d8cdb8')+'" opacity="'+(alive?1:0.4)+'"/>'; });
+    g.innerHTML=s; }
+  function update(){
+    var th=Math.log(2)/S.lam, frac=Math.exp(-S.lam*S.t);
+    document.getElementById('rth74').textContent=th.toFixed(2);
+    document.getElementById('rfr74').textContent=(frac*100).toFixed(1)+' %';
+    calc.setMathBounds({left:0,right:10,bottom:0,top:110});
+    draw();
+  }
+  var sliders=SimCore.wireSliders(calc,S,{lam:'\\lambda_d',t:'t_p'},function(v){ update(); });
+  SimCore.playControls(sliders,'t',{});
+  build(); update();
+})();
+</script>
+</body>
+</html>

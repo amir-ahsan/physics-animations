@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermal Expansion — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 59 — Thermal Expansion</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Most materials expand when heated. A rod of length L&#8320; grows by <span class="eq">&Delta;L = &alpha;L&#8320;&Delta;T</span>, where &alpha; is the coefficient
+    of linear expansion. The effect is small but real — it's why bridges have expansion joints and why a tight metal lid loosens under hot water. Longer
+    rods, bigger temperature changes, and larger &alpha; all mean more expansion.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Heated rod</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="150" viewBox="0 0 320 150">
+            <line x1="30" y1="60" x2="30" y2="90" stroke="var(--ink)" stroke-width="2"/>
+            <rect id="rod59" x="30" y="66" width="180" height="18" fill="var(--accent)"/>
+            <line id="mark59" x1="210" y1="58" x2="210" y2="92" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 2"/>
+            <line id="tip59" x1="210" y1="58" x2="210" y2="92" stroke="var(--red)" stroke-width="2"/>
+            <text x="30" y="115" font-size="10" fill="var(--ink)">original length</text>
+            <text id="dlLabel59" x="215" y="115" font-size="10" fill="var(--red)">ΔL</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">ΔL = αL₀ΔT</span> = <span class="vb" id="rdL59">–</span></div>
+            <div class="r c-blue"><span class="k">new length L</span> = <span class="vb" id="rL59">–</span></div>
+            <div class="r c-purple"><span class="k">fractional change ΔL/L₀</span> = <span class="vb" id="rfr59">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The red segment is the extra length gained on heating (exaggerated for visibility). Cooling below ΔT = 0 would shrink the rod.</div>
+      </div>
+      <div class="panel">
+        <h3>Length change vs. temperature change</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">ΔL = αL₀ΔT — a straight line through the origin whose slope is αL₀. The dot marks your ΔT.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>ΔL(ΔT)</b> — expansion vs. temperature change.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="L0" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1" data-suffix=" m"><div class="row"><label>Original length L₀</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="alpha" data-min="1" data-max="25" data-step="1" data-fixed="0"><div class="row"><label>α (×10⁻⁶ /°C)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="dT" data-min="-50" data-max="200" data-step="10" data-fixed="0" data-suffix=" °C"><div class="row"><label>Temperature change ΔT</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Two rods, one twice as long. Heated equally, which expands more in absolute terms?</li>
+      <li><b>Manipulate</b><span class="tag">ΔT</span> Set ΔT negative. What does the rod do?</li>
+      <li><b>Explain</b><span class="tag">joints</span> Why do bridges and railway tracks need expansion gaps?</li>
+      <li><b>Calculate</b><span class="tag">ΔL</span> For L₀ = 2 m, α = 12×10⁻⁶/°C, ΔT = 100°C, find ΔL.</li>
+      <li><b>Extend</b><span class="tag">area/volume</span> How do area and volume expansion coefficients relate to α?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','temperature change ΔT (°C)','length change ΔL (mm)');
+  calc.setExpressions([
+    {id:'L0',latex:'L_0=2'}, {id:'al',latex:'a_l=12'},
+    // ΔL in mm = α(1e-6)*L0*ΔT*1000 = α*L0*ΔT*1e-3
+    {id:'cL',latex:'y=a_l L_0 x\\cdot0.001\\left\\{-50\\le x\\le200\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dT',latex:'d_T=100'},
+    {id:'dot',latex:'(d_T,a_l L_0 d_T\\cdot0.001)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={L0:2,alpha:12,dT:100};
+  function update(){
+    var dL=S.alpha*1e-6*S.L0*S.dT;          // meters
+    var L=S.L0+dL;
+    document.getElementById('rdL59').textContent=(dL*1000).toFixed(3)+' mm';
+    document.getElementById('rL59').textContent=L.toFixed(5)+' m';
+    document.getElementById('rfr59').textContent=(dL/S.L0).toExponential(2);
+    calc.setMathBounds({left:-60,right:210,bottom:-2,top:8});
+    // schematic: base width 180 px = L0; exaggerate ΔL x2000 for visibility
+    var base=Math.min(200,40+S.L0*36), extra=Math.max(-40,Math.min(80,dL*2000));
+    document.getElementById('rod59').setAttribute('width',base+Math.max(0,extra));
+    var tipx=30+base+extra; document.getElementById('tip59').setAttribute('x1',tipx); document.getElementById('tip59').setAttribute('x2',tipx);
+    document.getElementById('mark59').setAttribute('x1',30+base); document.getElementById('mark59').setAttribute('x2',30+base);
+    document.getElementById('dlLabel59').setAttribute('x',30+base+3);
+    document.getElementById('rod59').setAttribute('fill', S.dT<0?'#7fa5c9':'var(--accent)');
+  }
+  SimCore.wireSliders(calc,S,{L0:'L_0',alpha:'a_l',dT:'d_T'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

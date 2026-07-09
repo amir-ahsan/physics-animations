@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polarization (Malus's Law) — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 69 — Polarization &amp; Malus's Law</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Polarized light passing through a second polarizer (the "analyzer") is dimmed according to Malus's law <span class="eq">I = I&#8320;cos&#178;&theta;</span>,
+    where &theta; is the angle between their axes. Aligned axes pass everything; crossed axes (90&deg;) block all the light. Rotate the analyzer and watch
+    the transmitted brightness follow a cos² curve.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Polarizer and analyzer</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="170" viewBox="0 0 320 170">
+            <circle cx="90" cy="85" r="42" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="90" y1="43" x2="90" y2="127" stroke="var(--blue)" stroke-width="3"/><text x="70" y="150" font-size="10" fill="var(--blue)">polarizer</text>
+            <circle cx="230" cy="85" r="42" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <line id="axis69" x1="230" y1="43" x2="230" y2="127" stroke="var(--purple)" stroke-width="3"/><text x="205" y="150" font-size="10" fill="var(--purple)">analyzer</text>
+            <rect id="beam69" x="132" y="80" width="56" height="10" fill="var(--gold)" opacity="0.8"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">transmitted I = I₀cos²θ</span> = <span class="vb" id="rI69">–</span></div>
+            <div class="r c-blue"><span class="k">fraction passed</span> = <span class="vb" id="rfr69">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The analyzer's axis (purple) rotates relative to the polarizer's (blue). The beam brightness between them tracks cos²θ.</div>
+      </div>
+      <div class="panel">
+        <h3>Transmitted intensity vs. angle</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">I/I₀ = cos²θ — full at 0° and 180°, zero at 90°. The dot marks your analyzer angle.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>I(θ)</b> — transmitted fraction vs. analyzer angle.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="th" data-min="0" data-max="180" data-step="5" data-fixed="0" data-suffix="°"><div class="row"><label>Analyzer angle θ</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="I0" data-min="0.5" data-max="2" data-step="0.1" data-fixed="1"><div class="row"><label>Incident intensity I₀</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At what angle between the polarizers is the light completely blocked?</li>
+      <li><b>Manipulate</b><span class="tag">θ</span> Rotate from 0° to 90°. How does the brightness fall — linearly or as cos²?</li>
+      <li><b>Explain</b><span class="tag">cos²</span> Why does the intensity depend on the square of the cosine, not the cosine itself?</li>
+      <li><b>Calculate</b><span class="tag">I</span> For θ = 60° and I₀ = 1, find the transmitted intensity.</li>
+      <li><b>Extend</b><span class="tag">three polarizers</span> Why can inserting a third polarizer between crossed ones let some light through?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','analyzer angle θ (°)','transmitted I/I₀');
+  calc.setExpressions([
+    {id:'th',latex:'\\theta_a=30'},
+    {id:'cI',latex:'y=\\cos\\left(\\frac{\\pi x}{180}\\right)^2\\left\\{0\\le x\\le180\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(\\theta_a,\\cos\\left(\\frac{\\pi\\theta_a}{180}\\right)^2\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={th:30,I0:1};
+  function update(){
+    var frac=Math.pow(Math.cos(S.th*Math.PI/180),2), I=S.I0*frac;
+    document.getElementById('rI69').textContent=I.toFixed(3);
+    document.getElementById('rfr69').textContent=(frac*100).toFixed(1)+' %';
+    calc.setMathBounds({left:0,right:180,bottom:0,top:1.15});
+    var a=S.th*Math.PI/180;
+    document.getElementById('axis69').setAttribute('x1',230-42*Math.sin(a)); document.getElementById('axis69').setAttribute('y1',85-42*Math.cos(a));
+    document.getElementById('axis69').setAttribute('x2',230+42*Math.sin(a)); document.getElementById('axis69').setAttribute('y2',85+42*Math.cos(a));
+    document.getElementById('beam69').setAttribute('opacity',0.15+0.8*frac);
+  }
+  SimCore.wireSliders(calc,S,{th:'\\theta_a'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

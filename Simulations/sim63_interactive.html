@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Standing Waves in Pipes — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 63 — Standing Waves in Pipes</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Air columns resonate at specific frequencies set by their length and end conditions. An <b>open–open</b> pipe supports all harmonics
+    <span class="eq">f_n = n·v/2L</span>; a <b>closed–open</b> pipe supports only odd harmonics <span class="eq">f_n = n·v/4L</span> (n = 1, 3, 5…). Open ends
+    are displacement antinodes, closed ends are nodes. Pick the pipe type and harmonic to see the standing-wave pattern and its frequency.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Air column pattern</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="150" viewBox="0 0 320 150">
+            <rect x="40" y="55" width="240" height="46" fill="#eef2ee" stroke="var(--ink)" stroke-width="1.5"/>
+            <rect id="capL63" x="36" y="52" width="8" height="52" fill="var(--accent-dk)"/>
+            <rect id="capR63" x="276" y="52" width="8" height="52" fill="var(--accent-dk)"/>
+            <path id="modeTop63" d="" fill="none" stroke="var(--blue)" stroke-width="2"/>
+            <path id="modeBot63" d="" fill="none" stroke="var(--blue)" stroke-width="2" opacity="0.5"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">frequency f_n</span> = <span class="vb" id="rf63">–</span></div>
+            <div class="r c-blue"><span class="k">wavelength λ</span> = <span class="vb" id="rlam63">–</span></div>
+            <div class="r vb" id="rtype63" style="opacity:.85">–</div>
+          </div>
+        </div>
+        <div class="cap">Blue curves trace the air-displacement standing wave. Dark caps = closed ends (nodes); open ends are antinodes.</div>
+      </div>
+      <div class="panel">
+        <h3>Harmonic frequencies</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Allowed frequencies for the chosen pipe. Open–open gives every harmonic; closed–open gives only the odd ones.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>f_n</b> — the harmonic ladder for this pipe.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="closed" data-min="0" data-max="1" data-step="1" data-fixed="0"><div class="row"><label>Pipe (0 open–open · 1 closed–open)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="1" data-max="6" data-step="1" data-fixed="0"><div class="row"><label>Harmonic n</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.3" data-max="2" data-step="0.1" data-fixed="1" data-suffix=" m"><div class="row"><label>Pipe length L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Which pipe plays a lower fundamental for the same length: open–open or closed–open?</li>
+      <li><b>Manipulate</b><span class="tag">closed</span> Switch pipe types at fixed n. How does the pattern at each end change?</li>
+      <li><b>Explain</b><span class="tag">odd only</span> Why does a closed–open pipe skip the even harmonics?</li>
+      <li><b>Calculate</b><span class="tag">f₁</span> For a closed–open pipe, L = 0.5 m, v = 340 m/s, find the fundamental.</li>
+      <li><b>Extend</b><span class="tag">instruments</span> Which real instruments behave like closed pipes, and how does that shape their timbre?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var v=340;
+  var calc = SimCore.makeCalc('calc','harmonic index','frequency f (Hz)');
+  calc.setExpressions([
+    {id:'L',latex:'L_p=0.5'}, {id:'ni',latex:'n_i=1'},
+    // open-open: harmonics at integer x on line v x /2L ; closed-open: odd x on line v x /4L
+    {id:'oo',latex:'y=\\frac{340 x}{2L_p}\\left\\{0\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2, hidden:false},
+    {id:'co',latex:'y=\\frac{340 x}{4L_p}\\left\\{0\\le x\\le11\\right\\}', color:'#2f6fb0', lineWidth:2, hidden:true},
+    {id:'dot',latex:'D_p', color:'#7B4FA0', pointSize:13}
+  ]);
+  var S={closed:0,n:1,L:0.5};
+  function update(){
+    var closed=S.closed>0.5;
+    // closed-open supports odd only: effective harmonic
+    var nEff=S.n, lam, f;
+    if(!closed){ lam=2*S.L/S.n; f=v/lam; }
+    else { var odd=2*S.n-1; lam=4*S.L/odd; f=v/lam; }
+    document.getElementById('rf63').textContent=f.toFixed(1)+' Hz';
+    document.getElementById('rlam63').textContent=lam.toFixed(3)+' m';
+    document.getElementById('rtype63').textContent=closed?('closed–open · harmonic '+(2*S.n-1)+' (odd only)'):('open–open · harmonic '+S.n);
+    calc.setExpression({id:'oo',hidden:closed}); calc.setExpression({id:'co',hidden:!closed});
+    var hx=closed?(2*S.n-1):S.n, hy=closed?v*hx/(4*S.L):v*hx/(2*S.L);
+    calc.setExpression({id:'dot',latex:'D_p=('+hx+','+hy.toFixed(2)+')'});
+    calc.setMathBounds({left:0,right:closed?12:7,bottom:0,top:Math.max(400,v/(closed?4*S.L:2*S.L)*7)});
+    // schematic caps
+    document.getElementById('capL63').setAttribute('opacity',1); // left closed for closed-open
+    document.getElementById('capR63').setAttribute('opacity',closed?0:1);
+    // draw standing wave: open ends antinode, closed end node
+    var x0=44, x1=276, W=x1-x0;
+    function build(sign){ var d='M', N=120;
+      for(var i=0;i<=N;i++){ var xi=i/N, X=x0+xi*W, env;
+        if(!closed){ env=Math.sin(S.n*Math.PI*xi); }      // node at both ends (pressure)… use displacement antinodes: cos
+        else { env=Math.sin((2*S.n-1)*Math.PI/2*xi); }
+        // use displacement: open end antinode. open-open: cos(nπx/L)?? Keep visual: amp shape
+        var A=(!closed)?Math.cos(S.n*Math.PI*xi):Math.cos((2*S.n-1)*Math.PI/2*xi);
+        var Y=78 - sign*20*A; d+=(i?' L':'')+X.toFixed(1)+','+Y.toFixed(1);
+      } return d; }
+    document.getElementById('modeTop63').setAttribute('d',build(1));
+    document.getElementById('modeBot63').setAttribute('d',build(-1));
+  }
+  SimCore.wireSliders(calc,S,{L:'L_p'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

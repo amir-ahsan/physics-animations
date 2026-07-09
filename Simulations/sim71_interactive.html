@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compton Scattering — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 71 — Compton Scattering</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An X-ray photon that scatters off a free electron loses energy, so its wavelength increases by <span class="eq">&Delta;&lambda; = (h/m_ec)(1 &minus; cos&thinsp;&theta;)</span>.
+    The shift depends only on the scattering angle, not the incoming wavelength — direct evidence that light carries momentum like a particle. Back-scatter
+    (&theta; = 180&deg;) gives the biggest shift; forward scatter gives none.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Photon–electron collision</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="180" viewBox="0 0 320 180">
+            <line x1="20" y1="90" x2="150" y2="90" stroke="var(--gold)" stroke-width="2.5" marker-end="url(#p71)"/><text x="50" y="80" font-size="10" fill="var(--gold)">incoming photon</text>
+            <circle cx="150" cy="90" r="6" fill="var(--blue)"/><text x="140" y="112" font-size="9" fill="var(--blue)">e⁻</text>
+            <line id="scat71" x1="150" y1="90" x2="260" y2="50" stroke="var(--red)" stroke-width="2.5" marker-end="url(#p71r)"/><text x="230" y="40" font-size="10" fill="var(--red)">scattered</text>
+            <line id="elec71" x1="150" y1="90" x2="230" y2="130" stroke="var(--purple)" stroke-width="2" marker-end="url(#p71e)"/>
+            <defs>
+              <marker id="p71" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--gold)"/></marker>
+              <marker id="p71r" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+              <marker id="p71e" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--purple)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">wavelength shift Δλ</span> = <span class="vb" id="rdl71">–</span></div>
+            <div class="r c-red"><span class="k">scattered wavelength λ′</span> = <span class="vb" id="rlp71">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The photon (gold) scatters at angle θ (red), handing momentum to the recoiling electron (purple).</div>
+      </div>
+      <div class="panel">
+        <h3>Wavelength shift vs. scattering angle</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Δλ = λ_C(1 − cos θ), maximal at 180°. The dot marks your chosen angle.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>Δλ(θ)</b> — Compton shift vs. angle.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="th" data-min="0" data-max="180" data-step="5" data-fixed="0" data-suffix="°"><div class="row"><label>Scattering angle θ</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="lam" data-min="1" data-max="10" data-step="0.5" data-fixed="1" data-suffix=" pm"><div class="row"><label>Incident λ</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At what scattering angle is the wavelength shift the largest?</li>
+      <li><b>Manipulate</b><span class="tag">θ</span> Set θ = 0°. Why is there no shift in the forward direction?</li>
+      <li><b>Explain</b><span class="tag">particle nature</span> Why does this experiment require treating light as particles carrying momentum?</li>
+      <li><b>Calculate</b><span class="tag">Δλ</span> For θ = 90°, find Δλ (Compton wavelength λ_C = 2.43 pm).</li>
+      <li><b>Extend</b><span class="tag">independence</span> Why doesn't the shift depend on the incident wavelength?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var lamC=2.43; // pm
+  var calc = SimCore.makeCalc('calc','scattering angle θ (°)','Δλ (pm)');
+  calc.setExpressions([
+    {id:'th',latex:'\\theta_s=90'},
+    {id:'cD',latex:'y=2.43\\left(1-\\cos\\left(\\frac{\\pi x}{180}\\right)\\right)\\left\\{0\\le x\\le180\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(\\theta_s,2.43\\left(1-\\cos\\left(\\frac{\\pi\\theta_s}{180}\\right)\\right)\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={th:90,lam:4};
+  function update(){
+    var dl=lamC*(1-Math.cos(S.th*Math.PI/180)), lp=S.lam+dl;
+    document.getElementById('rdl71').textContent=dl.toFixed(3)+' pm';
+    document.getElementById('rlp71').textContent=lp.toFixed(3)+' pm';
+    calc.setMathBounds({left:0,right:180,bottom:0,top:5.2});
+    var a=S.th*Math.PI/180;
+    document.getElementById('scat71').setAttribute('x2',150+110*Math.cos(a)); document.getElementById('scat71').setAttribute('y2',90-110*Math.sin(a));
+    document.getElementById('elec71').setAttribute('x2',150+80*Math.cos(a*0.4)); document.getElementById('elec71').setAttribute('y2',90+80*Math.sin(a*0.4));
+  }
+  SimCore.wireSliders(calc,S,{th:'\\theta_s'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

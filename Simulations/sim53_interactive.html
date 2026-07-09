@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isobaric Process — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 53 — Isobaric Process</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An isobaric process holds pressure constant — think of a gas under a free-floating piston of fixed weight. As you add heat the gas expands
+    at constant P, doing work <span class="eq">W = P&Delta;V</span>. The path on the P–V diagram is a horizontal line, and the work is simply the
+    rectangle beneath it. Some of the heat does work; the rest raises the temperature.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Constant-pressure expansion</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <rect id="cyl53" x="70" y="60" width="110" height="90" fill="#eef2ee" stroke="var(--ink)" stroke-width="2"/>
+            <rect id="pis53" x="70" y="56" width="110" height="8" fill="var(--accent-dk)"/>
+            <line x1="120" y1="30" x2="120" y2="52" stroke="var(--ink)" stroke-width="2" marker-end="url(#w53)"/><text x="126" y="30" font-size="10">const weight</text>
+            <line x1="200" y1="105" x2="240" y2="105" stroke="var(--red)" stroke-width="2" marker-end="url(#q53)"/><text x="205" y="96" font-size="10" fill="var(--red)">heat in</text>
+            <defs>
+              <marker id="w53" markerWidth="8" markerHeight="8" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="var(--ink)"/></marker>
+              <marker id="q53" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">work W = PΔV</span> = <span class="vb" id="rW53">–</span></div>
+            <div class="r c-red"><span class="k">heat Q = nC_pΔT</span> = <span class="vb" id="rQ53">–</span></div>
+            <div class="r c-purple"><span class="k">ΔU = Q − W</span> = <span class="vb" id="rU53">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The piston rises so pressure stays fixed; the gas does work lifting it while also warming up.</div>
+      </div>
+      <div class="panel">
+        <h3>P–V diagram (work = rectangle)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">A horizontal line at constant P from V_i to V_f; the work is the shaded rectangle P·ΔV.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>Isobar</b> P = constant, with work area shaded.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="P" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Pressure P</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Vi" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Initial volume V_i</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Vf" data-min="2" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Final volume V_f</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the gas expands at constant pressure, is work positive or negative?</li>
+      <li><b>Manipulate</b><span class="tag">P</span> Raise the pressure. How does the work rectangle change for the same ΔV?</li>
+      <li><b>Explain</b><span class="tag">C_p vs C_v</span> Why is more heat needed here than for the same temperature rise at constant volume?</li>
+      <li><b>Calculate</b><span class="tag">W</span> For P = 3, V_i = 2, V_f = 5 (units), find the work.</li>
+      <li><b>Extend</b><span class="tag">ΔU</span> Using Q = nC_pΔT and W = PΔV, show ΔU = nC_vΔT.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  // monatomic ideal gas: Cp = 5/2 R, Cv = 3/2 R, R=1; nRΔT = PΔV so nΔT = PΔV/R
+  var R=1, Cp=2.5, Cv=1.5;
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  calc.setExpressions([
+    {id:'P',latex:'P_g=3'}, {id:'Vi',latex:'V_i=2'}, {id:'Vf',latex:'V_f=5'},
+    {id:'line',latex:'y=P_g\\left\\{V_i\\le x\\le V_f\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'area',latex:'0\\le y\\le P_g\\left\\{V_i\\le x\\le V_f\\right\\}', color:'#B5793B', fillOpacity:0.25, lineWidth:0},
+    {id:'pi',latex:'(V_i,P_g)', color:'#2f6fb0', pointSize:12}, {id:'pf',latex:'(V_f,P_g)', color:'#c0392b', pointSize:12}
+  ]);
+  var S={P:3,Vi:2,Vf:5};
+  function update(){
+    var dV=S.Vf-S.Vi, W=S.P*dV;
+    var ndT=S.P*dV/R;             // n·ΔT
+    var Q=Cp*ndT, dU=Cv*ndT;      // Q=nCpΔT, ΔU=nCvΔT
+    document.getElementById('rW53').textContent=W.toFixed(2);
+    document.getElementById('rQ53').textContent=Q.toFixed(2);
+    document.getElementById('rU53').textContent=dU.toFixed(2);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:8});
+    var w=Math.min(150,40+S.Vf*13); var cyl=document.getElementById('cyl53');
+    cyl.setAttribute('width',w); document.getElementById('pis53').setAttribute('width',w);
+  }
+  SimCore.wireSliders(calc,S,{P:'P_g',Vi:'V_i',Vf:'V_f'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

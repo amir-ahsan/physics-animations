@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adiabatic Process — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 55 — Adiabatic Process</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An adiabatic process exchanges <b>no heat</b> (<span class="eq">Q = 0</span>) — the cylinder is perfectly insulated or the change is fast. The gas
+    follows <span class="eq">PV<sup>&gamma;</sup> = constant</span>, a steeper curve than an isotherm. With no heat in, any work done comes straight out of
+    internal energy: expand and the gas <b>cools</b>; compress and it <b>heats</b>. This is why a bicycle pump warms up.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Insulated cylinder</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <rect x="66" y="36" width="128" height="118" fill="none" stroke="var(--gold)" stroke-width="6"/>
+            <rect id="cyl55" x="72" y="60" width="116" height="90" fill="#eef2ee" stroke="var(--ink)" stroke-width="1.5"/>
+            <rect id="pis55" x="72" y="56" width="116" height="8" fill="var(--accent-dk)"/>
+            <text x="70" y="172" font-size="10" fill="var(--gold)">insulation — no heat flow</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-red"><span class="k">heat Q</span> = <span class="vb">0 (adiabatic)</span></div>
+            <div class="r c-accent"><span class="k">work W = −ΔU</span> = <span class="vb" id="rW55">–</span></div>
+            <div class="r c-purple"><span class="k">temperature change</span> = <span class="vb" id="rT55">–</span></div>
+          </div>
+        </div>
+        <div class="cap">No heat crosses the insulated walls, so the gas trades internal energy for work — cooling as it expands.</div>
+      </div>
+      <div class="panel">
+        <h3>Adiabat vs. isotherm</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">The adiabat PVᵞ = const (solid) is steeper than the isotherm PV = const (dashed) through the same start point.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Adiabat</b> PVᵞ = const.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Isotherm</b> PV = const (for comparison).</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="Vi" data-min="1" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Initial volume V_i</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Vf" data-min="2" data-max="9" data-step="0.5" data-fixed="1"><div class="row"><label>Final volume V_f</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Pi" data-min="2" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Initial pressure P_i</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="g" data-min="1.1" data-max="1.67" data-step="0.07" data-fixed="2"><div class="row"><label>γ = C_p/C_v</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> During adiabatic expansion, does the gas warm up or cool down?</li>
+      <li><b>Manipulate</b><span class="tag">γ</span> Change γ between 1.4 (diatomic) and 1.67 (monatomic). How does the curve steepen?</li>
+      <li><b>Explain</b><span class="tag">steeper</span> Why is the adiabat steeper than the isotherm through the same point?</li>
+      <li><b>Calculate</b><span class="tag">P_f</span> With P_iV_iᵞ = P_fV_fᵞ, find P_f for P_i = 6, V_i = 1, V_f = 2, γ = 1.4.</li>
+      <li><b>Extend</b><span class="tag">real life</span> Why does compressing air in a pump make the pump barrel hot?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  calc.setExpressions([
+    {id:'Vi',latex:'V_i=1.5'}, {id:'Vf',latex:'V_f=4'}, {id:'Pi',latex:'P_i=6'}, {id:'g',latex:'g_a=1.4'},
+    {id:'K',latex:'K_a=P_i V_i^{g_a}', hidden:true, secret:true},
+    {id:'cA',latex:'y=\\frac{K_a}{x^{g_a}}\\left\\{0.5\\le x\\le9\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'cI',latex:'y=\\frac{P_i V_i}{x}\\left\\{0.5\\le x\\le9\\right\\}', color:'#2f6fb0', lineWidth:1.8, lineStyle:Desmos.Styles.DASHED},
+    {id:'pi',latex:'(V_i,P_i)', color:'#2f6fb0', pointSize:12},
+    {id:'pf',latex:'\\left(V_f,\\frac{K_a}{V_f^{g_a}}\\right)', color:'#c0392b', pointSize:12}
+  ]);
+  var S={Vi:1.5,Vf:4,Pi:6,g:1.4};
+  function update(){
+    var K=S.Pi*Math.pow(S.Vi,S.g), Pf=K/Math.pow(S.Vf,S.g);
+    // W = (Pi Vi - Pf Vf)/(g-1); ΔU = -W ; sign of T change: expansion cools
+    var W=(S.Pi*S.Vi-Pf*S.Vf)/(S.g-1);
+    document.getElementById('rW55').textContent=W.toFixed(2);
+    document.getElementById('rT55').textContent=(S.Vf>S.Vi?'cools (T falls)':'heats (T rises)');
+    document.getElementById('rT55').parentElement.style.color=(S.Vf>S.Vi)?'var(--blue)':'var(--red)';
+    calc.setMathBounds({left:0,right:9,bottom:0,top:Math.max(6,S.Pi*1.2)});
+    var w=Math.min(150,40+S.Vf*14); document.getElementById('cyl55').setAttribute('width',w); document.getElementById('pis55').setAttribute('width',w);
+  }
+  SimCore.wireSliders(calc,S,{Vi:'V_i',Vf:'V_f',Pi:'P_i',g:'g_a'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

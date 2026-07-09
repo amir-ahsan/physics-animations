@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>de Broglie Wavelength — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 72 — de Broglie Wavelength</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Every particle has a wavelength <span class="eq">&lambda; = h/p = h/(mv)</span>. Light, slow particles have long wavelengths and show wave behavior;
+    heavy, fast ones have wavelengths so tiny they act purely as particles. This is why electrons diffract but baseballs don't. Change the momentum and
+    watch the wave stretch or shrink.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Matter wave</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="150" viewBox="0 0 320 150">
+            <path id="wave72" d="" fill="none" stroke="var(--blue)" stroke-width="2"/>
+            <circle id="part72" cx="30" cy="80" r="7" fill="var(--red)"/>
+            <text x="20" y="130" font-size="10" fill="var(--ink)">wavelength shrinks as momentum grows</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">de Broglie λ = h/p</span> = <span class="vb" id="rlam72">–</span></div>
+            <div class="r c-blue"><span class="k">momentum p = mv</span> = <span class="vb" id="rp72">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The blue wave's wavelength is the particle's de Broglie wavelength. Faster or heavier particles wave more tightly.</div>
+      </div>
+      <div class="panel">
+        <h3>Wavelength vs. momentum</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">λ = h/p — an inverse relationship. Double the momentum and the wavelength halves. The dot marks your particle.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>λ(p)</b> — wavelength vs. momentum.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="m" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m (rel. units)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Speed v (rel. units)</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Which has the longer wavelength at the same speed: an electron or a proton?</li>
+      <li><b>Manipulate</b><span class="tag">v</span> Speed the particle up. What happens to its de Broglie wavelength?</li>
+      <li><b>Explain</b><span class="tag">why classical</span> Why don't we notice the wavelength of everyday objects like a thrown ball?</li>
+      <li><b>Calculate</b><span class="tag">λ</span> For an electron with p such that h/p = 0.1 nm, is that comparable to atomic spacing?</li>
+      <li><b>Extend</b><span class="tag">microscopy</span> How does an electron's small wavelength enable higher-resolution microscopes?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var h=6;
+  var calc = SimCore.makeCalc('calc','momentum p','wavelength λ');
+  calc.setExpressions([
+    {id:'p',latex:'p_m=8'},
+    {id:'cL',latex:'y=\\frac{6}{x}\\left\\{0.5\\le x\\le100\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(p_m,\\frac{6}{p_m}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={m:2,v:4};
+  function update(){
+    var p=S.m*S.v, lam=h/p;
+    document.getElementById('rlam72').textContent=lam.toFixed(3);
+    document.getElementById('rp72').textContent=p.toFixed(1);
+    calc.setExpression({id:'p',latex:'p_m='+p});
+    calc.setMathBounds({left:0,right:100,bottom:0,top:2});
+    // draw wave with wavelength ~ lam (scaled to pixels)
+    var pxLam=Math.max(8,lam*40), d='M', N=200;
+    for(var i=0;i<=N;i++){ var x=20+i*1.5, y=80-16*Math.sin(2*Math.PI*(x-20)/pxLam); d+=(i?' L':'')+x.toFixed(1)+','+y.toFixed(1); }
+    document.getElementById('wave72').setAttribute('d',d);
+  }
+  // m and v are JS-only (p_m is the Desmos var, set in update); map is empty so no bad expressions
+  SimCore.wireSliders(calc,S,{},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entropy & Microstates — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 58 — Entropy &amp; Microstates</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Entropy counts the number of microscopic arrangements (microstates) that look the same macroscopically: <span class="eq">S = k&thinsp;ln&thinsp;&Omega;</span>.
+    For N gas molecules free to be on either side of a box, the number of ways to get a given split is a binomial count. The most probable split is
+    50–50 because it has by far the most microstates — which is why gases spontaneously spread out and never un-mix.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Molecules in a divided box</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="150" viewBox="0 0 300 150">
+            <rect x="20" y="20" width="260" height="110" fill="#eef2ee" stroke="var(--ink)" stroke-width="1.5"/>
+            <line x1="150" y1="20" x2="150" y2="130" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <g id="molL58" fill="var(--red)"></g>
+            <g id="molR58" fill="var(--blue)"></g>
+            <text x="70" y="145" font-size="10" fill="var(--red)">left</text>
+            <text x="215" y="145" font-size="10" fill="var(--blue)">right</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">microstates Ω = C(N, n_L)</span> = <span class="vb" id="rW58">–</span></div>
+            <div class="r c-purple"><span class="k">entropy S = ln Ω</span> = <span class="vb" id="rS58">–</span></div>
+          </div>
+        </div>
+        <div class="cap">A 50–50 split can be arranged in vastly more ways than an all-on-one-side split — so equilibrium sits at the balanced arrangement.</div>
+      </div>
+      <div class="panel">
+        <h3>Entropy vs. left-side count</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">S = ln C(N, n_L). It peaks sharply at n_L = N/2 — the balanced, maximum-entropy state. The dot marks your split.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>S(n_L)</b> — entropy vs. number on the left.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="N" data-min="4" data-max="20" data-step="2" data-fixed="0"><div class="row"><label>Total molecules N</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="nL" data-min="0" data-max="20" data-step="1" data-fixed="0"><div class="row"><label>Number on left n_L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Which split has the most microstates: all on the left, or half and half?</li>
+      <li><b>Manipulate</b><span class="tag">n_L</span> Move the split away from balance. What happens to Ω and S?</li>
+      <li><b>Explain</b><span class="tag">arrow of time</span> Why does a gas spread to fill its container but never spontaneously collect in one half?</li>
+      <li><b>Calculate</b><span class="tag">Ω</span> For N = 4, count the microstates for n_L = 2 versus n_L = 0.</li>
+      <li><b>Extend</b><span class="tag">large N</span> As N grows, why does the peak at N/2 become overwhelmingly sharp?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','number on left n_L','entropy S = ln Ω');
+  calc.setExpressions([
+    {id:'N',latex:'N_t=10'}, {id:'nL',latex:'n_L=5'},
+    {id:'cS',latex:'y=\\ln\\left(\\frac{N_t!}{x!(N_t-x)!}\\right)\\left\\{0\\le x\\le N_t\\right\\}', color:'#B5793B', lineWidth:2.5, points:true, lines:true},
+    {id:'dot',latex:'\\left(n_L,\\ln\\left(\\frac{N_t!}{n_L!(N_t-n_L)!}\\right)\\right)', color:'#7B4FA0', pointSize:13}
+  ]);
+  var S={N:10,nL:5};
+  function comb(n,k){ if(k<0||k>n)return 0; var r=1; for(var i=1;i<=k;i++) r=r*(n-k+i)/i; return Math.round(r); }
+  function build(){
+    var nL=Math.min(S.nL,S.N), nR=S.N-nL;
+    var gl=document.getElementById('molL58'), gr=document.getElementById('molR58'), sl='', sr='';
+    for(var i=0;i<nL;i++){ sl+='<circle cx="'+(30+Math.random()*105).toFixed(1)+'" cy="'+(30+Math.random()*90).toFixed(1)+'" r="3"/>'; }
+    for(var j=0;j<nR;j++){ sr+='<circle cx="'+(160+Math.random()*105).toFixed(1)+'" cy="'+(30+Math.random()*90).toFixed(1)+'" r="3"/>'; }
+    gl.innerHTML=sl; gr.innerHTML=sr;
+  }
+  function update(){
+    if(S.nL>S.N) S.nL=S.N;
+    var W=comb(S.N,Math.min(S.nL,S.N)), Sent=Math.log(Math.max(1,W));
+    document.getElementById('rW58').textContent=W.toLocaleString();
+    document.getElementById('rS58').textContent=Sent.toFixed(3);
+    calc.setMathBounds({left:-0.5,right:S.N+0.5,bottom:0,top:Math.log(comb(S.N,Math.floor(S.N/2)))*1.15+0.5});
+    build();
+  }
+  SimCore.wireSliders(calc,S,{N:'N_t',nL:'n_L'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

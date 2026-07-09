@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relativistic Energy — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 76 — Relativistic Energy &amp; Momentum</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A moving mass has total energy <span class="eq">E = &gamma;mc&#178;</span>, rest energy <span class="eq">mc&#178;</span>, and kinetic energy
+    <span class="eq">KE = (&gamma; &minus; 1)mc&#178;</span>. As speed approaches c, the energy required diverges — which is why no massive object can reach
+    light speed. At low speed the relativistic KE reduces to the familiar <span class="eq">&#189;mv&#178;</span>; near c it blows past it.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Energy budget</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="160" viewBox="0 0 300 160">
+            <text x="20" y="30" font-size="10" fill="var(--ink)">rest energy mc²</text>
+            <rect x="20" y="36" width="120" height="20" fill="var(--blue)" opacity="0.6"/>
+            <text x="20" y="80" font-size="10" fill="var(--ink)">kinetic (γ−1)mc²</text>
+            <rect id="keBar76" x="20" y="86" width="0" height="20" fill="var(--red)" opacity="0.6"/>
+            <text x="20" y="130" font-size="10" fill="var(--ink)">total E = γmc²</text>
+            <rect id="totBar76" x="20" y="136" width="120" height="20" fill="var(--accent)" opacity="0.6"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">total E / mc²</span> = <span class="vb" id="rE76">–</span></div>
+            <div class="r c-red"><span class="k">kinetic KE / mc²</span> = <span class="vb" id="rKE76">–</span></div>
+            <div class="r c-purple"><span class="k">momentum p / mc</span> = <span class="vb" id="rp76">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Bars show energy in units of mc². The kinetic bar grows without bound as v → c while the rest bar stays fixed.</div>
+      </div>
+      <div class="panel">
+        <h3>Kinetic energy vs. speed</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Relativistic KE (solid) vs. the Newtonian ½mv² (dashed). They agree at low speed and diverge near c.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Relativistic KE</b> = (γ−1)mc².</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Newtonian</b> ½mv².</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="beta" data-min="0" data-max="0.99" data-step="0.01" data-fixed="2"><div class="row"><label>Speed v/c (β)</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Below what speed do relativistic and Newtonian kinetic energy nearly agree?</li>
+      <li><b>Manipulate</b><span class="tag">β</span> Push β toward 0.99. What happens to the total energy?</li>
+      <li><b>Explain</b><span class="tag">speed limit</span> Why can no massive particle ever reach the speed of light?</li>
+      <li><b>Calculate</b><span class="tag">KE</span> At v = 0.6c, find γ and KE in units of mc².</li>
+      <li><b>Extend</b><span class="tag">E² relation</span> Verify E² = (pc)² + (mc²)² at your chosen speed.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','speed β = v/c','kinetic energy / mc²');
+  calc.setExpressions([
+    {id:'b',latex:'\\beta_v=0.5'},
+    {id:'cR',latex:'y=\\frac{1}{\\sqrt{1-x^2}}-1\\left\\{0\\le x\\le0.99\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'cN',latex:'y=\\frac{1}{2}x^2\\left\\{0\\le x\\le0.99\\right\\}', color:'#2f6fb0', lineWidth:1.8, lineStyle:Desmos.Styles.DASHED},
+    {id:'dot',latex:'\\left(\\beta_v,\\frac{1}{\\sqrt{1-\\beta_v^2}}-1\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={beta:0.5};
+  function update(){
+    var g=1/Math.sqrt(1-S.beta*S.beta), KE=g-1, p=g*S.beta, E=g;
+    document.getElementById('rE76').textContent=E.toFixed(3);
+    document.getElementById('rKE76').textContent=KE.toFixed(3);
+    document.getElementById('rp76').textContent=p.toFixed(3);
+    calc.setMathBounds({left:0,right:1,bottom:0,top:5});
+    document.getElementById('keBar76').setAttribute('width',Math.min(260,120*KE));
+    document.getElementById('totBar76').setAttribute('width',Math.min(280,120*E));
+  }
+  SimCore.wireSliders(calc,S,{beta:'\\beta_v'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

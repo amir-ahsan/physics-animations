@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beats — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 61 — Beats</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two tones of nearly equal frequency add up to a single tone that slowly swells and fades — beats. The combined wave oscillates at the average
+    frequency inside an envelope that pulses at the <b>beat frequency</b> <span class="eq">f_beat = |f&#8321; &minus; f&#8322;|</span>. Musicians tune by ear this way:
+    when the beating slows to a stop, the two notes match.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Two tuning forks</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="150" viewBox="0 0 300 150">
+            <g id="wv61" fill="none"></g>
+            <text x="20" y="20" font-size="10" fill="var(--blue)">wave 1</text>
+            <text x="20" y="72" font-size="10" fill="var(--green)">wave 2</text>
+            <text x="20" y="120" font-size="10" fill="var(--accent-dk)">sum (beats)</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">beat frequency |f₁−f₂|</span> = <span class="vb" id="rfb61">–</span></div>
+            <div class="r c-blue"><span class="k">average (heard pitch)</span> = <span class="vb" id="rfa61">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Top two are the individual tones; the bottom trace is their sum, with the slow envelope you hear as throbbing.</div>
+      </div>
+      <div class="panel">
+        <h3>Superposed waveform</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">sin(2πf₁t) + sin(2πf₂t). The dashed envelope pulses at the beat frequency; closer f₁, f₂ means slower beats.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Sum</b> of the two tones.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Envelope</b> pulsing at f_beat.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="f1" data-min="4" data-max="12" data-step="0.1" data-fixed="1"><div class="row"><label>Frequency f₁</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="f2" data-min="4" data-max="12" data-step="0.1" data-fixed="1"><div class="row"><label>Frequency f₂</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> As f₂ approaches f₁, do the beats speed up or slow down?</li>
+      <li><b>Manipulate</b><span class="tag">f₂</span> Set f₂ = f₁ exactly. What happens to the beating?</li>
+      <li><b>Explain</b><span class="tag">envelope</span> Why does the sum oscillate at the average frequency but pulse at the difference?</li>
+      <li><b>Calculate</b><span class="tag">f_beat</span> For f₁ = 440 Hz and f₂ = 444 Hz, how many beats per second do you hear?</li>
+      <li><b>Extend</b><span class="tag">tuning</span> How does a piano tuner use beats to tune a string to a fork?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t','amplitude');
+  calc.setExpressions([
+    {id:'f1',latex:'f_1=8'}, {id:'f2',latex:'f_2=9'},
+    {id:'cS',latex:'y=\\sin(2\\pi f_1 x)+\\sin(2\\pi f_2 x)', color:'#B5793B', lineWidth:2},
+    {id:'env1',latex:'y=2\\cos(\\pi(f_1-f_2)x)', color:'#2e8b57', lineWidth:1.4, lineStyle:Desmos.Styles.DASHED},
+    {id:'env2',latex:'y=-2\\cos(\\pi(f_1-f_2)x)', color:'#2e8b57', lineWidth:1.4, lineStyle:Desmos.Styles.DASHED}
+  ]);
+  var S={f1:8,f2:9};
+  function drawMini(){
+    var g=document.getElementById('wv61'), s='';
+    function path(fn,col,y0){ var d='M'; for(var i=0;i<=280;i++){ var t=i/280, x=10+i, y=y0-14*fn(t); d+=(i?' L':'')+x+','+y.toFixed(1); }
+      return '<path d="'+d+'" stroke="'+col+'" stroke-width="1.4"/>'; }
+    s+=path(function(t){return Math.sin(2*Math.PI*S.f1*t);},'#2f6fb0',34);
+    s+=path(function(t){return Math.sin(2*Math.PI*S.f2*t);},'#2e8b57',86);
+    s+=path(function(t){return 0.5*(Math.sin(2*Math.PI*S.f1*t)+Math.sin(2*Math.PI*S.f2*t));},'#8A5A24',132);
+    g.innerHTML=s;
+  }
+  function update(){
+    document.getElementById('rfb61').textContent=Math.abs(S.f1-S.f2).toFixed(2);
+    document.getElementById('rfa61').textContent=((S.f1+S.f2)/2).toFixed(2);
+    calc.setMathBounds({left:0,right:2,bottom:-2.4,top:2.4});
+    drawMini();
+  }
+  SimCore.wireSliders(calc,S,{f1:'f_1',f2:'f_2'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

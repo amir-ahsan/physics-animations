@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calorimetry — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 60 — Calorimetry (Mixing Two Substances)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>When a hot object meets a cold one in an insulated container, heat flows until they reach a common final temperature. Energy is conserved:
+    the heat lost by the hot body equals the heat gained by the cold one, <span class="eq">m&#8321;c&#8321;(T_f &minus; T&#8321;) + m&#8322;c&#8322;(T_f &minus; T&#8322;) = 0</span>.
+    Solving gives the equilibrium temperature — a mass- and specific-heat-weighted average.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Mixing in a calorimeter</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="170" viewBox="0 0 300 170">
+            <rect x="40" y="30" width="90" height="120" fill="#f6efe0" stroke="var(--ink)" stroke-width="1.5"/>
+            <rect id="barA60" x="52" y="150" width="66" height="0" fill="var(--red)" opacity="0.6"/>
+            <text x="60" y="165" font-size="10" fill="var(--red)">body 1</text>
+            <rect x="170" y="30" width="90" height="120" fill="#f6efe0" stroke="var(--ink)" stroke-width="1.5"/>
+            <rect id="barB60" x="182" y="150" width="66" height="0" fill="var(--blue)" opacity="0.6"/>
+            <text x="190" y="165" font-size="10" fill="var(--blue)">body 2</text>
+            <line x1="130" y1="90" x2="170" y2="90" stroke="var(--accent-dk)" stroke-width="2" marker-start="url(#h60)" marker-end="url(#h60)"/>
+            <defs><marker id="h60" markerWidth="8" markerHeight="8" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-dk)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">final temperature T_f</span> = <span class="vb" id="rTf60">–</span></div>
+            <div class="r c-red"><span class="k">heat from body 1</span> = <span class="vb" id="rQ1_60">–</span></div>
+            <div class="r c-blue"><span class="k">heat into body 2</span> = <span class="vb" id="rQ2_60">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Bars show each body's temperature; heat flows from hot to cold until the two levels meet at T_f.</div>
+      </div>
+      <div class="panel">
+        <h3>Final temperature vs. mass of body 1</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">T_f is a weighted average of the two starting temperatures; adding mass to body 1 pulls T_f toward T₁.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>T_f(m₁)</b> — equilibrium temperature vs. mass of body 1.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="m1" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m₁</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="T1" data-min="20" data-max="100" data-step="5" data-fixed="0" data-suffix=" °C"><div class="row"><label>Temp T₁ (hot)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="c1" data-min="0.2" data-max="4.2" data-step="0.2" data-fixed="1"><div class="row"><label>Specific heat c₁</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m2" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m₂</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="T2" data-min="0" data-max="60" data-step="5" data-fixed="0" data-suffix=" °C"><div class="row"><label>Temp T₂ (cold)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="c2" data-min="0.2" data-max="4.2" data-step="0.2" data-fixed="1"><div class="row"><label>Specific heat c₂</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If body 1 is much more massive, will T_f sit closer to T₁ or T₂?</li>
+      <li><b>Manipulate</b><span class="tag">c₂</span> Give body 2 water's large specific heat. How does that resist temperature change?</li>
+      <li><b>Explain</b><span class="tag">conservation</span> Why must the heat lost by one body equal the heat gained by the other?</li>
+      <li><b>Calculate</b><span class="tag">T_f</span> For m₁c₁ = m₂c₂ with T₁ = 80, T₂ = 20, find T_f.</li>
+      <li><b>Extend</b><span class="tag">phase change</span> How would a melting ice cube change this energy balance?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','mass of body 1 (m₁)','final temperature T_f (°C)');
+  calc.setExpressions([
+    {id:'T1',latex:'T_1=80'}, {id:'c1',latex:'c_1=1'}, {id:'m2',latex:'m_2=2'}, {id:'T2',latex:'T_2=20'}, {id:'c2',latex:'c_2=1'}, {id:'m1',latex:'m_1=2'},
+    {id:'cT',latex:'y=\\frac{x c_1 T_1+m_2 c_2 T_2}{x c_1+m_2 c_2}\\left\\{0.5\\le x\\le5\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(m_1,\\frac{m_1 c_1 T_1+m_2 c_2 T_2}{m_1 c_1+m_2 c_2}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={m1:2,T1:80,c1:1,m2:2,T2:20,c2:1};
+  function update(){
+    var Tf=(S.m1*S.c1*S.T1+S.m2*S.c2*S.T2)/(S.m1*S.c1+S.m2*S.c2);
+    var Q1=S.m1*S.c1*(S.T1-Tf), Q2=S.m2*S.c2*(Tf-S.T2);
+    document.getElementById('rTf60').textContent=Tf.toFixed(1)+' °C';
+    document.getElementById('rQ1_60').textContent=Q1.toFixed(1);
+    document.getElementById('rQ2_60').textContent=Q2.toFixed(1);
+    calc.setMathBounds({left:0,right:5,bottom:Math.min(S.T1,S.T2)-5,top:Math.max(S.T1,S.T2)+5});
+    var lo=0, hi=100;
+    document.getElementById('barA60').setAttribute('height',(S.T1-lo)/(hi-lo)*120); document.getElementById('barA60').setAttribute('y',150-(S.T1-lo)/(hi-lo)*120);
+    document.getElementById('barB60').setAttribute('height',(S.T2-lo)/(hi-lo)*120); document.getElementById('barB60').setAttribute('y',150-(S.T2-lo)/(hi-lo)*120);
+  }
+  SimCore.wireSliders(calc,S,{m1:'m_1',T1:'T_1',c1:'c_1',m2:'m_2',T2:'T_2',c2:'c_2'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ideal Gas Law — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 51 — Ideal Gas Law</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An ideal gas obeys <span class="eq">PV = nRT</span>. Squeeze the volume and the pressure rises; heat the gas and it pushes harder or expands.
+    The molecules bounce around inside, and their collisions with the walls <em>are</em> the pressure. Change any of P, V, n, or T and the others adjust
+    to keep the equation balanced — here we hold n fixed and read off P from V and T.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Gas in a container</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="200" viewBox="0 0 300 200">
+            <rect id="box51" x="60" y="40" width="180" height="140" fill="#eef2ee" stroke="var(--ink)" stroke-width="2"/>
+            <rect id="piston51" x="60" y="36" width="180" height="8" fill="var(--accent-dk)"/>
+            <g id="mol51" fill="var(--red)"></g>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">pressure P = nRT/V</span> = <span class="vb" id="rP51">–</span></div>
+            <div class="r c-blue"><span class="k">volume V</span> = <span class="vb" id="rV51">–</span></div>
+            <div class="r c-red"><span class="k">temperature T</span> = <span class="vb" id="rT51">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Each dot is a gas molecule. Higher temperature = faster molecules = harder wall collisions = more pressure.</div>
+      </div>
+      <div class="panel">
+        <h3>Pressure vs. volume (isotherms)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">P = nRT/V — each temperature gives its own hyperbola. The dot marks the current state.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>P(V)</b> — the isotherm at the current temperature.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="V" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Volume V</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="T" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Temperature T</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="0.5" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Moles n</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At fixed temperature, what happens to pressure if you halve the volume?</li>
+      <li><b>Manipulate</b><span class="tag">T</span> Heat the gas at fixed volume. How does pressure respond?</li>
+      <li><b>Explain</b><span class="tag">molecular</span> Why does faster molecular motion translate into higher pressure?</li>
+      <li><b>Calculate</b><span class="tag">P</span> For n = 1, T = 3, V = 2 (R = 1 units), find P.</li>
+      <li><b>Extend</b><span class="tag">real gas</span> Under what conditions does a real gas deviate from PV = nRT?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var R=1;
+  var calc = SimCore.makeCalc('calc','volume V','pressure P');
+  calc.setExpressions([
+    {id:'n',latex:'n_m=1'}, {id:'T',latex:'T_g=3'}, {id:'V',latex:'V_g=4'},
+    {id:'cP',latex:'y=\\frac{n_m T_g}{x}\\left\\{0.5\\le x\\le10\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(V_g,\\frac{n_m T_g}{V_g}\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={V:4,T:3,n:1}, mols=[];
+  function build(){ mols=[]; var count=Math.round(6+S.n*8);
+    for(var i=0;i<count;i++) mols.push({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5),vy:(Math.random()-0.5)}); }
+  function draw(){ var g=document.getElementById('mol51'), s='';
+    var bx=60, by=+document.getElementById('box51').getAttribute('y'), bw=180, bh=+document.getElementById('box51').getAttribute('height');
+    mols.forEach(function(m){ s+='<circle cx="'+(bx+8+m.x*(bw-16)).toFixed(1)+'" cy="'+(by+8+m.y*(bh-16)).toFixed(1)+'" r="2.6"/>'; });
+    g.innerHTML=s; }
+  function update(){
+    var P=S.n*R*S.T/S.V;
+    document.getElementById('rP51').textContent=P.toFixed(2);
+    document.getElementById('rV51').textContent=S.V.toFixed(1);
+    document.getElementById('rT51').textContent=S.T.toFixed(1);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:Math.max(4,S.n*S.T/0.5*0.6)});
+    // box height scales with volume; bottom fixed at y=180
+    var h=Math.min(150,20+S.V*13); var box=document.getElementById('box51');
+    box.setAttribute('y',180-h); box.setAttribute('height',h);
+    document.getElementById('piston51').setAttribute('y',180-h-4);
+    build(); draw();
+  }
+  SimCore.wireSliders(calc,S,{V:'V_g',T:'T_g',n:'n_m'},function(v){ update(); });
+  // gentle animation
+  var timer=setInterval(function(){ var sp=0.4+S.T*0.5;
+    var box=document.getElementById('box51'); var bh=+box.getAttribute('height');
+    mols.forEach(function(m){ m.x+=m.vx*sp*0.01; m.y+=m.vy*sp*0.01;
+      if(m.x<0||m.x>1){m.vx*=-1; m.x=Math.max(0,Math.min(1,m.x));}
+      if(m.y<0||m.y>1){m.vy*=-1; m.y=Math.max(0,Math.min(1,m.y));} });
+    draw(); },50);
+  update();
+})();
+</script>
+</body>
+</html>

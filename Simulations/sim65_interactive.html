@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thin-Film Interference — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 65 — Thin-Film Interference</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Light reflecting off the top and bottom of a thin film interferes with itself — the colors in soap bubbles and oil slicks. The extra path is
+    <span class="eq">2nt</span> through the film, plus a half-wave flip if the reflection is off a denser medium. Constructive reflection needs
+    <span class="eq">2nt = (m + ½)&lambda;</span> (with one phase flip). Change the thickness and watch which wavelengths brighten.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Ray paths in the film</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="180" viewBox="0 0 320 180">
+            <rect x="40" y="70" width="240" height="40" fill="#dce9f5" stroke="var(--ink)" stroke-width="1"/>
+            <rect x="40" y="110" width="240" height="50" fill="#c9d6bf" stroke="var(--ink)" stroke-width="1"/>
+            <text x="250" y="90" font-size="10" fill="var(--ink)">film n</text><text x="240" y="140" font-size="10" fill="var(--ink)">substrate</text>
+            <line x1="70" y1="30" x2="120" y2="70" stroke="var(--gold)" stroke-width="2" marker-end="url(#r65)"/>
+            <line x1="120" y1="70" x2="90" y2="30" stroke="var(--red)" stroke-width="2" marker-end="url(#r65b)"/>
+            <line x1="120" y1="70" x2="150" y2="110" stroke="var(--gold)" stroke-width="1.5"/>
+            <line x1="150" y1="110" x2="180" y2="70" stroke="var(--gold)" stroke-width="1.5"/>
+            <line x1="180" y1="70" x2="150" y2="30" stroke="var(--red)" stroke-width="2" marker-end="url(#r65b)"/>
+            <defs>
+              <marker id="r65" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L5,3 L0,6 Z" fill="var(--gold)"/></marker>
+              <marker id="r65b" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L5,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">path difference 2nt</span> = <span class="vb" id="rpd65">–</span></div>
+            <div class="r vb" id="rcond65" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">One ray reflects off the top surface, the other travels through the film and back — their interference depends on 2nt.</div>
+      </div>
+      <div class="panel">
+        <h3>Reflected intensity vs. wavelength</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Brightness of the reflected light for each wavelength. Peaks are the colors you see; the dashed line marks your chosen λ.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>R(λ)</b> — reflected intensity vs. wavelength.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="t" data-min="100" data-max="700" data-step="10" data-fixed="0" data-suffix=" nm"><div class="row"><label>Film thickness t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="1.2" data-max="1.7" data-step="0.05" data-fixed="2"><div class="row"><label>Film index n</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="lam" data-min="400" data-max="700" data-step="10" data-fixed="0" data-suffix=" nm"><div class="row"><label>Wavelength λ (marker)</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> A very thin soap film looks black in reflection. Why?</li>
+      <li><b>Manipulate</b><span class="tag">t</span> Increase the thickness. How does the reflected color shift?</li>
+      <li><b>Explain</b><span class="tag">half-wave</span> Why does one reflection pick up a half-wavelength phase flip?</li>
+      <li><b>Calculate</b><span class="tag">bright</span> For n = 1.33, t = 100 nm, which visible λ reflects most strongly?</li>
+      <li><b>Extend</b><span class="tag">coatings</span> How do anti-reflective lens coatings use destructive interference?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','wavelength λ (nm)','reflected intensity');
+  calc.setExpressions([
+    {id:'t',latex:'t_f=250'}, {id:'n',latex:'n_f=1.33'}, {id:'lam',latex:'\\lambda_m=550'},
+    // one phase flip: constructive reflection when 2nt = (m+1/2)λ  → R ∝ sin^2(2π n t / λ)
+    {id:'cR',latex:'y=\\sin^2\\left(\\frac{2\\pi n_f t_f}{x}\\right)\\left\\{400\\le x\\le700\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'mk',latex:'x=\\lambda_m', color:'#7B4FA0', lineWidth:1.5, lineStyle:Desmos.Styles.DASHED}
+  ]);
+  var S={t:250,n:1.33,lam:550};
+  function update(){
+    var pd=2*S.n*S.t;
+    document.getElementById('rpd65').textContent=pd.toFixed(0)+' nm';
+    var R=Math.pow(Math.sin(2*Math.PI*S.n*S.t/S.lam),2);
+    document.getElementById('rcond65').textContent = R>0.75?('bright at λ='+S.lam+' nm (constructive)') : R<0.25?('dark at λ='+S.lam+' nm (destructive)') : ('partial at λ='+S.lam+' nm');
+    document.getElementById('rcond65').style.color = R>0.75?'var(--gold)':R<0.25?'var(--blue)':'var(--ink)';
+    calc.setMathBounds({left:400,right:700,bottom:0,top:1.15});
+  }
+  SimCore.wireSliders(calc,S,{t:'t_f',n:'n_f',lam:'\\lambda_m'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

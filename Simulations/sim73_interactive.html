@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Tunneling — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4C · Simulation 73 — Quantum Tunneling</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A quantum particle can pass through a barrier taller than its energy — something impossible in classical physics. Inside the barrier the
+    wavefunction decays exponentially, so a little of it leaks out the far side. The transmission probability falls off sharply with barrier width and
+    height, roughly <span class="eq">T &approx; e<sup>&minus;2&kappa;L</sup></span> with <span class="eq">&kappa; = &radic;(2m(U&minus;E))/&#8463;</span>.
+    Thin barriers tunnel easily; thick ones almost never.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Wavefunction through a barrier</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="170" viewBox="0 0 320 170">
+            <rect id="barr73" x="140" y="40" width="50" height="90" fill="#d9cdb4" stroke="var(--accent-dk)" stroke-width="1.5"/>
+            <line x1="10" y1="130" x2="310" y2="130" stroke="var(--ink)" stroke-width="1"/>
+            <path id="psi73" d="" fill="none" stroke="var(--blue)" stroke-width="2"/>
+            <text x="150" y="30" font-size="9" fill="var(--accent-dk)">barrier U</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">transmission T ≈ e^(−2κL)</span> = <span class="vb" id="rT73">–</span></div>
+            <div class="r c-blue"><span class="k">decay rate κ</span> = <span class="vb" id="rk73">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The wave oscillates freely, decays exponentially inside the barrier, and emerges smaller on the far side — that leak is tunneling.</div>
+      </div>
+      <div class="panel">
+        <h3>Transmission vs. barrier width</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">T ≈ e^(−2κL) drops steeply with width. Note the log-like collapse — a small width change hugely changes tunneling.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>T(L)</b> — transmission vs. barrier width.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="U" data-min="2" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Barrier height U</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="E" data-min="0.5" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Particle energy E</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.2" data-max="3" data-step="0.1" data-fixed="1"><div class="row"><label>Barrier width L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the barrier width, does transmission drop a little or a lot?</li>
+      <li><b>Manipulate</b><span class="tag">E</span> Raise the particle energy toward the barrier height. How does tunneling change?</li>
+      <li><b>Explain</b><span class="tag">classically forbidden</span> Why is this impossible in classical mechanics?</li>
+      <li><b>Calculate</b><span class="tag">κ</span> For U − E = 2 (units, ℏ = m = 1), find κ and T at L = 1.</li>
+      <li><b>Extend</b><span class="tag">applications</span> How do scanning tunneling microscopes and alpha decay rely on tunneling?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','barrier width L','transmission T');
+  calc.setExpressions([
+    {id:'U',latex:'U_b=5'}, {id:'E',latex:'E_p=2'}, {id:'L',latex:'L_b=1'},
+    {id:'k',latex:'k_a=\\sqrt{2\\max(U_b-E_p,0.01)}', hidden:true, secret:true},
+    {id:'cT',latex:'y=e^{-2k_a x}\\left\\{0\\le x\\le3\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'(L_b,e^{-2k_a L_b})', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={U:5,E:2,L:1};
+  function update(){
+    var kap=Math.sqrt(2*Math.max(S.U-S.E,0.01)), T=Math.exp(-2*kap*S.L);
+    document.getElementById('rT73').textContent=T.toExponential(2);
+    document.getElementById('rk73').textContent=kap.toFixed(3);
+    calc.setMathBounds({left:0,right:3,bottom:0,top:1.1});
+    // barrier width visual
+    var bw=Math.min(90,20+S.L*30); document.getElementById('barr73').setAttribute('width',bw);
+    var bx=+document.getElementById('barr73').getAttribute('x'), bx2=bx+bw;
+    // psi: sinusoid, decays in barrier, smaller sinusoid after
+    var A1=22, A2=22*T, d='M', N=300;
+    for(var i=0;i<=N;i++){ var x=10+i, y;
+      if(x<bx){ y=130-15-A1*Math.sin((x-10)/12); }
+      else if(x<bx2){ var f=(x-bx)/bw; y=130-15-(A1*Math.pow(A2/A1,f))*Math.sin((bx-10)/12); }
+      else { y=130-15-A2*Math.sin((x-bx2)/12+2); }
+      d+=(i?' L':'')+x+','+y.toFixed(1);
+    }
+    document.getElementById('psi73').setAttribute('d',d);
+    document.getElementById('barr73').setAttribute('height',40+S.U*8); document.getElementById('barr73').setAttribute('y',130-(40+S.U*8));
+  }
+  SimCore.wireSliders(calc,S,{U:'U_b',E:'E_p',L:'L_b'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>
