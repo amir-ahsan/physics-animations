@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Center of Mass — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 23 — Center of Mass</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>The center of mass of several particles is the mass-weighted average position
+    <span class="eq">x<sub>cm</sub> = (&#931;m&#7522;x&#7522;) / (&#931;m&#7522;)</span>. It sits closer to the heavier masses and is the balance point of the whole system.
+    Slide the masses and their positions and watch where the balance point lands.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The balance point</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="120" viewBox="0 0 330 120">
+            <line x1="20" y1="60" x2="310" y2="60" stroke="#8a7c58" stroke-width="4"/>
+            <circle id="p1" cx="80" cy="60" r="12" fill="#C98F52" stroke="#8A5A24" stroke-width="2"/>
+            <circle id="p2" cx="180" cy="60" r="12" fill="#2f6fb0" stroke="#1f4f80" stroke-width="2"/>
+            <circle id="p3" cx="250" cy="60" r="12" fill="#2e8b57" stroke="#1c5c39" stroke-width="2"/>
+            <polygon id="pivot" points="160,72 152,92 168,92" fill="var(--red)"/>
+            <text x="150" y="106" font-size="10" fill="var(--red)">center of mass</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-red"><span class="k">x<sub>cm</sub></span> = <span class="vb" id="rcm">–</span></div>
+            <div class="r" style="opacity:.85">total mass = <span id="rtm">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Circle size shows each mass; the red wedge marks the balance point.</div>
+      </div>
+      <div class="panel">
+        <h3>Masses on a line</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Points sized by mass sit at their positions; the red X is the center of mass.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="dot" style="background:var(--accent-dk)"></span><span><b>Particles</b> — dot size scales with mass.</span></li>
+          <li><span class="dot" style="background:var(--red)"></span><span><b>Center of mass</b> — the weighted average.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="m1" data-min="0.5" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Mass 1</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x1" data-min="-5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Position 1</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m2" data-min="0.5" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Mass 2</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x2" data-min="-5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Position 2</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m3" data-min="0" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Mass 3 (0 = off)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x3" data-min="-5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Position 3</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> With two equal masses, where must the center of mass sit?</li>
+      <li><b>Manipulate</b><span class="tag">m1</span> Make one mass much heavier. Which way does the balance point move?</li>
+      <li><b>Explain</b><span class="tag">weighting</span> Why is position weighted by mass rather than a plain average of positions?</li>
+      <li><b>Calculate</b><span class="tag">m, x</span> For 2 kg at x = &#8722;2 and 4 kg at x = 3, find x<sub>cm</sub>.</li>
+      <li><b>Extend</b><span class="tag">3 masses</span> Turn on the third mass and place it so the center of mass sits exactly at the origin.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','position x','');
+  calc.setExpressions([{id:'ax',latex:'y=0\\left\\{-6\\le x\\le6\\right\\}', color:'#c9beA0', lineWidth:1}]);
+  var S={m1:2,x1:-2,m2:4,x2:3,m3:0,x3:0};
+  function update(){
+    var ms=[S.m1,S.m2,S.m3], xs=[S.x1,S.x2,S.x3], M=0, mx=0;
+    for(var i=0;i<3;i++){ M+=ms[i]; mx+=ms[i]*xs[i]; }
+    var cm=M>0?mx/M:0;
+    document.getElementById('rcm').textContent=cm.toFixed(2);
+    document.getElementById('rtm').textContent=M.toFixed(1);
+    ['p1','p2','p3'].forEach(function(id,i){ var e=document.getElementById(id);
+      e.setAttribute('cx',(165+xs[i]*26).toFixed(1)); e.setAttribute('r',(6+ms[i]*2).toFixed(1)); e.setAttribute('opacity',ms[i]<0.01?0:1); });
+    document.getElementById('pivot').setAttribute('points',(165+cm*26)+',72 '+(165+cm*26-8)+',92 '+(165+cm*26+8)+',92');
+    // Desmos points
+    for(var j=0;j<3;j++){ calc.setExpression({id:'m'+j,latex:'('+xs[j]+',0)', color:['#8a5a24','#2f6fb0','#2e8b57'][j], pointSize:6+ms[j]*4, hidden: ms[j]<0.01}); }
+    calc.setExpression({id:'cm',latex:'('+cm.toFixed(3)+',0)', color:'#c0392b', pointSize:16, style:Desmos.Styles.CROSS, showLabel:true, label:'cm', labelSize:'small'});
+    calc.setMathBounds({left:-6,right:6,bottom:-2,top:2});
+  }
+  SimCore.wireSliders(calc,S,{},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moment of Inertia — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 29 — Moment of Inertia Comparison</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Apply the <b>same torque &#964;</b> to three objects with the <b>same mass M and radius R</b> — a hoop, a solid disk, and a solid sphere.
+    Rotational inertia is <span class="eq">I = cMR&#178;</span> with shape factor c = 1 (hoop), ½ (disk), &#8542; (sphere). The angular acceleration is
+    <span class="eq">&#945; = &#964;/I</span>, so the sphere (smallest I) spins up fastest and the hoop slowest. Same push, different response.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Three objects, same torque</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="150" viewBox="0 0 330 150">
+            <g id="sph"><circle cx="60" cy="70" r="34" fill="#f0e6cf" stroke="var(--green)" stroke-width="3"/><line id="ssp" x1="60" y1="70" x2="94" y2="70" stroke="var(--green)" stroke-width="2.5"/></g>
+            <g id="dsk"><circle cx="165" cy="70" r="34" fill="#e6ecf5" stroke="var(--blue)" stroke-width="3"/><line id="dsp" x1="165" y1="70" x2="199" y2="70" stroke="var(--blue)" stroke-width="2.5"/></g>
+            <g id="hop"><circle cx="270" cy="70" r="34" fill="none" stroke="var(--red)" stroke-width="5"/><line id="hsp" x1="270" y1="70" x2="304" y2="70" stroke="var(--red)" stroke-width="2.5"/></g>
+            <text x="40" y="128" font-size="11" fill="var(--green)">sphere (⅖)</text>
+            <text x="146" y="128" font-size="11" fill="var(--blue)">disk (½)</text>
+            <text x="252" y="128" font-size="11" fill="var(--red)">hoop (1)</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-green"><span class="k">&#945; sphere</span> = <span class="vb" id="asp">–</span> rad/s&#178;</div>
+            <div class="r c-blue"><span class="k">&#945; disk</span> = <span class="vb" id="adk">–</span> rad/s&#178;</div>
+            <div class="r c-red"><span class="k">&#945; hoop</span> = <span class="vb" id="ahp">–</span> rad/s&#178;</div>
+          </div>
+        </div>
+        <div class="cap">Same torque on each — watch the sphere outrun the disk, and the disk outrun the hoop.</div>
+      </div>
+      <div class="panel">
+        <h3>Angle turned vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">&#952;(t) = ½&#945;t². The steepest curve (sphere) has the smallest rotational inertia.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Sphere</b> (I = &#8542;MR²) — spins up fastest.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Disk</b> (I = ½MR²).</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Hoop</b> (I = MR²) — slowest.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Spin</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="4" data-step="0.02" data-fixed="2"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="tau" data-min="1" data-max="20" data-step="1" data-fixed="0" data-suffix=" N·m"><div class="row"><label>Torque &#964;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="M" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Mass M</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R" data-min="0.2" data-max="1.5" data-step="0.1" data-fixed="1"><div class="row"><label>Radius R</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Under equal torque, rank the three by how quickly they spin up.</li>
+      <li><b>Manipulate</b><span class="tag">M, R</span> Change M and R. Do the rankings ever swap?</li>
+      <li><b>Explain</b><span class="tag">shape factor</span> Why does a hoop resist spinning more than a sphere of the same mass and radius?</li>
+      <li><b>Calculate</b><span class="tag">&#964;, M, R</span> For &#964; = 10 N·m, M = 2 kg, R = 0.5 m, find &#945; for each shape.</li>
+      <li><b>Extend</b><span class="tag">rolling</span> How does this ordering explain the rolling race (sphere beats disk beats hoop)?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t (s)','angle turned θ (rad)');
+  calc.setExpressions([
+    {id:'As',latex:'a_s=1'}, {id:'Ad',latex:'a_d=1'}, {id:'Ah',latex:'a_h=1'},
+    {id:'cS',latex:'0.5a_s x^2\\left\\{0\\le x\\le4\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'cD',latex:'0.5a_d x^2\\left\\{0\\le x\\le4\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cH',latex:'0.5a_h x^2\\left\\{0\\le x\\le4\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'t',latex:'t=0'},
+    {id:'ds',latex:'(t,0.5a_s t^2)', color:'#2e8b57'}, {id:'dd',latex:'(t,0.5a_d t^2)', color:'#2f6fb0'}, {id:'dh',latex:'(t,0.5a_h t^2)', color:'#c0392b'}
+  ]);
+  var S={tau:10,M:2,R:0.5,t:0};
+  function alphas(){ var I=S.M*S.R*S.R; return {s:S.tau/(0.4*I), d:S.tau/(0.5*I), h:S.tau/(1*I)}; }
+  function fit(){ var a=alphas(); calc.setMathBounds({left:-0.2,right:4,bottom:-0.3,top:Math.max(2,0.5*a.s*16*1.1)}); }
+  function update(){
+    var a=alphas();
+    calc.setExpression({id:'As',latex:'a_s='+a.s.toFixed(4)});
+    calc.setExpression({id:'Ad',latex:'a_d='+a.d.toFixed(4)});
+    calc.setExpression({id:'Ah',latex:'a_h='+a.h.toFixed(4)});
+    fit();
+    document.getElementById('asp').textContent=a.s.toFixed(2);
+    document.getElementById('adk').textContent=a.d.toFixed(2);
+    document.getElementById('ahp').textContent=a.h.toFixed(2);
+    function spin(id,al){ var th=0.5*al*S.t*S.t, cx={ssp:60,dsp:165,hsp:270}[id], cy=70, r=34;
+      var e=document.getElementById(id); e.setAttribute('x2',(cx+r*Math.cos(th)).toFixed(1)); e.setAttribute('y2',(cy-r*Math.sin(th)).toFixed(1)); }
+    spin('ssp',a.s); spin('dsp',a.d); spin('hsp',a.h);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{label:'▶ Spin'});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rolling Motion — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 28 — Rolling Motion &amp; Rotational Kinematics</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A wheel of radius <b>R</b> rolls without slipping at angular speed <b>&#969;</b>. The rolling condition ties rotation to translation:
+    <span class="eq">v<sub>center</sub> = &#969;R</span>. The contact point is momentarily at rest, the center moves at &#969;R, and the top moves at
+    <span class="eq">2&#969;R</span>. A point on the rim traces a graceful <b>cycloid</b>. Press Play and watch the rim point rise and fall.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The rolling wheel</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="150" viewBox="0 0 330 150">
+            <line x1="0" y1="120" x2="330" y2="120" stroke="#b8a983" stroke-width="2"/>
+            <polyline id="cyc28" points="" fill="none" stroke="#c9a13b" stroke-width="1.6"/>
+            <circle id="wheel28" cx="70" cy="90" r="30" fill="none" stroke="var(--purple)" stroke-width="3"/>
+            <line id="spoke28" x1="70" y1="90" x2="100" y2="90" stroke="var(--purple)" stroke-width="1.5"/>
+            <circle id="rim28" cx="100" cy="90" r="5" fill="var(--red)"/>
+            <line id="vtop28" x1="70" y1="60" x2="130" y2="60" stroke="var(--green)" stroke-width="2.5" marker-end="url(#g28)"/>
+            <line id="vcen28" x1="70" y1="90" x2="100" y2="90" stroke="var(--green)" stroke-width="2.5" marker-end="url(#g28)"/>
+            <text x="132" y="58" font-size="9" fill="var(--green)">2v</text>
+            <text x="102" y="86" font-size="9" fill="var(--green)">v</text>
+            <text x="46" y="136" font-size="9" fill="#8a7c58">contact: v = 0</text>
+            <defs><marker id="g28" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">v = &#969;R</span> = <span class="vb" id="rv28">–</span> m/s</div>
+            <div class="r c-green"><span class="k">top speed</span> = 2&#969;R = <span class="vb" id="rvt28">–</span> m/s</div>
+            <div class="r" style="opacity:.85">contact point speed = 0</div>
+          </div>
+        </div>
+        <div class="cap">Gold curve = the cycloid traced by the red rim point; green arrows show speeds at the top (2v) and center (v).</div>
+      </div>
+      <div class="panel">
+        <h3>Rim-point height vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">A rim point's height oscillates between 0 (at the ground) and 2R (at the top) as the wheel rolls.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Rim-point height</b> R(1 &#8722; cos&#969;t) as it rolls.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Roll</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="16" data-step="0.02" data-fixed="2"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R" data-min="0.5" data-max="2" data-step="0.1" data-fixed="1"><div class="row"><label>Radius R</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="w" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1" data-suffix=" rad/s"><div class="row"><label>Angular speed &#969;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Which part of a rolling wheel is instantaneously at rest? Which part moves fastest?</li>
+      <li><b>Manipulate</b><span class="tag">R, &#969;</span> Change R and &#969; and watch the center speed v = &#969;R.</li>
+      <li><b>Explain</b><span class="tag">rolling</span> Why must the contact point be momentarily at rest for rolling without slipping?</li>
+      <li><b>Calculate</b><span class="tag">R, &#969;</span> For R = 0.3 m and &#969; = 10 rad/s, find the center and top speeds.</li>
+      <li><b>Extend</b><span class="tag">cycloid</span> Over one full turn, how far does the wheel's center travel? (Compare with the circumference.)</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t (s)','rim height (m)');
+  calc.setExpressions([
+    {id:'R',latex:'R=1'}, {id:'w',latex:'w=2'}, {id:'t',latex:'t=0'},
+    {id:'cH',latex:'R(1-\\cos(w x))\\left\\{0\\le x\\le16\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'dot',latex:'(t,R(1-\\cos(w t)))', color:'#c0392b', pointSize:12}
+  ]);
+  var S={R:1,w:2,t:0};
+  function fit(){ calc.setMathBounds({left:-0.3,right:16,bottom:-0.2,top:2.2*S.R}); }
+  function update(){
+    var v=S.w*S.R;
+    document.getElementById('rv28').textContent=v.toFixed(2);
+    document.getElementById('rvt28').textContent=(2*v).toFixed(2);
+    fit();
+    // schematic rolling wheel: center x moves; radius fixed 30 px; wheel makes contact at y=120
+    var Rpx=30, per=2*Math.PI/S.w, x0=70, dist=Rpx*S.w*S.t*1.0;   // center x advances proportional to arc
+    var cx=x0 + (dist % 260), cy=90;
+    var th=S.w*S.t;
+    document.getElementById('wheel28').setAttribute('cx',cx.toFixed(1));
+    var rx=cx+Rpx*Math.cos(th), ry=cy-Rpx*Math.sin(th);
+    document.getElementById('spoke28').setAttribute('x1',cx); document.getElementById('spoke28').setAttribute('y1',cy); document.getElementById('spoke28').setAttribute('x2',rx.toFixed(1)); document.getElementById('spoke28').setAttribute('y2',ry.toFixed(1));
+    document.getElementById('rim28').setAttribute('cx',rx.toFixed(1)); document.getElementById('rim28').setAttribute('cy',ry.toFixed(1));
+    document.getElementById('vtop28').setAttribute('x1',cx); document.getElementById('vtop28').setAttribute('x2',(cx+55).toFixed(1)); document.getElementById('vtop28').setAttribute('y1',cy-Rpx); document.getElementById('vtop28').setAttribute('y2',cy-Rpx);
+    document.getElementById('vcen28').setAttribute('x1',cx); document.getElementById('vcen28').setAttribute('x2',(cx+28).toFixed(1)); document.getElementById('vcen28').setAttribute('y1',cy); document.getElementById('vcen28').setAttribute('y2',cy);
+    // cycloid trail (last portion)
+    var pts=''; for(var a=0;a<=th;a+=0.15){ var xx=x0+Rpx*a - Rpx*Math.sin(a), yy=cy - (Rpx - Rpx*Math.cos(a)); if(xx-70<260) pts+=xx.toFixed(1)+','+yy.toFixed(1)+' '; }
+    document.getElementById('cyc28').setAttribute('points',pts);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{R:'R',w:'w'},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{label:'▶ Roll'});
+})();
+</script>
+</body>
+</html>

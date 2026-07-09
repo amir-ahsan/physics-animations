@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Force &amp; Energy — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 20 — Spring Force &amp; Energy</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A mass on a spring obeys Hooke's law <span class="eq">F = &#8722;kx</span>: the force always pulls back toward equilibrium, growing with
+    displacement. The stored energy is <span class="eq">U = &#189;kx&#178;</span>, a parabola. Released from amplitude A, the mass oscillates as
+    <span class="eq">x(t) = A cos(&#969;t)</span> with <span class="eq">&#969; = &#8730;(k/m)</span>. Watch the force line, the energy bowl, and the moving mass together.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The oscillating mass</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="120" viewBox="0 0 320 120">
+            <line x1="15" y1="95" x2="305" y2="95" stroke="#b8a983" stroke-width="2"/>
+            <rect x="15" y="45" width="10" height="50" fill="#6b5a3a"/>
+            <polyline id="spring20" points="" fill="none" stroke="#8A7D60" stroke-width="2"/>
+            <rect id="mass20" x="150" y="60" width="34" height="30" rx="3" fill="#C98F52" stroke="#8A5A24" stroke-width="2"/>
+            <line x1="160" y1="105" x2="160" y2="112" stroke="#c9beA0" stroke-width="1"/>
+            <text x="150" y="118" font-size="9" fill="#8a7c58">equilibrium</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-red"><span class="k">force F = &#8722;kx</span> = <span class="vb" id="rF20">–</span> N</div>
+            <div class="r c-blue"><span class="k">stored energy U</span> = <span class="vb" id="rU20">–</span> J</div>
+            <div class="r c-accent"><span class="k">&#969; = &#8730;(k/m)</span> = <span class="vb" id="rw20">–</span> rad/s</div>
+            <div class="r" style="opacity:.85"><span class="k">period T</span> = 2&#960;/&#969; = <span id="rT20">–</span> s</div>
+          </div>
+        </div>
+        <div class="cap">The mass slides through equilibrium fastest and stops momentarily at the turning points x = ±A.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Force &amp; energy vs. displacement</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Red line = restoring force F(x) = &#8722;kx; blue parabola = potential energy U(x) = ½kx². The dot marks the mass's current displacement.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Restoring force</b> F(x) = &#8722;kx — straight line through the origin.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Potential energy</b> U(x) = ½kx² — a bowl centred on equilibrium.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="12" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="k" data-min="1" data-max="30" data-step="1" data-fixed="0">
+            <div class="row"><label>Spring constant k</label><span class="val"></span></div><input type="range"><div class="hint">Stiffer spring → faster oscillation.</div></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="8" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"><div class="hint">Heavier mass → slower.</div></div>
+          <div class="ctl" data-var="A" data-min="0.5" data-max="4" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Amplitude A</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Where is the force largest — at equilibrium or at the turning points? Where is the speed largest?</li>
+      <li><b>Manipulate</b><span class="tag">k, m</span> Change k and m and watch the period. Does amplitude affect the period at all?</li>
+      <li><b>Explain</b><span class="tag">the bowl</span> Why does the mass speed up as it slides down the energy bowl toward equilibrium?</li>
+      <li><b>Calculate</b><span class="tag">k, m</span> For k = 20 N/m and m = 2 kg, find &#969; and the period.</li>
+      <li><b>Extend</b><span class="tag">A</span> Double the amplitude. By what factor does the stored energy at the turning point change?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','displacement x (m)','force F (N)   /   energy U (J)');
+  calc.setExpressions([
+    {id:'k',latex:'k=20'}, {id:'A',latex:'A=2'}, {id:'xc',latex:'x_c=2'},
+    {id:'cF',latex:'-k x\\left\\{-A\\le x\\le A\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'cU',latex:'0.5k x^2\\left\\{-A\\le x\\le A\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'dot',latex:'(x_c,-k x_c)', color:'#c0392b', pointSize:12},
+    {id:'dotU',latex:'(x_c,0.5k x_c^2)', color:'#2f6fb0', pointSize:12}
+  ]);
+  var S={k:20,m:2,A:2,t:0};
+  function fit(){ var top=Math.max(0.5*S.k*S.A*S.A*1.15, S.k*S.A*1.15, 5); calc.setMathBounds({left:-S.A*1.15,right:S.A*1.15,bottom:-S.k*S.A*1.15,top:top}); }
+  function drawSpring(x0,x1,cy){ // zig-zag between x0 and x1
+    var n=14, pts='', dx=(x1-x0)/n;
+    for(var i=0;i<=n;i++){ var xx=x0+i*dx, yy=cy+(i>0&&i<n?(i%2?-8:8):0); pts+=xx.toFixed(1)+','+yy.toFixed(1)+' '; }
+    document.getElementById('spring20').setAttribute('points',pts);
+  }
+  function update(){
+    var w=Math.sqrt(S.k/S.m), xc=S.A*Math.cos(w*S.t);
+    calc.setExpression({id:'xc',latex:'x_c='+xc.toFixed(4)}); fit();
+    document.getElementById('rF20').textContent=(-S.k*xc).toFixed(1);
+    document.getElementById('rU20').textContent=(0.5*S.k*xc*xc).toFixed(1);
+    document.getElementById('rw20').textContent=w.toFixed(2);
+    document.getElementById('rT20').textContent=(2*Math.PI/w).toFixed(2);
+    // schematic: equilibrium at screen x=167; mass at 167 + xc*scale
+    var eqx=167, sc=26, mx=eqx+xc*sc;
+    document.getElementById('mass20').setAttribute('x',(mx-17).toFixed(1));
+    drawSpring(25, mx-17, 75);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{k:'k',A:'A'},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{});
+})();
+</script>
+</body>
+</html>

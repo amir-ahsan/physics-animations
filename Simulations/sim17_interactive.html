@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newton's Second Law — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 17 — Newton's Second Law</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A box of mass <b>m</b> on a rough floor is pushed right by <b>F&#8321;</b> and left by <b>F&#8322;</b>. Kinetic friction
+    <span class="eq">f&#8342; = &#956;&#8342;mg</span> opposes any sliding. Newton's second law then sets the acceleration:
+    <span class="eq">a = (F&#8321; &#8722; F&#8322; &#8722; f&#8342;) / m</span>. If the applied forces cannot overcome friction, the box stays put. Change the
+    forces and mass and watch the free-body diagram and the resulting motion.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Free-body diagram</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="160" viewBox="0 0 330 160">
+            <line x1="15" y1="118" x2="315" y2="118" stroke="#b8a983" stroke-width="2"/>
+            <g id="hatch17" stroke="#d8cba6" stroke-width="1"></g>
+            <rect x="140" y="86" width="50" height="32" rx="3" fill="#cdb488" stroke="#8a6f42" stroke-width="1.5"/>
+            <line id="fW17" x1="165" y1="102" x2="165" y2="102" stroke="var(--purple)" stroke-width="3" marker-end="url(#w17)"/>
+            <line id="fN17" x1="165" y1="102" x2="165" y2="102" stroke="var(--blue)" stroke-width="3" marker-end="url(#n17)"/>
+            <line id="f1_17" x1="190" y1="102" x2="190" y2="102" stroke="var(--green)" stroke-width="4" marker-end="url(#g17)"/>
+            <line id="f2_17" x1="140" y1="102" x2="140" y2="102" stroke="var(--red)" stroke-width="4" marker-end="url(#r17)"/>
+            <line id="ff17" x1="165" y1="112" x2="165" y2="112" stroke="var(--gold)" stroke-width="3" marker-end="url(#fr17)"/>
+            <text id="l1_17" x="200" y="98" font-size="11" fill="var(--green)">F&#8321;</text>
+            <text id="l2_17" x="120" y="98" font-size="11" fill="var(--red)">F&#8322;</text>
+            <defs>
+              <marker id="w17" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--purple)"/></marker>
+              <marker id="n17" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="g17" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="r17" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+              <marker id="fr17" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--gold)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">net force</span> = <span class="vb" id="rnet">–</span> N</div>
+            <div class="r c-gold"><span class="k">friction f&#8342;</span> = <span class="vb" id="rf">–</span> N</div>
+            <div class="r c-red"><span class="k">acceleration a</span> = <span class="vb" id="ra17">–</span> m/s&#178;</div>
+            <div class="r vb" id="rstate17" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">Green = F&#8321; (right), red = F&#8322; (left), gold = kinetic friction, purple = weight, blue = normal. Lengths scale with size.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Resulting motion (from rest)</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue = position x(t) = ½at²; green = velocity v(t) = at. A flat pair of lines means the box is not moving.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Position</b> x(t) — a parabola under constant a.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Velocity</b> v(t) — a straight line of slope a.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="F1" data-min="0" data-max="40" data-step="1" data-fixed="0">
+            <div class="row"><label>Push right F&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="F2" data-min="0" data-max="40" data-step="1" data-fixed="0">
+            <div class="row"><label>Push left F&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="uk" data-min="0" data-max="0.8" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Friction &#956;&#8342;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If F&#8321; and F&#8322; are equal, what is the acceleration — regardless of their size?</li>
+      <li><b>Manipulate</b><span class="tag">m</span> Double the mass while holding the forces fixed. What happens to the acceleration?</li>
+      <li><b>Explain</b><span class="tag">friction</span> Why does the box stay still until the net applied force exceeds friction?</li>
+      <li><b>Calculate</b><span class="tag">F&#8321;, F&#8322;, &#956;&#8342;</span> For F&#8321; = 20 N, F&#8322; = 5 N, m = 2 kg, &#956;&#8342; = 0.20, find the acceleration.</li>
+      <li><b>Extend</b><span class="tag">&#956;&#8342;</span> With F&#8321; = F&#8322;, add friction. Does friction ever start the box moving on its own?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var g=9.8;
+  var calc = SimCore.makeCalc('calc','time t (s)','position x (m)   /   velocity v (m/s)');
+  calc.setExpressions([
+    {id:'a',latex:'a=1'},
+    {id:'cX',latex:'0.5a x^2\\left\\{0\\le x\\le5\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cV',latex:'a x\\left\\{0\\le x\\le5\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'z',latex:'y=0\\left\\{0\\le x\\le5\\right\\}', color:'#c9beA0', lineWidth:1}
+  ]);
+  (function(){ var s=''; for(var x=18;x<=312;x+=14){ s+='<line x1="'+x+'" y1="118" x2="'+(x-8)+'" y2="128"/>'; } document.getElementById('hatch17').innerHTML=s; })();
+  var S={F1:20,F2:5,m:2,uk:0.20};
+  function accel(){
+    var drive=S.F1-S.F2, fmax=S.uk*S.m*g;
+    if(Math.abs(drive)<=fmax) return {a:0,f:Math.abs(drive),moving:false,drive:drive};
+    var f=fmax*Math.sign(drive);
+    return {a:(drive-f)/S.m, f:fmax, moving:true, drive:drive};
+  }
+  function fit(){ var k=accel(); var top=Math.max(2, Math.abs(k.a)*30); calc.setMathBounds({left:-0.3,right:5,bottom:-0.3*top,top:top}); }
+  function update(){
+    var k=accel();
+    calc.setExpression({id:'a',latex:'a='+k.a.toFixed(4)});
+    document.getElementById('rnet').textContent=(k.drive-(k.moving?k.f*Math.sign(k.drive):0)).toFixed(1);
+    document.getElementById('rf').textContent=k.f.toFixed(1);
+    document.getElementById('ra17').textContent=k.a.toFixed(2);
+    var st=document.getElementById('rstate17'); st.textContent=k.moving?('SLIDING '+(k.a>0?'right':'left')):'AT REST (friction holds it)';
+    st.style.color=k.moving?'var(--red)':'var(--green)';
+    fit();
+    // FBD arrows
+    var cx=165, cy=102, sc=2.4, cap=68;
+    function set(id,dx,dy){ var e=document.getElementById(id); e.setAttribute('x1',cx); e.setAttribute('y1',cy); e.setAttribute('x2',(cx+dx).toFixed(1)); e.setAttribute('y2',(cy+dy).toFixed(1)); e.setAttribute('opacity',(Math.abs(dx)+Math.abs(dy)<1)?0:1); }
+    set('fW17',0, Math.min(cap,S.m*g*1.4));
+    set('fN17',0,-Math.min(cap,S.m*g*1.4));
+    var f1=document.getElementById('f1_17'); f1.setAttribute('x1',190); f1.setAttribute('y1',cy); f1.setAttribute('x2',(190+Math.min(cap,S.F1*sc)).toFixed(1)); f1.setAttribute('y2',cy); f1.setAttribute('opacity',S.F1<0.5?0:1);
+    document.getElementById('l1_17').setAttribute('x',(192+Math.min(cap,S.F1*sc)).toFixed(1));
+    var f2=document.getElementById('f2_17'); f2.setAttribute('x1',140); f2.setAttribute('y1',cy); f2.setAttribute('x2',(140-Math.min(cap,S.F2*sc)).toFixed(1)); f2.setAttribute('y2',cy); f2.setAttribute('opacity',S.F2<0.5?0:1);
+    document.getElementById('l2_17').setAttribute('x',(128-Math.min(cap,S.F2*sc)).toFixed(1));
+    // friction opposes motion (or opposes net drive when static, drawn small)
+    var fr=document.getElementById('ff17'); var fl=Math.min(40,k.f*2.4)*(k.drive>=0?-1:1);
+    fr.setAttribute('x1',cx); fr.setAttribute('y1',112); fr.setAttribute('x2',(cx+fl).toFixed(1)); fr.setAttribute('y2',112); fr.setAttribute('opacity',k.f<0.3?0:1);
+  }
+  SimCore.wireSliders(calc,S,{},function(v){ update(); });  // vars are JS-only; a set inside update
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Static Equilibrium — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 27 — Static Equilibrium</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A light beam of length <b>L</b> rests on two supports at its ends. A load of weight <b>W</b> sits a distance <b>x</b> from the left support.
+    For the beam to balance, both the forces and the torques must sum to zero, giving the support reactions
+    <span class="eq">N<sub>L</sub> = W(L&#8722;x)/L</span> and <span class="eq">N<sub>R</sub> = Wx/L</span>. Slide the load and watch how the weight shifts between the two supports.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Loaded beam</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="150" viewBox="0 0 320 150">
+            <line x1="30" y1="70" x2="290" y2="70" stroke="#8A7D60" stroke-width="8"/>
+            <polygon points="30,72 20,92 40,92" fill="#6b5a3a"/>
+            <polygon points="290,72 280,92 300,92" fill="#6b5a3a"/>
+            <line id="nl27" x1="30" y1="70" x2="30" y2="30" stroke="var(--blue)" stroke-width="4" marker-end="url(#b27)"/>
+            <line id="nr27" x1="290" y1="70" x2="290" y2="30" stroke="var(--blue)" stroke-width="4" marker-end="url(#b27)"/>
+            <line id="wl27" x1="160" y1="66" x2="160" y2="120" stroke="var(--red)" stroke-width="4" marker-end="url(#r27)"/>
+            <rect id="load27" x="150" y="52" width="20" height="16" fill="#C98F52" stroke="#8A5A24"/>
+            <text x="20" y="26" font-size="10" fill="var(--blue)">N&#8324;</text>
+            <text x="280" y="26" font-size="10" fill="var(--blue)">N&#7523;</text>
+            <text id="wtx27" x="164" y="118" font-size="10" fill="var(--red)">W</text>
+            <defs>
+              <marker id="b27" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="r27" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">left support N&#8324;</span> = <span class="vb" id="rnl">–</span> N</div>
+            <div class="r c-blue"><span class="k">right support N&#7523;</span> = <span class="vb" id="rnr">–</span> N</div>
+            <div class="r" style="opacity:.85">check: N&#8324; + N&#7523; = <span id="rsum27">–</span> N = W</div>
+          </div>
+        </div>
+        <div class="cap">Blue arrows = support reactions (they grow as the load moves toward that support); red = the load's weight.</div>
+      </div>
+      <div class="panel">
+        <h3>Support forces vs. load position</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">As the load slides right, the right support takes more and the left takes less — always adding to W.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>N<sub>L</sub></b> — falls as the load moves right.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>N<sub>R</sub></b> — rises as the load moves right.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="W" data-min="10" data-max="100" data-step="5" data-fixed="0"><div class="row"><label>Load weight W</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x" data-min="0" data-max="6" data-step="0.1" data-fixed="1"><div class="row"><label>Load position x (from left)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="3" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Beam length L</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> With the load exactly in the middle, how does the weight split between the supports?</li>
+      <li><b>Manipulate</b><span class="tag">x</span> Slide the load to the right support. What does each reaction approach?</li>
+      <li><b>Explain</b><span class="tag">torque</span> Why does taking torques about one support let you find the other support's force directly?</li>
+      <li><b>Calculate</b><span class="tag">W, x, L</span> For W = 60 N, x = 4 m on a 6 m beam, find N<sub>L</sub> and N<sub>R</sub>.</li>
+      <li><b>Extend</b><span class="tag">beam weight</span> How would adding the beam's own weight at its center change both reactions?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','load position x (m)','support force (N)');
+  calc.setExpressions([
+    {id:'W',latex:'W=60'}, {id:'L',latex:'L=6'}, {id:'xc',latex:'x_c=3'},
+    {id:'cNL',latex:'\\frac{W(L-x)}{L}\\left\\{0\\le x\\le L\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cNR',latex:'\\frac{W x}{L}\\left\\{0\\le x\\le L\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'dL',latex:'(x_c,\\frac{W(L-x_c)}{L})', color:'#2f6fb0'},
+    {id:'dR',latex:'(x_c,\\frac{W x_c}{L})', color:'#2e8b57'}
+  ]);
+  var S={W:60,x:3,L:6};
+  function update(){
+    var x=Math.min(S.x,S.L), NL=S.W*(S.L-x)/S.L, NR=S.W*x/S.L;
+    calc.setExpression({id:'xc',latex:'x_c='+x.toFixed(3)});
+    calc.setMathBounds({left:-0.3,right:S.L,bottom:-3,top:S.W*1.1});
+    document.getElementById('rnl').textContent=NL.toFixed(1);
+    document.getElementById('rnr').textContent=NR.toFixed(1);
+    document.getElementById('rsum27').textContent=(NL+NR).toFixed(1);
+    // schematic: beam from 30..290, load at fraction x/L
+    var lx=30+ (x/S.L)*260;
+    document.getElementById('load27').setAttribute('x',(lx-10).toFixed(1));
+    document.getElementById('wl27').setAttribute('x1',lx); document.getElementById('wl27').setAttribute('x2',lx);
+    document.getElementById('wtx27').setAttribute('x',(lx+4).toFixed(1));
+    var nl=document.getElementById('nl27'), nr=document.getElementById('nr27');
+    nl.setAttribute('y2',(70-Math.min(40,NL*0.6)).toFixed(1)); nr.setAttribute('y2',(70-Math.min(40,NR*0.6)).toFixed(1));
+    nl.setAttribute('opacity',NL<0.5?0.2:1); nr.setAttribute('opacity',NR<0.5?0.2:1);
+  }
+  SimCore.wireSliders(calc,S,{W:'W',L:'L'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

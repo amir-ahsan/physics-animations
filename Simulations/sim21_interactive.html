@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conservation of Energy — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 21 — Conservation of Energy</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A cart slides on a frictionless valley track. As it drops, potential energy <span class="eq">U = mgy</span> converts to kinetic energy
+    <span class="eq">K = &#189;mv&#178;</span>, but the <b>total stays constant</b>: <span class="eq">K + U = mgy&#8320;</span>. Its speed at any height is
+    <span class="eq">v = &#8730;(2g(y&#8320; &#8722; y))</span> — independent of the path or the mass. Watch the energy trade back and forth as the cart swings.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Energy bars</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <line x1="20" y1="150" x2="280" y2="150" stroke="#b8a983" stroke-width="1.5"/>
+            <rect x="55" y="30" width="40" height="120" fill="#efe4c8" stroke="#b8a983"/>
+            <rect id="peBar" x="55" y="30" width="40" height="120" fill="var(--blue)" opacity="0.8"/>
+            <rect x="130" y="30" width="40" height="120" fill="#efe4c8" stroke="#b8a983"/>
+            <rect id="keBar" x="130" y="150" width="40" height="0" fill="var(--green)" opacity="0.8"/>
+            <rect x="205" y="30" width="40" height="120" fill="#efe4c8" stroke="#b8a983"/>
+            <rect id="totBar" x="205" y="30" width="40" height="120" fill="var(--gold)" opacity="0.85"/>
+            <text x="58" y="166" font-size="11" fill="var(--blue)">PE</text>
+            <text x="135" y="166" font-size="11" fill="var(--green)">KE</text>
+            <text x="205" y="166" font-size="11" fill="#9a7b1f">total</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">PE = mgy</span> = <span class="vb" id="rpe">–</span> J</div>
+            <div class="r c-green"><span class="k">KE = ½mv²</span> = <span class="vb" id="rke">–</span> J</div>
+            <div class="r c-green"><span class="k">speed v</span> = <span class="vb" id="rv21">–</span> m/s</div>
+            <div class="r c-gold"><span class="k">total</span> = <span id="rtot">–</span> J (constant)</div>
+          </div>
+        </div>
+        <div class="cap">Blue + green always add up to the gold total: energy is only converted, never lost (no friction here).</div>
+      </div>
+
+      <div class="panel">
+        <h3>The cart on its track</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">The curve is the valley track (height in metres); the dot is the cart. It moves fastest at the bottom, slowest at the turning points.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--purple)"></span><span><b>Track</b> — a frictionless valley (height vs. position).</span></li>
+          <li><span class="dot" style="background:#333"></span><span><b>Cart</b>, moving under gravity along the track.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="12" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="x0" data-min="1" data-max="4.5" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Release position (sets height)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"><div class="hint">Changes energies, not the speed.</div></div>
+          <div class="ctl" data-var="g" data-min="1.6" data-max="24.8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Gravity g</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Two carts of different mass are released from the same height. Which is faster at the bottom?</li>
+      <li><b>Manipulate</b><span class="tag">t</span> Play the motion and watch the blue and green bars trade off. When are they equal?</li>
+      <li><b>Explain</b><span class="tag">the bars</span> Why does the gold total bar never change as the cart moves?</li>
+      <li><b>Calculate</b><span class="tag">y&#8320;</span> Released from height 3.2 m, what speed does the cart have at the bottom (g = 9.8)?</li>
+      <li><b>Extend</b><span class="tag">friction</span> If friction removed 20% of the energy, how would the turning-point height change on the far side?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var C=0.2;  // track y = C x^2
+  var calc = SimCore.makeCalc('calc','position x (m)','height y (m)');
+  calc.setExpressions([
+    {id:'xc',latex:'x_c=-3'}, {id:'C',latex:'C=0.2'},
+    {id:'track',latex:'C x^2\\left\\{-4.6\\le x\\le4.6\\right\\}', color:'#6042a6', lineWidth:2.5},
+    {id:'cart',latex:'(x_c,C x_c^2)', color:'#333333', pointSize:15}
+  ]);
+  var S={x0:3,m:1,g:9.8,t:0};
+  function fit(){ calc.setMathBounds({left:-5,right:5,bottom:-0.4,top:Math.max(C*S.x0*S.x0*1.2,1)}); }
+  function update(){
+    var w=Math.sqrt(2*S.g*C);                 // parabolic track ≈ SHM in x
+    var xc=S.x0*Math.cos(w*S.t);
+    var y=C*xc*xc, y0=C*S.x0*S.x0;
+    var v=Math.sqrt(Math.max(0,2*S.g*(y0-y)));
+    var PE=S.m*S.g*y, KE=S.m*S.g*(y0-y), tot=S.m*S.g*y0;
+    calc.setExpression({id:'xc',latex:'x_c='+xc.toFixed(4)}); fit();
+    document.getElementById('rpe').textContent=PE.toFixed(1);
+    document.getElementById('rke').textContent=KE.toFixed(1);
+    document.getElementById('rv21').textContent=v.toFixed(2);
+    document.getElementById('rtot').textContent=tot.toFixed(1);
+    var H=120;
+    function bar(id,frac,fromTop){ var e=document.getElementById(id), h=Math.max(0,Math.min(1,frac))*H;
+      if(fromTop){ e.setAttribute('y',(30+H-h).toFixed(1)); e.setAttribute('height',h.toFixed(1)); }
+      else { e.setAttribute('y',(30+H-h).toFixed(1)); e.setAttribute('height',h.toFixed(1)); } }
+    bar('peBar',PE/tot,true); bar('keBar',KE/tot,true); bar('totBar',1,true);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{});
+})();
+</script>
+</body>
+</html>

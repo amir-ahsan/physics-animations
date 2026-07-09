@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relative Motion — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 16 — Relative Motion (River Crossing)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A boat aims across a river at heading angle <b>&#952;</b> with speed <b>v&#7495;</b> relative to the water, while the current carries the
+    water downstream at <b>v&#7580;</b>. The boat's velocity <em>relative to the ground</em> is the <b>vector sum</b>
+    <span class="eq">v&#8407;<sub>bg</sub> = v&#8407;<sub>bw</sub> + v&#8407;<sub>wg</sub></span>. That sum decides the real path, the crossing time, and how far
+    downstream it drifts. Adjust the heading and current and watch the boat's true track.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Velocity triangle</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <line id="vbw" x1="40" y1="150" x2="120" y2="70" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#a16a)"/>
+            <line id="vwg" x1="120" y1="70" x2="200" y2="70" stroke="var(--blue)" stroke-width="3" marker-end="url(#a16b)"/>
+            <line id="vbg" x1="40" y1="150" x2="200" y2="70" stroke="var(--red)" stroke-width="3.5" marker-end="url(#a16c)"/>
+            <text id="l16a" x="70" y="100" font-size="12" fill="var(--accent-dk)" font-style="italic">v&#7495;&#7584;</text>
+            <text id="l16b" x="150" y="62" font-size="12" fill="var(--blue)" font-style="italic">v&#7580;&#7527;</text>
+            <text id="l16c" x="120" y="128" font-size="12" fill="var(--red)" font-style="italic">v&#7495;&#7527;</text>
+            <defs>
+              <marker id="a16a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--accent-dk)"/></marker>
+              <marker id="a16b" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="a16c" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-red"><span class="k">ground speed</span> = <span class="vb" id="rgs">–</span> m/s</div>
+            <div class="r"><span class="k">crossing time</span> = <span class="vb" id="rtc">–</span> s</div>
+            <div class="r"><span class="k">downstream drift</span> = <span class="vb" id="rdr">–</span> m</div>
+            <div class="r" style="opacity:.85"><span class="k">track angle</span> = <span id="rang">–</span>° from bank</div>
+          </div>
+        </div>
+        <div class="cap">Caramel = boat relative to water; blue = current; red = the resulting velocity over the ground.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Top-down view of the crossing</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Horizontal = downstream distance, vertical = across the river (width 5 units). The line is the boat's true path; the dot is the boat.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>True path</b> across the ground (start to far bank).</span></li>
+          <li><span class="dot" style="background:#333"></span><span><b>Boat</b> position at the current time.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Cross</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="3" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="vb" data-min="1" data-max="8" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Boat speed v&#7495; (rel. water)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="D" data-min="10" data-max="170" data-step="5" data-fixed="0" data-suffix="°">
+            <div class="row"><label>Heading &#952; (from bank)</label><span class="val"></span></div><input type="range"><div class="hint">90° = straight across.</div></div>
+          <div class="ctl" data-var="vc" data-min="0" data-max="6" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Current speed v&#7580;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> To cross in the shortest time, which heading should you pick — straight across, or angled upstream?</li>
+      <li><b>Manipulate</b><span class="tag">&#952;</span> Point the boat straight across (90°) and turn up the current. Which way does the true path tilt?</li>
+      <li><b>Explain</b><span class="tag">the triangle</span> Why does the crossing time depend only on the across-river part of the velocity, not the current?</li>
+      <li><b>Calculate</b><span class="tag">v&#7495;, v&#7580;</span> For v&#7495; = 4 m/s straight across a 5-unit river with v&#7580; = 3 m/s, find the ground speed and drift.</li>
+      <li><b>Extend</b><span class="tag">&#952;</span> Find the heading that lands the boat directly across with <em>zero</em> drift. What does v&#7495; have to satisfy?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var W=5;
+  var calc = SimCore.makeCalc('calc','downstream distance (m)','across river (m)');
+  calc.setExpressions([
+    {id:'vb',latex:'v_b=4'}, {id:'D',latex:'D=90'}, {id:'vc',latex:'v_c=2'}, {id:'t',latex:'t=0'}, {id:'W',latex:'W=5'},
+    {id:'p',latex:'p=\\frac{D\\pi}{180}'},
+    {id:'Rx',latex:'R_x=v_b\\cos(p)+v_c'}, {id:'Ry',latex:'R_y=v_b\\sin(p)'},
+    {id:'Tc',latex:'T_c=\\frac{W}{R_y}'},
+    {id:'b0',latex:'y=0\\left\\{-2\\le x\\le20\\right\\}', color:'#8a7c58', lineWidth:3},
+    {id:'b1',latex:'y=W\\left\\{-2\\le x\\le20\\right\\}', color:'#8a7c58', lineWidth:3},
+    {id:'path',latex:'\\operatorname{polygon}((0,0),(R_x T_c,W))', color:'#c0392b', lineWidth:2.5},
+    {id:'boat',latex:'(R_x\\cdot\\min(t,T_c),R_y\\cdot\\min(t,T_c))', color:'#333333', pointSize:14},
+    {id:'start',latex:'(0,0)', color:'#2e8b57'}
+  ]);
+  var S={vb:4,D:90,vc:2,t:0};
+  function fit(){ var Rx=S.vb*Math.cos(S.D*Math.PI/180)+S.vc, Ry=S.vb*Math.sin(S.D*Math.PI/180), Tc=W/Math.max(0.05,Ry);
+    calc.setMathBounds({left:-1.5, right:Math.max(Rx*Tc+2,6), bottom:-1, top:W+1.2}); return Tc; }
+  function update(){
+    var p=S.D*Math.PI/180, Rx=S.vb*Math.cos(p)+S.vc, Ry=S.vb*Math.sin(p);
+    var gs=Math.hypot(Rx,Ry), Tc=W/Math.max(0.05,Ry), drift=Rx*Tc, ang=Math.atan2(Ry,Rx)*180/Math.PI;
+    document.getElementById('rgs').textContent=gs.toFixed(2);
+    document.getElementById('rtc').textContent=Tc.toFixed(2);
+    document.getElementById('rdr').textContent=drift.toFixed(2);
+    document.getElementById('rang').textContent=ang.toFixed(0);
+    // schematic velocity triangle (screen: origin 40,150; up = -y). scale
+    var sc=10, ox=40, oy=150;
+    var bx=ox+S.vb*Math.cos(p)*sc, by=oy-S.vb*Math.sin(p)*sc;   // tip of v_bw
+    var cx=bx+S.vc*sc, cy=by;                                    // tip of current -> resultant tip
+    function seg(id,x1,y1,x2,y2){ var e=document.getElementById(id); e.setAttribute('x1',x1.toFixed(1)); e.setAttribute('y1',y1.toFixed(1)); e.setAttribute('x2',x2.toFixed(1)); e.setAttribute('y2',y2.toFixed(1)); }
+    seg('vbw',ox,oy,bx,by); seg('vwg',bx,by,cx,cy); seg('vbg',ox,oy,cx,cy);
+    document.getElementById('l16a').setAttribute('x',((ox+bx)/2-14)); document.getElementById('l16a').setAttribute('y',((oy+by)/2));
+    document.getElementById('l16b').setAttribute('x',((bx+cx)/2-6)); document.getElementById('l16b').setAttribute('y',(by-6));
+    document.getElementById('l16c').setAttribute('x',((ox+cx)/2-6)); document.getElementById('l16c').setAttribute('y',((oy+cy)/2+16));
+    document.getElementById('vwg').setAttribute('opacity',S.vc<0.05?0:1);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{vb:'v_b',D:'D',vc:'v_c',t:'t'},function(v){ if(v!=='t'){var Tc=fit(); sliders.t.input.max=Math.max(0.5,Tc.toFixed(2));} update(); });
+  var Tc0=fit(); sliders.t.input.max=Tc0.toFixed(2); update();
+  SimCore.playControls(sliders,'t',{label:'▶ Cross'});
+})();
+</script>
+</body>
+</html>

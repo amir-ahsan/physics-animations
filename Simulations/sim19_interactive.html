@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connected Blocks — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 19 — Connected Blocks</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A block <b>m&#8321;</b> on a table is pulled by a cord over a pulley to a hanging block <b>m&#8322;</b>. The hanging weight drives the system;
+    friction under m&#8321; resists. Both share one acceleration <span class="eq">a = (m&#8322;g &#8722; &#956;&#8342;m&#8321;g)/(m&#8321; + m&#8322;)</span>, with cord tension
+    <span class="eq">T = m&#8321;(a + &#956;&#8342;g)</span>. If the hanging weight cannot beat friction, nothing moves. Treat the two blocks as one system, then check each alone.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The setup</h3>
+        <div class="schematic">
+          <svg class="scene" width="290" height="190" viewBox="0 0 290 190">
+            <line x1="20" y1="70" x2="230" y2="70" stroke="#8a7c58" stroke-width="3"/>
+            <line x1="230" y1="70" x2="230" y2="185" stroke="#8a7c58" stroke-width="2" opacity=".4"/>
+            <circle cx="234" cy="66" r="9" fill="#D9C6A5" stroke="#8A7D60" stroke-width="2.5"/>
+            <rect id="m1box19" x="60" y="44" width="40" height="26" rx="3" fill="#C98F52" stroke="#8A5A24" stroke-width="2"/>
+            <line id="cordH" x1="100" y1="57" x2="228" y2="57" stroke="#5C4B30" stroke-width="2"/>
+            <line id="cordV" x1="243" y1="66" x2="243" y2="120" stroke="#5C4B30" stroke-width="2"/>
+            <rect id="m2box19" x="225" y="120" width="36" height="28" rx="3" fill="#B5793B" stroke="#8A5A24" stroke-width="2"/>
+            <text x="72" y="61" font-size="12" fill="#fff">m&#8321;</text>
+            <text id="m2l19" x="235" y="139" font-size="12" fill="#fff">m&#8322;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">acceleration a</span> = <span class="vb" id="ra19">–</span> m/s&#178;</div>
+            <div class="r c-blue"><span class="k">tension T</span> = <span class="vb" id="rt19">–</span> N</div>
+            <div class="r vb" id="rstate19" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">The hanging block's weight drives the motion; friction under the table block opposes it.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Speed vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Speed rises linearly at rate a. A flat line means friction holds the system still.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Speed</b> v(t) = a&#8201;t of both blocks.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Release</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="3" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m1" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Table block m&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m2" data-min="0.5" data-max="10" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Hanging block m&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="uk" data-min="0" data-max="0.8" data-step="0.05" data-fixed="2">
+            <div class="row"><label>Table friction &#956;&#8342;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Which mass should you increase to speed the system up — the table block or the hanging block?</li>
+      <li><b>Manipulate</b><span class="tag">&#956;&#8342;</span> Raise the table friction until the system just stops. What condition on m&#8322;g have you reached?</li>
+      <li><b>Explain</b><span class="tag">the system</span> Why is it faster to treat both blocks together for a, but each one separately for the tension?</li>
+      <li><b>Calculate</b><span class="tag">m&#8321;, m&#8322;, &#956;&#8342;</span> For m&#8321; = 3 kg, m&#8322; = 2 kg, &#956;&#8342; = 0.20, find a and T.</li>
+      <li><b>Extend</b><span class="tag">&#956;&#8342;=0</span> Set friction to zero. Show the result reduces to a = m&#8322;g/(m&#8321;+m&#8322;).</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var g=9.8;
+  var calc = SimCore.makeCalc('calc','time t (s)','speed v (m/s)');
+  calc.setExpressions([
+    {id:'a',latex:'a=1'},
+    {id:'cV',latex:'a x\\left\\{0\\le x\\le3\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'z',latex:'y=0\\left\\{0\\le x\\le3\\right\\}', color:'#c9beA0', lineWidth:1}
+  ]);
+  var S={m1:3,m2:2,uk:0.20,t:0};
+  function vals(){ var drive=S.m2*g, fr=S.uk*S.m1*g;
+    if(drive<=fr) return {a:0,T:S.m2*g,moving:false};
+    var a=(drive-fr)/(S.m1+S.m2), T=S.m1*(a+S.uk*g); return {a:a,T:T,moving:true};
+  }
+  function fit(){ var k=vals(); calc.setMathBounds({left:-0.2,right:3,bottom:-0.3,top:Math.max(2,k.a*3.2)}); }
+  function update(){
+    var k=vals(); calc.setExpression({id:'a',latex:'a='+k.a.toFixed(4)}); fit();
+    document.getElementById('ra19').textContent=k.a.toFixed(2);
+    document.getElementById('rt19').textContent=k.T.toFixed(2);
+    var st=document.getElementById('rstate19'); st.textContent=k.moving?'MOVING':'AT REST (friction holds it)'; st.style.color=k.moving?'var(--green)':'var(--red)';
+    var d=0.5*k.a*S.t*S.t*26; d=Math.max(0,Math.min(58,d));   // block1 moves right by d px, block2 down by d
+    document.getElementById('m1box19').setAttribute('x',(60+d).toFixed(1));
+    document.getElementById('cordH').setAttribute('x1',(100+d).toFixed(1));
+    document.getElementById('m2box19').setAttribute('y',(120+d).toFixed(1));
+    document.getElementById('m2l19').setAttribute('y',(139+d).toFixed(1));
+    document.getElementById('cordV').setAttribute('y2',(120+d).toFixed(1));
+  }
+  var sliders=SimCore.wireSliders(calc,S,{},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{label:'▶ Release'});
+})();
+</script>
+</body>
+</html>

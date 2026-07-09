@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Fall — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 15 — Free Fall</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A ball is launched straight up or down with initial velocity <b>v&#8320;</b> from height <b>y&#8320;</b>, then moves under gravity alone:
+    <span class="eq">y(t) = y&#8320; + v&#8320;t &#8722; &#189;gt&#178;</span> and <span class="eq">v(t) = v&#8320; &#8722; gt</span>. It rises, slows, stops for an instant at the top
+    (<span class="eq">t = v&#8320;/g</span>), then falls back. Press <b>Play</b> and watch the height and velocity graphs together with the moving ball.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The ball in flight</h3>
+        <div class="schematic">
+          <svg class="scene" width="150" height="230" viewBox="0 0 150 230">
+            <line x1="55" y1="15" x2="55" y2="210" stroke="#b8a983" stroke-width="2"/>
+            <g id="ticks15" stroke="#cbbd97" stroke-width="1"></g>
+            <text x="60" y="222" font-size="10" fill="#8a7c58">ground</text>
+            <circle id="ball15" cx="55" cy="120" r="9" fill="var(--blue)"/>
+            <line id="varr15" x1="55" y1="120" x2="55" y2="90" stroke="var(--green)" stroke-width="3" marker-end="url(#fv15)"/>
+            <text x="70" y="24" font-size="11" fill="var(--green)">v</text>
+            <defs><marker id="fv15" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--green)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">height y</span> = <span class="vb" id="ry15">–</span> m</div>
+            <div class="r c-green"><span class="k">velocity v</span> = <span class="vb" id="rv15">–</span> m/s</div>
+            <div class="r c-accent"><span class="k">top at t</span> = v&#8320;/g = <span class="vb" id="rtop">–</span> s</div>
+            <div class="r" style="opacity:.85"><span class="k">max height</span> = <span id="rhmax">–</span> m</div>
+          </div>
+        </div>
+        <div class="cap">Green arrow = velocity (up when positive, flipping to down after the peak).</div>
+      </div>
+
+      <div class="panel">
+        <h3>Height &amp; velocity vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue = height y(t) (a parabola); green = velocity v(t) (a straight line). The dot marks the present instant; the peak is where velocity crosses zero.</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Height</b> y(t) — rises then falls; slope is the velocity.</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Velocity</b> v(t) — falls at a constant rate g; zero at the top.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="6" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="y0" data-min="0" data-max="40" data-step="1" data-fixed="0">
+            <div class="row"><label>Launch height y&#8320;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v0" data-min="-15" data-max="25" data-step="1" data-fixed="0">
+            <div class="row"><label>Initial velocity v&#8320; (+up)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="g" data-min="1.6" data-max="24.8" data-step="0.1" data-fixed="1">
+            <div class="row"><label>Gravity g</label><span class="val"></span></div><input type="range"><div class="hint">Try the Moon (1.6) or Jupiter (24.8).</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At the highest point, what is the velocity? What is the acceleration there?</li>
+      <li><b>Manipulate</b><span class="tag">v&#8320;</span> Make v&#8320; negative (thrown down). How do the height and velocity graphs change?</li>
+      <li><b>Explain</b><span class="tag">the two graphs</span> Why is the velocity graph a straight line while the height graph is a parabola?</li>
+      <li><b>Calculate</b><span class="tag">v&#8320;, g</span> For v&#8320; = 20 m/s and g = 9.8 m/s&#178;, find the time to the top and the maximum height.</li>
+      <li><b>Extend</b><span class="tag">g</span> Switch g to the Moon's 1.6 m/s&#178;. How much longer does the same throw stay aloft?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = Desmos.GraphingCalculator(document.getElementById('calc'), {
+    expressions:false, settingsMenu:false, zoomButtons:true, lockViewport:false, border:false, keypad:false
+  });
+  calc.updateSettings({xAxisLabel:'time t (s)', yAxisLabel:'height y (m)   /   velocity v (m/s)'});
+  calc.setExpressions([
+    {id:'y0',latex:'y_0=20'}, {id:'v0',latex:'v_0=20'}, {id:'g',latex:'g=9.8'}, {id:'t',latex:'t=0'},
+    {id:'Tf',latex:'T_f=\\frac{v_0+\\sqrt{v_0^2+2g y_0}}{g}'},
+    {id:'Yf',latex:'Y(x)=y_0+v_0 x-0.5g x^2', hidden:true, secret:true},
+    {id:'Vf',latex:'V(x)=v_0-g x', hidden:true, secret:true},
+    {id:'cY',latex:'Y(x)\\left\\{0\\le x\\le T_f\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cV',latex:'V(x)\\left\\{0\\le x\\le T_f\\right\\}', color:'#2e8b57', lineWidth:2.5},
+    {id:'zero',latex:'y=0', color:'#c9beA0', lineWidth:1},
+    {id:'dY',latex:'(t,Y(t))', color:'#2f6fb0', showLabel:true, label:'y', labelSize:'small'},
+    {id:'dV',latex:'(t,V(t))', color:'#2e8b57', showLabel:true, label:'v', labelSize:'small'},
+    {id:'apex',latex:'\\left(\\frac{v_0}{g},y_0+\\frac{v_0^2}{2g}\\right)', color:'#B5793B', pointSize:9}
+  ]);
+  var S={y0:20,v0:20,g:9.8,t:0};
+  function fit(){
+    var Tf=(S.v0+Math.sqrt(Math.max(0,S.v0*S.v0+2*S.g*S.y0)))/S.g;
+    var hmax=S.y0+Math.max(0,S.v0)*Math.max(0,S.v0)/(2*S.g);
+    var top=Math.max(hmax*1.15, Math.abs(S.v0)*1.3, 10);
+    calc.setMathBounds({left:-0.3, right:Math.max(Tf*1.1,1), bottom:-Math.max(Math.abs(S.v0-S.g*Tf)*1.2, 8), top:top});
+    return Tf;
+  }
+  // schematic ticks
+  (function(){ var g=document.getElementById('ticks15'), s=''; for(var i=0;i<=4;i++){ var y=210-i*48; s+='<line x1="50" y1="'+y+'" x2="60" y2="'+y+'"/>'; } g.innerHTML=s; })();
+  function update(){
+    var y=S.y0+S.v0*S.t-0.5*S.g*S.t*S.t, v=S.v0-S.g*S.t;
+    document.getElementById('ry15').textContent=y.toFixed(1);
+    document.getElementById('rv15').textContent=v.toFixed(1);
+    document.getElementById('rtop').textContent=(S.v0>0?(S.v0/S.g).toFixed(2):'0');
+    document.getElementById('rhmax').textContent=(S.y0+(S.v0>0?S.v0*S.v0/(2*S.g):0)).toFixed(1);
+    // schematic: map height 0..45 to y screen 210..15
+    var hmaxRange=Math.max(45, S.y0+ (S.v0>0?S.v0*S.v0/(2*S.g):0)+5);
+    var sy=210-Math.max(0,Math.min(1,y/hmaxRange))*195;
+    var ball=document.getElementById('ball15'); ball.setAttribute('cy',sy.toFixed(1));
+    var va=document.getElementById('varr15'), vl=Math.max(-40,Math.min(40,v*2));
+    va.setAttribute('x1',55); va.setAttribute('y1',sy); va.setAttribute('x2',55); va.setAttribute('y2',(sy-vl).toFixed(1));
+    va.setAttribute('opacity',Math.abs(v)<0.1?0:1);
+  }
+  var LATEX={y0:'y_0',v0:'v_0',g:'g',t:'t'}, sliders={};
+  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
+    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
+    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
+    input.addEventListener('input',function(){ S[v]=+input.value; if(out)out.textContent=(+input.value).toFixed(fx);
+      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); if(v!=='t'){var Tf=fit(); sliders.t.input.max=Math.max(0.5,Tf.toFixed(2));} update(); });
+    if(out)out.textContent=S[v].toFixed(fx);
+  });
+  var Tf0=fit(); sliders.t.input.max=Tf0.toFixed(2); update();
+  var playing=false,timer=null,btn=document.getElementById('play');
+  function step(){ var s=sliders.t,val=+s.input.value+(+s.input.max)/70; if(val>+s.input.max)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
+  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,40); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
+    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+})();
+</script>
+</body>
+</html>

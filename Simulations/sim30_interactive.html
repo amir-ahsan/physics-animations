@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Harmonic Motion — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 30 — Simple Harmonic Motion</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A mass on a spring oscillates as <span class="eq">x(t) = A cos(&#969;t + &#966;)</span> with <span class="eq">&#969; = &#8730;(k/m)</span>. Differentiating gives
+    velocity <span class="eq">v = &#8722;A&#969;sin(&#969;t+&#966;)</span> and acceleration <span class="eq">a = &#8722;A&#969;&#178;cos(&#969;t+&#966;) = &#8722;&#969;&#178;x</span>. Velocity leads position by a
+    quarter cycle; acceleration is exactly opposite the displacement. Watch all three sinusoids and the moving mass.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The oscillating mass</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="100" viewBox="0 0 320 100">
+            <line x1="15" y1="80" x2="305" y2="80" stroke="#b8a983" stroke-width="2"/>
+            <rect x="15" y="35" width="10" height="45" fill="#6b5a3a"/>
+            <polyline id="spring30" points="" fill="none" stroke="#8A7D60" stroke-width="2"/>
+            <rect id="mass30" x="150" y="48" width="32" height="28" rx="3" fill="#C98F52" stroke="#8A5A24" stroke-width="2"/>
+            <line id="vv30" x1="166" y1="62" x2="166" y2="62" stroke="var(--green)" stroke-width="3" marker-end="url(#g30)"/>
+            <line x1="166" y1="84" x2="166" y2="90" stroke="#c9beA0" stroke-width="1"/>
+            <defs><marker id="g30" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">position x</span> = <span class="vb" id="rx30">–</span> m</div>
+            <div class="r c-green"><span class="k">velocity v</span> = <span class="vb" id="rv30">–</span> m/s</div>
+            <div class="r c-red"><span class="k">acceleration a</span> = <span class="vb" id="ra30">–</span> m/s&#178;</div>
+            <div class="r c-accent"><span class="k">&#969;</span> = <span id="rw30">–</span> rad/s, T = <span id="rT30">–</span> s</div>
+          </div>
+        </div>
+        <div class="cap">Green arrow = velocity: longest at the middle, zero at the ends.</div>
+      </div>
+      <div class="panel">
+        <h3>Position, velocity &amp; acceleration vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Blue = x(t), green = v(t), red = a(t). Notice velocity peaks a quarter-cycle before position, and acceleration is the mirror of position.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Position</b> x(t) = A cos(&#969;t+&#966;).</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Velocity</b> v(t) — a quarter-cycle ahead.</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>Acceleration</b> a(t) = &#8722;&#969;²x — opposite the displacement.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="12" data-step="0.02" data-fixed="2"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="A" data-min="0.5" data-max="3" data-step="0.1" data-fixed="1"><div class="row"><label>Amplitude A</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="k" data-min="1" data-max="30" data-step="1" data-fixed="0"><div class="row"><label>Spring constant k</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="ph" data-min="0" data-max="360" data-step="10" data-fixed="0" data-suffix="°"><div class="row"><label>Phase &#966;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> When the mass is at maximum displacement, what are its velocity and acceleration?</li>
+      <li><b>Manipulate</b><span class="tag">k, m</span> Change k and m and watch &#969; and the period. Does amplitude affect the period?</li>
+      <li><b>Explain</b><span class="tag">phase</span> Why does the velocity curve peak a quarter-cycle before the position curve?</li>
+      <li><b>Calculate</b><span class="tag">k, m</span> For k = 18 N/m and m = 2 kg, find &#969; and the period.</li>
+      <li><b>Extend</b><span class="tag">a = &#8722;&#969;²x</span> Verify from the readouts that acceleration is always &#8722;&#969;² times the position.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t (s)','x (m) · v (m/s) · a (m/s²)');
+  calc.setExpressions([
+    {id:'A',latex:'A=2'}, {id:'w',latex:'w=3'}, {id:'ph',latex:'q=0'}, {id:'t',latex:'t=0'},
+    {id:'cX',latex:'A\\cos(w x+q)\\left\\{0\\le x\\le12\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'cV',latex:'-A w\\sin(w x+q)\\left\\{0\\le x\\le12\\right\\}', color:'#2e8b57', lineWidth:2},
+    {id:'cA',latex:'-A w^2\\cos(w x+q)\\left\\{0\\le x\\le12\\right\\}', color:'#c0392b', lineWidth:1.8},
+    {id:'z',latex:'y=0\\left\\{0\\le x\\le12\\right\\}', color:'#ddd3b8', lineWidth:1},
+    {id:'dX',latex:'(t,A\\cos(w t+q))', color:'#2f6fb0', showLabel:true, label:'x', labelSize:'small'}
+  ]);
+  var S={A:2,k:18,m:2,ph:0,t:0};
+  function fit(){ var w=Math.sqrt(S.k/S.m), top=Math.max(S.A*w*w*1.15, S.A*1.15, 2); calc.setMathBounds({left:-0.3,right:12,bottom:-top,top:top}); }
+  function drawSpring(x1,cy){ var n=14, x0=25, pts='', dx=(x1-x0)/n; for(var i=0;i<=n;i++){ pts+=(x0+i*dx).toFixed(1)+','+(cy+(i>0&&i<n?(i%2?-7:7):0)).toFixed(1)+' '; } document.getElementById('spring30').setAttribute('points',pts); }
+  function update(){
+    var w=Math.sqrt(S.k/S.m), q=S.ph*Math.PI/180;
+    var x=S.A*Math.cos(w*S.t+q), v=-S.A*w*Math.sin(w*S.t+q), a=-S.A*w*w*Math.cos(w*S.t+q);
+    calc.setExpression({id:'w',latex:'w='+w.toFixed(4)}); fit();
+    document.getElementById('rx30').textContent=x.toFixed(2);
+    document.getElementById('rv30').textContent=v.toFixed(2);
+    document.getElementById('ra30').textContent=a.toFixed(2);
+    document.getElementById('rw30').textContent=w.toFixed(2);
+    document.getElementById('rT30').textContent=(2*Math.PI/w).toFixed(2);
+    var eqx=166, sc=40, mx=eqx+x/S.A*sc*(S.A/2+0.5);  mx=eqx+x*30;
+    document.getElementById('mass30').setAttribute('x',(mx-16).toFixed(1));
+    drawSpring(mx-16,62);
+    var vv=document.getElementById('vv30'), vl=Math.max(-45,Math.min(45,v*8));
+    vv.setAttribute('x1',mx); vv.setAttribute('y1',62); vv.setAttribute('x2',(mx+vl).toFixed(1)); vv.setAttribute('y2',62); vv.setAttribute('opacity',Math.abs(v)<0.05?0:1);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{A:'A',ph:'q'},function(v){ update(); });
+  update();
+  SimCore.playControls(sliders,'t',{});
+})();
+</script>
+</body>
+</html>

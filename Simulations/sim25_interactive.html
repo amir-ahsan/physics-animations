@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbits — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 25 — Gravitation &amp; Circular Orbits</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A satellite in a circular orbit is held by gravity <span class="eq">F = GMm/r&#178;</span>, which provides exactly the centripetal force it needs.
+    Setting the two equal gives the orbital speed <span class="eq">v = &#8730;(GM/r)</span> and period <span class="eq">T = 2&#960;&#8730;(r&#179;/GM)</span> —
+    Kepler's third law. Bigger orbits are slower and take longer. Change the planet's mass and the orbit radius and watch.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The orbit</h3>
+        <div class="schematic">
+          <svg class="scene" width="220" height="200" viewBox="0 0 220 200">
+            <circle id="orb25" cx="110" cy="100" r="75" fill="none" stroke="#c9beA0" stroke-width="1.5"/>
+            <circle id="planet25" cx="110" cy="100" r="16" fill="#B5793B" stroke="#8A5A24" stroke-width="2"/>
+            <circle id="sat25" cx="185" cy="100" r="6" fill="#2f6fb0"/>
+            <line id="fg25" x1="185" y1="100" x2="150" y2="100" stroke="var(--red)" stroke-width="2.5" marker-end="url(#r25)"/>
+            <defs><marker id="r25" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">orbital speed v</span> = <span class="vb" id="rv25">–</span></div>
+            <div class="r c-blue"><span class="k">period T</span> = <span class="vb" id="rT25">–</span></div>
+            <div class="r c-red"><span class="k">gravity g at r</span> = GM/r² = <span class="vb" id="rg25">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Red arrow = gravity, always pulling the satellite toward the planet — the centripetal force of the orbit. (Scaled units.)</div>
+      </div>
+      <div class="panel">
+        <h3>Satellite in orbit</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">The satellite circles the planet; larger radius means slower speed and a longer period.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--purple)"></span><span><b>Orbit</b> of radius r about the planet.</span></li>
+          <li><span class="dot" style="background:var(--blue)"></span><span><b>Satellite</b> moving at orbital speed.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="40" data-step="0.02" data-fixed="2"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="M" data-min="1" data-max="20" data-step="1" data-fixed="0"><div class="row"><label>Planet mass M (GM units)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="r" data-min="2" data-max="5" data-step="0.2" data-fixed="1"><div class="row"><label>Orbit radius r</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the orbit radius, does the satellite speed up or slow down?</li>
+      <li><b>Manipulate</b><span class="tag">r</span> Increase r and watch the period grow. Does T grow faster or slower than r?</li>
+      <li><b>Explain</b><span class="tag">setting equal</span> Why does setting gravity equal to mv²/r make the satellite's mass drop out of the speed?</li>
+      <li><b>Calculate</b><span class="tag">GM, r</span> With GM = 10 (units) and r = 4, find v and T.</li>
+      <li><b>Extend</b><span class="tag">Kepler</span> Confirm from the readouts that T² is proportional to r³.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','x (units)','y (units)');
+  calc.setExpressions([
+    {id:'r',latex:'R_o=4'}, {id:'w',latex:'w=1'}, {id:'t',latex:'t=0'},
+    {id:'planet',latex:'(0,0)', color:'#B5793B', pointSize:24},
+    {id:'orb',latex:'x^2+y^2=R_o^2', color:'#6042a6', lineWidth:1.5},
+    {id:'sat',latex:'(R_o\\cos(w t),R_o\\sin(w t))', color:'#2f6fb0', pointSize:12}
+  ]);
+  var S={M:10,r:4,t:0};
+  function fit(){ var el=document.getElementById('calc'), w=el.clientWidth||620, h=el.clientHeight||400, pad=6, xs=2*pad*(w/h);
+    calc.setMathBounds({left:-xs/2,right:xs/2,bottom:-pad,top:pad}); }
+  function update(){
+    var GM=S.M, v=Math.sqrt(GM/S.r), w=v/S.r, T=2*Math.PI*Math.sqrt(S.r*S.r*S.r/GM);
+    calc.setExpression({id:'w',latex:'w='+w.toFixed(4)});
+    document.getElementById('rv25').textContent=v.toFixed(2);
+    document.getElementById('rT25').textContent=T.toFixed(2);
+    document.getElementById('rg25').textContent=(GM/(S.r*S.r)).toFixed(3);
+    var ang=w*S.t, cx=110,cy=100, Rp=32+S.r*11;
+    document.getElementById('orb25').setAttribute('r',Rp.toFixed(1));
+    var px=cx+Rp*Math.cos(ang), py=cy-Rp*Math.sin(ang);
+    document.getElementById('sat25').setAttribute('cx',px.toFixed(1)); document.getElementById('sat25').setAttribute('cy',py.toFixed(1));
+    var fg=document.getElementById('fg25'), La=26;
+    fg.setAttribute('x1',px); fg.setAttribute('y1',py); fg.setAttribute('x2',(px+(cx-px)/Rp*La).toFixed(1)); fg.setAttribute('y2',(py+(cy-py)/Rp*La).toFixed(1));
+  }
+  var sliders=SimCore.wireSliders(calc,S,{r:'R_o'},function(v){ if(v!=='t')fit(); update(); });
+  fit(); update();
+  SimCore.playControls(sliders,'t',{});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1D Collisions — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4A · Simulation 22 — 1D Collisions</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two carts collide on a frictionless track. <b>Momentum is always conserved</b>: <span class="eq">m&#8321;v&#8321; + m&#8322;v&#8322; = m&#8321;v&#8321;&#8242; + m&#8322;v&#8322;&#8242;</span>.
+    In an <b>elastic</b> collision kinetic energy is also conserved; in a <b>perfectly inelastic</b> one the carts stick and move together, losing the most
+    kinetic energy possible. Set the masses and speeds, choose the type, and press Play.</p>
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The carts</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="120" viewBox="0 0 330 120">
+            <line x1="10" y1="80" x2="320" y2="80" stroke="#b8a983" stroke-width="2"/>
+            <rect id="cart1" x="60" y="52" width="40" height="28" rx="3" fill="#C98F52" stroke="#8A5A24" stroke-width="2"/>
+            <rect id="cart2" x="230" y="52" width="40" height="28" rx="3" fill="#2f6fb0" stroke="#1f4f80" stroke-width="2"/>
+            <text id="c1lab" x="72" y="70" font-size="11" fill="#fff">m&#8321;</text>
+            <text id="c2lab" x="242" y="70" font-size="11" fill="#fff">m&#8322;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">v&#8321;&#8242;</span> = <span class="vb" id="rv1f">–</span>, <span class="k">v&#8322;&#8242;</span> = <span class="vb" id="rv2f">–</span> m/s</div>
+            <div class="r"><span class="k">momentum</span>: <span id="rpb">–</span> &#8594; <span id="rpa">–</span> kg·m/s</div>
+            <div class="r"><span class="k">kinetic energy</span>: <span id="rkb">–</span> &#8594; <span id="rka">–</span> J</div>
+            <div class="r vb" id="rmode22" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">Momentum is the same before and after; kinetic energy is conserved only in an elastic collision.</div>
+      </div>
+
+      <div class="panel">
+        <h3>Position vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Each line is a cart's position; they meet at the collision, then continue with their new velocities (or together, if inelastic).</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Cart 1</b> position over time.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Cart 2</b> position over time.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn sec" id="mode">Elastic</button><button class="btn sec" id="reset">Reset</button></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="6" data-step="0.02" data-fixed="2">
+            <div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m1" data-min="0.5" data-max="6" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m2" data-min="0.5" data-max="6" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Mass m&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v1" data-min="-4" data-max="6" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Initial v&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v2" data-min="-6" data-max="4" data-step="0.5" data-fixed="1">
+            <div class="row"><label>Initial v&#8322;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Equal masses, one moving and one still, elastic collision — what happens to each afterward?</li>
+      <li><b>Manipulate</b><span class="tag">type</span> Switch between elastic and inelastic with the same start. Compare the kinetic-energy readouts.</li>
+      <li><b>Explain</b><span class="tag">momentum</span> Why is momentum conserved in <em>both</em> types, but kinetic energy only in the elastic one?</li>
+      <li><b>Calculate</b><span class="tag">m&#8321;, m&#8322;</span> For m&#8321; = 2, v&#8321; = 4, m&#8322; = 2, v&#8322; = 0 (elastic), find the final velocities.</li>
+      <li><b>Extend</b><span class="tag">inelastic</span> For a perfectly inelastic hit, show the common velocity is the momentum divided by the total mass.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t (s)','position (m)');
+  calc.setExpressions([
+    {id:'x1',latex:'x_1(t)=0'}, {id:'x2',latex:'x_2(t)=0'},  // placeholders, set in update
+  ]);
+  var S={m1:2,m2:2,v1:4,v2:0,t:0}, elastic=true, tcol=3;
+  function finals(){
+    var m1=S.m1,m2=S.m2,u1=S.v1,u2=S.v2;
+    if(elastic){ return [((m1-m2)*u1+2*m2*u2)/(m1+m2), ((m2-m1)*u2+2*m1*u1)/(m1+m2)]; }
+    var vf=(m1*u1+m2*u2)/(m1+m2); return [vf,vf];
+  }
+  function setCurves(){
+    var f=finals(); tcol=3;
+    // before: x = x0 + u t ; after: x_col + vf (t - tcol). Start positions -6 and +6.
+    var f2=function(n){return n.toFixed(3);};
+    calc.setExpression({id:'x1',latex:'x_1(x)=\\left\\{x<'+tcol+':-6+'+f2(S.v1)+'x,'+f2(-6+S.v1*tcol)+'+'+f2(f[0])+'(x-'+tcol+')\\right\\}'});
+    calc.setExpression({id:'x2',latex:'x_2(x)=\\left\\{x<'+tcol+':6+'+f2(S.v2)+'x,'+f2(6+S.v2*tcol)+'+'+f2(f[1])+'(x-'+tcol+')\\right\\}'});
+    calc.setExpression({id:'c1',latex:'x_1(x)\\left\\{0\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5});
+    calc.setExpression({id:'c2',latex:'x_2(x)\\left\\{0\\le x\\le6\\right\\}', color:'#2f6fb0', lineWidth:2.5});
+    calc.setExpression({id:'d1',latex:'(t,x_1(t))', color:'#B5793B'});
+    calc.setExpression({id:'d2',latex:'(t,x_2(t))', color:'#2f6fb0'});
+    calc.setMathBounds({left:-0.3,right:6,bottom:-9,top:9});
+  }
+  function posAt(u1,vf,t){ return t<tcol ? (u1[0]+u1[1]*t) : (u1[0]+u1[1]*tcol+vf*(t-tcol)); }
+  function update(){
+    var f=finals();
+    var pb=(S.m1*S.v1+S.m2*S.v2), pa=(S.m1*f[0]+S.m2*f[1]);
+    var kb=0.5*S.m1*S.v1*S.v1+0.5*S.m2*S.v2*S.v2, ka=0.5*S.m1*f[0]*f[0]+0.5*S.m2*f[1]*f[1];
+    document.getElementById('rv1f').textContent=f[0].toFixed(2);
+    document.getElementById('rv2f').textContent=f[1].toFixed(2);
+    document.getElementById('rpb').textContent=pb.toFixed(1); document.getElementById('rpa').textContent=pa.toFixed(1);
+    document.getElementById('rkb').textContent=kb.toFixed(1); document.getElementById('rka').textContent=ka.toFixed(1);
+    document.getElementById('rmode22').textContent=elastic?'ELASTIC — kinetic energy conserved':'INELASTIC — carts stick, energy lost';
+    // schematic carts: map world position [-8,8] to screen [30,300]. positions:
+    var x1=posAt([-8,S.v1],f[0],S.t*1.0), x2=posAt([8,S.v2],f[1],S.t*1.0);
+    function mp(x){ return 30+(x+8)/16*270; }
+    document.getElementById('cart1').setAttribute('x',(mp(x1)-20).toFixed(1)); document.getElementById('c1lab').setAttribute('x',(mp(x1)-8).toFixed(1));
+    document.getElementById('cart2').setAttribute('x',(mp(x2)-20).toFixed(1)); document.getElementById('c2lab').setAttribute('x',(mp(x2)-8).toFixed(1));
+  }
+  var sliders=SimCore.wireSliders(calc,S,{},function(v){ if(v!=='t')setCurves(); update(); });
+  setCurves(); update();
+  document.getElementById('mode').addEventListener('click',function(){ elastic=!elastic; this.textContent=elastic?'Elastic':'Inelastic'; setCurves(); update(); });
+  SimCore.playControls(sliders,'t',{});
+})();
+</script>
+</body>
+</html>
