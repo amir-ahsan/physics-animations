@@ -35,7 +35,7 @@
             <div class="r" style="opacity:.85">denser lines = stronger field</div>
           </div>
         </div>
-        <div class="cap">Blue curves = field lines; they leave positive charges and enter negative ones.</div>
+        <div class="cap">Blue curves = field lines; the arrowheads mark the field direction, pointing away from positive charges and toward negative ones (+ → −).</div>
       </div>
       <div class="panel">
         <h3>Equipotential curves</h3>
@@ -103,16 +103,22 @@
     calc.setMathBounds({left:-6,right:6,bottom:-5,top:5});
     document.getElementById('c1_33').setAttribute('fill',S.q1>=0?'var(--red)':'var(--blue)'); document.getElementById('t1_33').textContent=S.q1>=0?'+':'−';
     document.getElementById('c2_33').setAttribute('fill',S.q2>=0?'var(--red)':'var(--blue)'); document.getElementById('t2_33').textContent=S.q2>=0?'+':'−';
-    var g=document.getElementById('lines33'), s='';
+    var g=document.getElementById('lines33'), s='', arr='';
     [[x1,S.q1],[x2,S.q2]].forEach(function(ch){ var cx=ch[0], q=ch[1]; if(Math.abs(q)<0.1)return;
       var n=8, sign=q>0?1:-1;
       for(var a=0;a<n;a++){ var th=a/n*2*Math.PI, sx=cx+0.35*Math.cos(th), sy=0.35*Math.sin(th);
         var pts=trace(sx,sy,sign); if(pts.length<2)continue;
         var d='M'; pts.forEach(function(p,i){ d+=(i?' L':'')+mapx(p[0]).toFixed(1)+','+mapy(p[1]).toFixed(1); });
         s+='<path d="'+d+'"/>';
+        // arrowhead partway along the line, oriented along the actual field (always + -> -)
+        if(pts.length>6){ var pm=pts[Math.floor(pts.length*0.45)], e=field(pm[0],pm[1]), mg=Math.hypot(e[0],e[1]);
+          if(mg>1e-4){ var ux=e[0]/mg, uy=-e[1]/mg, mx=mapx(pm[0]), my=mapy(pm[1]);
+            arr+='<line x1="'+(mx-ux*5).toFixed(1)+'" y1="'+(my-uy*5).toFixed(1)+'" x2="'+(mx+ux*5).toFixed(1)+'" y2="'+(my+uy*5).toFixed(1)+'" marker-end="url(#fdir33)"/>';
+          }
+        }
       }
     });
-    g.innerHTML=s;
+    g.innerHTML=s+arr+'<defs><marker id="fdir33" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--field)"/></marker></defs>';
   }
   SimCore.wireSliders(calc,S,{q1:'q_1',q2:'q_2',V0:'V_0'},function(v){ update(); });
   update();
