@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coulomb's Law — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 31 — Coulomb's Law</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two point charges exert equal and opposite forces on each other, <span class="eq">F = k|q&#8321;q&#8322;|/r&#178;</span>. Like charges repel, opposite charges
+    attract, and the force weakens as the <b>inverse square</b> of the separation — halve the distance and the force quadruples. Change the charges
+    and the gap and watch the force arrows and the F&#8211;r curve.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The two charges</h3>
+        <div class="schematic">
+          <svg class="scene" width="330" height="120" viewBox="0 0 330 120">
+            <line x1="10" y1="60" x2="320" y2="60" stroke="#e3d7b8" stroke-width="1"/>
+            <circle id="q1c" cx="110" cy="60" r="16" fill="var(--red)"/><text id="q1t" x="105" y="65" font-size="15" fill="#fff">+</text>
+            <circle id="q2c" cx="220" cy="60" r="16" fill="var(--blue)"/><text id="q2t" x="215" y="65" font-size="15" fill="#fff">&#8722;</text>
+            <line id="f1a" x1="110" y1="60" x2="150" y2="60" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#c31)"/>
+            <line id="f2a" x1="220" y1="60" x2="180" y2="60" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#c31)"/>
+            <defs><marker id="c31" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--accent-dk)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">force |F|</span> = <span class="vb" id="rF31">–</span> (units)</div>
+            <div class="r vb" id="rtype31" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">Arrows show the force on each charge — pointing together (attract) or apart (repel), always equal in size.</div>
+      </div>
+      <div class="panel">
+        <h3>Force vs. separation</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">|F| = k|q&#8321;q&#8322;|/r² — the inverse-square curve. The dot marks the current separation.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>|F|(r)</b> — force magnitude vs. separation.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q1" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Charge q&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="q2" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Charge q&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="d" data-min="0.5" data-max="6" data-step="0.1" data-fixed="1"><div class="row"><label>Separation r</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you halve the separation, by what factor does the force change?</li>
+      <li><b>Manipulate</b><span class="tag">q&#8321;, q&#8322;</span> Flip one charge's sign. What happens to the direction of the arrows?</li>
+      <li><b>Explain</b><span class="tag">Newton's 3rd law</span> Why are the two forces always equal in size, even when the charges differ?</li>
+      <li><b>Calculate</b><span class="tag">q, r</span> For q&#8321; = 2, q&#8322; = &#8722;1 (units), r = 2, find the force (k = 1 units).</li>
+      <li><b>Extend</b><span class="tag">r</span> Sketch how the force changes as r goes to zero and to infinity.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var k=1;
+  var calc = SimCore.makeCalc('calc','separation r (units)','force |F| (units)');
+  calc.setExpressions([
+    {id:'q1',latex:'q_1=2'}, {id:'q2',latex:'q_2=-1'}, {id:'d',latex:'d=2'},
+    {id:'cF',latex:'\\frac{\\left|q_1 q_2\\right|}{x^2}\\left\\{0.4\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(d,\\frac{\\left|q_1 q_2\\right|}{d^2}\\right)', color:'#B5793B', pointSize:13}
+  ]);
+  var S={q1:2,q2:-1,d:2};
+  function update(){
+    var F=k*Math.abs(S.q1*S.q2)/(S.d*S.d), attract=S.q1*S.q2<0;
+    document.getElementById('rF31').textContent=F.toFixed(3);
+    document.getElementById('rtype31').textContent=(S.q1*S.q2===0)?'no force (a charge is zero)':(attract?'ATTRACTION (opposite signs)':'REPULSION (same sign)');
+    document.getElementById('rtype31').style.color=attract?'var(--blue)':'var(--red)';
+    calc.setMathBounds({left:0,right:6,bottom:-0.2,top:Math.max(2,Math.abs(S.q1*S.q2)/0.36*0.5)});
+    // schematic
+    var cxL=165-Math.min(90,S.d*22), cxR=165+Math.min(90,S.d*22);
+    document.getElementById('q1c').setAttribute('cx',cxL); document.getElementById('q1t').setAttribute('x',cxL-5);
+    document.getElementById('q2c').setAttribute('cx',cxR); document.getElementById('q2t').setAttribute('x',cxR-5);
+    document.getElementById('q1c').setAttribute('fill',S.q1>=0?'var(--red)':'var(--blue)'); document.getElementById('q1t').textContent=S.q1>=0?'+':'−';
+    document.getElementById('q2c').setAttribute('fill',S.q2>=0?'var(--red)':'var(--blue)'); document.getElementById('q2t').textContent=S.q2>=0?'+':'−';
+    var L=Math.max(10,Math.min(45,F*20)), dir=attract?1:-1;
+    var f1=document.getElementById('f1a'); f1.setAttribute('x1',cxL); f1.setAttribute('x2',(cxL+dir*L).toFixed(1));
+    var f2=document.getElementById('f2a'); f2.setAttribute('x1',cxR); f2.setAttribute('x2',(cxR-dir*L).toFixed(1));
+    var vis=(S.q1*S.q2!==0)?1:0; f1.setAttribute('opacity',vis); f2.setAttribute('opacity',vis);
+  }
+  SimCore.wireSliders(calc,S,{q1:'q_1',q2:'q_2',d:'d'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

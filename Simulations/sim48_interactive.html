@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LR Circuit — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 48 — LR Circuit</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>An inductor resists sudden changes in current. Close the switch and the current climbs gradually toward its final value <span class="eq">V/R</span>,
+    following <span class="eq">I(t) = (V/R)(1 &minus; e<sup>&minus;t/&tau;</sup>)</span> with time constant <span class="eq">&tau; = L/R</span>. A larger
+    inductance or smaller resistance means a slower rise. The inductor "smooths" the turn-on.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The LR circuit</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <rect x="40" y="40" width="220" height="100" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="28" y1="80" x2="52" y2="80" stroke="var(--red)" stroke-width="2"/><text x="14" y="76" font-size="11" fill="var(--red)">V</text>
+            <rect x="120" y="32" width="34" height="16" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="128" y="44" font-size="10">R</text>
+            <path d="M200,32 q6,-8 12,0 q6,-8 12,0 q6,-8 12,0" fill="none" stroke="var(--purple)" stroke-width="2.5"/><text x="222" y="24" font-size="10" fill="var(--purple)">L</text>
+            <rect id="bar48" x="60" y="132" width="10" height="80" fill="var(--blue)" opacity="0.5"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">time constant τ = L/R</span> = <span class="vb" id="rtau48">–</span></div>
+            <div class="r c-blue"><span class="k">final current V/R</span> = <span class="vb" id="rif48">–</span></div>
+            <div class="r c-purple"><span class="k">current now I(t)</span> = <span class="vb" id="ri48">–</span></div>
+          </div>
+        </div>
+        <div class="cap">After the switch closes, current builds up smoothly rather than jumping — the inductor opposes the change.</div>
+      </div>
+      <div class="panel">
+        <h3>Current vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">I(t) = (V/R)(1 − e^(−t/τ)). One time constant reaches ~63% of the final current; the dot tracks the moving time.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>I(t)</b> — current growth after the switch closes.</span></li></ul>
+        <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn" id="reset">Reset</button></div>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="V" data-min="2" data-max="12" data-step="1" data-fixed="0"><div class="row"><label>Battery V</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Inductance L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Resistance R</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="6" data-step="0.05" data-fixed="2"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Doubling L: does the current reach its final value faster or slower?</li>
+      <li><b>Manipulate</b><span class="tag">t</span> Scrub time to t = τ. What fraction of the final current is reached?</li>
+      <li><b>Explain</b><span class="tag">no jump</span> Why can't the current jump instantly to V/R when the switch closes?</li>
+      <li><b>Calculate</b><span class="tag">τ</span> For L = 2 H, R = 4 Ω, find τ and the final current at V = 8 V.</li>
+      <li><b>Extend</b><span class="tag">decay</span> If the battery is then shorted out, how does the current decay?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t','current I');
+  calc.setExpressions([
+    {id:'V',latex:'V_b=8'}, {id:'L',latex:'L_i=2'}, {id:'R',latex:'R_r=4'}, {id:'t',latex:'t_p=1'},
+    {id:'cI',latex:'y=\\frac{V_b}{R_r}\\left(1-e^{-\\frac{R_r x}{L_i}}\\right)\\left\\{0\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(t_p,\\frac{V_b}{R_r}\\left(1-e^{-\\frac{R_r t_p}{L_i}}\\right)\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={V:8,L:2,R:4,t:1};
+  function update(){
+    var tau=S.L/S.R, Ifin=S.V/S.R, I=Ifin*(1-Math.exp(-S.t/tau));
+    document.getElementById('rtau48').textContent=tau.toFixed(2);
+    document.getElementById('rif48').textContent=Ifin.toFixed(2);
+    document.getElementById('ri48').textContent=I.toFixed(2);
+    calc.setMathBounds({left:0,right:6,bottom:0,top:Math.max(1,Ifin*1.2)});
+    var h=Math.min(80,I/Math.max(0.1,Ifin)*80); var bar=document.getElementById('bar48');
+    bar.setAttribute('y',132-h+0); bar.setAttribute('height',h);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{V:'V_b',L:'L_i',R:'R_r',t:'t_p'},function(v){ update(); });
+  SimCore.playControls(sliders,'t',{});
+  update();
+})();
+</script>
+</body>
+</html>

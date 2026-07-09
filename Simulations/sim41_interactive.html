@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mass Spectrometer — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 41 — Mass Spectrometer</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A charged particle entering a uniform magnetic field curves in a circle of radius <span class="eq">r = mv/(qB)</span>. Heavier particles swing
+    wider, stronger fields tighten the arc. The detector position is <span class="eq">2r</span> from the entry, so measuring where each ion lands reveals
+    its mass — the heart of every mass spectrometer.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Semicircular path</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="220" viewBox="0 0 320 220">
+            <g stroke="var(--green)" stroke-width="1" fill="var(--green)" opacity="0.35">
+              <text x="150" y="30" font-size="12">B ⊗ into page</text>
+              <circle cx="70" cy="70" r="1.6"/><circle cx="110" cy="70" r="1.6"/><circle cx="150" cy="70" r="1.6"/><circle cx="190" cy="70" r="1.6"/>
+              <circle cx="70" cy="120" r="1.6"/><circle cx="110" cy="120" r="1.6"/><circle cx="150" cy="120" r="1.6"/><circle cx="190" cy="120" r="1.6"/>
+            </g>
+            <line x1="40" y1="50" x2="40" y2="200" stroke="var(--ink)" stroke-width="1.5"/>
+            <text x="14" y="120" font-size="10" fill="var(--ink)">source</text>
+            <path id="arc41" d="" fill="none" stroke="var(--accent-dk)" stroke-width="2.5"/>
+            <circle id="ion41" cx="40" cy="60" r="6" fill="var(--purple)"/>
+            <circle id="det41" cx="40" cy="60" r="5" fill="var(--red)"/>
+            <text id="dl41" x="0" y="0" font-size="10" fill="var(--red)"></text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">radius r = mv/(qB)</span> = <span class="vb" id="rr41">–</span></div>
+            <div class="r c-red"><span class="k">detector at 2r</span> = <span class="vb" id="rd41">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The ion enters at the top, curves through a half-circle, and strikes the detector a distance 2r down the entry wall.</div>
+      </div>
+      <div class="panel">
+        <h3>Radius vs. mass</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">r = mv/(qB) — a straight line in mass. Heavier ions land farther down; the dot marks your ion.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>r(m)</b> — orbit radius vs. mass.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="m" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Speed v</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="q" data-min="1" data-max="4" data-step="1" data-fixed="0"><div class="row"><label>Charge q</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="B" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Field B</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If two ions have the same speed and charge but one is twice as heavy, how do their radii compare?</li>
+      <li><b>Manipulate</b><span class="tag">B</span> Strengthen B. Does the ion land closer to or farther from the source?</li>
+      <li><b>Explain</b><span class="tag">circle</span> Why does a constant magnetic force produce a circular path rather than a parabola?</li>
+      <li><b>Calculate</b><span class="tag">r</span> For m = 4, v = 3, q = 1, B = 2 (units), find r and the detector distance.</li>
+      <li><b>Extend</b><span class="tag">isotopes</span> How would this device separate two isotopes that differ in mass by a few percent?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','mass m','orbit radius r');
+  calc.setExpressions([
+    {id:'v',latex:'v_p=3'}, {id:'q',latex:'q=1'}, {id:'B',latex:'B_f=2'}, {id:'m',latex:'m=4'},
+    {id:'cr',latex:'y=\\frac{x v_p}{q B_f}\\left\\{0\\le x\\le8\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(m,\\frac{m v_p}{q B_f}\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={m:4,v:3,q:1,B:2};
+  function update(){
+    var r=S.m*S.v/(S.q*S.B);
+    document.getElementById('rr41').textContent=r.toFixed(2);
+    document.getElementById('rd41').textContent=(2*r).toFixed(2);
+    calc.setMathBounds({left:0,right:8,bottom:0,top:Math.max(4,8*S.v/(S.q*S.B)*1.05)});
+    // schematic: entry at (40,60), center at (40,60+rp), radius rp on screen. Semicircle to the right.
+    var rp=Math.min(70,r*9);
+    var cx=40, cy=60+rp;
+    // arc from (40,60) going right,半circle, back to (40,60+2rp)
+    document.getElementById('arc41').setAttribute('d','M40,60 A'+rp+','+rp+' 0 1 1 40,'+(60+2*rp).toFixed(1));
+    document.getElementById('ion41').setAttribute('cx',40+rp); document.getElementById('ion41').setAttribute('cy',cy);
+    document.getElementById('det41').setAttribute('cx',40); document.getElementById('det41').setAttribute('cy',60+2*rp);
+    var dl=document.getElementById('dl41'); dl.setAttribute('x',48); dl.setAttribute('y',60+2*rp+4); dl.textContent='2r';
+  }
+  SimCore.wireSliders(calc,S,{m:'m',v:'v_p',q:'q',B:'B_f'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel-Plate Capacitor — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 36 — Parallel-Plate Capacitor</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two parallel plates store charge. Their capacitance <span class="eq">C = &#954;&#949;&#8320;A/d</span> grows with plate area and dielectric constant and
+    shrinks as the plates move apart. At a fixed voltage, the field <span class="eq">E = V/d</span> and the stored energy <span class="eq">U = ½CV&#178;</span>.
+    Move the plates closer and the capacitance — and stored energy — climb.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The capacitor</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="200" viewBox="0 0 300 200">
+            <rect id="pTop" x="70" y="70" width="160" height="9" fill="var(--red)"/>
+            <rect id="pBot" x="70" y="130" width="160" height="9" fill="var(--blue)"/>
+            <g id="plus36" font-size="13" fill="var(--red)"></g>
+            <g id="minus36" font-size="13" fill="var(--blue)"></g>
+            <g id="field36" stroke="var(--field)" stroke-width="1.2"></g>
+            <text x="120" y="30" font-size="12" fill="var(--ink)">+Q on top, −Q on bottom</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">C = κε₀A/d</span> = <span class="vb" id="rC36">–</span></div>
+            <div class="r c-blue"><span class="k">E = V/d</span> = <span class="vb" id="rE36">–</span></div>
+            <div class="r c-red"><span class="k">Q = CV</span> = <span class="vb" id="rQ36">–</span></div>
+            <div class="r c-purple"><span class="k">U = ½CV²</span> = <span class="vb" id="rU36">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Field lines run straight from the + plate to the − plate; closer plates pack them tighter.</div>
+      </div>
+      <div class="panel">
+        <h3>Capacitance vs. plate separation</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">C(d) = κε₀A/d. Capacitance falls off as 1/d — the dot marks your current spacing.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>C(d)</b> — capacitance vs. separation.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="A" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Plate area A</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="d" data-min="0.4" data-max="3" data-step="0.1" data-fixed="1"><div class="row"><label>Separation d</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="kap" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Dielectric κ</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="V" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>Voltage V</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the separation at fixed voltage, what happens to the field E?</li>
+      <li><b>Manipulate</b><span class="tag">κ</span> Slide in a dielectric. How do C, Q, and stored energy respond?</li>
+      <li><b>Explain</b><span class="tag">E vs d</span> Why is the field independent of area but sensitive to spacing?</li>
+      <li><b>Calculate</b><span class="tag">C</span> For A = 2, d = 1, κ = 1 (ε₀ = 1 units), find C and then Q at V = 5.</li>
+      <li><b>Extend</b><span class="tag">energy</span> If the battery is disconnected and you pull the plates apart, does stored energy rise or fall? Why?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var eps=1;
+  var calc = SimCore.makeCalc('calc','separation d','capacitance C');
+  calc.setExpressions([
+    {id:'A',latex:'A=2'}, {id:'kap',latex:'k_a=1'},
+    {id:'cC',latex:'y=\\frac{k_a A}{x}\\left\\{0.3\\le x\\le3\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'d',latex:'d=1'},
+    {id:'dot',latex:'\\left(d,\\frac{k_a A}{d}\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={A:2,d:1,kap:1,V:5};
+  function update(){
+    var C=S.kap*eps*S.A/S.d, E=S.V/S.d, Q=C*S.V, U=0.5*C*S.V*S.V;
+    document.getElementById('rC36').textContent=C.toFixed(2);
+    document.getElementById('rE36').textContent=E.toFixed(2);
+    document.getElementById('rQ36').textContent=Q.toFixed(2);
+    document.getElementById('rU36').textContent=U.toFixed(2);
+    calc.setMathBounds({left:0,right:3,bottom:0,top:Math.max(4,S.kap*S.A/0.4*1.05)});
+    // schematic: plates centered at y=100, half-gap scales with d
+    var gap=Math.min(46,14+S.d*16), w=60+S.A*30, x0=150-w/2;
+    document.getElementById('pTop').setAttribute('x',x0); document.getElementById('pTop').setAttribute('width',w); document.getElementById('pTop').setAttribute('y',100-gap-4);
+    document.getElementById('pBot').setAttribute('x',x0); document.getElementById('pBot').setAttribute('width',w); document.getElementById('pBot').setAttribute('y',100+gap);
+    var np='', nm='', nf='', n=Math.max(3,Math.round(w/26));
+    for(var i=0;i<n;i++){ var px=x0+8+i*(w-16)/(n-1);
+      np+='<text x="'+(px-3).toFixed(0)+'" y="'+(100-gap-8)+'">+</text>';
+      nm+='<text x="'+(px-3).toFixed(0)+'" y="'+(100+gap+15)+'">−</text>';
+      nf+='<line x1="'+px.toFixed(0)+'" y1="'+(100-gap+5)+'" x2="'+px.toFixed(0)+'" y2="'+(100+gap-2)+'" marker-end="url(#f36)"/>';
+    }
+    document.getElementById('plus36').innerHTML=np;
+    document.getElementById('minus36').innerHTML=nm;
+    document.getElementById('field36').innerHTML=nf+'<defs><marker id="f36" markerWidth="7" markerHeight="7" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="var(--field)"/></marker></defs>';
+  }
+  SimCore.wireSliders(calc,S,{A:'A',d:'d',kap:'k_a'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

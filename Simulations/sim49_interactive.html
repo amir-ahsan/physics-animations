@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LC Oscillator — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 49 — LC Oscillator</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A charged capacitor connected to an inductor sloshes energy back and forth forever (with no resistance). The charge oscillates as
+    <span class="eq">q(t) = Q&#8320;cos&thinsp;&omega;t</span> at angular frequency <span class="eq">&omega; = 1/&radic;(LC)</span>, and the current
+    <span class="eq">I = &minus;&omega;Q&#8320;sin&thinsp;&omega;t</span> is a quarter-cycle out of phase. Energy trades between the capacitor's electric field
+    and the inductor's magnetic field — the electrical analogue of a mass on a spring.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Energy sloshing</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
+            <text x="40" y="30" font-size="11" fill="var(--red)">capacitor U_E</text>
+            <text x="180" y="30" font-size="11" fill="var(--green)">inductor U_B</text>
+            <rect x="60" y="140" width="40" height="1" fill="var(--ink)"/>
+            <rect id="ubarE" x="60" y="140" width="40" height="0" fill="var(--red)" opacity="0.6"/>
+            <rect x="200" y="140" width="40" height="1" fill="var(--ink)"/>
+            <rect id="ubarB" x="200" y="140" width="40" height="0" fill="var(--green)" opacity="0.6"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">ω = 1/√(LC)</span> = <span class="vb" id="rw49">–</span></div>
+            <div class="r c-blue"><span class="k">period T = 2π/ω</span> = <span class="vb" id="rT49">–</span></div>
+            <div class="r c-red"><span class="k">charge q(t)</span> = <span class="vb" id="rq49">–</span></div>
+          </div>
+        </div>
+        <div class="cap">The two bars show electric vs. magnetic energy. Their sum stays constant as energy sloshes between them.</div>
+      </div>
+      <div class="panel">
+        <h3>Charge and current vs. time</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">q(t) = Q₀cos ωt (red) and I(t) = −ωQ₀sin ωt (blue) — a quarter cycle apart. The dot tracks the charge.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>q(t)</b> — capacitor charge.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>I(t)</b> — loop current.</span></li>
+        </ul>
+        <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn" id="reset">Reset</button></div>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="L" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Inductance L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="C" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Capacitance C</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Q0" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Initial charge Q&#8320;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="t" data-min="0" data-max="12" data-step="0.1" data-fixed="1"><div class="row"><label>Time t</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> When the charge is momentarily zero, where is all the energy?</li>
+      <li><b>Manipulate</b><span class="tag">L, C</span> Increase L or C. Does the oscillation speed up or slow down?</li>
+      <li><b>Explain</b><span class="tag">phase</span> Why is the current a quarter cycle out of phase with the charge?</li>
+      <li><b>Calculate</b><span class="tag">ω</span> For L = 2, C = 0.5 (units), find ω and the period T.</li>
+      <li><b>Extend</b><span class="tag">spring analogy</span> Which mechanical quantities do L and C correspond to in a mass–spring system?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','time t','charge q / current I');
+  calc.setExpressions([
+    {id:'L',latex:'L_i=2'}, {id:'C',latex:'C_c=1'}, {id:'Q0',latex:'Q_0=3'}, {id:'t',latex:'t_p=0'},
+    {id:'w',latex:'\\omega_0=\\frac{1}{\\sqrt{L_i C_c}}', hidden:true, secret:true},
+    {id:'cq',latex:'y=Q_0\\cos(\\omega_0 x)\\left\\{0\\le x\\le12\\right\\}', color:'#c0392b', lineWidth:2.5},
+    {id:'ci',latex:'y=-\\omega_0 Q_0\\sin(\\omega_0 x)\\left\\{0\\le x\\le12\\right\\}', color:'#2f6fb0', lineWidth:2},
+    {id:'dot',latex:'(t_p,Q_0\\cos(\\omega_0 t_p))', color:'#c0392b', pointSize:12}
+  ]);
+  var S={L:2,C:1,Q0:3,t:0};
+  function update(){
+    var w=1/Math.sqrt(S.L*S.C), T=2*Math.PI/w, q=S.Q0*Math.cos(w*S.t);
+    var UE=q*q, UB=(S.Q0*S.Q0-q*q); // proportional; UE+UB const
+    document.getElementById('rw49').textContent=w.toFixed(3);
+    document.getElementById('rT49').textContent=T.toFixed(2);
+    document.getElementById('rq49').textContent=q.toFixed(2);
+    calc.setMathBounds({left:0,right:12,bottom:-Math.max(S.Q0,w*S.Q0)*1.1,top:Math.max(S.Q0,w*S.Q0)*1.1});
+    var maxU=S.Q0*S.Q0, hE=UE/maxU*80, hB=UB/maxU*80;
+    var bE=document.getElementById('ubarE'); bE.setAttribute('y',140-hE); bE.setAttribute('height',hE);
+    var bB=document.getElementById('ubarB'); bB.setAttribute('y',140-hB); bB.setAttribute('height',hB);
+  }
+  var sliders=SimCore.wireSliders(calc,S,{L:'L_i',C:'C_c',Q0:'Q_0',t:'t_p'},function(v){ update(); });
+  SimCore.playControls(sliders,'t',{});
+  update();
+})();
+</script>
+</body>
+</html>

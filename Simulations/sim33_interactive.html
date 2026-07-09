@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electric Field Lines — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 33 — Electric Field Lines</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Field lines are curves that follow the electric field. They <b>start on positive charges and end on negative</b>, never cross, and crowd
+    together where the field is strong. They are always <b>perpendicular to the equipotential curves</b>. Change the two charges to morph between a
+    dipole (opposite) and a like-charge pattern.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Field lines</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="210" viewBox="0 0 300 210">
+            <g id="lines33" fill="none" stroke="var(--field)" stroke-width="1.3"></g>
+            <circle id="c1_33" cx="110" cy="105" r="12" fill="var(--red)"/><text id="t1_33" x="105" y="110" font-size="14" fill="#fff">+</text>
+            <circle id="c2_33" cx="190" cy="105" r="12" fill="var(--blue)"/><text id="t2_33" x="185" y="110" font-size="14" fill="#fff">&#8722;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue">lines run from + to &#8722;</div>
+            <div class="r" style="opacity:.85">denser lines = stronger field</div>
+          </div>
+        </div>
+        <div class="cap">Blue curves = field lines; they leave positive charges and enter negative ones.</div>
+      </div>
+      <div class="panel">
+        <h3>Equipotential curves</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">Curves of constant potential (green = positive, blue = negative). Field lines always cross them at right angles.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>Equipotentials</b> V = +V&#8320;, +2V&#8320;.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Equipotentials</b> V = &#8722;V&#8320;, &#8722;2V&#8320;.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q1" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Left charge q&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="q2" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Right charge q&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="V0" data-min="0.2" data-max="2" data-step="0.1" data-fixed="1"><div class="row"><label>Equipotential value V&#8320;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For a + and &#8722; pair, roughly how do the lines curve from one to the other?</li>
+      <li><b>Manipulate</b><span class="tag">q&#8321;, q&#8322;</span> Make both charges positive. Where do the lines go, since there is no negative charge to land on?</li>
+      <li><b>Explain</b><span class="tag">no crossing</span> Why can two field lines never cross at a point?</li>
+      <li><b>Calculate</b><span class="tag">count</span> If q&#8321; = 2q&#8322;, what is the ratio of lines leaving each charge?</li>
+      <li><b>Extend</b><span class="tag">perpendicular</span> Verify the field lines meet the green/blue equipotentials at 90°.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var k=1, c=0.12, x1=-2, x2=2;
+  var calc = SimCore.makeCalc('calc','x (units)','y (units)');
+  calc.setExpressions([
+    {id:'q1',latex:'q_1=2'}, {id:'q2',latex:'q_2=-2'}, {id:'V0',latex:'V_0=0.8'},
+    {id:'d1',latex:'d_1(x,y)=\\sqrt{(x+2)^2+y^2+0.02}', hidden:true, secret:true},
+    {id:'d2',latex:'d_2(x,y)=\\sqrt{(x-2)^2+y^2+0.02}', hidden:true, secret:true},
+    {id:'Vf',latex:'V(x,y)=\\frac{q_1}{d_1(x,y)}+\\frac{q_2}{d_2(x,y)}', hidden:true, secret:true},
+    {id:'e1',latex:'V(x,y)=V_0', color:'#2e8b57', lineWidth:1.6},
+    {id:'e2',latex:'V(x,y)=2V_0', color:'#2e8b57', lineWidth:1.2},
+    {id:'e3',latex:'V(x,y)=-V_0', color:'#2f6fb0', lineWidth:1.6},
+    {id:'e4',latex:'V(x,y)=-2V_0', color:'#2f6fb0', lineWidth:1.2},
+    {id:'p1',latex:'(-2,0)', color:'#c0392b', pointSize:14}, {id:'p2',latex:'(2,0)', color:'#2f6fb0', pointSize:14}
+  ]);
+  var S={q1:2,q2:-2,V0:0.8};
+  function field(px,py){ var a=Math.pow((px-x1)*(px-x1)+py*py+c*c,1.5), b=Math.pow((px-x2)*(px-x2)+py*py+c*c,1.5);
+    return [k*(S.q1*(px-x1)/a+S.q2*(px-x2)/b), k*(S.q1*py/a+S.q2*py/b)]; }
+  function mapx(x){ return 150+x*20; } function mapy(y){ return 105-y*20; }
+  function trace(sx,sy,sign){ var pts=[[sx,sy]], px=sx, py=sy, h=0.12;
+    for(var i=0;i<400;i++){ var e=field(px,py), m=Math.hypot(e[0],e[1]); if(m<1e-4)break;
+      px+=sign*h*e[0]/m; py+=sign*h*e[1]/m;
+      if(Math.abs(px)>7||Math.abs(py)>6)break;
+      if((px-x1)*(px-x1)+py*py<0.09||(px-x2)*(px-x2)+py*py<0.09){ pts.push([px,py]); break; }
+      pts.push([px,py]);
+    } return pts; }
+  function update(){
+    calc.setExpression({id:'p1',color:S.q1>=0?'#c0392b':'#2f6fb0'});
+    calc.setExpression({id:'p2',color:S.q2>=0?'#c0392b':'#2f6fb0'});
+    calc.setMathBounds({left:-6,right:6,bottom:-5,top:5});
+    document.getElementById('c1_33').setAttribute('fill',S.q1>=0?'var(--red)':'var(--blue)'); document.getElementById('t1_33').textContent=S.q1>=0?'+':'−';
+    document.getElementById('c2_33').setAttribute('fill',S.q2>=0?'var(--red)':'var(--blue)'); document.getElementById('t2_33').textContent=S.q2>=0?'+':'−';
+    var g=document.getElementById('lines33'), s='';
+    [[x1,S.q1],[x2,S.q2]].forEach(function(ch){ var cx=ch[0], q=ch[1]; if(Math.abs(q)<0.1)return;
+      var n=8, sign=q>0?1:-1;
+      for(var a=0;a<n;a++){ var th=a/n*2*Math.PI, sx=cx+0.35*Math.cos(th), sy=0.35*Math.sin(th);
+        var pts=trace(sx,sy,sign); if(pts.length<2)continue;
+        var d='M'; pts.forEach(function(p,i){ d+=(i?' L':'')+mapx(p[0]).toFixed(1)+','+mapy(p[1]).toFixed(1); });
+        s+='<path d="'+d+'"/>';
+      }
+    });
+    g.innerHTML=s;
+  }
+  SimCore.wireSliders(calc,S,{q1:'q_1',q2:'q_2',V0:'V_0'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

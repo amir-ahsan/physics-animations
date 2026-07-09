@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driven RLC Resonance — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 50 — Driven RLC Resonance</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A series RLC circuit driven by an AC source has a current amplitude <span class="eq">I&#8320; = V&#8320;/&radic;(R&#178; + (&omega;L &minus; 1/&omega;C)&#178;)</span>.
+    It peaks at the resonant frequency <span class="eq">&omega;&#8320; = 1/&radic;(LC)</span>, where the inductive and capacitive reactances cancel and only R
+    limits the current. Smaller resistance makes a taller, sharper peak — a higher <b>quality factor</b> Q.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The series RLC circuit</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="170" viewBox="0 0 300 170">
+            <rect x="40" y="40" width="220" height="90" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <circle cx="40" cy="85" r="10" fill="none" stroke="var(--red)" stroke-width="2"/><text x="36" y="89" font-size="10" fill="var(--red)">~</text>
+            <rect x="90" y="32" width="30" height="16" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="97" y="44" font-size="9">R</text>
+            <path d="M150,32 q6,-8 12,0 q6,-8 12,0 q6,-8 12,0" fill="none" stroke="var(--purple)" stroke-width="2.5"/><text x="168" y="24" font-size="9" fill="var(--purple)">L</text>
+            <line x1="215" y1="34" x2="215" y2="46" stroke="var(--blue)" stroke-width="2"/><line x1="223" y1="34" x2="223" y2="46" stroke="var(--blue)" stroke-width="2"/><text x="214" y="24" font-size="9" fill="var(--blue)">C</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">resonant ω₀ = 1/√(LC)</span> = <span class="vb" id="rw50">–</span></div>
+            <div class="r c-blue"><span class="k">current amplitude I₀(ω)</span> = <span class="vb" id="ri50">–</span></div>
+            <div class="r c-purple"><span class="k">quality factor Q</span> = <span class="vb" id="rQ50">–</span></div>
+          </div>
+        </div>
+        <div class="cap">At resonance the inductor and capacitor cancel; the circuit behaves as though only the resistor were present.</div>
+      </div>
+      <div class="panel">
+        <h3>Resonance curve I&#8320; vs. driving frequency</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">I₀(ω) peaks at ω₀. Lower R makes the peak taller and narrower. The dot marks your driving frequency.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>I₀(ω)</b> — current amplitude vs. driving frequency.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="R" data-min="0.2" data-max="3" data-step="0.2" data-fixed="1"><div class="row"><label>Resistance R</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Inductance L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="C" data-min="0.2" data-max="2" data-step="0.1" data-fixed="1"><div class="row"><label>Capacitance C</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="w" data-min="0.2" data-max="4" data-step="0.05" data-fixed="2"><div class="row"><label>Driving ω</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At what driving frequency will the current be largest?</li>
+      <li><b>Manipulate</b><span class="tag">R</span> Lower the resistance. How do the height and width of the peak change?</li>
+      <li><b>Explain</b><span class="tag">cancellation</span> Why does the current peak exactly where ωL = 1/ωC?</li>
+      <li><b>Calculate</b><span class="tag">ω₀</span> For L = 2, C = 0.5 (units), find the resonant frequency.</li>
+      <li><b>Extend</b><span class="tag">radio</span> How does a radio use this sharp resonance to tune to one station?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var V0=1;
+  var calc = SimCore.makeCalc('calc','driving frequency ω','current amplitude I₀');
+  calc.setExpressions([
+    {id:'R',latex:'R_r=1'}, {id:'L',latex:'L_i=2'}, {id:'C',latex:'C_c=0.5'}, {id:'w',latex:'\\omega_d=1'},
+    {id:'cI',latex:'y=\\frac{1}{\\sqrt{R_r^2+\\left(x L_i-\\frac{1}{x C_c}\\right)^2}}\\left\\{0.15\\le x\\le4\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'res',latex:'x=\\frac{1}{\\sqrt{L_i C_c}}', color:'#2e8b57', lineWidth:1.5, lineStyle:Desmos.Styles.DASHED},
+    {id:'dot',latex:'\\left(\\omega_d,\\frac{1}{\\sqrt{R_r^2+\\left(\\omega_d L_i-\\frac{1}{\\omega_d C_c}\\right)^2}}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={R:1,L:2,C:0.5,w:1};
+  function update(){
+    var w0=1/Math.sqrt(S.L*S.C);
+    var X=S.w*S.L-1/(S.w*S.C), I0=V0/Math.sqrt(S.R*S.R+X*X);
+    var Q=w0*S.L/S.R;
+    document.getElementById('rw50').textContent=w0.toFixed(3);
+    document.getElementById('ri50').textContent=I0.toFixed(3);
+    document.getElementById('rQ50').textContent=Q.toFixed(2);
+    calc.setMathBounds({left:0,right:4,bottom:0,top:Math.max(0.5,1/S.R*1.15)});
+  }
+  SimCore.wireSliders(calc,S,{R:'R_r',L:'L_i',C:'C_c',w:'\\omega_d'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

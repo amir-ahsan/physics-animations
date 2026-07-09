@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field of a Long Straight Wire — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 43 — Magnetic Field of a Long Straight Wire</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A long straight wire wraps circular magnetic field lines around itself, with strength <span class="eq">B = &mu;&#8320;I/(2&pi;r)</span>.
+    The field circles the wire (right-hand rule: thumb along the current, fingers curl the way B points) and falls off as <b>1/r</b> with distance.
+    More current means stronger loops; move away and the field fades.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Circular field lines</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="220" viewBox="0 0 300 220">
+            <g id="loops43" fill="none" stroke="var(--green)" stroke-width="1.4"></g>
+            <circle cx="150" cy="110" r="8" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/>
+            <circle cx="150" cy="110" r="2.5" fill="var(--accent-dk)"/>
+            <text x="162" y="106" font-size="11" fill="var(--accent-dk)">I out of page</text>
+            <circle id="probe43" cx="210" cy="110" r="5" fill="var(--purple)"/>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">B = μ₀I/(2πr)</span> = <span class="vb" id="rB43">–</span></div>
+            <div class="r" style="opacity:.85">field circles the wire; right-hand rule sets the sense</div>
+          </div>
+        </div>
+        <div class="cap">Each green circle is a field line; the purple dot is your measurement point at distance r.</div>
+      </div>
+      <div class="panel">
+        <h3>Field strength vs. distance</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">B(r) = μ₀I/(2πr) — the 1/r falloff. The dot marks your probe distance.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>B(r)</b> — field magnitude vs. distance from wire.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="I" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Current I</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="r" data-min="0.5" data-max="6" data-step="0.1" data-fixed="1"><div class="row"><label>Distance r</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the distance from the wire, what happens to B?</li>
+      <li><b>Manipulate</b><span class="tag">I</span> Increase the current. How do the field circles respond?</li>
+      <li><b>Explain</b><span class="tag">direction</span> Use the right-hand rule to state which way B circulates for current out of the page.</li>
+      <li><b>Calculate</b><span class="tag">B</span> For I = 5 A at r = 0.5 m, find B (μ₀ = 4π×10⁻⁷).</li>
+      <li><b>Extend</b><span class="tag">two wires</span> How would a second parallel wire's field add to this one between them?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var mu=1; // scaled units: B = mu I /(2 pi r), mu=1
+  var calc = SimCore.makeCalc('calc','distance r','field B');
+  calc.setExpressions([
+    {id:'I',latex:'I_c=5'}, {id:'r',latex:'R_d=1.5'},
+    {id:'cB',latex:'y=\\frac{I_c}{2\\pi x}\\left\\{0.3\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(R_d,\\frac{I_c}{2\\pi R_d}\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={I:5,r:1.5};
+  function update(){
+    var B=mu*S.I/(2*Math.PI*S.r);
+    document.getElementById('rB43').textContent=B.toFixed(3);
+    calc.setMathBounds({left:0,right:6,bottom:0,top:Math.max(1,S.I/(2*Math.PI*0.3)*0.6)});
+    // loops: radii scaled with I (density), probe at r
+    var g=document.getElementById('loops43'), s='', n=Math.max(2,Math.round(2+S.I/2));
+    for(var i=1;i<=n;i++){ var rr=14+i*(70/n); s+='<circle cx="150" cy="110" r="'+rr.toFixed(1)+'" marker-mid=""/>'; }
+    // add a small arrow on one loop to show sense (CCW for out-of-page current)
+    g.innerHTML=s;
+    var pr=Math.min(80,14+S.r*13);
+    document.getElementById('probe43').setAttribute('cx',150+pr); document.getElementById('probe43').setAttribute('cy',110);
+  }
+  SimCore.wireSliders(calc,S,{I:'I_c',r:'R_d'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

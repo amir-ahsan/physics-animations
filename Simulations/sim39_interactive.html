@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drift Velocity — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 39 — Drift Velocity in a Wire</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Current is a river of charge carriers drifting slowly through a wire: <span class="eq">I = n q A v_d</span>. Even a large current means a
+    tiny drift speed, because there are enormous numbers of carriers (large <span class="eq">n</span>). A wider wire or denser carrier gas carries the
+    same current at an even slower drift. Watch the carriers crawl while the current stays healthy.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Carriers drifting</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="150" viewBox="0 0 320 150">
+            <rect x="20" y="55" width="280" height="40" fill="#f3ecd8" stroke="var(--ink)" stroke-width="1.5"/>
+            <g id="carr39" fill="var(--blue)"></g>
+            <line x1="150" y1="120" x2="190" y2="120" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#d39)"/>
+            <text x="150" y="140" font-size="11" fill="var(--accent-dk)">drift v_d</text>
+            <text x="20" y="45" font-size="11" fill="var(--ink)">conventional current I →</text>
+            <defs><marker id="d39" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-dk)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">drift speed v_d = I/(nqA)</span> = <span class="vb" id="rvd39">–</span></div>
+            <div class="r c-blue"><span class="k">current I</span> = <span class="vb" id="rI39">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Each dot is a charge carrier. Many carriers moving slowly add up to a substantial current.</div>
+      </div>
+      <div class="panel">
+        <h3>Drift speed vs. current</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">v_d = I/(nqA) — a straight line through the origin. Denser or wider wires give a gentler slope.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>v_d(I)</b> — drift speed vs. current.</span></li></ul>
+        <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn" id="reset">Reset</button></div>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="I" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Current I</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="n" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Carrier density n</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="A" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Cross-section A</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the carrier density n at fixed current, what happens to drift speed?</li>
+      <li><b>Manipulate</b><span class="tag">A</span> Widen the wire. Why does the same current now drift more slowly?</li>
+      <li><b>Explain</b><span class="tag">slow drift</span> How can current travel near light speed while carriers drift at millimeters per second?</li>
+      <li><b>Calculate</b><span class="tag">v_d</span> For I = 4, n = 2, q = 1, A = 2 (units), find v_d.</li>
+      <li><b>Extend</b><span class="tag">real copper</span> Look up n for copper — why is real drift velocity so astonishingly small?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var q=1;
+  var calc = SimCore.makeCalc('calc','current I','drift speed v_d');
+  calc.setExpressions([
+    {id:'n',latex:'n=4'}, {id:'A',latex:'A_c=2'}, {id:'I',latex:'I_c=4'},
+    {id:'cv',latex:'y=\\frac{x}{n A_c}\\left\\{0\\le x\\le10\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(I_c,\\frac{I_c}{n A_c}\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={I:4,n:4,A:2}, carriers=[], t=0;
+  function build(){ carriers=[]; var count=Math.round(6+S.n*3);
+    for(var i=0;i<count;i++) carriers.push({x:20+Math.random()*280, y:60+Math.random()*30}); }
+  function draw(){ var g=document.getElementById('carr39'), s='';
+    carriers.forEach(function(c){ s+='<circle cx="'+c.x.toFixed(1)+'" cy="'+c.y.toFixed(1)+'" r="2.6"/>'; });
+    g.innerHTML=s; }
+  function update(){
+    var vd=S.I/(S.n*q*S.A);
+    document.getElementById('rvd39').textContent=vd.toFixed(3);
+    document.getElementById('rI39').textContent=S.I.toFixed(1);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:Math.max(1,10/(S.n*S.A)*1.1)});
+    build(); draw();
+  }
+  SimCore.wireSliders(calc,S,{I:'I_c',n:'n',A:'A_c'},function(v){ update(); });
+  // animation: nudge carriers by drift speed
+  var timer=null, playing=false;
+  function tick(){ var vd=S.I/(S.n*q*S.A);
+    carriers.forEach(function(c){ c.x+=vd*3; if(c.x>300)c.x=22; }); draw(); }
+  document.getElementById('play').addEventListener('click',function(){ playing=!playing; this.textContent=playing?'❚❚ Pause':'▶ Play';
+    if(playing)timer=setInterval(tick,50); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer);
+    document.getElementById('play').textContent='▶ Play'; build(); draw(); });
+  update();
+})();
+</script>
+</body>
+</html>

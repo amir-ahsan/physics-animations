@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charge in a Uniform Electric Field — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 35 — Charge in a Uniform Electric Field</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A charge fired horizontally between two charged plates feels a constant sideways force <span class="eq">F = qE</span>, so it accelerates
+    with <span class="eq">a = qE/m</span> and traces a <b>parabola</b> — exactly like projectile motion, but the electric field plays the role of gravity.
+    The horizontal speed is unchanged; only the vertical motion is accelerated. This is how old CRT screens steered their electron beam.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Deflection between the plates</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="200" viewBox="0 0 320 200">
+            <rect x="40" y="40" width="220" height="8" fill="var(--red)"/><text x="270" y="48" font-size="11" fill="var(--red)">+ plate</text>
+            <rect x="40" y="152" width="220" height="8" fill="var(--blue)"/><text x="270" y="160" font-size="11" fill="var(--blue)">− plate</text>
+            <g stroke="var(--field)" stroke-width="1" opacity="0.5">
+              <line x1="70" y1="52" x2="70" y2="148" marker-end="url(#a35)"/><line x1="130" y1="52" x2="130" y2="148" marker-end="url(#a35)"/>
+              <line x1="190" y1="52" x2="190" y2="148" marker-end="url(#a35)"/><line x1="250" y1="52" x2="250" y2="148" marker-end="url(#a35)"/>
+            </g>
+            <path id="traj35" d="M40,100" fill="none" stroke="var(--accent-dk)" stroke-width="2.5"/>
+            <circle id="chg35" cx="40" cy="100" r="7" fill="var(--purple)"/>
+            <defs><marker id="a35" markerWidth="7" markerHeight="7" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="var(--field)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-purple"><span class="k">a = qE/m</span> = <span class="vb" id="ra35">–</span></div>
+            <div class="r c-accent"><span class="k">exit deflection y</span> = <span class="vb" id="ry35">–</span></div>
+            <div class="r" id="rhit35" style="opacity:.85">–</div>
+          </div>
+        </div>
+        <div class="cap">The charge enters at the left with horizontal speed and curves toward the oppositely charged plate.</div>
+      </div>
+      <div class="panel">
+        <h3>Trajectory y vs. x</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">y(x) = ½(qE/m)(x/v₀)² — a parabola. Steeper field or slower entry means a sharper curve.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>y(x)</b> — vertical deflection vs. horizontal position.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q" data-min="-2" data-max="2" data-step="0.25" data-fixed="2"><div class="row"><label>Charge q</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="E" data-min="0.5" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Field E</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="m" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Mass m</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v0" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Entry speed v&#8320;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Will a faster entry speed deflect the charge more or less by the time it exits?</li>
+      <li><b>Manipulate</b><span class="tag">q</span> Flip the charge's sign. Which plate does it now curve toward?</li>
+      <li><b>Explain</b><span class="tag">projectile analogy</span> Why is this motion mathematically identical to a ball thrown horizontally?</li>
+      <li><b>Calculate</b><span class="tag">a</span> For q = 1, E = 2, m = 1 (units), find the acceleration.</li>
+      <li><b>Extend</b><span class="tag">exit angle</span> How would you find the angle of the velocity as the charge leaves the plates?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','horizontal position x','vertical deflection y');
+  calc.setExpressions([
+    {id:'q',latex:'q=1'}, {id:'E',latex:'E=2'}, {id:'m',latex:'m=1'}, {id:'v0',latex:'v_0=3'},
+    {id:'a',latex:'a=\\frac{q E}{m}', hidden:true, secret:true},
+    {id:'cy',latex:'y=\\frac{1}{2}a\\left(\\frac{x}{v_0}\\right)^2\\left\\{0\\le x\\le5\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(5,\\frac{1}{2}a\\left(\\frac{5}{v_0}\\right)^2\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={q:1,E:2,m:1,v0:3};
+  function update(){
+    var a=S.q*S.E/S.m;                       // + means toward +plate (up in graph)
+    var L=5, yExit=0.5*a*Math.pow(L/S.v0,2);
+    document.getElementById('ra35').textContent=a.toFixed(2);
+    document.getElementById('ry35').textContent=yExit.toFixed(2);
+    calc.setMathBounds({left:0,right:5.5,bottom:-6,top:6});
+    // schematic: plates y=44..156, center 100; gap half=52 world units ~ map 2.6 -> hits plate
+    var g=document.getElementById('traj35'), plateHalf=2.6, hit=false, xhit=L;
+    // find x where |y| reaches plateHalf
+    if(Math.abs(a)>1e-6){ var xh=S.v0*Math.sqrt(2*plateHalf/Math.abs(a)); if(xh<L){hit=true; xhit=xh;} }
+    var d='M40,100', N=40;
+    for(var i=1;i<=N;i++){ var x=xhit*i/N, y=0.5*a*Math.pow(x/S.v0,2);
+      var sx=40+x/L*220, sy=100-y/plateHalf*56; d+=' L'+sx.toFixed(1)+','+sy.toFixed(1); }
+    g.setAttribute('d',d);
+    var lastY=0.5*a*Math.pow(xhit/S.v0,2), lsx=40+xhit/L*220, lsy=100-lastY/plateHalf*56;
+    document.getElementById('chg35').setAttribute('cx',lsx); document.getElementById('chg35').setAttribute('cy',lsy);
+    document.getElementById('rhit35').textContent=hit?'HITS a plate before exiting':'exits cleanly between the plates';
+    document.getElementById('rhit35').style.color=hit?'var(--red)':'var(--board)';
+  }
+  SimCore.wireSliders(calc,S,{q:'q',E:'E',m:'m',v0:'v_0'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

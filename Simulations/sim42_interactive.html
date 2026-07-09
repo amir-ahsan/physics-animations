@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magnetic Force on a Wire — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 42 — Magnetic Force on a Current-Carrying Wire</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A wire carrying current in a magnetic field feels a force <span class="eq">F = ILB&nbsp;sin&thinsp;&theta;</span>, where &theta; is the angle between
+    the current and the field. The force is greatest when the wire is perpendicular to the field and vanishes when the wire runs parallel to it.
+    Rotate the wire and watch the force rise and fall like a sine wave.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Wire in the field</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="200" viewBox="0 0 300 200">
+            <g stroke="var(--green)" stroke-width="1" fill="var(--green)" opacity="0.4">
+              <text x="110" y="24" font-size="11">B → (to the right)</text>
+              <line x1="40" y1="60" x2="70" y2="60" marker-end="url(#b42)"/><line x1="40" y1="100" x2="70" y2="100" marker-end="url(#b42)"/><line x1="40" y1="140" x2="70" y2="140" marker-end="url(#b42)"/>
+            </g>
+            <line id="wire42" x1="150" y1="40" x2="150" y2="160" stroke="var(--accent-dk)" stroke-width="4"/>
+            <text id="wl42" x="158" y="44" font-size="11" fill="var(--accent-dk)">I</text>
+            <line id="force42" x1="150" y1="100" x2="150" y2="60" stroke="var(--purple)" stroke-width="3" marker-end="url(#p42)"/>
+            <text x="150" y="185" font-size="10" fill="var(--purple)">F points out of the B–I plane</text>
+            <defs>
+              <marker id="b42" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="p42" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--purple)"/></marker>
+            </defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">force F = ILB sin θ</span> = <span class="vb" id="rF42">–</span></div>
+            <div class="r" id="rang42" style="opacity:.85">–</div>
+          </div>
+        </div>
+        <div class="cap">The wire tilts by θ relative to B. Force is maximal at 90°, zero when the wire lies along the field.</div>
+      </div>
+      <div class="panel">
+        <h3>Force vs. angle</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">F(θ) = ILB sin θ — a sine curve peaking at 90°. The dot marks the current angle.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>F(θ)</b> — force magnitude vs. angle.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="I" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Current I</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Length L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="B" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Field B</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="th" data-min="0" data-max="180" data-step="5" data-fixed="0" data-suffix="°"><div class="row"><label>Angle θ</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> At what angle is the force on the wire the strongest? The weakest?</li>
+      <li><b>Manipulate</b><span class="tag">θ</span> Rotate the wire to 0° and 180°. Why is the force zero at both?</li>
+      <li><b>Explain</b><span class="tag">direction</span> Use the right-hand rule to say which way F points here.</li>
+      <li><b>Calculate</b><span class="tag">F</span> For I = 4, L = 2, B = 1, θ = 30° (units), find the force.</li>
+      <li><b>Extend</b><span class="tag">motor</span> How does this force produce continuous rotation in an electric motor?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','angle θ (degrees)','force F');
+  calc.setExpressions([
+    {id:'I',latex:'I_c=4'}, {id:'L',latex:'L_w=2'}, {id:'B',latex:'B_f=1'}, {id:'th',latex:'\\theta_d=90'},
+    {id:'cF',latex:'y=I_c L_w B_f\\sin\\left(\\frac{x\\pi}{180}\\right)\\left\\{0\\le x\\le180\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'\\left(\\theta_d,I_c L_w B_f\\sin\\left(\\frac{\\theta_d\\pi}{180}\\right)\\right)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={I:4,L:2,B:1,th:90};
+  function update(){
+    var rad=S.th*Math.PI/180, F=S.I*S.L*S.B*Math.sin(rad);
+    document.getElementById('rF42').textContent=F.toFixed(2);
+    document.getElementById('rang42').textContent=S.th==0||S.th==180?'wire parallel to B — no force':(S.th==90?'wire ⊥ B — maximum force':'partial force');
+    calc.setMathBounds({left:0,right:180,bottom:0,top:Math.max(2,S.I*S.L*S.B*1.1)});
+    // rotate wire: pivot (150,100), angle th from horizontal B. represent wire tilt
+    var a=(S.th)*Math.PI/180, len=60, dx=len*Math.sin(a), dy=len*Math.cos(a);
+    var w=document.getElementById('wire42'); w.setAttribute('x1',150-dx); w.setAttribute('y1',100+dy); w.setAttribute('x2',150+dx); w.setAttribute('y2',100-dy);
+    document.getElementById('wl42').setAttribute('x',150+dx+6); document.getElementById('wl42').setAttribute('y',100-dy);
+    // force arrow length ~F, pointing up (out of plane proxy)
+    var fl=Math.min(45,Math.max(2,F*8)); var f=document.getElementById('force42');
+    f.setAttribute('y1',100); f.setAttribute('y2',100-fl); f.setAttribute('opacity',F>0.05?1:0);
+  }
+  SimCore.wireSliders(calc,S,{I:'I_c',L:'L_w',B:'B_f',th:'\\theta_d'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

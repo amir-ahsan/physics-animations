@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ampère's Law — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 44 — Ampère's Law (Field of a Thick Wire)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Ampère's law, <span class="eq">&#8750;B&middot;dl = &mu;&#8320;I_enc</span>, gives the field of a thick wire carrying uniform current. Inside the wire only the
+    enclosed fraction of current counts, so <span class="eq">B &prop; r</span> and grows linearly. Outside, all the current is enclosed and
+    <span class="eq">B &prop; 1/r</span>. The two pieces meet smoothly at the wire's surface, where B is largest.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Amperian loop</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="220" viewBox="0 0 300 220">
+            <circle id="wire44" cx="150" cy="110" r="45" fill="#e7ddc4" stroke="var(--accent-dk)" stroke-width="2"/>
+            <text x="150" y="114" font-size="10" fill="var(--accent-dk)" text-anchor="middle">uniform I</text>
+            <circle id="loop44" cx="150" cy="110" r="70" fill="none" stroke="var(--purple)" stroke-width="2" stroke-dasharray="5 4"/>
+            <circle id="probe44" cx="220" cy="110" r="5" fill="var(--purple)"/>
+            <text x="150" y="24" font-size="11" fill="var(--ink)" text-anchor="middle">wire radius a · loop radius r</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">B at r</span> = <span class="vb" id="rB44">–</span></div>
+            <div class="r" id="rreg44" style="opacity:.85">–</div>
+          </div>
+        </div>
+        <div class="cap">Shrink the loop inside the wire and only the enclosed current drives B; expand it past the surface for the full current.</div>
+      </div>
+      <div class="panel">
+        <h3>Field vs. radius</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">B rises linearly inside (∝ r), peaks at the surface r = a, then falls as 1/r outside.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Inside</b> B = μ₀Ir/(2πa²).</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Outside</b> B = μ₀I/(2πr).</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="I" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Current I</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="a" data-min="0.5" data-max="3" data-step="0.25" data-fixed="2"><div class="row"><label>Wire radius a</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="r" data-min="0.2" data-max="6" data-step="0.1" data-fixed="1"><div class="row"><label>Loop radius r</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Where along the radius is the field strongest — at the center, surface, or far outside?</li>
+      <li><b>Manipulate</b><span class="tag">r</span> Sweep the loop from center to far outside. Watch B rise, peak, then fall.</li>
+      <li><b>Explain</b><span class="tag">enclosed current</span> Why does only part of the current count when the loop is inside the wire?</li>
+      <li><b>Calculate</b><span class="tag">B</span> At r = a (the surface), show both formulas give the same B.</li>
+      <li><b>Extend</b><span class="tag">hollow pipe</span> How would the graph change for a hollow conducting pipe?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','radius r','field B');
+  calc.setExpressions([
+    {id:'I',latex:'I_c=5'}, {id:'a',latex:'a_w=1.5'},
+    {id:'cin',latex:'y=\\frac{I_c x}{2\\pi a_w^2}\\left\\{0\\le x\\le a_w\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'cout',latex:'y=\\frac{I_c}{2\\pi x}\\left\\{a_w\\le x\\le6\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'r',latex:'R_d=1'},
+    {id:'dot',latex:'\\left(R_d,\\left\\{R_d<a_w:\\frac{I_c R_d}{2\\pi a_w^2},\\frac{I_c}{2\\pi R_d}\\right\\}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={I:5,a:1.5,r:1};
+  function update(){
+    var B=(S.r<S.a)?S.I*S.r/(2*Math.PI*S.a*S.a):S.I/(2*Math.PI*S.r);
+    document.getElementById('rB44').textContent=B.toFixed(3);
+    document.getElementById('rreg44').textContent=(S.r<S.a)?'loop INSIDE wire (B ∝ r)':(Math.abs(S.r-S.a)<0.05?'loop at the SURFACE (B maximum)':'loop OUTSIDE wire (B ∝ 1/r)');
+    calc.setMathBounds({left:0,right:6,bottom:0,top:Math.max(0.5,S.I/(2*Math.PI*S.a)*1.3)});
+    var wr=Math.min(60,S.a*30); document.getElementById('wire44').setAttribute('r',wr);
+    var lr=Math.min(95,S.r*30); document.getElementById('loop44').setAttribute('r',lr);
+    document.getElementById('probe44').setAttribute('cx',150+lr);
+  }
+  SimCore.wireSliders(calc,S,{I:'I_c',a:'a_w',r:'R_d'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

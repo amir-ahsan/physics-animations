@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solenoid Field — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 45 — Solenoid Field</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A tightly wound coil produces a nearly uniform field inside, <span class="eq">B = &mu;&#8320;nI</span>, where <span class="eq">n</span> is turns per unit
+    length. Pack the turns closer or push more current and the interior field strengthens; outside an ideal solenoid the field is essentially zero.
+    This is how electromagnets and MRI magnets are built.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Coil and interior field</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="180" viewBox="0 0 320 180">
+            <rect x="50" y="60" width="220" height="60" fill="none" stroke="var(--ink)" stroke-width="1"/>
+            <g id="turns45" fill="var(--accent-dk)"></g>
+            <g id="bfield45" stroke="var(--green)" stroke-width="2"></g>
+            <text x="120" y="145" font-size="11" fill="var(--green)">uniform B inside →</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">B = μ₀nI</span> = <span class="vb" id="rB45">–</span></div>
+            <div class="r c-blue"><span class="k">turns/length n</span> = <span class="vb" id="rn45">–</span></div>
+          </div>
+        </div>
+        <div class="cap">Each mark is a coil turn (current into/out of the page). Field arrows inside point along the axis and are evenly spaced = uniform.</div>
+      </div>
+      <div class="panel">
+        <h3>Interior field vs. turn density</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">B = μ₀nI grows linearly with turn density n. The dot marks your current coil.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>B(n)</b> — interior field vs. turns per length.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="n" data-min="2" data-max="20" data-step="1" data-fixed="0"><div class="row"><label>Turns per length n</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="I" data-min="0.5" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Current I</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If you double the turns per length at fixed current, what happens to the interior field?</li>
+      <li><b>Manipulate</b><span class="tag">n</span> Pack the turns tighter. How does the arrow spacing (field strength) change?</li>
+      <li><b>Explain</b><span class="tag">uniform</span> Why is the field inside an ideal solenoid the same everywhere?</li>
+      <li><b>Calculate</b><span class="tag">B</span> For n = 1000 turns/m and I = 2 A, find B (μ₀ = 4π×10⁻⁷).</li>
+      <li><b>Extend</b><span class="tag">outside</span> Why is the external field of a long solenoid nearly zero?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var mu=1;
+  var calc = SimCore.makeCalc('calc','turns per length n','interior field B');
+  calc.setExpressions([
+    {id:'I',latex:'I_c=2'},
+    {id:'cB',latex:'y=I_c x\\left\\{0\\le x\\le20\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'n',latex:'n_t=8'},
+    {id:'dot',latex:'(n_t,I_c n_t)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={n:8,I:2};
+  function update(){
+    var B=mu*S.n*S.I;
+    document.getElementById('rB45').textContent=B.toFixed(2);
+    document.getElementById('rn45').textContent=S.n.toFixed(0);
+    calc.setMathBounds({left:0,right:20,bottom:0,top:Math.max(10,S.I*20*1.05)});
+    // turns marks along top and bottom of coil
+    var g=document.getElementById('turns45'), s='', cnt=Math.round(S.n), x0=50, w=220;
+    for(var i=0;i<cnt;i++){ var x=x0+8+i*(w-16)/Math.max(1,cnt-1);
+      s+='<circle cx="'+x.toFixed(1)+'" cy="60" r="3"/><circle cx="'+x.toFixed(1)+'" cy="120" r="3" fill="none" stroke="var(--accent-dk)"/>'; }
+    g.innerHTML=s;
+    // field arrows inside, spacing inversely with field (denser = stronger)
+    var bf=document.getElementById('bfield45'), s2='', arrows=Math.min(9,Math.max(2,Math.round(B/3)));
+    for(var j=0;j<arrows;j++){ var y=72+j*(46/Math.max(1,arrows-1));
+      s2+='<line x1="70" y1="'+y.toFixed(0)+'" x2="250" y2="'+y.toFixed(0)+'" marker-end="url(#s45)"/>'; }
+    bf.innerHTML=s2+'<defs><marker id="s45" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker></defs>';
+  }
+  SimCore.wireSliders(calc,S,{n:'n_t',I:'I_c'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

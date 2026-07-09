@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Series & Parallel Resistors — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 37 — Series &amp; Parallel Resistors</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Three resistors can be wired end-to-end (<b>series</b>, resistances add: <span class="eq">R = R&#8321;+R&#8322;+R&#8323;</span>) or side-by-side
+    (<b>parallel</b>, reciprocals add: <span class="eq">1/R = 1/R&#8321;+1/R&#8322;+1/R&#8323;</span>). Series always gives a larger equivalent than any single
+    resistor; parallel always gives a smaller one. The battery voltage then sets the total current <span class="eq">I = V/R</span>.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The circuit</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="200" viewBox="0 0 320 200">
+            <g id="wires37" stroke="var(--ink)" stroke-width="2" fill="none"></g>
+            <g id="res37"></g>
+            <text x="24" y="105" font-size="12" fill="var(--ink)">V</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">R_eq</span> = <span class="vb" id="rReq37">–</span> Ω</div>
+            <div class="r c-blue"><span class="k">total current I = V/R</span> = <span class="vb" id="rI37">–</span> A</div>
+            <div class="r c-purple"><span class="k">power P = I²R</span> = <span class="vb" id="rP37">–</span> W</div>
+          </div>
+        </div>
+        <div class="cap">Toggle the wiring mode to see the resistors rearrange between series and parallel.</div>
+      </div>
+      <div class="panel">
+        <h3>Equivalent resistance vs. R&#8321;</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">How R_eq changes as you sweep R₁ (with R₂, R₃ fixed). The dot marks your current R₁.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend">
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Series</b> R_eq = R₁+R₂+R₃.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>Parallel</b> R_eq = (1/R₁+1/R₂+1/R₃)⁻¹.</span></li>
+        </ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="mode" data-min="0" data-max="1" data-step="1" data-fixed="0"><div class="row"><label>Wiring (0 series · 1 parallel)</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R1" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R2" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R3" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8323;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="V" data-min="1" data-max="12" data-step="1" data-fixed="0"><div class="row"><label>Battery V</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> Three 6 Ω resistors: what is R_eq in series? In parallel?</li>
+      <li><b>Manipulate</b><span class="tag">mode</span> Flip between series and parallel with the same resistors. Which draws more current?</li>
+      <li><b>Explain</b><span class="tag">why</span> Why does adding a parallel resistor lower the total resistance?</li>
+      <li><b>Calculate</b><span class="tag">R_eq</span> For R₁=2, R₂=3, R₃=6 Ω in parallel, find R_eq.</li>
+      <li><b>Extend</b><span class="tag">current split</span> In parallel, which resistor carries the most current, and why?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','R₁ (Ω)','equivalent resistance (Ω)');
+  calc.setExpressions([
+    {id:'R2',latex:'R_2=4'}, {id:'R3',latex:'R_3=6'}, {id:'R1',latex:'R_1=3'}, {id:'md',latex:'m=0'},
+    {id:'cs',latex:'y=x+R_2+R_3\\left\\{m<0.5\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'cp',latex:'y=\\frac{1}{\\frac{1}{x}+\\frac{1}{R_2}+\\frac{1}{R_3}}\\left\\{m\\ge0.5\\right\\}', color:'#2f6fb0', lineWidth:2.5},
+    {id:'dot',latex:'\\left(R_1,\\left\\{m<0.5:R_1+R_2+R_3,\\frac{1}{\\frac{1}{R_1}+\\frac{1}{R_2}+\\frac{1}{R_3}}\\right\\}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={mode:0,R1:3,R2:4,R3:6,V:6};
+  function resBox(x,y,label,horiz){
+    if(horiz) return '<rect x="'+x+'" y="'+(y-8)+'" width="34" height="16" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="'+(x+7)+'" y="'+(y+4)+'" font-size="10" fill="var(--ink)">'+label+'</text>';
+    return '<rect x="'+(x-8)+'" y="'+y+'" width="16" height="34" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="'+(x-6)+'" y="'+(y+21)+'" font-size="10" fill="var(--ink)">'+label+'</text>';
+  }
+  function update(){
+    var series=S.mode<0.5;
+    var Req=series?(S.R1+S.R2+S.R3):1/(1/S.R1+1/S.R2+1/S.R3);
+    var I=S.V/Req, P=I*I*Req;
+    document.getElementById('rReq37').textContent=Req.toFixed(2);
+    document.getElementById('rI37').textContent=I.toFixed(2);
+    document.getElementById('rP37').textContent=P.toFixed(2);
+    calc.setMathBounds({left:0,right:10,bottom:0,top:series?26:8});
+    var w=document.getElementById('wires37'), r=document.getElementById('res37');
+    if(series){
+      w.innerHTML='<path d="M40,60 L40,40 L90,40"/><path d="M124,40 L150,40"/><path d="M184,40 L210,40"/><path d="M244,40 L280,40 L280,160 L40,160 L40,140"/>';
+      // battery
+      w.innerHTML+='<line x1="30" y1="140" x2="50" y2="140"/><line x1="34" y1="60" x2="46" y2="60"/>';
+      r.innerHTML=resBox(90,40,'R₁',true)+resBox(150,40,'R₂',true)+resBox(210,40,'R₃',true);
+    } else {
+      w.innerHTML='<path d="M40,60 L40,30 L90,30"/><path d="M90,30 L90,150"/><path d="M90,30 L260,30 L260,150"/>'+
+        '<path d="M90,70 L150,70 M90,110 L150,110"/><path d="M184,70 L260,70 M184,110 L260,110"/>'+
+        '<path d="M90,150 L260,150"/><path d="M260,150 L40,150 L40,140"/><path d="M90,30 L90,70"/>';
+      w.innerHTML+='<line x1="30" y1="140" x2="50" y2="140"/><line x1="34" y1="60" x2="46" y2="60"/>';
+      r.innerHTML=resBox(150,22,'R₁',true)+resBox(150,62,'R₂',true)+resBox(150,102,'R₃',true);
+    }
+  }
+  SimCore.wireSliders(calc,S,{mode:'m',R1:'R_1',R2:'R_2',R3:'R_3'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

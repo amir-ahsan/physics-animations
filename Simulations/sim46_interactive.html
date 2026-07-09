@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motional EMF — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 46 — Motional EMF (Sliding Rod)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>A conducting rod sliding along rails through a magnetic field generates an emf <span class="eq">&#949; = BLv</span>. The changing area of the circuit
+    changes the magnetic flux, driving a current <span class="eq">I = &#949;/R</span>. That induced current feels a magnetic force opposing the motion — you must
+    keep pushing to keep the rod moving. This is a generator in its simplest form.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Rod on rails</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="180" viewBox="0 0 320 180">
+            <g stroke="var(--green)" fill="var(--green)" opacity="0.4">
+              <text x="120" y="20" font-size="11">B ⊗ into page</text>
+              <circle cx="90" cy="55" r="1.6"/><circle cx="150" cy="55" r="1.6"/><circle cx="210" cy="55" r="1.6"/>
+              <circle cx="90" cy="115" r="1.6"/><circle cx="150" cy="115" r="1.6"/><circle cx="210" cy="115" r="1.6"/></g>
+            <line x1="40" y1="45" x2="290" y2="45" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="40" y1="125" x2="290" y2="125" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="40" y1="45" x2="40" y2="125" stroke="var(--accent-dk)" stroke-width="2"/>
+            <text x="20" y="88" font-size="10" fill="var(--ink)">R</text>
+            <line id="rod46" x1="150" y1="40" x2="150" y2="130" stroke="var(--purple)" stroke-width="4"/>
+            <line id="vel46" x1="150" y1="85" x2="195" y2="85" stroke="var(--accent-dk)" stroke-width="3" marker-end="url(#v46)"/>
+            <text x="170" y="78" font-size="11" fill="var(--accent-dk)">v</text>
+            <defs><marker id="v46" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-dk)"/></marker></defs>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">emf ε = BLv</span> = <span class="vb" id="re46">–</span></div>
+            <div class="r c-blue"><span class="k">current I = ε/R</span> = <span class="vb" id="ri46">–</span></div>
+            <div class="r c-red"><span class="k">retarding force = BIL</span> = <span class="vb" id="rf46">–</span></div>
+          </div>
+        </div>
+        <div class="cap">As the rod slides right, the enclosed area grows, flux changes, and a current is induced around the loop.</div>
+      </div>
+      <div class="panel">
+        <h3>EMF vs. rod speed</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">ε = BLv — a straight line through the origin. The dot marks the current speed.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>ε(v)</b> — induced emf vs. rod speed.</span></li></ul>
+        <div class="playbar"><button class="btn" id="play">▶ Play</button><button class="btn" id="reset">Reset</button></div>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="B" data-min="0.5" data-max="4" data-step="0.5" data-fixed="1"><div class="row"><label>Field B</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="L" data-min="0.5" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Rail spacing L</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="v" data-min="0" data-max="6" data-step="0.25" data-fixed="2"><div class="row"><label>Speed v</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R" data-min="1" data-max="8" data-step="0.5" data-fixed="1"><div class="row"><label>Resistance R</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If the rod moves twice as fast, what happens to the induced emf and current?</li>
+      <li><b>Manipulate</b><span class="tag">v</span> Set v = 0. Why does the emf vanish even though B is still present?</li>
+      <li><b>Explain</b><span class="tag">Lenz</span> Why does the induced current oppose the rod's motion rather than help it?</li>
+      <li><b>Calculate</b><span class="tag">ε</span> For B = 2, L = 1, v = 3 (units), find the emf and the current if R = 6.</li>
+      <li><b>Extend</b><span class="tag">power</span> Show that the mechanical power you supply equals the electrical power dissipated.</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var calc = SimCore.makeCalc('calc','speed v','emf ε');
+  calc.setExpressions([
+    {id:'B',latex:'B_f=2'}, {id:'L',latex:'L_r=1'}, {id:'v',latex:'v_p=3'},
+    {id:'ce',latex:'y=B_f L_r x\\left\\{0\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'dot',latex:'(v_p,B_f L_r v_p)', color:'#B5793B', pointSize:12}
+  ]);
+  var S={B:2,L:1,v:3,R:6}, rodx=150;
+  function update(){
+    var emf=S.B*S.L*S.v, I=emf/S.R, F=S.B*I*S.L;
+    document.getElementById('re46').textContent=emf.toFixed(2);
+    document.getElementById('ri46').textContent=I.toFixed(2);
+    document.getElementById('rf46').textContent=F.toFixed(2);
+    calc.setMathBounds({left:0,right:6,bottom:0,top:Math.max(4,S.B*S.L*6*1.05)});
+    // rail spacing L affects vertical rod length
+    var half=Math.min(42,20+S.L*10); var rod=document.getElementById('rod46');
+    rod.setAttribute('y1',85-half); rod.setAttribute('y2',85+half);
+    var vl=Math.min(50,S.v*8); document.getElementById('vel46').setAttribute('x2',rodx+vl); document.getElementById('vel46').setAttribute('opacity',S.v>0.02?1:0);
+  }
+  function setrod(x){ rodx=x; document.getElementById('rod46').setAttribute('x1',x); document.getElementById('rod46').setAttribute('x2',x);
+    var half=Math.min(42,20+S.L*10); document.getElementById('vel46').setAttribute('x1',x); var vl=Math.min(50,S.v*8); document.getElementById('vel46').setAttribute('x2',x+vl); }
+  SimCore.wireSliders(calc,S,{B:'B_f',L:'L_r',v:'v_p'},function(v){ update(); });
+  var timer=null, playing=false;
+  function tick(){ rodx+=S.v*3; if(rodx>280){rodx=60;} setrod(rodx); }
+  document.getElementById('play').addEventListener('click',function(){ playing=!playing; this.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(tick,50); else clearInterval(timer); });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); document.getElementById('play').textContent='▶ Play'; setrod(150); });
+  update(); setrod(150);
+})();
+</script>
+</body>
+</html>

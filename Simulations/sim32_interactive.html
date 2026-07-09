@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electric Field of Point Charges — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 32 — Electric Field of Point Charges</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Each charge sets up an electric field <span class="eq">E = kq/r&#178;</span> that points away from a positive charge and toward a negative one.
+    Where two charges overlap, the total field is the <b>vector sum</b> of the two. The grid of arrows shows the field's direction and strength
+    everywhere; the graph shows the field along the axis, where it can even reach zero between two like charges.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>Field-vector map</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="200" viewBox="0 0 300 200">
+            <g id="grid32" stroke="var(--field)" stroke-width="1.3"></g>
+            <circle id="c1_32" cx="110" cy="100" r="11" fill="var(--red)"/><text id="t1_32" x="106" y="104" font-size="13" fill="#fff">+</text>
+            <circle id="c2_32" cx="190" cy="100" r="11" fill="var(--blue)"/><text id="t2_32" x="186" y="104" font-size="13" fill="#fff">&#8722;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue">arrows point along the local field</div>
+            <div class="r" style="opacity:.85">longer arrow = stronger field</div>
+          </div>
+        </div>
+        <div class="cap">Blue arrows = electric field direction; away from + charges, toward &#8722; charges. The pattern is superposition in action.</div>
+      </div>
+      <div class="panel">
+        <h3>Field along the axis</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">E&#8339; along the line through the charges (positive = pointing right). It blows up near each charge and can cross zero between like charges.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--blue)"></span><span><b>E&#8339;(x)</b> — the field's x-component along the axis.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q1" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Left charge q&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="q2" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Right charge q&#8322;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For two equal positive charges, where is the field exactly zero?</li>
+      <li><b>Manipulate</b><span class="tag">q&#8321;, q&#8322;</span> Make the charges opposite (a dipole). How do the arrows loop from + to &#8722;?</li>
+      <li><b>Explain</b><span class="tag">superposition</span> Why can you add the two fields as vectors rather than as numbers?</li>
+      <li><b>Calculate</b><span class="tag">on axis</span> On the axis midway between +2 and +2 (k = 1 units), show the field is zero.</li>
+      <li><b>Extend</b><span class="tag">far away</span> Far from both charges, why does a dipole's field fall off faster than a single charge's?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var k=1, c=0.2, x1=-2, x2=2;
+  var calc = SimCore.makeCalc('calc','position x (units)','field Eₓ (units)');
+  calc.setExpressions([
+    {id:'q1',latex:'q_1=2'}, {id:'q2',latex:'q_2=-1'},
+    {id:'E',latex:'E(x)=q_1\\frac{x+2}{((x+2)^2+0.04)^{1.5}}+q_2\\frac{x-2}{((x-2)^2+0.04)^{1.5}}', hidden:true, secret:true},
+    {id:'cE',latex:'E(x)', color:'#2f6fb0', lineWidth:2},
+    {id:'z',latex:'y=0', color:'#c9beA0', lineWidth:1},
+    {id:'p1',latex:'(-2,0)', color:'#c0392b', pointSize:14}, {id:'p2',latex:'(2,0)', color:'#2f6fb0', pointSize:14}
+  ]);
+  var S={q1:2,q2:-1};
+  function E(px,py){ var dx1=px-x1,dy1=py, r1=Math.pow(dx1*dx1+dy1*dy1+c*c,1.5),
+        dx2=px-x2,dy2=py, r2=Math.pow(dx2*dx2+dy2*dy2+c*c,1.5);
+    return [k*(S.q1*dx1/r1+S.q2*dx2/r2), k*(S.q1*dy1/r1+S.q2*dy2/r2)]; }
+  function update(){
+    calc.setExpression({id:'p1',color:S.q1>=0?'#c0392b':'#2f6fb0'});
+    calc.setExpression({id:'p2',color:S.q2>=0?'#c0392b':'#2f6fb0'});
+    calc.setMathBounds({left:-6,right:6,bottom:-6,top:6});
+    document.getElementById('c1_32').setAttribute('fill',S.q1>=0?'var(--red)':'var(--blue)'); document.getElementById('t1_32').textContent=S.q1>=0?'+':'−';
+    document.getElementById('c2_32').setAttribute('fill',S.q2>=0?'var(--red)':'var(--blue)'); document.getElementById('t2_32').textContent=S.q2>=0?'+':'−';
+    // grid of arrows: world x in [-5,5]->screen[20,280], y in [-3.4,3.4]->[180,20]
+    var g=document.getElementById('grid32'), s='';
+    for(var i=0;i<7;i++) for(var j=0;j<5;j++){
+      var wx=-4.5+i*1.5, wy=-2.6+j*1.3, e=E(wx,wy), mag=Math.hypot(e[0],e[1]);
+      if(mag<1e-4) continue; var ux=e[0]/mag, uy=e[1]/mag, L=Math.min(16,6+mag*10);
+      var sx=30+(wx+5)/10*250, sy=100-wy*28, ex=sx+ux*L, ey=sy-uy*L;
+      s+='<line x1="'+sx.toFixed(1)+'" y1="'+sy.toFixed(1)+'" x2="'+ex.toFixed(1)+'" y2="'+ey.toFixed(1)+'" marker-end="url(#e32)"/>';
+    }
+    g.innerHTML=s+'<defs><marker id="e32" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L5,3 L0,6 Z" fill="var(--field)"/></marker></defs>';
+  }
+  SimCore.wireSliders(calc,S,{q1:'q_1',q2:'q_2'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

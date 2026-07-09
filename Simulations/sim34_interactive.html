@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potential Energy of Two Charges — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 34 — Potential Energy of Two Charges</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two point charges store electric potential energy <span class="eq">U = kq&#8321;q&#8322;/r</span>. Opposite charges have <b>negative</b> energy (a well —
+    they are bound, and it takes work to separate them); like charges have <b>positive</b> energy (a hill — they push apart). The force is the negative
+    slope of this curve, <span class="eq">F = &#8722;dU/dr</span>. Change the charges and watch the energy curve flip between a well and a hill.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The pair</h3>
+        <div class="schematic">
+          <svg class="scene" width="300" height="120" viewBox="0 0 300 120">
+            <line x1="10" y1="60" x2="290" y2="60" stroke="#e3d7b8" stroke-width="1"/>
+            <circle id="q1_34" cx="100" cy="60" r="15" fill="var(--red)"/><text id="t1_34" x="95" y="65" font-size="14" fill="#fff">+</text>
+            <circle id="q2_34" cx="200" cy="60" r="15" fill="var(--blue)"/><text id="t2_34" x="195" y="65" font-size="14" fill="#fff">&#8722;</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-accent"><span class="k">U = kq&#8321;q&#8322;/r</span> = <span class="vb" id="rU34">–</span></div>
+            <div class="r c-red"><span class="k">force = &#8722;dU/dr</span> = <span class="vb" id="rf34">–</span></div>
+            <div class="r vb" id="rtype34" style="opacity:.9">–</div>
+          </div>
+        </div>
+        <div class="cap">Opposite charges sit in an energy well (bound); like charges sit on a hill (they fly apart).</div>
+      </div>
+      <div class="panel">
+        <h3>Potential energy vs. separation</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">U(r) = kq&#8321;q&#8322;/r. Below the axis = attractive well; above = repulsive hill. The dot marks the current separation.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--accent)"></span><span><b>U(r)</b> — potential energy vs. separation.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="q1" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Charge q&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="q2" data-min="-3" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Charge q&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="r" data-min="0.5" data-max="6" data-step="0.1" data-fixed="1"><div class="row"><label>Separation r</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> For opposite charges, is the stored energy positive or negative? What does the sign mean?</li>
+      <li><b>Manipulate</b><span class="tag">q&#8321;, q&#8322;</span> Flip a sign and watch the well become a hill.</li>
+      <li><b>Explain</b><span class="tag">force</span> Why does the force equal the negative slope of the energy curve?</li>
+      <li><b>Calculate</b><span class="tag">q, r</span> For q&#8321; = 2, q&#8322; = &#8722;2 (units), r = 2, find U (k = 1).</li>
+      <li><b>Extend</b><span class="tag">work</span> How much work must you do to pull two opposite charges infinitely far apart?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  var k=1;
+  var calc = SimCore.makeCalc('calc','separation r (units)','potential energy U (units)');
+  calc.setExpressions([
+    {id:'q1',latex:'q_1=2'}, {id:'q2',latex:'q_2=-2'}, {id:'r',latex:'R_s=2'},
+    {id:'cU',latex:'\\frac{q_1 q_2}{x}\\left\\{0.4\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'z',latex:'y=0', color:'#c9beA0', lineWidth:1},
+    {id:'dot',latex:'(R_s,\\frac{q_1 q_2}{R_s})', color:'#B5793B', pointSize:13}
+  ]);
+  var S={q1:2,q2:-2,r:2};
+  function update(){
+    var U=k*S.q1*S.q2/S.r, F=k*S.q1*S.q2/(S.r*S.r);   // F = -dU/dr = k q1 q2 / r^2 (>0 repel for like)
+    document.getElementById('rU34').textContent=U.toFixed(2);
+    document.getElementById('rf34').textContent=F.toFixed(2)+(F>0?' (repel)':F<0?' (attract)':'');
+    document.getElementById('rtype34').textContent=(S.q1*S.q2<0)?'ATTRACTIVE — energy well':(S.q1*S.q2>0?'REPULSIVE — energy hill':'no interaction');
+    document.getElementById('rtype34').style.color=(S.q1*S.q2<0)?'var(--blue)':'var(--red)';
+    var mag=Math.abs(S.q1*S.q2)/0.4; calc.setMathBounds({left:0,right:6,bottom:-mag,top:mag});
+    document.getElementById('q1_34').setAttribute('fill',S.q1>=0?'var(--red)':'var(--blue)'); document.getElementById('t1_34').textContent=S.q1>=0?'+':'−';
+    document.getElementById('q2_34').setAttribute('fill',S.q2>=0?'var(--red)':'var(--blue)'); document.getElementById('t2_34').textContent=S.q2>=0?'+':'−';
+    var cxL=150-Math.min(80,S.r*20), cxR=150+Math.min(80,S.r*20);
+    document.getElementById('q1_34').setAttribute('cx',cxL); document.getElementById('t1_34').setAttribute('x',cxL-5);
+    document.getElementById('q2_34').setAttribute('cx',cxR); document.getElementById('t2_34').setAttribute('x',cxR-5);
+  }
+  SimCore.wireSliders(calc,S,{q1:'q_1',q2:'q_2',r:'R_s'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>

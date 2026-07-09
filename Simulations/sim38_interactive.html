@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirchhoff's Rules — Interactive Simulation</title>
+<script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
+<link rel="stylesheet" href="sim-style.css">
+</head>
+<body>
+<header>
+  <h1>Physics 4B · Simulation 38 — Kirchhoff's Rules (Two-Loop Circuit)</h1>
+  <div class="sub">Interactive companion to the Professor Ahsan tutorials · <a href="index.html">all simulations</a> · <a href="../index.html">course hub</a></div>
+</header>
+<main>
+  <div class="phys">
+    <h2>What you are looking at</h2>
+    <p>Two batteries drive a circuit with three branches meeting at a junction. The <b>junction rule</b> says current in = current out
+    (<span class="eq">I&#8323; = I&#8321;+I&#8322;</span>), and the <b>loop rule</b> says voltage changes around any closed loop sum to zero. Solving the two
+    loop equations gives all three branch currents. A negative current just means it actually flows opposite to the arrow you drew.</p>
+  </div>
+  <div class="grid">
+    <div class="left">
+      <div class="panel">
+        <h3>The two-loop circuit</h3>
+        <div class="schematic">
+          <svg class="scene" width="320" height="200" viewBox="0 0 320 200">
+            <rect x="30" y="40" width="120" height="120" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <rect x="150" y="40" width="140" height="120" fill="none" stroke="var(--ink)" stroke-width="2"/>
+            <line x1="18" y1="90" x2="42" y2="90" stroke="var(--red)" stroke-width="2"/><text x="8" y="86" font-size="11" fill="var(--red)">ε₁</text>
+            <line x1="278" y1="90" x2="302" y2="90" stroke="var(--red)" stroke-width="2"/><text x="292" y="86" font-size="11" fill="var(--red)">ε₂</text>
+            <rect x="72" y="32" width="30" height="14" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="78" y="43" font-size="9">R₁</text>
+            <rect x="200" y="32" width="30" height="14" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="206" y="43" font-size="9">R₂</text>
+            <rect x="143" y="88" width="14" height="30" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="158" y="106" font-size="9">R₃</text>
+            <text id="a1_38" x="60" y="175" font-size="11" fill="var(--blue)">I₁</text>
+            <text id="a3_38" x="160" y="140" font-size="11" fill="var(--purple)">I₃</text>
+            <text id="a2_38" x="230" y="175" font-size="11" fill="var(--green)">I₂</text>
+          </svg>
+          <div class="readouts">
+            <div class="r c-blue"><span class="k">I₁ (left loop)</span> = <span class="vb" id="rI1_38">–</span> A</div>
+            <div class="r c-green"><span class="k">I₂ (right loop)</span> = <span class="vb" id="rI2_38">–</span> A</div>
+            <div class="r c-purple"><span class="k">I₃ = I₁+I₂ (middle)</span> = <span class="vb" id="rI3_38">–</span> A</div>
+          </div>
+        </div>
+        <div class="cap">Both batteries push current toward the central R₃ branch; the junction rule ties the three currents together.</div>
+      </div>
+      <div class="panel">
+        <h3>Middle-branch current vs. ε&#8322;</h3>
+        <div id="calc" class="calc"></div>
+        <div class="cap">I₃ depends linearly on the right battery's emf. The dot marks your current ε₂.</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="panel">
+        <h3>What each plot shows</h3>
+        <ul class="legend"><li><span class="sw" style="border-color:var(--purple)"></span><span><b>I₃(ε₂)</b> — shared-branch current vs. right emf.</span></li></ul>
+        <h3>Play with the parameters</h3>
+        <div class="controls" id="controls">
+          <div class="ctl" data-var="e1" data-min="0" data-max="12" data-step="1" data-fixed="0"><div class="row"><label>emf ε&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="e2" data-min="0" data-max="12" data-step="1" data-fixed="0"><div class="row"><label>emf ε&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R1" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8321;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R2" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8322;</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="R3" data-min="1" data-max="10" data-step="1" data-fixed="0"><div class="row"><label>R&#8323;</label><span class="val"></span></div><input type="range"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qs">
+    <h2>Questions to explore</h2>
+    <ul>
+      <li><b>Predict</b><span class="tag">before you drag</span> If both batteries are equal, is the middle current larger or smaller than each branch current?</li>
+      <li><b>Manipulate</b><span class="tag">ε₂</span> Lower ε₂ to zero. Does any current reverse direction (go negative)?</li>
+      <li><b>Explain</b><span class="tag">junction rule</span> Why must I₃ equal I₁ + I₂ at the central node?</li>
+      <li><b>Calculate</b><span class="tag">loop rule</span> Write the two loop equations for ε₁=10, ε₂=6, R₁=R₂=R₃=2.</li>
+      <li><b>Extend</b><span class="tag">sign</span> What does a negative computed current physically mean?</li>
+    </ul>
+  </div>
+</main>
+<footer>Professor Ahsan approves of sliders. They are the only part of physics students may push without consequence.</footer>
+<script>
+(function(){
+  // Loops: e1 = I1 R1 + I3 R3 ; e2 = I2 R2 + I3 R3 ; I3 = I1 + I2
+  // Solve: substitute. Let a=R1,b=R2,c=R3.
+  function solve(e1,e2,a,b,c){
+    // e1 = I1 a + (I1+I2) c ; e2 = I2 b + (I1+I2) c
+    // [a+c, c][I1]   [e1]
+    // [c, b+c][I2] = [e2]
+    var A=a+c, B=c, C=c, D=b+c, det=A*D-B*C;
+    var I1=(e1*D-B*e2)/det, I2=(A*e2-C*e1)/det;
+    return [I1,I2,I1+I2];
+  }
+  var calc = SimCore.makeCalc('calc','ε₂ (V)','middle current I₃ (A)');
+  calc.setExpressions([
+    {id:'e1',latex:'E_1=10'}, {id:'R1',latex:'R_1=3'}, {id:'R2',latex:'R_2=3'}, {id:'R3',latex:'R_3=3'}, {id:'e2',latex:'E_2=6'},
+    {id:'den',latex:'D_e=(R_1+R_3)(R_2+R_3)-R_3^2', hidden:true, secret:true},
+    // I3 = I1+I2 ; from solution I1+I2 as function of E2 (linear)
+    {id:'cI',latex:'y=\\frac{E_1 R_2+x R_1}{D_e}\\left\\{0\\le x\\le12\\right\\}', color:'#7B4FA0', lineWidth:2.5},
+    {id:'dot',latex:'\\left(E_2,\\frac{E_1 R_2+E_2 R_1}{D_e}\\right)', color:'#7B4FA0', pointSize:12}
+  ]);
+  var S={e1:10,e2:6,R1:3,R2:3,R3:3};
+  function update(){
+    var r=solve(S.e1,S.e2,S.R1,S.R2,S.R3);
+    document.getElementById('rI1_38').textContent=r[0].toFixed(2);
+    document.getElementById('rI2_38').textContent=r[1].toFixed(2);
+    document.getElementById('rI3_38').textContent=r[2].toFixed(2);
+    calc.setMathBounds({left:0,right:12,bottom:-1,top:6});
+  }
+  SimCore.wireSliders(calc,S,{e1:'E_1',e2:'E_2',R1:'R_1',R2:'R_2',R3:'R_3'},function(v){ update(); });
+  update();
+})();
+</script>
+</body>
+</html>
