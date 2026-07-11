@@ -33,8 +33,8 @@
             <text x="46" y="100" font-size="11" fill="var(--green)">B ⊗ (into page)</text>
             <path id="path40" d="M40,100 L280,100" fill="none" stroke="var(--accent-dk)" stroke-width="2.5"/>
             <circle id="p40" cx="40" cy="100" r="6" fill="var(--purple)"/>
-            <line id="fe40" x1="60" y1="100" x2="60" y2="80" stroke="var(--red)" stroke-width="2.5" marker-end="url(#r40)"/>
-            <line id="fb40" x1="60" y1="100" x2="60" y2="120" stroke="var(--green)" stroke-width="2.5" marker-end="url(#g40)"/>
+            <line id="fe40" x1="60" y1="100" x2="60" y2="120" stroke="var(--red)" stroke-width="2.5" marker-end="url(#r40)"/>
+            <line id="fb40" x1="60" y1="100" x2="60" y2="80" stroke="var(--green)" stroke-width="2.5" marker-end="url(#g40)"/>
             <defs>
               <marker id="e40" markerWidth="7" markerHeight="7" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="var(--field)"/></marker>
               <marker id="r40" markerWidth="7" markerHeight="7" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="var(--red)"/></marker>
@@ -102,17 +102,17 @@
     document.getElementById('rsel40').textContent=msg;
     document.getElementById('rsel40').style.color=Math.abs(net)<tol?'var(--green)':'var(--accent-dk)';
     calc.setMathBounds({left:0,right:8,bottom:-10,top:12});
-    // schematic path: deflect based on net; positive net (qE>qvB) up toward + plate? E points down (from + top to -), qE on +charge is down.
-    // Keep pedagogical: net>0 -> curve up, net<0 -> curve down, ~0 straight.
-    var curve=Math.max(-40,Math.min(40,-net*4)); // net>0 electric wins -> toward - plate (down, +y screen)
+    // + plate on TOP, − plate on BOTTOM → E points down → electric force on +q is DOWN (toward − plate).
+    // Magnetic force qv×B (v→ +x, B into page) is UP. net = qE − qvB > 0 → electric wins → deflect DOWN.
+    var curve=Math.max(-40,Math.min(40,net*4)); // net>0 → toward − plate (down, +y screen)
     var d='M40,100', N=30;
     for(var i=1;i<=N;i++){ var xx=40+240*i/N, f=i/N, yy=100+curve*f*f; d+=' L'+xx.toFixed(1)+','+yy.toFixed(1); }
     document.getElementById('path40').setAttribute('d',d);
     document.getElementById('p40').setAttribute('cx',280); document.getElementById('p40').setAttribute('cy',100+curve);
     // force arrows sized
     var eL=Math.min(30,FE*3), bL=Math.min(30,FB*3);
-    var fe=document.getElementById('fe40'); fe.setAttribute('y2',100-eL);
-    var fb=document.getElementById('fb40'); fb.setAttribute('y2',100+bL);
+    var fe=document.getElementById('fe40'); fe.setAttribute('y2',100+eL);   /* electric force: down, toward − plate */
+    var fb=document.getElementById('fb40'); fb.setAttribute('y2',100-bL);   /* magnetic force: up, toward + plate  */
   }
   SimCore.wireSliders(calc,S,{E:'E',B:'B_f',v:'v_p'},function(v){ update(); });
   update();

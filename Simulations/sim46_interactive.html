@@ -103,10 +103,12 @@
   function setrod(x){ rodx=x; document.getElementById('rod46').setAttribute('x1',x); document.getElementById('rod46').setAttribute('x2',x);
     var half=Math.min(42,20+S.L*10); document.getElementById('vel46').setAttribute('x1',x); var vl=Math.min(50,S.v*8); document.getElementById('vel46').setAttribute('x2',x+vl); }
   SimCore.wireSliders(calc,S,{B:'B_f',L:'L_r',v:'v_p'},function(v){ update(); });
-  var timer=null, playing=false;
+  var anim=null, playing=false;
   function tick(){ rodx+=S.v*3; if(rodx>280){rodx=60;} setrod(rodx); }
-  document.getElementById('play').addEventListener('click',function(){ playing=!playing; this.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(tick,50); else clearInterval(timer); });
-  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); document.getElementById('play').textContent='▶ Play'; setrod(150); });
+  document.getElementById('play').addEventListener('click',function(){
+    if(playing){ playing=false; if(anim){anim.stop(); anim=null;} this.textContent='▶ Play'; }
+    else { playing=true; this.textContent='❚❚ Pause'; anim=SimCore.loop(tick,50); } });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; if(anim){anim.stop(); anim=null;} document.getElementById('play').textContent='▶ Play'; setrod(150); });
   update(); setrod(150);
 })();
 </script>

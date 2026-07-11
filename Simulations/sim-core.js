@@ -28,16 +28,28 @@
     });
     return sliders;
   }
-  /* Play / Pause / Reset tied to a time slider 'tvar'. opt.inc overrides the per-tick step. */
+  /* requestAnimationFrame ticker: calls fn roughly every ms milliseconds while the tab
+     is VISIBLE, and pauses automatically in hidden tabs (rAF never fires there).
+     Returns {stop} to cancel. Use this instead of setInterval for any animation. */
+  function loop(fn, ms){
+    var last=0, id=null, live=true, gap=ms||40;
+    function frame(t){ if(!live) return; if(t-last>=gap){ last=t; fn(); } id=requestAnimationFrame(frame); }
+    id=requestAnimationFrame(frame);
+    return { stop:function(){ live=false; if(id!==null) cancelAnimationFrame(id); } };
+  }
+  /* Play / Pause / Reset tied to a time slider 'tvar'. opt.inc overrides the per-tick step.
+     Runs on SimCore.loop, so playback halts in hidden tabs instead of burning CPU. */
   function playControls(sliders, tvar, opt){
     opt=opt||{};
-    var playing=false,timer=null, btn=document.getElementById('play'), rst=document.getElementById('reset');
+    var playing=false, anim=null, btn=document.getElementById('play'), rst=document.getElementById('reset');
     var label=opt.label||'▶ Play';
     function step(){ var s=sliders[tvar], mx=+s.input.max, inc=opt.inc || mx/70;
       var val=+s.input.value+inc; if(val>mx)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
-    if(btn) btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':label; if(playing)timer=setInterval(step,opt.ms||40); else clearInterval(timer); });
-    if(rst) rst.addEventListener('click',function(){ playing=false; clearInterval(timer); if(btn)btn.textContent=label;
+    function stop(){ playing=false; if(anim){anim.stop(); anim=null;} if(btn)btn.textContent=label; }
+    if(btn) btn.addEventListener('click',function(){
+      if(playing){ stop(); } else { playing=true; btn.textContent='❚❚ Pause'; anim=loop(step,opt.ms||40); } });
+    if(rst) rst.addEventListener('click',function(){ stop();
       Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
   }
-  global.SimCore={makeCalc:makeCalc, wireSliders:wireSliders, playControls:playControls};
+  global.SimCore={makeCalc:makeCalc, wireSliders:wireSliders, playControls:playControls, loop:loop};
 })(window);

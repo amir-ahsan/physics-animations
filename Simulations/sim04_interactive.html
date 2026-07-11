@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Work-Energy Theorem — Interactive Simulation</title>
 <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
 <link rel="stylesheet" href="sim-style.css">
 </head>
 <body>
@@ -152,25 +153,9 @@
     bar.setAttribute('y',(112-h).toFixed(1)); bar.setAttribute('height',h.toFixed(1));
   }
 
-  var LATEX={F0:'F_0',k:'k',xi:'x_i',xf:'x_f',m:'m',vi:'v_i',fp:'f_p'};
-  var sliders={};
-  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
-    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
-    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
-    input.addEventListener('input',function(){
-      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
-      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)});
-      if(v!=='fp') fit(); update();
-    });
-    if(out) out.textContent=S[v].toFixed(fx);
-  });
+  var sliders=SimCore.wireSliders(calc,S,{F0:'F_0',k:'k',xi:'x_i',xf:'x_f',m:'m',vi:'v_i',fp:'f_p'},function(v){ if(v!=='fp') fit(); update(); });
   fit(); update();
-
-  var playing=false, timer=null, btn=document.getElementById('play');
-  function step(){ var s=sliders.fp, val=+s.input.value+0.02; if(val>1)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
-  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,50); else clearInterval(timer); });
-  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
-    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+  SimCore.playControls(sliders,'fp',{inc:0.02,ms:50});
 })();
 </script>
 </body>

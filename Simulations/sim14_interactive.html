@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Infinite Square Well — Interactive Simulation</title>
 <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
 <link rel="stylesheet" href="sim-style.css">
 </head>
 <body>
@@ -136,16 +137,7 @@
     document.getElementById('wf14').setAttribute('points',pts);
   }
 
-  var LATEX={L:'L',n:'n'};
-  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
-    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
-    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v];
-    input.addEventListener('input',function(){
-      S[v]=+input.value; if(out) out.textContent=(+input.value).toFixed(fx);
-      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); fit(); update();
-    });
-    if(out) out.textContent=S[v].toFixed(fx);
-  });
+  SimCore.wireSliders(calc,S,{L:'L',n:'n'},function(v){ fit(); update(); });
   fit(); update();
 })();
 </script>

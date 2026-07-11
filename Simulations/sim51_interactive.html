@@ -98,8 +98,8 @@
     build(); draw();
   }
   SimCore.wireSliders(calc,S,{V:'V_g',T:'T_g',n:'n_m'},function(v){ update(); });
-  // gentle animation
-  var timer=setInterval(function(){ var sp=0.4+S.T*0.5;
+  // gentle animation (rAF: pauses automatically when the tab is hidden)
+  SimCore.loop(function(){ var sp=0.4+S.T*0.5;
     var box=document.getElementById('box51'); var bh=+box.getAttribute('height');
     mols.forEach(function(m){ m.x+=m.vx*sp*0.01; m.y+=m.vy*sp*0.01;
       if(m.x<0||m.x>1){m.vx*=-1; m.x=Math.max(0,Math.min(1,m.x));}

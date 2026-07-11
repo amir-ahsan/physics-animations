@@ -96,12 +96,13 @@
   }
   SimCore.wireSliders(calc,S,{I:'I_c',n:'n',A:'A_c'},function(v){ update(); });
   // animation: nudge carriers by drift speed
-  var timer=null, playing=false;
+  var anim=null, playing=false;
   function tick(){ var vd=S.I/(S.n*q*S.A);
     carriers.forEach(function(c){ c.x+=vd*3; if(c.x>300)c.x=22; }); draw(); }
-  document.getElementById('play').addEventListener('click',function(){ playing=!playing; this.textContent=playing?'❚❚ Pause':'▶ Play';
-    if(playing)timer=setInterval(tick,50); else clearInterval(timer); });
-  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer);
+  document.getElementById('play').addEventListener('click',function(){
+    if(playing){ playing=false; if(anim){anim.stop(); anim=null;} this.textContent='▶ Play'; }
+    else { playing=true; this.textContent='❚❚ Pause'; anim=SimCore.loop(tick,50); } });
+  document.getElementById('reset').addEventListener('click',function(){ playing=false; if(anim){anim.stop(); anim=null;}
     document.getElementById('play').textContent='▶ Play'; build(); draw(); });
   update();
 })();

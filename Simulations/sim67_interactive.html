@@ -42,6 +42,7 @@
           </svg>
           <div class="readouts">
             <div class="r c-accent"><span class="k">critical angle θ_c</span> = <span class="vb" id="rthc67">–</span></div>
+            <div class="r c-accent"><span class="k">transmitted fraction T</span> = <span class="vb" id="rT67">–</span></div>
             <div class="r vb" id="rstate67" style="opacity:.9">–</div>
           </div>
         </div>
@@ -50,15 +51,17 @@
       <div class="panel">
         <h3>Transmission vs. incidence angle</h3>
         <div id="calc" class="calc"></div>
-        <div class="cap">Fraction of light refracted out drops to zero at the critical angle, where reflection becomes total.</div>
+        <div class="cap">True Fresnel transmission. The solid curve is unpolarized light (average of the s and p dashed curves). Note the p-curve touching 1 at Brewster's angle (purple dashed) — and every curve plunging to exactly zero at θ_c.</div>
       </div>
     </div>
     <div class="right">
       <div class="panel">
         <h3>What each plot shows</h3>
         <ul class="legend">
-          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Transmitted</b> fraction.</span></li>
-          <li><span class="sw" style="border-color:var(--green)"></span><span><b>θ_c</b> — critical angle.</span></li>
+          <li><span class="sw" style="border-color:var(--accent)"></span><span><b>Unpolarized transmission</b> T = 1 − (R_s + R_p)/2, from the Fresnel equations.</span></li>
+          <li><span class="sw" style="border-color:var(--blue)"></span><span><b>s-polarized</b> T_s (dashed blue).</span></li>
+          <li><span class="sw" style="border-color:var(--red)"></span><span><b>p-polarized</b> T_p (dashed red) — reaches exactly 1 at Brewster's angle, arctan(n₂/n₁) (purple dashed).</span></li>
+          <li><span class="sw" style="border-color:var(--green)"></span><span><b>θ_c</b> — critical angle: all transmission dies here, not gradually but with a vertical plunge.</span></li>
         </ul>
         <h3>Play with the parameters</h3>
         <div class="controls" id="controls">
@@ -87,14 +90,35 @@
   calc.setExpressions([
     {id:'n1',latex:'n_1=1.5'}, {id:'n2',latex:'n_2=1'}, {id:'th1',latex:'\\theta_1=30'},
     {id:'thc',latex:'\\theta_c=\\frac{180}{\\pi}\\arcsin\\left(\\frac{n_2}{n_1}\\right)', hidden:true, secret:true},
-    // simple transmission model: 1 below critical tapering to 0 at θ_c
-    {id:'cT',latex:'y=\\left\\{x<\\theta_c:\\cos\\left(\\frac{\\pi}{2}\\cdot\\frac{x}{\\theta_c}\\right)^{0.5},0\\right\\}\\left\\{0\\le x\\le89\\right\\}', color:'#B5793B', lineWidth:2.5},
+    // TRUE Fresnel coefficients for internal incidence (n1 → n2).
+    // cos θ2 from Snell; beyond θ_c it turns imaginary and Desmos simply stops the curve there.
+    {id:'c1f',latex:'C_1(x)=\\cos\\left(\\frac{\\pi x}{180}\\right)', hidden:true, secret:true},
+    {id:'c2f',latex:'C_2(x)=\\sqrt{1-\\left(\\frac{n_1}{n_2}\\sin\\left(\\frac{\\pi x}{180}\\right)\\right)^2}', hidden:true, secret:true},
+    {id:'Rsf',latex:'R_s(x)=\\left(\\frac{n_1C_1(x)-n_2C_2(x)}{n_1C_1(x)+n_2C_2(x)}\\right)^2', hidden:true, secret:true},
+    {id:'Rpf',latex:'R_p(x)=\\left(\\frac{n_1C_2(x)-n_2C_1(x)}{n_1C_2(x)+n_2C_1(x)}\\right)^2', hidden:true, secret:true},
+    {id:'cTs',latex:'y=1-R_s(x)\\left\\{0\\le x\\le89\\right\\}', color:'#2f6fb0', lineWidth:1.4, lineStyle:Desmos.Styles.DASHED},
+    {id:'cTp',latex:'y=1-R_p(x)\\left\\{0\\le x\\le89\\right\\}', color:'#c0392b', lineWidth:1.4, lineStyle:Desmos.Styles.DASHED},
+    {id:'cT',latex:'y=1-\\frac{R_s(x)+R_p(x)}{2}\\left\\{0\\le x\\le89\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'cT0',latex:'y=0\\left\\{\\theta_c\\le x\\le89\\right\\}', color:'#B5793B', lineWidth:2.5},
+    {id:'mB',latex:'x=\\frac{180}{\\pi}\\arctan\\left(\\frac{n_2}{n_1}\\right)', color:'#7B4FA0', lineWidth:1.2, lineStyle:Desmos.Styles.DASHED},
+    {id:'dotT',latex:'(0,1)', color:'#7B4FA0', pointSize:12},
     {id:'mc',latex:'x=\\theta_c', color:'#2e8b57', lineWidth:1.6, lineStyle:Desmos.Styles.DASHED}
   ]);
   var S={n1:1.5,n2:1,th1:30};
+  function fresnelT(th){   // unpolarized transmittance, internal incidence
+    var c1=Math.cos(th*Math.PI/180), sn=S.n1/S.n2*Math.sin(th*Math.PI/180);
+    if(sn>=1) return 0;
+    var c2=Math.sqrt(1-sn*sn);
+    var rs=Math.pow((S.n1*c1-S.n2*c2)/(S.n1*c1+S.n2*c2),2);
+    var rp=Math.pow((S.n1*c2-S.n2*c1)/(S.n1*c2+S.n2*c1),2);
+    return 1-(rs+rp)/2;
+  }
   function update(){
     var ratio=S.n2/S.n1;
     var thc=ratio<=1?Math.asin(ratio)*180/Math.PI:90;
+    var T=fresnelT(S.th1);
+    document.getElementById('rT67').textContent=(T*100).toFixed(1)+' %';
+    calc.setExpression({id:'dotT',latex:'('+S.th1+','+T.toFixed(4)+')'});
     document.getElementById('rthc67').textContent=(ratio<1?thc.toFixed(1)+' °':'none (n₂≥n₁)');
     var beyond=S.th1>=thc && ratio<1;
     document.getElementById('rstate67').textContent = beyond?'TOTAL INTERNAL REFLECTION (light trapped)':(Math.abs(S.th1-thc)<1.5?'at the critical angle (grazing)':'refracts out (partial reflection)');

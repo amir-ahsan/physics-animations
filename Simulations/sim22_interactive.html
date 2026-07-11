@@ -47,7 +47,7 @@
       <div class="panel">
         <h3>Position vs. time</h3>
         <div id="calc" class="calc"></div>
-        <div class="cap">Each line is a cart's position; they meet at the collision, then continue with their new velocities (or together, if inelastic).</div>
+        <div class="cap">Each line tracks a cart's CENTER. The carts have real length, so the lines kink at the collision while still a cart-length apart — bumpers touch; centers never do. After the kink they run with the new velocities (parallel and touching, if inelastic).</div>
       </div>
     </div>
 
@@ -101,12 +101,23 @@
     if(elastic){ return [((m1-m2)*u1+2*m2*u2)/(m1+m2), ((m2-m1)*u2+2*m1*u1)/(m1+m2)]; }
     var vf=(m1*u1+m2*u2)/(m1+m2); return [vf,vf];
   }
+  // FINITE CART LENGTH: each cart is 40 px wide on a 270 px / 16-unit track (16.875 px per
+  // unit), i.e. a half-width of 1.185 units. Carts collide bumper-to-bumper when their
+  // CENTERS are still D0 = 2.37 units apart — never when the centers coincide.
+  var D0=2.37;
   function setCurves(){
-    var f=finals(); tcol=3;
-    // before: x = x0 + u t ; after: x_col + vf (t - tcol). Start positions -6 and +6.
+    // centers start at -6 and +6 (12 apart); the 12 - D0 gap closes at the relative speed:
+    // tcol = (12 - D0) / (v1 - v2). If v1 <= v2 (or they'd meet after the window): no collision.
+    var f=finals(), rel=S.v1-S.v2;
+    tcol = rel>0.05 ? (12-D0)/rel : Infinity;
     var f2=function(n){return n.toFixed(3);};
-    calc.setExpression({id:'x1',latex:'x_1(x)=\\left\\{x<'+tcol+':-6+'+f2(S.v1)+'x,'+f2(-6+S.v1*tcol)+'+'+f2(f[0])+'(x-'+tcol+')\\right\\}'});
-    calc.setExpression({id:'x2',latex:'x_2(x)=\\left\\{x<'+tcol+':6+'+f2(S.v2)+'x,'+f2(6+S.v2*tcol)+'+'+f2(f[1])+'(x-'+tcol+')\\right\\}'});
+    if(tcol<=6){
+      calc.setExpression({id:'x1',latex:'x_1(x)=\\left\\{x<'+f2(tcol)+':-6+'+f2(S.v1)+'x,'+f2(-6+S.v1*tcol)+'+'+f2(f[0])+'(x-'+f2(tcol)+')\\right\\}'});
+      calc.setExpression({id:'x2',latex:'x_2(x)=\\left\\{x<'+f2(tcol)+':6+'+f2(S.v2)+'x,'+f2(6+S.v2*tcol)+'+'+f2(f[1])+'(x-'+f2(tcol)+')\\right\\}'});
+    } else {
+      calc.setExpression({id:'x1',latex:'x_1(x)=-6+'+f2(S.v1)+'x'});
+      calc.setExpression({id:'x2',latex:'x_2(x)=6+'+f2(S.v2)+'x'});
+    }
     calc.setExpression({id:'c1',latex:'x_1(x)\\left\\{0\\le x\\le6\\right\\}', color:'#B5793B', lineWidth:2.5});
     calc.setExpression({id:'c2',latex:'x_2(x)\\left\\{0\\le x\\le6\\right\\}', color:'#2f6fb0', lineWidth:2.5});
     calc.setExpression({id:'d1',latex:'(t,x_1(t))', color:'#B5793B'});
@@ -122,9 +133,11 @@
     document.getElementById('rv2f').textContent=f[1].toFixed(2);
     document.getElementById('rpb').textContent=pb.toFixed(1); document.getElementById('rpa').textContent=pa.toFixed(1);
     document.getElementById('rkb').textContent=kb.toFixed(1); document.getElementById('rka').textContent=ka.toFixed(1);
-    document.getElementById('rmode22').textContent=elastic?'ELASTIC — kinetic energy conserved':'INELASTIC — carts stick, energy lost';
+    var noCol = !(isFinite(tcol) && tcol<=6);
+    document.getElementById('rmode22').textContent=(elastic?'ELASTIC — kinetic energy conserved':'INELASTIC — carts stick, energy lost')
+      + (noCol?' · (no collision: cart 1 never catches cart 2)':' · collision at t = '+tcol.toFixed(2)+' s');
     // schematic carts: map world position [-8,8] to screen [30,300]. positions:
-    var x1=posAt([-8,S.v1],f[0],S.t*1.0), x2=posAt([8,S.v2],f[1],S.t*1.0);
+    var x1=posAt([-6,S.v1],f[0],S.t*1.0), x2=posAt([6,S.v2],f[1],S.t*1.0);
     function mp(x){ return 30+(x+8)/16*270; }
     document.getElementById('cart1').setAttribute('x',(mp(x1)-20).toFixed(1)); document.getElementById('c1lab').setAttribute('x',(mp(x1)-8).toFixed(1));
     document.getElementById('cart2').setAttribute('x',(mp(x2)-20).toFixed(1)); document.getElementById('c2lab').setAttribute('x',(mp(x2)-8).toFixed(1));

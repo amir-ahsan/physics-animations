@@ -91,7 +91,7 @@
   }
   SimCore.wireSliders(calc,S,{T:'T_g',m:'m_g'},function(v){ update(); });
   build();
-  setInterval(function(){ var sp=Math.sqrt(S.T/S.m);
+  SimCore.loop(function(){ var sp=Math.sqrt(S.T/S.m);   /* rAF: pauses in hidden tabs */
     mols.forEach(function(m){ m.x+=m.vx*sp*0.012; m.y+=m.vy*sp*0.02;
       if(m.x<0||m.x>1){m.vx*=-1;m.x=Math.max(0,Math.min(1,m.x));}
       if(m.y<0||m.y>1){m.vy*=-1;m.y=Math.max(0,Math.min(1,m.y));} }); draw(); },50);

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Fall — Interactive Simulation</title>
 <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
 <link rel="stylesheet" href="sim-style.css">
 </head>
 <body>
@@ -130,20 +131,10 @@
     va.setAttribute('x1',55); va.setAttribute('y1',sy); va.setAttribute('x2',55); va.setAttribute('y2',(sy-vl).toFixed(1));
     va.setAttribute('opacity',Math.abs(v)<0.1?0:1);
   }
-  var LATEX={y0:'y_0',v0:'v_0',g:'g',t:'t'}, sliders={};
-  [].slice.call(document.querySelectorAll('.ctl')).forEach(function(c){
-    var v=c.dataset.var, input=c.querySelector('input'), out=c.querySelector('.val'), fx=+c.dataset.fixed;
-    input.min=+c.dataset.min; input.max=+c.dataset.max; input.step=+c.dataset.step; input.value=S[v]; sliders[v]={input:input,def:S[v]};
-    input.addEventListener('input',function(){ S[v]=+input.value; if(out)out.textContent=(+input.value).toFixed(fx);
-      calc.setExpression({id:v,latex:LATEX[v]+'='+(+input.value)}); if(v!=='t'){var Tf=fit(); sliders.t.input.max=Math.max(0.5,Tf.toFixed(2));} update(); });
-    if(out)out.textContent=S[v].toFixed(fx);
-  });
+  var sliders=SimCore.wireSliders(calc,S,{y0:'y_0',v0:'v_0',g:'g',t:'t'},function(v){
+    if(v!=='t'){var Tf=fit(); sliders.t.input.max=Math.max(0.5,Tf.toFixed(2));} update(); });
   var Tf0=fit(); sliders.t.input.max=Tf0.toFixed(2); update();
-  var playing=false,timer=null,btn=document.getElementById('play');
-  function step(){ var s=sliders.t,val=+s.input.value+(+s.input.max)/70; if(val>+s.input.max)val=0; s.input.value=val; s.input.dispatchEvent(new Event('input')); }
-  btn.addEventListener('click',function(){ playing=!playing; btn.textContent=playing?'❚❚ Pause':'▶ Play'; if(playing)timer=setInterval(step,40); else clearInterval(timer); });
-  document.getElementById('reset').addEventListener('click',function(){ playing=false; clearInterval(timer); btn.textContent='▶ Play';
-    Object.keys(sliders).forEach(function(v){ sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input')); }); });
+  SimCore.playControls(sliders,'t',{ms:40});
 })();
 </script>
 </body>

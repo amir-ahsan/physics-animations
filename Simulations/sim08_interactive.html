@@ -7,6 +7,7 @@
 <!-- Desmos API. The key below is Desmos's public demo key, fine for classroom use.
      For a permanent deployment, request a free key at https://www.desmos.com/api and swap it in. -->
 <script src="https://www.desmos.com/api/v1.11/calculator.js?apiKey=c34186d346d9455cbb18395381c5afc1"></script>
+<script src="sim-core.js"></script>
 <style>
   :root{
     --paper:#FBF6EA; --board:#2F4538; --chalk:#F2EEDC;
@@ -169,7 +170,7 @@
             <div class="row"><label>Frequency f</label><span class="val"></span></div>
             <input type="range"><div class="hint">Faster change → larger emf (&#969; = 2&#960;f).</div>
           </div>
-          <div class="ctl" data-var="D" data-min="0" data-max="90" data-step="1" data-fixed="0">
+          <div class="ctl" data-var="D" data-min="0" data-max="90" data-step="1" data-fixed="0" data-suffix="°">
             <div class="row"><label>Coil tilt &#952; (degrees)</label><span class="val"></span></div>
             <input type="range"><div class="hint">Tilts the area vector away from B.</div>
           </div>
@@ -276,42 +277,15 @@
   }
 
   // --- wire plain-language HTML sliders to Desmos variables ---
-  var LATEX = {N:'N', A:'A', B0:'B_0', f:'f', D:'D', t:'t'};
-  var ctls = [].slice.call(document.querySelectorAll('.ctl'));
-  var sliders = {};
-  ctls.forEach(function(c){
-    var v=c.dataset.var, min=+c.dataset.min, max=+c.dataset.max, step=+c.dataset.step, fx=+c.dataset.fixed;
-    var input=c.querySelector('input'), out=c.querySelector('.val');
-    input.min=min; input.max=max; input.step=step;
-    input.value=S[v]; sliders[v]={input:input,out:out,fixed:fx,def:S[v]};
-    input.addEventListener('input', function(){
-      var val=+input.value; S[v]=val;
-      out.textContent = val.toFixed(fx) + (v==='D'?'°':'');
-      calc.setExpression({id:v, latex:LATEX[v]+'='+val});
-      if(v!=='t') fitWindow();
-      updateReadouts(); updateScene();
-    });
-    out.textContent = S[v].toFixed(fx) + (v==='D'?'°':'');
+  var sliders = SimCore.wireSliders(calc, S, {N:'N', A:'A', B0:'B_0', f:'f', D:'D', t:'t'}, function(v){
+    if(v!=='t') fitWindow();
+    updateReadouts(); updateScene();
   });
 
   fitWindow(); updateReadouts(); updateScene();
 
   // --- animate time ---
-  var playing=false, timer=null, btn=document.getElementById('play');
-  function step(){
-    var s=sliders.t, val=+s.input.value + 0.06; if(val>12) val=0;
-    s.input.value=val; s.input.dispatchEvent(new Event('input'));
-  }
-  btn.addEventListener('click', function(){
-    playing=!playing; btn.textContent = playing ? '❚❚ Pause' : '▶ Play';
-    if(playing){ timer=setInterval(step, 40); } else { clearInterval(timer); }
-  });
-  document.getElementById('reset').addEventListener('click', function(){
-    playing=false; clearInterval(timer); btn.textContent='▶ Play';
-    Object.keys(sliders).forEach(function(v){
-      sliders[v].input.value=sliders[v].def; sliders[v].input.dispatchEvent(new Event('input'));
-    });
-  });
+  SimCore.playControls(sliders,'t',{inc:0.06,ms:40});
 })();
 </script>
 </body>

@@ -98,7 +98,9 @@
   function update(){
     var w=Math.sqrt(S.k/S.m), q=S.ph*Math.PI/180;
     var x=S.A*Math.cos(w*S.t+q), v=-S.A*w*Math.sin(w*S.t+q), a=-S.A*w*w*Math.cos(w*S.t+q);
-    calc.setExpression({id:'w',latex:'w='+w.toFixed(4)}); fit();
+    calc.setExpression({id:'w',latex:'w='+w.toFixed(4)});
+    calc.setExpression({id:'ph',latex:'q='+q.toFixed(4)});   /* Desmos needs the phase in RADIANS */
+    fit();
     document.getElementById('rx30').textContent=x.toFixed(2);
     document.getElementById('rv30').textContent=v.toFixed(2);
     document.getElementById('ra30').textContent=a.toFixed(2);
@@ -110,7 +112,7 @@
     var vv=document.getElementById('vv30'), vl=Math.max(-45,Math.min(45,v*8));
     vv.setAttribute('x1',mx); vv.setAttribute('y1',62); vv.setAttribute('x2',(mx+vl).toFixed(1)); vv.setAttribute('y2',62); vv.setAttribute('opacity',Math.abs(v)<0.05?0:1);
   }
-  var sliders=SimCore.wireSliders(calc,S,{A:'A',ph:'q'},function(v){ update(); });
+  var sliders=SimCore.wireSliders(calc,S,{A:'A'},function(v){ update(); });   /* ph converted to radians inside update() */
   update();
   SimCore.playControls(sliders,'t',{});
 })();
