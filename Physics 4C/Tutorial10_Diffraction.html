@@ -777,10 +777,23 @@ const EXAMPLES = [
    { say:"Diffraction: interference's confession that even a SINGLE opening cannot cast a clean shadow. Every point across a slit is a Huygens source, and the slit interferes with ITSELF. The astonishing headline: a slit of width a throws its first DARKNESS at sine theta equals lambda over a — the narrower the slit, the WIDER the spread. Squeeze light, and it splays.",
      pose:'talk',
      board:['a\\sin\\theta = m\\lambda\\ \\ (m = 1,2,\\ldots:\\ \\text{DARK fringes})',
-            {t:'Narrower slit → wider pattern. Note: this formula gives MINIMA (contrast the double slit!).'}] },
+            {t:'Narrower slit → wider pattern. Note: this formula gives MINIMA (contrast the double slit!).'}],
+     action(c){
+       dashLine(c, Math.PI,0, Math.PI,0.55, {color:RED});
+       dashLine(c, -Math.PI,0, -Math.PI,0.55, {color:RED});
+       label(c, 3.3,0.5, 'first darkness: a sinθ = λ', {fs:12, color:RED, italic:true});
+       label(c, -9.9,0.9, 'squeeze the slit → the crown widens', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"The full portrait, derived by honest integration in Example 2, is the sinc-squared curve on the stage: intensity I-max times sine of beta over two, over beta over two, all squared — a broad central crown flanked by feeble shoulders, the first only four and a half per cent of the peak. The central maximum is DOUBLE the width of every side fringe: the single slit's fingerprint.",
      pose:'write',
-     board:['I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2, \\qquad \\beta = \\frac{2\\pi a\\sin\\theta}{\\lambda}'] },
+     board:['I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2, \\qquad \\beta = \\frac{2\\pi a\\sin\\theta}{\\lambda}'],
+     action(c){
+       arrow(c, -Math.PI,0.72, Math.PI,0.72, {color:GREEN, w:2, head:7});
+       arrow(c, Math.PI,0.72, -Math.PI,0.72, {color:GREEN, w:2, head:7});
+       label(c, -1.7,0.78, 'double width', {fs:11.5, color:GREEN, italic:true});
+       dashLine(c, 3.5,0.045, 9.8,0.045, {color:PURPLE});
+       label(c, 5.4,0.14, 'shoulders: 4.5% of the peak', {fs:11.5, color:PURPLE, italic:true});
+     } },
    { say:"The diffraction GRATING multiplies the double slit to thousands of slits: same bright-fringe condition, d sine theta equals m lambda, but the maxima sharpen into needles — the more slits conspire, the more jealously they cancel everything off-peak. Sharp needles are what a spectroscopist calls RESOLUTION, and the resolving power is simply R equals m N: order times illuminated lines.",
      pose:'point',
      board:['d\\sin\\theta = m\\lambda\\ (\\text{maxima}), \\qquad R = \\frac{\\lambda}{\\Delta\\lambda} = mN'],
@@ -792,15 +805,53 @@ const EXAMPLES = [
        textAt(c, -6.3,1.05, 'many slits: needles under the envelope', {fs:11.5, italic:true, anchor:'middle'});
      } },
    { say:"Circular apertures — pupils, lenses, telescope mirrors — diffract too, wrapping the pattern into the AIRY disc, with the first dark ring at 1.22 lambda over D. RAYLEIGH'S CRITERION then rules all optics: two sources are just resolved when one's peak lands on the other's first dark ring. No polish, no engineering, no expense evades it — only a bigger aperture or a shorter wavelength.",
-     pose:'write',
-     board:['\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}\\ \\ (\\text{Rayleigh: the diffraction limit})'] },
+     pose:'write', solo:true,
+     board:['\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}\\ \\ (\\text{Rayleigh: the diffraction limit})'],
+     action(c){
+       const {M}=c;
+       const hump=(x0,col)=>{ const pts=[]; for(let i=0;i<=80;i++){const x=-6+12*i/80;
+         pts.push(M.X(x+x0)+','+M.Y(0.72*sinc2((x)*0.85)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':2.2},c.svg); };
+       hump(-1.85,GOLD); hump(1.85,BLUE);
+       const pts=[]; for(let i=0;i<=100;i++){const x=-8.5+17*i/100;
+         pts.push(M.X(x)+','+M.Y(0.72*sinc2((x+1.85)*0.85)+0.72*sinc2((x-1.85)*0.85)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GREEN,'stroke-width':2.5,'stroke-dasharray':'7,5'},c.svg);
+       label(c, -0.9,1.02, 'the just-visible dip', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, -9.9,0.25, 'peak on first dark ring:', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -9.9,0.14, '“just resolved”', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Diffraction sets the melancholy, magnificent rule: no image can be sharper than the wavelength allows, no matter the craftsmanship or the budget. It is the universe’s resolution limit — the fine print on every eye, telescope, and microscope. And yet within that limit we resolved moons of Jupiter, then galaxies, then atoms. A boundary, properly understood, is an invitation.",
-     pose:'think',
-     board:[{t:'1.22 λ/D is the universe’s fine print. We read it — then built around it, all the way to atoms.'}] },
+     pose:'think', solo:true,
+     board:[{t:'1.22 λ/D is the universe’s fine print. We read it — then built around it, all the way to atoms.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(-6.4), cy:M.Y(0.62), r:8, fill:GOLD},c.svg);
+       el('circle',{cx:M.X(-4.9), cy:M.Y(0.62), r:8, fill:GOLD},c.svg);
+       label(c, -7.6,0.36, 'near: two headlights', {fs:11.5, color:'#7A5A28', italic:true});
+       el('ellipse',{cx:M.X(4.9), cy:M.Y(0.62), rx:22, ry:13, fill:GOLD, opacity:.55},c.svg);
+       label(c, 3.1,0.36, 'past 10 km: one blur', {fs:11.5, color:'#7A5A28', italic:true});
+       arrow(c, -3.0,0.62, 1.8,0.62, {color:'#8A7D60', w:2.5, label:'distance', fs:12});
+       label(c, -6.4,0.06, 'no polish evades it — only a bigger aperture or a bluer photon', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"And at the smallest scales, BRAGG turns diffraction into a ruler for atoms: X-rays reflecting off crystal planes a distance d apart interfere constructively when 2 d sine theta equals m lambda — the law that read the structure of salt, of silicon, and of DNA itself. Strategy: minima for one slit, maxima for many; amplitudes before intensities; and 1.22 lambda over D whenever anything round looks at anything far. To the examples.",
      pose:'excited',
      board:['2d\\sin\\theta = m\\lambda\\ \\ (\\text{Bragg: }\\theta\\text{ measured from the PLANES})',
-            {t:'Strategy: single slit → dark; grating → bright; round aperture → 1.22λ/D; crystals → Bragg.'}] },
+            {t:'Strategy: single slit → dark; grating → bright; round aperture → 1.22λ/D; crystals → Bragg.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       [0.62,0.30].forEach(y=>{ for(let i=0;i<11;i++)
+         el('circle',{cx:M.X(-7.5+i*1.5), cy:M.Y(y), r:5, fill:'#8A5A24'},c.svg);
+         el('line',{x1:M.X(-8.2),y1:M.Y(y),x2:M.X(8.2),y2:M.Y(y),stroke:'#D9CDB4','stroke-width':1.5},c.svg); });
+       arrow(c, -6.6,1.0, -2.3,0.635, {color:GOLD, w:2.2});
+       arrow(c, -2.3,0.635, 2.0,1.0, {color:GOLD, w:2.2});
+       arrow(c, -6.0,1.06, -1.55,0.315, {color:RED, w:2.2});
+       arrow(c, -1.55,0.315, 2.9,1.06, {color:RED, w:2.2});
+       label(c, -1.3,0.42, 'extra path: 2d sinθ', {fs:11.5, color:RED, italic:true});
+       label(c, 4.0,0.44, 'd', {fs:13, color:'#7A5A28', italic:true});
+       dashLine(c, 3.7,0.3, 3.7,0.62, {});
+       label(c, -8.0,0.04, 'atomic planes as mirrors: θ from the PLANES — the crystallographers insist', {fs:11, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

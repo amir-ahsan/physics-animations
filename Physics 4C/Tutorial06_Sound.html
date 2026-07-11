@@ -783,11 +783,34 @@ const EXAMPLES = [
   steps:[
    { say:"Sound: the travelling wave of last tutorial, now running through AIR as ripples of pressure. Its speed is set entirely by the medium — root of gamma R T over M for an ideal gas — about three hundred and forty-three metres per second at room temperature, rising with the square root of the kelvin temperature and caring nothing for the loudness or pitch of the message.",
      pose:'talk',
-     board:['v = \\sqrt{\\frac{\\gamma RT}{M}} \\approx 343\\ \\mathrm{m/s}\\ (20^{\\circ}\\mathrm C), \\qquad v \\propto \\sqrt{T}'] },
+     board:['v = \\sqrt{\\frac{\\gamma RT}{M}} \\approx 343\\ \\mathrm{m/s}\\ (20^{\\circ}\\mathrm C), \\qquad v \\propto \\sqrt{T}'],
+     action(c){
+       const {M}=c;
+       for(const pt of [[7.6,2.2],[8.4,1.4],[9.3,2.6],[8.9,0.6],[7.9,-0.4],[9.6,1.6]])
+         el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:4, fill:BLUE},c.svg);
+       label(c, 7.4,3.4, 'carried by collisions:', {fs:12, color:'#1D4568', italic:true});
+       label(c, 7.4,-1.4, 'hotter → livelier → faster (∝√T)', {fs:12, color:'#8A5A24', italic:true});
+       arrow(c, 4.6,0, 6.4,0, {color:GOLD, w:2.5, label:'v', fs:13});
+     } },
    { say:"Loudness is INTENSITY — power per area — and a point source spreads its power over spheres: I equals P over 4 pi r squared, the inverse square law. Because ears work in ratios, we measure in DECIBELS: beta equals ten log I over I-nought, with the reference ten-to-the-minus-12 watts per square metre at the threshold of hearing.",
      pose:'write',
      board:['I = \\frac{P}{4\\pi r^2}, \\qquad \\beta = 10\\log\\frac{I}{I_0}, \\quad I_0 = 10^{-12}\\ \\mathrm{W/m^2}',
-            {t:'dB changes depend only on RATIOS: ×10 in I ⇒ +10 dB; ×2 ⇒ +3 dB.'}] },
+            {t:'dB changes depend only on RATIOS: ×10 in I ⇒ +10 dB; ×2 ⇒ +3 dB.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(2.6), cy:M.Y(0.6), r:6, fill:'#5C4B30'},c.svg);
+       el('circle',{cx:M.X(2.6), cy:M.Y(0.6), r:1.1*M.s, fill:'none', stroke:GOLD,'stroke-width':2.5,'stroke-dasharray':'6,5'},c.svg);
+       el('circle',{cx:M.X(2.6), cy:M.Y(0.6), r:2.2*M.s, fill:'none', stroke:GOLD,'stroke-width':2,'stroke-dasharray':'6,5'},c.svg);
+       label(c, 3.0,1.7, 'r', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 3.4,2.9, '2r: I ÷ 4 (−6 dB)', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.6,-2.5, 'same power, bigger sphere', {fs:12, color:'#7A5A28', italic:true});
+       const rungs=[['whisper 30',-1.6],['talk 60',0.0],['concert 96',1.6],['pain 120',3.2]];
+       rungs.forEach(([t2,y])=>{ el('line',{x1:M.X(7.6),y1:M.Y(y),x2:M.X(9.4),y2:M.Y(y),stroke:'#8A5A24','stroke-width':3},c.svg);
+                                 label(c, 9.6,y-0.1, t2, {fs:11.5, color:'#7A5A28'}); });
+       el('line',{x1:M.X(7.6),y1:M.Y(-2.2),x2:M.X(7.6),y2:M.Y(3.8),stroke:'#8A5A24','stroke-width':2},c.svg);
+       label(c, 6.4,-3.3, 'each +10 dB: ×10 the power — the ladder hides violence', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Pipes are strings for air. OPEN ends host antinodes, CLOSED ends host nodes. Open-open pipes fit half-wavelengths and sound every harmonic, f-n equals n v over 2 L; open-closed pipes fit QUARTER wavelengths and sound only the ODD harmonics, f-n equals n v over 4 L. Same length, different boundary, an octave apart — flute and clarinet, in one formula.",
      solo:true, pose:'point',
      board:['\\text{open–open: } f_n = \\frac{nv}{2L}\\ (n=1,2,3\\ldots) \\qquad \\text{open–closed: } f_n = \\frac{nv}{4L}\\ (n=1,3,5\\ldots)'],
@@ -801,14 +824,52 @@ const EXAMPLES = [
    { say:"Motion bends pitch: the DOPPLER effect. One formula rules all four cases — f-observed equals f-source times v plus-or-minus v-observer, over v minus-or-minus v-source — and the signs are chosen by one honest question per motion: does it bring the parties TOGETHER, raising the pitch, or apart, lowering it? Ask the question; never memorise the matrix.",
      pose:'write',
      board:['f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}',
-            {t:'One question per sign: approaching → higher f; receding → lower f.'}] },
+            {t:'One question per sign: approaching → higher f; receding → lower f.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       for(let k=0;k<4;k++){
+         const cx=4.6-k*0.75;
+         el('circle',{cx:M.X(cx), cy:M.Y(0.4), r:(0.9+k*1.0)*M.s, fill:'none', stroke:'#B5793B','stroke-width':2, opacity:.8},c.svg);
+       }
+       el('circle',{cx:M.X(4.6), cy:M.Y(0.4), r:7, fill:'#5C4B30'},c.svg);
+       arrow(c, 4.9,0.4, 6.2,0.4, {color:GOLD, w:2.5, label:'v_s', fs:12});
+       label(c, 6.9,2.9, 'ahead: crests bunched → higher f', {fs:12, color:RED, italic:true});
+       label(c, 0.3,-3.3, 'behind: stretched → lower f', {fs:12, color:BLUE, italic:true});
+     } },
    { say:"Sound is intimacy disguised as physics: someone speaks, and thirty feet away a membrane in YOUR ear moves less than the width of an atom — and you not only detect it, you recognise the voice, the mood, the sarcasm. The decibel scale is logarithmic because your hearing spans a trillion-fold range of power. Evolution built a better instrument than anything in this laboratory.",
-     pose:'think',
-     board:[{t:'Your eardrum reads displacements smaller than an atom, across 12 orders of magnitude. Respect the hardware.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Your eardrum reads displacements smaller than an atom, across 12 orders of magnitude. Respect the hardware.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.8), y:M.Y(1.6), width:1.3*M.s, height:2.4*M.s, rx:6, fill:'#4A4A3A'},c.svg);
+       el('circle',{cx:M.X(1.45), cy:M.Y(0.4), r:0.45*M.s, fill:'#D9CDB4'},c.svg);
+       const pts=[]; for(let i=0;i<=70;i++){const x=2.6+5.6*i/70;
+         pts.push(M.X(x)+','+M.Y(0.4+0.5*Math.sin(3.4*x)*Math.exp(-(x-2.6)*0.12)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GOLD,'stroke-width':2.5},c.svg);
+       el('path',{d:`M ${M.X(8.8)} ${M.Y(1.6)} Q ${M.X(9.9)} ${M.Y(0.9)} ${M.X(9.5)} ${M.Y(-0.3)} Q ${M.X(9.2)} ${M.Y(-1.0)} ${M.X(8.8)} ${M.Y(-0.6)}`,
+         fill:'none', stroke:'#8A5A24','stroke-width':3.5},c.svg);
+       label(c, 8.0,-2.3, 'a membrane moves less than', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 8.0,-2.9, 'an atom’s width — and hears sarcasm', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"And mind the asymmetry we shall derive in Example 5: a moving SOURCE squeezes the wavelengths themselves; a moving OBSERVER merely harvests crests at a different rate. Same relative speed, different formulas — because sound lives in a medium, and the medium keeps score. Strategy: kelvin for speed, ratios for decibels, boundaries for pipes, and the together-or-apart question for every Doppler sign. To the examples.",
      pose:'excited',
      board:[{t:'Source motion changes λ; observer motion changes the encounter rate. The medium keeps score.'},
-            {t:'Strategy: v from T → dB from ratios → pipes from boundaries → Doppler signs by “together or apart?”'}] },
+            {t:'Strategy: v from T → dB from ratios → pipes from boundaries → Doppler signs by “together or apart?”'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       for(let k=0;k<3;k++) el('circle',{cx:M.X(2.4-k*0.5), cy:M.Y(1.8), r:(0.5+k*0.65)*M.s, fill:'none', stroke:'#B5793B','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(2.4), cy:M.Y(1.8), r:5, fill:'#5C4B30'},c.svg);
+       arrow(c, 2.6,1.8, 3.5,1.8, {color:GOLD, w:2, head:7});
+       label(c, 0.6,-0.6, 'moving source: reshapes the air', {fs:11.5, color:'#8A5A24', italic:true});
+       for(let k=0;k<3;k++) el('circle',{cx:M.X(7.8), cy:M.Y(1.8), r:(0.5+k*0.65)*M.s, fill:'none', stroke:'#B5793B','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(7.8), cy:M.Y(1.8), r:5, fill:'#5C4B30'},c.svg);
+       el('circle',{cx:M.X(10.2), cy:M.Y(1.8), r:6, fill:GREEN},c.svg);
+       arrow(c, 10.0,1.8, 9.2,1.8, {color:GREEN, w:2, head:7});
+       label(c, 6.3,-0.6, 'moving listener: samples faster', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, 2.2,-3.4, 'same relative speed, different physics — the medium keeps score', {fs:12, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

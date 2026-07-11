@@ -787,25 +787,81 @@ const EXAMPLES = [
   steps:[
    { say:"Thermodynamics proper begins here, and its stage is the p-V diagram. When a gas expands, it does WORK on its surroundings: the integral of p d-V, which is simply the AREA under the process curve. Expansion, positive work by the gas; compression, negative; and — mark this well — the work depends on the PATH taken between two states, not merely the endpoints.",
      pose:'talk',
-     board:['W = \\int_{V_i}^{V_f}p\\,dV\\quad(\\text{area under the path — PATH-dependent!})'] },
+     board:['W = \\int_{V_i}^{V_f}p\\,dV\\quad(\\text{area under the path — PATH-dependent!})'],
+     action(c){
+       const {M}=c;
+       const pts=[]; for(let i=0;i<=40;i++){const v=1.6+1.6*i/40; pts.push(M.X(v)+','+M.Y(350/v));}
+       pts.push(M.X(3.2)+','+M.Y(0)); pts.push(M.X(1.6)+','+M.Y(0));
+       el('polygon',{points:pts.join(' '),fill:'rgba(181,121,59,.28)',stroke:'none'},c.svg);
+       dashLine(c, 1.6,0, 1.6,218, {}); dashLine(c, 3.2,0, 3.2,109, {});
+       label(c, 2.15,55, 'W', {fs:17, color:'#8A5A24', italic:true, anchor:'middle'});
+       label(c, 1.5,-32, 'V_i', {fs:12.5, color:'#7A5A28', italic:true});
+       label(c, 3.1,-32, 'V_f', {fs:12.5, color:'#7A5A28', italic:true});
+     } },
    { say:"The FIRST LAW is energy conservation with the books opened: the change in internal energy equals the heat put in, minus the work the gas puts out. Delta E-int equals Q minus W. Internal energy is a STATE function — for an ideal gas, n C-V delta T regardless of path — while Q and W are travel diaries, different for every route between the same two states.",
      pose:'write',
      board:['\\Delta E_{\\rm int} = Q - W, \\qquad \\Delta E_{\\rm int} = nC_V\\,\\Delta T\\ (\\text{ideal gas, ANY path})',
-            {t:'E_int: state function. Q and W: path-dependent travel diaries.'}] },
+            {t:'E_int: state function. Q and W: path-dependent travel diaries.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.9), y:M.Y(300), width:M.X(3.7)-M.X(1.9), height:M.Y(90)-M.Y(300), rx:10, fill:'rgba(201,143,82,.25)', stroke:'#8A5A24','stroke-width':3},c.svg);
+       label(c, 2.25,200, 'E_int', {fs:16, color:'#5C3A16', italic:true});
+       label(c, 2.05,155, '(the tank)', {fs:11.5, color:'#7A5A28', italic:true});
+       arrow(c, 0.4,240, 1.8,240, {color:RED, w:3.5, label:'Q in', fs:13});
+       arrow(c, 3.8,150, 5.2,150, {color:GREEN, w:3.5, label:'W out', fs:13});
+       label(c, 0.6,20, 'ΔE_int = Q − W: what stays is what came in, minus what left', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"The four standard processes, each with a personality. ISOBARIC: constant pressure, W equals p delta V. ISOCHORIC: constant volume, no work at all — every joule of heat banks as internal energy. ISOTHERMAL: constant temperature, so delta E-int is zero and Q equals W, with the logarithmic work integral. ADIABATIC: no heat, Q equals zero, so the work is paid entirely from internal energy.",
-     pose:'point',
-     board:['\\text{isobaric: } W = p\\Delta V \\quad \\text{isochoric: } W = 0 \\quad \\text{isothermal: } W = nRT\\ln\\frac{V_f}{V_i},\\ Q = W \\quad \\text{adiabatic: } Q = 0'] },
+     pose:'point', solo:true,
+     board:['\\text{isobaric: } W = p\\Delta V \\quad \\text{isochoric: } W = 0 \\quad \\text{isothermal: } W = nRT\\ln\\frac{V_f}{V_i},\\ Q = W \\quad \\text{adiabatic: } Q = 0'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.5),y1:M.Y(310),x2:M.X(1.7),y2:M.Y(310),stroke:RED,'stroke-width':3.5},c.svg);
+       label(c, 0.5,250, 'isobar: flat', {fs:12, color:RED, italic:true});
+       el('line',{x1:M.X(2.5),y1:M.Y(370),x2:M.X(2.5),y2:M.Y(230),stroke:BLUE,'stroke-width':3.5},c.svg);
+       label(c, 2.2,190, 'isochor: W = 0', {fs:12, color:BLUE, italic:true});
+       const iso=[]; for(let i=0;i<=30;i++){const v=3.3+1.1*i/30; iso.push(M.X(v)+','+M.Y(1050/v-70));}
+       el('polyline',{points:iso.join(' '),fill:'none',stroke:GOLD,'stroke-width':3.5},c.svg);
+       label(c, 3.4,140, 'isotherm: ΔE=0', {fs:12, color:'#8A5A24', italic:true});
+       const ad=[]; for(let i=0;i<=30;i++){const v=3.3+1.1*i/30; ad.push(M.X(v)+','+M.Y(1050/Math.pow(v,1.67)*Math.pow(3.3,0.67)-70));}
+       el('polyline',{points:ad.join(' '),fill:'none',stroke:PURPLE,'stroke-width':3,'stroke-dasharray':'6,5'},c.svg);
+       label(c, 3.9,20, 'adiabat: Q = 0', {fs:12, color:PURPLE, italic:true});
+     } },
    { say:"Adiabats obey p V to the gamma equals constant — gamma being C-p over C-V — and on the stage you can see the consequence: the adiabat falls away more steeply than the isotherm through the same point, because an adiabatically expanding gas cools as it spends its own internal energy on the work. The companion form, T V to the gamma-minus-one constant, is the diesel engine's business card.",
      pose:'write',
      board:['pV^\\gamma = \\text{const}, \\qquad TV^{\\gamma-1} = \\text{const}, \\qquad \\gamma = \\frac{C_p}{C_V}',
-            {t:'Adiabat steeper than isotherm: expansion spends E_int, so T falls as V grows.'}] },
+            {t:'Adiabat steeper than isotherm: expansion spends E_int, so T falls as V grows.'}],
+     action(c){
+       el('circle',{cx:c.M.X(1.0), cy:c.M.Y(350), r:6, fill:'#2B2317'},c.svg);
+       arrow(c, 2.6,135, 3.4,105, {color:'#B5793B', w:2.5, label:'same T', fs:11.5, side:-1});
+       arrow(c, 1.9,50, 2.7,26, {color:PURPLE, w:2.5, label:'T falling — paying for W', fs:11.5});
+     } },
    { say:"The first law is the universe’s only unbreakable contract: energy changes hands — heat in, work out — but the total is untouchable. Perpetual-motion inventors file appeals to this court every year; the docket is long, and the verdict has been identical since 1850. It is the one law with no recorded exceptions and no lobbyists.",
-     pose:'think',
-     board:[{t:'ΔU = Q − W has never lost a case. Patent offices cite it more than lawyers cite precedent.'}] },
+     pose:'think', solo:true,
+     board:[{t:'ΔU = Q − W has never lost a case. Patent offices cite it more than lawyers cite precedent.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(2.6), cy:M.Y(190), r:60, fill:'none', stroke:'#8A7D60','stroke-width':4},c.svg);
+       for(let k=0;k<6;k++){ const a=k*Math.PI/3;
+         el('line',{x1:M.X(2.6),y1:M.Y(190),x2:M.X(2.6)+55*Math.cos(a),y2:M.Y(190)+55*Math.sin(a),stroke:'#8A7D60','stroke-width':3},c.svg); }
+       arc(c, 2.6,190, 1.05, -30, 200, {color:GOLD, w:2.5, label:'forever?'});
+       el('circle',{cx:M.X(2.6), cy:M.Y(190), r:78, fill:'none', stroke:RED,'stroke-width':6},c.svg);
+       el('line',{x1:M.X(2.6)-55,y1:M.Y(190)+55,x2:M.X(2.6)+55,y2:M.Y(190)-55,stroke:RED,'stroke-width':6},c.svg);
+       label(c, 3.9,120, 'DENIED — since 1850, without appeal', {fs:13, color:RED, italic:true});
+     } },
    { say:"And the accounting habits that make the chapter easy. C-p equals C-V plus R — at constant pressure some heat leaks out as work, so warming costs more. Around any closed CYCLE, delta E-int is zero, so the net heat equals the net work, which is the AREA enclosed by the loop — clockwise positive. Strategy: draw the diagram first, compute leg by leg, and let the state function check your arithmetic at the end. To the examples.",
      pose:'excited',
      board:['C_p = C_V + R, \\qquad \\text{cycle: } \\Delta E_{\\rm int} = 0 \\Rightarrow Q_{\\rm net} = W_{\\rm net} = \\text{enclosed area}',
-            {t:'Strategy: draw the pV diagram → leg-by-leg ledger → the state function audits the total.'}] },
+            {t:'Strategy: draw the pV diagram → leg-by-leg ledger → the state function audits the total.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(3.4), y:M.Y(310), width:M.X(4.9)-M.X(3.4), height:M.Y(200)-M.Y(310), fill:'rgba(46,125,79,.25)', stroke:GREEN,'stroke-width':2.5},c.svg);
+       arrow(c, 3.55,310, 4.7,310, {color:GREEN, w:2, head:7});
+       arrow(c, 4.75,200, 3.6,200, {color:GREEN, w:2, head:7});
+       label(c, 3.65,250, 'W_net = area', {fs:12, color:'#2E7D4F', italic:true});
+       label(c, 3.35,155, 'clockwise: an engine', {fs:11.5, color:'#2E7D4F', italic:true});
+     } },
   ]
 },
 

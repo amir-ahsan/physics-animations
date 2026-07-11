@@ -776,11 +776,40 @@ const EXAMPLES = [
    { say:"Welcome to the thermal world, where the currency is energy and the ledger never lies. Temperature is what two systems share once they reach thermal equilibrium, and the zeroth law makes the idea consistent — if A agrees with C, and B agrees with C, then A agrees with B, which is precisely why a thermometer works at all. Conversions are on the board, and one rule matters above all: a temperature DIFFERENCE is the same size in celsius and kelvin, but any law containing T itself demands kelvin, no exceptions.",
      pose:'talk',
      board:['T_F = \\tfrac95T_C + 32, \\qquad T_K = T_C + 273.15',
-            {t:'ΔT: °C or K, same size. Bare T in a formula (gas law, radiation): KELVIN only.'}] },
+            {t:'ΔT: °C or K, same size. Bare T in a formula (gas law, radiation): KELVIN only.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       const scale=(x,labs,name)=>{
+         el('line',{x1:M.X(x),y1:M.Y(-20),x2:M.X(x),y2:M.Y(120),stroke:'#8A5A24','stroke-width':4},c.svg);
+         labs.forEach(([T,txt])=>{
+           el('line',{x1:M.X(x)-8,y1:M.Y(T),x2:M.X(x)+8,y2:M.Y(T),stroke:'#8A5A24','stroke-width':2.5},c.svg);
+           label(c, x+0.35,T-3, txt, {fs:12.5, color:'#7A5A28'});
+         });
+         label(c, x-0.3,-36, name, {fs:13, color:'#5C4B30', anchor:'middle'});
+       };
+       scale(2.6, [[0,'0 °C  ice'],[100,'100 °C  steam']], '°C');
+       scale(7.4, [[0,'273 K'],[100,'373 K']], 'K');
+       arrow(c, 5.0,0, 5.0,100, {color:GREEN, w:2.5, head:8});
+       arrow(c, 5.0,100, 5.0,0, {color:GREEN, w:2.5, head:8});
+       label(c, 4.35,50, 'same ΔT = 100, either scale', {fs:12, color:'#2E7D4F', italic:true, anchor:'middle'});
+     } },
    { say:"Warm a solid and it grows: delta L equals alpha L-nought delta T, with areas expanding twice as eagerly and volumes three times. A cavity expands exactly as if it were filled with the surrounding material — holes grow too. And if you FORBID a rod its expansion, you have effectively compressed it by the strain it was denied, and the thermal stress is Young's modulus times alpha delta T. Clamping a bridge is not an engineering option; expansion joints are.",
      pose:'write',
      board:['\\Delta L = \\alpha L_0\\Delta T, \\qquad \\Delta A = 2\\alpha A_0\\Delta T, \\qquad \\Delta V = \\beta V_0\\Delta T\\ (\\beta = 3\\alpha)',
-            '\\frac{F}{A} = Y\\alpha\\,\\Delta T\\quad(\\text{the stress of denied expansion})'] },
+            '\\frac{F}{A} = Y\\alpha\\,\\Delta T\\quad(\\text{the stress of denied expansion})'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.8), y:M.Y(95), width:5.4*M.s_x||150, height:26, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('rect',{x:M.X(0.8), y:M.Y(95), width:190, height:26, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'6,4'},c.svg);
+       label(c, 0.8,110, 'warm rod: ΔL = αL₀ΔT', {fs:12.5, color:'#7A5A28', italic:true});
+       el('circle',{cx:M.X(8.6), cy:M.Y(60), r:34, fill:'#E4D6B8', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(8.6), cy:M.Y(60), r:18, fill:'#EFE7D8', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(8.6), cy:M.Y(60), r:23, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'5,4'},c.svg);
+       label(c, 7.2,7, 'holes grow too!', {fs:12.5, color:RED, italic:true});
+       label(c, 0.8,25, 'clamp it, and the denied strain returns as stress: YαΔT', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"HEAT is energy in transit, driven by temperature difference. Warming without a phase change costs Q equals m c delta T, and calorimetry — the insulated mixing problem — is one single equation: the sum of every Q is zero. Write each term as m c times T-final minus T-initial and the signs manage themselves; whatever cools comes out negative without your supervision.",
      solo:true, pose:'point',
      board:['Q = mc\\,\\Delta T, \\qquad \\sum_i Q_i = 0\\ \\ (\\text{insulated mixture})',
@@ -795,14 +824,51 @@ const EXAMPLES = [
    { say:"Phase changes are the plateaus on the stage's heating curve: melting and boiling happen at CONSTANT temperature while the energy goes into breaking bonds — m L-f for melting, m L-v for vaporising, with minus signs on the way back down. The professional's reflex in any ice-plus-water problem: check FIRST whether there is enough energy to finish the phase change, before assuming a final state. The problem decides its own ending; you merely audit it.",
      pose:'write',
      board:['Q = \\pm mL_f\\ (\\text{melt/freeze}), \\qquad Q = \\pm mL_v\\ (\\text{boil/condense})',
-            {t:'Check the phase FIRST: is there enough energy to melt it all? The answer picks the equation.'}] },
+            {t:'Check the phase FIRST: is there enough energy to melt it all? The answer picks the equation.'}],
+     action(c){
+       label(c, 2.0,8, 'melting: mL_f, T frozen at 0°', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 6.2,108, 'boiling: mL_v, T frozen at 100°', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 0.35,-32, 'slopes: mcΔT', {fs:11.5, color:'#7A5A28', italic:true});
+     } },
    { say:"Spare a thought for what temperature really is: the average jiggle of particles you will never see, reported by a column of mercury calm enough to read. Heat death, ice ages, the comfort of tea — all of it statistics. Thermodynamics is the art of speaking confidently about crowds while knowing nothing of any individual. Politics attempts the same, with less success.",
-     pose:'think',
-     board:[{t:'Temperature is a census, not a biography — statistics done so well it feels like certainty.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Temperature is a census, not a biography — statistics done so well it feels like certainty.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.8), y:M.Y(110), width:6.0*40, height:M.Y(0)-M.Y(110), rx:8, fill:'none', stroke:'#8A7D60','stroke-width':2.5},c.svg);
+       for(let i=0;i<12;i++){
+         const x=1.3+(i%4)*1.5, y=15+Math.floor(i/4)*32+((i*7)%13), a=(i*2.4)%(2*Math.PI);
+         el('circle',{cx:M.X(x), cy:M.Y(y), r:5, fill:BLUE},c.svg);
+         arrow(c, x,y, x+0.55*Math.cos(a), y+16*Math.sin(a), {color:'#5A88A8', w:1.6, head:5});
+       }
+       el('line',{x1:M.X(9.0),y1:M.Y(0),x2:M.X(9.0),y2:M.Y(110),stroke:'#8A5A24','stroke-width':6,'stroke-linecap':'round'},c.svg);
+       el('circle',{cx:M.X(9.0), cy:M.Y(-5), r:12, fill:RED},c.svg);
+       el('line',{x1:M.X(9.0),y1:M.Y(-2),x2:M.X(9.0),y2:M.Y(62),stroke:RED,'stroke-width':6},c.svg);
+       label(c, 9.5,62, 'the average jiggle,', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 9.5,48, 'read as one number', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Finally, the three ways heat travels. CONDUCTION through a slab: P equals k A delta T over L — and layered walls behave exactly like series resistors, with R-values L over k adding up, temperature playing voltage and heat current playing current. CONVECTION is conduction into a moving fluid, treated empirically. RADIATION goes as the FOURTH power of the kelvin temperature: sigma e A times T-fourth minus T-surroundings-fourth — and mind that it is a difference of fourth powers, never a fourth power of the difference. To the examples.",
      pose:'excited',
      board:['P = \\frac{kA\\,\\Delta T}{L} = \\frac{A\\,\\Delta T}{R},\\quad R = \\frac{L}{k},\\quad R_{\\rm tot} = R_1+R_2+\\cdots',
-            'P_{\\rm rad} = \\sigma eA\\,(T^4 - T_s^4)\\quad(\\text{kelvin!})'] },
+            'P_{\\rm rad} = \\sigma eA\\,(T^4 - T_s^4)\\quad(\\text{kelvin!})'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.7), y:M.Y(100), width:60, height:M.Y(20)-M.Y(100), fill:'#D9C6A5', stroke:'#8A7D60','stroke-width':2},c.svg);
+       [[45],[60],[75]].forEach(([y])=>arrow(c, 0.3,y, 2.9,y, {color:RED, w:2.2, head:7}));
+       label(c, 0.4,4, 'conduction: through', {fs:11.5, color:'#7A5A28', italic:true});
+       const pts=[]; for(let i=0;i<=40;i++){const u=i/40;
+         pts.push(M.X(4.9+0.55*Math.sin(u*3.5*Math.PI))+','+M.Y(18+92*u));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.5},c.svg);
+       arrow(c, 4.9,104, 4.9,116, {color:BLUE, w:2.5, head:7});
+       label(c, 4.0,4, 'convection: carried', {fs:11.5, color:'#1D4568', italic:true});
+       el('circle',{cx:M.X(8.6), cy:M.Y(52), r:20, fill:GOLD},c.svg);
+       for(let k=0;k<4;k++){ const a=Math.PI/6+k*Math.PI/5;
+         const pw=[]; for(let i=0;i<=20;i++){const r2=0.75+1.5*i/20;
+           pw.push(M.X(8.6+(r2+0.12*Math.sin(i))*Math.cos(a))+','+M.Y(52+(r2*36)*Math.sin(a)*0.55));}
+         el('polyline',{points:pw.join(' '),fill:'none',stroke:RED,'stroke-width':2},c.svg); }
+       label(c, 7.6,4, 'radiation: T⁴, beamed', {fs:11.5, color:'#8A3324', italic:true});
+     } },
   ]
 },
 

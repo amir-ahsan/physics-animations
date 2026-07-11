@@ -794,7 +794,12 @@ const EXAMPLES = [
    { say:"A nucleus weighs LESS than its parts; the deficit, times c squared, is the BINDING ENERGY — computed from atomic masses, whose electrons conveniently cancel. Per nucleon, it traces the curve on the stage: a steep climb through the light elements, a broad summit of eight point eight M-e-V near iron-56, and a gentle decline to seven point six at uranium. This one curve prices the energy economy of the universe.",
      pose:'write',
      board:['E_B = [Zm(^1\\mathrm H) + Nm_n - m(^A_ZX)]c^2',
-            {t:'E_B/A: steep rise → peak 8.8 MeV at Fe → gentle drift down to 7.6 MeV at U.'}] },
+            {t:'E_B/A: steep rise → peak 8.8 MeV at Fe → gentle drift down to 7.6 MeV at U.'}],
+     action(c){
+       label(c, 95,5.4, 'the whole weighs LESS than its parts —', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 95,4.7, 'the deficit, × c², is the glue', {fs:11.5, color:'#8A5A24', italic:true});
+       arrow(c, 90,5.6, 60,8.4, {color:'#8A7D60', w:1.8, head:6});
+     } },
    { say:"Read the curve like a valley seen upside down: FUSION climbs toward iron from the left — light nuclei merging release the height they gain; FISSION slides toward iron from the right — heavy nuclei splitting release theirs. Iron itself is ash for both fires: no rearrangement of its nucleons yields anything. Stars burn UP the left slope and stop, bewildered, at iron cores.",
      pose:'point',
      board:[{t:'Fusion: climb from the left. Fission: slide in from the right. Iron: nothing left to give.'}],
@@ -806,15 +811,65 @@ const EXAMPLES = [
      pose:'write',
      board:['N = N_0e^{-\\lambda t}, \\quad T_{1/2} = \\frac{\\ln 2}{\\lambda}, \\quad A = \\lambda N',
             '\\alpha:\\ ^A_ZX \\to\\ ^{A-4}_{Z-2}Y + {}^4_2\\mathrm{He}; \\qquad \\beta^-:\\ ^A_ZX \\to\\ ^A_{Z+1}Y + e^- + \\bar\\nu',
-            'Q = [m_{\\rm parent} - \\textstyle\\sum m_{\\rm products}]c^2 > 0'] },
+            'Q = [m_{\\rm parent} - \\textstyle\\sum m_{\\rm products}]c^2 > 0'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       arrow(c, -8,0, 252,0, {color:'#8A7D60', w:2});
+       arrow(c, 0,-0.4, 0,10.2, {color:'#8A7D60', w:2});
+       label(c, 240,-0.9, 't', {fs:13, color:'#8A7D60', italic:true});
+       label(c, -18,9.6, 'N', {fs:13, color:'#8A7D60', italic:true});
+       const pts=[]; for(let i=0;i<=90;i++){const t=245*i/90;
+         pts.push(M.X(t)+','+M.Y(9.2*Math.pow(0.5,t/70)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GOLD,'stroke-width':3},c.svg);
+       [[70,4.6],[140,2.3],[210,1.15]].forEach(([t,y],i)=>{
+         dashLine(c, t,0, t,y, {color:'#B0A488'});
+         label(c, t-14,-0.9, (i+1)+'·T½', {fs:11, color:'#7A5A28'});
+       });
+       label(c, 110,6.6, 'half, of whatever remains, every half-life —', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 110,5.9, 'the curve bends; never interpolate linearly', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"One last wonder before the arithmetic: every atom in you heavier than helium was cooked in a star and scattered by its death. The iron in your blood sits at the very peak of tonight’s curve — forged in a supernova, delivered across gigayears, now reading a physics tutorial. Nuclear physics is not a distant subject; it is your biography, chapter one.",
-     pose:'think',
-     board:[{t:'The iron in your blood is supernova ash at the top of the binding-energy curve. You ARE the syllabus.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The iron in your blood is supernova ash at the top of the binding-energy curve. You ARE the syllabus.'}],
+     action(c){
+       const {M}=c;
+       for(let k=0;k<10;k++){ const a=k*Math.PI/5;
+         el('line',{x1:M.X(50+18*Math.cos(a)),y1:M.Y(6.2+0.8*Math.sin(a)),
+                    x2:M.X(50+52*Math.cos(a)),y2:M.Y(6.2+2.4*Math.sin(a)),stroke:GOLD,'stroke-width':3,'stroke-linecap':'round'},c.svg); }
+       el('circle',{cx:M.X(50), cy:M.Y(6.2), r:14, fill:RED},c.svg);
+       label(c, 20,2.4, 'a star dies, scattering iron', {fs:12, color:'#8A5A24', italic:true});
+       arrow(c, 105,6.2, 160,6.2, {color:'#8A7D60', w:2.5, label:'gigayears', fs:11.5});
+       el('path',{d:`M ${M.X(196)} ${M.Y(7.6)} C ${M.X(212)} ${M.Y(9.2)}, ${M.X(228)} ${M.Y(7.2)}, ${M.X(196)} ${M.Y(3.4)} C ${M.X(164)} ${M.Y(7.2)}, ${M.X(180)} ${M.Y(9.2)}, ${M.X(196)} ${M.Y(7.6)} Z`,
+         fill:'#C0392B', stroke:'#7A2015','stroke-width':2},c.svg);
+       label(c, 172,1.4, '…now reading a tutorial', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And the two great applications. FISSION: uranium-235 plus a neutron splits into mid-mass fragments, two or three fresh neutrons — hence chain reactions — and some two hundred M-e-V. FUSION: deuterium plus tritium gives helium-4, a neutron, and seventeen point six M-e-V, at the price of millions of kelvin to tunnel the Coulomb barrier — Tutorial 13’s exponential, now running the Sun. Strategy: balance A and Z FIRST; energy is always a mass difference times nine three one point five M-e-V per u; take logarithms for ages; and keep the scales straight — chemistry trades e-V, nuclei trade M-e-V, a millionfold apart. To the examples — the last six of the course.",
      pose:'excited',
      board:['^{235}\\mathrm U + n \\to \\text{fragments} + 2\\text{–}3\\,n + {\\sim}200\\ \\mathrm{MeV}',
             '^2\\mathrm H + {}^3\\mathrm H \\to {}^4\\mathrm{He} + n + 17.6\\ \\mathrm{MeV}',
-            {t:'Strategy: balance A, Z → Δm × 931.5 MeV/u → logs for ages → MeV vs eV: the million-to-one ratio.'}] },
+            {t:'Strategy: balance A, Z → Δm × 931.5 MeV/u → logs for ages → MeV vs eV: the million-to-one ratio.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(28), cy:M.Y(7.4), r:16, fill:'#8A5A24'},c.svg);
+       arrow(c, 2,7.4, 20,7.4, {color:BLUE, w:2, label:'n', fs:11});
+       el('circle',{cx:M.X(66), cy:M.Y(8.6), r:11, fill:'#B5793B'},c.svg);
+       el('circle',{cx:M.X(66), cy:M.Y(6.1), r:11, fill:'#B5793B'},c.svg);
+       [[86,9.4],[86,7.4],[86,5.4]].forEach(pt=>{
+         el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:4, fill:BLUE},c.svg);
+         arrow(c, pt[0]+3,pt[1], pt[0]+16,pt[1], {color:BLUE, w:1.6, head:5});
+       });
+       label(c, 4,3.6, 'fission: split, ~200 MeV,', {fs:11.5, color:'#7A5A28', italic:true});
+       label(c, 4,2.9, 'fresh neutrons → chain', {fs:11.5, color:'#7A5A28', italic:true});
+       el('circle',{cx:M.X(158), cy:M.Y(8.2), r:8, fill:GREEN},c.svg);
+       el('circle',{cx:M.X(158), cy:M.Y(6.0), r:9, fill:GREEN},c.svg);
+       arrow(c, 170,7.1, 186,7.1, {color:'#8A7D60', w:2, head:6});
+       el('circle',{cx:M.X(206), cy:M.Y(7.1), r:12, fill:GOLD},c.svg);
+       arrow(c, 219,8.2, 236,9.2, {color:BLUE, w:1.8, label:'n', fs:10.5});
+       label(c, 150,3.6, 'fusion: D + T → ⁴He + n,', {fs:11.5, color:'#7A5A28', italic:true});
+       label(c, 150,2.9, '17.6 MeV — the Sun’s ledger', {fs:11.5, color:'#7A5A28', italic:true});
+     } },
   ]
 },
 

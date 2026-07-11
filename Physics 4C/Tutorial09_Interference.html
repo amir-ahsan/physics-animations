@@ -783,8 +783,21 @@ const EXAMPLES = [
   },
   steps:[
    { say:"Interference: the chapter where light finally behaves as the wave Maxwell promised, and one plus one ranges anywhere from four to zero. When two coherent waves meet, their FIELDS add — not their intensities — so everything turns on the PATH DIFFERENCE: a whole number of wavelengths gives constructive brilliance; an extra half wavelength, perfect darkness.",
-     pose:'talk',
-     board:['\\Delta = m\\lambda:\\ \\text{bright}, \\qquad \\Delta = \\big(m+\\tfrac12\\big)\\lambda:\\ \\text{dark}'] },
+     pose:'talk', solo:true,
+     board:['\\Delta = m\\lambda:\\ \\text{bright}, \\qquad \\Delta = \\big(m+\\tfrac12\\big)\\lambda:\\ \\text{dark}'],
+     action(c){
+       const {M}=c;
+       const wave=(x0,x1,y0,amp,ph,col,w2)=>{ const pts=[]; for(let i=0;i<=60;i++){const x=x0+(x1-x0)*i/60;
+         pts.push(M.X(x)+','+M.Y(y0+amp*Math.sin(3.2*x+ph)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':w2}, c.svg); };
+       wave(0.4,4.6, 3.6, 0.3, 0, GOLD, 2); wave(0.4,4.6, 3.6, 0.3, 0, BLUE, 1.4);
+       wave(0.4,4.6, 2.3, 0.62, 0, GREEN, 2.8);
+       label(c, 0.5,4.35, 'in step: Δ = mλ → double amplitude', {fs:11.5, color:'#2E7D4F', italic:true});
+       wave(6.0,10.2, 3.6, 0.3, 0, GOLD, 2); wave(6.0,10.2, 3.6, 0.3, Math.PI, BLUE, 2);
+       el('line',{x1:M.X(6.0),y1:M.Y(2.3),x2:M.X(10.2),y2:M.Y(2.3),stroke:RED,'stroke-width':2.8},c.svg);
+       label(c, 6.1,1.7, 'half a λ apart: perfect darkness', {fs:11.5, color:RED, italic:true});
+       label(c, 1.6,0.4, 'fields add — one plus one runs from four to zero', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Young's double slit is the archetype. Two slits a distance d apart send waves to a screen; toward angle theta the lower slit's journey is longer by d sine theta — that is the entire geometry. Bright fringes where d sine theta equals m lambda; on a screen at distance L, in the small-angle regime, the fringes fall equally spaced, lambda L over d apart.",
      solo:true, pose:'write',
      board:['d\\sin\\theta = m\\lambda\\ (\\text{bright}), \\qquad \\Delta y = \\frac{\\lambda L}{d}\\ (\\text{small angles})'],
@@ -799,18 +812,63 @@ const EXAMPLES = [
      } },
    { say:"For the full portrait, add the AMPLITUDES with a phase difference phi equal to 2 pi over lambda, times the path difference: the resultant intensity is 4 I-nought cosine squared of phi over two — the cosine-squared comb on the stage, which we shall derive honestly in Example 3. Note the crest: FOUR times one slit's intensity, not two — and the average is exactly two. Interference redistributes; it never embezzles.",
      pose:'point',
-     board:['I = 4I_0\\cos^2\\frac{\\phi}{2}, \\qquad \\phi = \\frac{2\\pi d\\sin\\theta}{\\lambda}'] },
+     board:['I = 4I_0\\cos^2\\frac{\\phi}{2}, \\qquad \\phi = \\frac{2\\pi d\\sin\\theta}{\\lambda}'],
+     action(c){
+       dashLine(c, 0,4.0, 10.2,4.0, {color:GREEN});
+       label(c, 0.3,4.32, 'crest: 4I₀ (not 2!)', {fs:11.5, color:'#2E7D4F', italic:true});
+       dashLine(c, 0,2.0, 10.2,2.0, {color:PURPLE});
+       label(c, 4.6,2.35, 'average: 2I₀ — redistribution, not embezzlement', {fs:11.5, color:PURPLE, italic:true});
+     } },
    { say:"THIN FILMS play the same game with reflections. Two extra rules: inside a film the wavelength is lambda over n; and a reflection off a HIGHER-index medium flips the phase by half a wavelength — a bounce off a denser wall. Count the flips first, always: zero or two flips leave the ordinary conditions; ONE flip swaps bright and dark wholesale.",
      pose:'write',
      board:['2nt = m\\lambda\\ \\text{or}\\ \\big(m+\\tfrac12\\big)\\lambda\\quad(\\text{which is which depends on the FLIP count})',
-            {t:'Reflection off higher n: half-wave flip. Count flips FIRST; one flip swaps the rules.'}] },
+            {t:'Reflection off higher n: half-wave flip. Count flips FIRST; one flip swaps the rules.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(2.4), y:M.Y(3.0), width:5.4*M.s, height:1.2*M.s, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2},c.svg);
+       label(c, 8.1,2.4, 'film, n', {fs:12, color:'#1D4568', italic:true});
+       label(c, 8.1,3.6, 'air', {fs:12, color:'#8A7D60', italic:true});
+       label(c, 8.1,1.2, 'glass', {fs:12, color:'#8A7D60', italic:true});
+       arrow(c, 3.0,4.4, 3.9,3.05, {color:GOLD, w:2.2});
+       arrow(c, 3.9,3.0, 4.8,4.4, {color:GOLD, w:2.2, label:'flip?', fs:11});
+       arrow(c, 4.6,4.4, 5.5,3.05, {color:RED, w:2});
+       arrow(c, 5.5,3.0, 5.85,1.85, {color:RED, w:2});
+       arrow(c, 5.85,1.8, 6.2,3.0, {color:RED, w:2});
+       arrow(c, 6.2,3.0, 7.1,4.4, {color:RED, w:2, label:'2nt later', fs:11, side:-1});
+       label(c, 1.2,0.3, 'two reflections, one round trip of 2nt — count the flips before anything', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Interference is light’s confession that it is a wave — and the confession is extracted with astonishing delicacy. A soap film reports its thickness in colours, to a precision of nanometres, using equipment no fancier than sunlight and your eye. When light plus light can equal darkness, you have left common sense and entered optics; the compensation is that the mathematics is beautiful.",
-     pose:'think',
-     board:[{t:'A soap bubble is an interferometer you can blow for free — precision measured in billionths of a metre.'}] },
+     pose:'think', solo:true,
+     board:[{t:'A soap bubble is an interferometer you can blow for free — precision measured in billionths of a metre.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5.2), cy:M.Y(2.0), r:2.0*M.s, fill:'rgba(90,136,168,.12)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
+       [[1.55,GOLD],[1.2,GREEN],[0.85,PURPLE],[0.5,RED]].forEach(([r2,col])=>
+         el('path',{d:`M ${M.X(5.2-r2)} ${M.Y(2.0)} A ${r2*M.s} ${r2*M.s} 0 0 1 ${M.X(5.2+r2)} ${M.Y(2.0)}`,
+           fill:'none', stroke:col,'stroke-width':3, opacity:.7},c.svg));
+       el('ellipse',{cx:M.X(4.4), cy:M.Y(3.1), rx:0.4*M.s, ry:0.25*M.s, fill:'rgba(255,255,255,.5)'},c.svg);
+       label(c, 7.8,3.6, 'each colour: a thickness', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 7.8,3.0, 'reported in nanometres', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And the INTERFEROMETER weaponises all of it: split one beam, send the halves on different errands, reunite them, and count fringes — each fringe one wavelength of optical-path change. Michelson measured with it; LIGO, its descendant, hears colliding black holes. Strategy: path difference in wavelengths, flips counted, amplitudes before intensities. To the examples.",
      pose:'excited',
      board:['\\Delta(\\text{optical path}) = N\\lambda\\ \\ (\\text{one fringe per wavelength})',
-            {t:'Strategy: Δ in λ’s → count flips → add amplitudes, then square.'}] },
+            {t:'Strategy: Δ in λ’s → count flips → add amplitudes, then square.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       arrow(c, 0.6,2.2, 4.7,2.2, {color:GOLD, w:2.5, label:'source', fs:11});
+       el('line',{x1:M.X(4.5),y1:M.Y(1.7),x2:M.X(5.5),y2:M.Y(2.7),stroke:'#5A88A8','stroke-width':4},c.svg);
+       label(c, 5.0,1.15, 'splitter', {fs:11, color:'#1D4568', italic:true});
+       arrow(c, 5.0,2.45, 5.0,4.1, {color:RED, w:2.2});
+       el('line',{x1:M.X(4.4),y1:M.Y(4.25),x2:M.X(5.6),y2:M.Y(4.25),stroke:'#5C4B30','stroke-width':4},c.svg);
+       arrow(c, 5.25,2.2, 9.4,2.2, {color:GREEN, w:2.2});
+       el('line',{x1:M.X(9.55),y1:M.Y(1.6),x2:M.X(9.55),y2:M.Y(2.8),stroke:'#5C4B30','stroke-width':4},c.svg);
+       arrow(c, 5.0,1.95, 5.0,0.3, {color:PURPLE, w:2.2, label:'fringes counted here', fs:11, side:-1});
+       label(c, 6.2,4.3, 'two errands, reunited:', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 6.2,3.75, 'one fringe per λ of change', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

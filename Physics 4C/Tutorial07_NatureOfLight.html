@@ -780,11 +780,27 @@ const EXAMPLES = [
   steps:[
    { say:"Light: Maxwell's electromagnetic wave, now entering matter. In vacuum it runs at c; in a medium it slows to c over n, where n is the INDEX OF REFRACTION — the medium's toll. The frequency never changes on crossing a boundary — it is fixed at the source — so the wavelength must shrink instead: lambda over n. Your eye reads frequency; colour survives the swim.",
      pose:'talk',
-     board:['v = \\frac{c}{n}, \\qquad \\lambda_n = \\frac{\\lambda}{n}, \\qquad f\\ \\text{unchanged at any boundary}'] },
+     board:['v = \\frac{c}{n}, \\qquad \\lambda_n = \\frac{\\lambda}{n}, \\qquad f\\ \\text{unchanged at any boundary}'],
+     action(c){
+       const {M}=c;
+       const wave=(y0,lam,x0,x1,col)=>{ const pts=[]; for(let i=0;i<=60;i++){const x=x0+(x1-x0)*i/60;
+         pts.push(M.X(x)+','+M.Y(y0+0.55*Math.sin(2*Math.PI*x/lam)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':2.5},c.svg); };
+       wave(3.4, 2.2, -5.4, -0.6, GOLD);
+       wave(-3.4, 1.35, -5.4, -0.6, GOLD);
+       label(c, -5.4,4.55, 'in air: long steps', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.4,-4.6, 'in glass: short steps, same cadence — colour survives', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"At an interface, measured always from the NORMAL: reflection bounces at the same angle it arrived, and refraction obeys SNELL'S LAW — n-one sine theta-one equals n-two sine theta-two, sketched on the stage. Into a denser medium the ray bends TOWARD the normal; back into a rarer one, away. The quantity n sine theta is the ray's passport, unchanged through any stack of parallel layers.",
      pose:'write',
      board:['\\theta_{\\rm refl} = \\theta_1, \\qquad n_1\\sin\\theta_1 = n_2\\sin\\theta_2',
-            {t:'Angles from the NORMAL. Denser → bends toward the normal. n sinθ threads parallel layers unchanged.'}] },
+            {t:'Angles from the NORMAL. Denser → bends toward the normal. n sinθ threads parallel layers unchanged.'}],
+     action(c){
+       arrow(c, -3.4,3.9, -4.6,2.7, {color:'#C9A86A', w:2, head:7});
+       label(c, -5.5,3.5, 'reflected: same θ', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 1.0,2.5, 'n₁ sinθ₁', {fs:12.5, color:GREEN, italic:true});
+       label(c, 2.4,-2.4, '= n₂ sinθ₂: the passport', {fs:12.5, color:GREEN, italic:true});
+     } },
    { say:"Going from dense to rare, the escaping ray bends away from the normal — until, at the CRITICAL angle, it grazes the surface itself. Beyond that, escape is refused entirely: TOTAL INTERNAL REFLECTION, mirror-perfect, no silvering required. Sine theta-c equals n-two over n-one — and it exists only when leaving the denser medium. Optical fibres, binocular prisms, and the sparkle of diamonds all live past this angle.",
      pose:'point',
      board:['\\sin\\theta_c = \\frac{n_2}{n_1}\\quad(n_1 > n_2\\ \\text{only})'],
@@ -794,15 +810,56 @@ const EXAMPLES = [
        textAt(c, -3.0,0.9, 'θ > θc: total internal reflection', {fs:11.5, italic:true, anchor:'middle', color:'#8A3324'});
      } },
    { say:"Light's fields oscillate ACROSS the travel direction, and that transverse character is POLARIZATION. A polarizer passes only the component along its axis: unpolarized light loses half its intensity; already-polarized light obeys MALUS'S LAW, I equals I-nought cosine squared theta, with theta between the light's polarization and the filter's axis. Each filter does not merely block — it RE-PROJECTS.",
-     pose:'write',
-     board:['I_{\\rm unpol\\to pol} = \\tfrac12I_0, \\qquad I = I_0\\cos^2\\theta\\ (\\text{Malus})'] },
+     pose:'write', solo:true,
+     board:['I_{\\rm unpol\\to pol} = \\tfrac12I_0, \\qquad I = I_0\\cos^2\\theta\\ (\\text{Malus})'],
+     action(c){
+       const {M}=c;
+       for(let k=0;k<8;k++){ const a=k*Math.PI/8;
+         el('line',{x1:M.X(-4.4-0.8*Math.cos(a)),y1:M.Y(1.6-0.8*Math.sin(a)),x2:M.X(-4.4+0.8*Math.cos(a)),y2:M.Y(1.6+0.8*Math.sin(a)),stroke:GOLD,'stroke-width':2},c.svg); }
+       label(c, -5.3,-0.2, 'unpolarized: all angles', {fs:11.5, color:'#8A5A24', italic:true});
+       el('rect',{x:M.X(-2.2), y:M.Y(3.2), width:0.5*M.s, height:3.2*M.s, rx:4, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2},c.svg);
+       for(const y of [2.4,1.6,0.8]) el('line',{x1:M.X(-2.05),y1:M.Y(y+0.25),x2:M.X(-2.05),y2:M.Y(y-0.25),stroke:'#1D4568','stroke-width':2},c.svg);
+       el('line',{x1:M.X(0.4),y1:M.Y(0.8),x2:M.X(0.4),y2:M.Y(2.4),stroke:GOLD,'stroke-width':3},c.svg);
+       label(c, -0.4,-0.2, '½I₀, vertical', {fs:11.5, color:'#8A5A24', italic:true});
+       el('rect',{x:M.X(1.8), y:M.Y(3.2), width:0.5*M.s, height:3.2*M.s, rx:4, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2, transform:`rotate(28 ${M.X(2.05)} ${M.Y(1.6)})`},c.svg);
+       el('line',{x1:M.X(4.2)-14,y1:M.Y(1.25),x2:M.X(4.2)+14,y2:M.Y(2.35),stroke:GOLD,'stroke-width':3},c.svg);
+       label(c, 3.3,-0.2, 'cos²θ: re-projected', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -3.6,-3.9, 'a polarizer is a projector, not a sieve', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Light now enters matter, and every optical illusion in nature follows from one stubborn number, n. The pool floor lifts, the spoon bends, the diamond blazes — all of it light making border crossings and declaring a change of speed at customs. Snell’s law is the entire tariff code, and it fits on a thumbnail.",
-     pose:'think',
-     board:[{t:'Every mirage, sparkle, and bent spoon is one number, n, doing paperwork at a boundary.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Every mirage, sparkle, and bent spoon is one number, n, doing paperwork at a boundary.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-2.2), y:M.Y(1.6), width:4.4*M.s, height:4.6*M.s, rx:6, fill:'none', stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('rect',{x:M.X(-2.2), y:M.Y(0.2), width:4.4*M.s, height:3.2*M.s, fill:'rgba(91,130,166,.25)'},c.svg);
+       el('line',{x1:M.X(1.6),y1:M.Y(3.4),x2:M.X(0.15),y2:M.Y(0.2),stroke:'#B5793B','stroke-width':5,'stroke-linecap':'round'},c.svg);
+       el('line',{x1:M.X(0.15),y1:M.Y(0.2),x2:M.X(-1.3),y2:M.Y(-2.4),stroke:'#B5793B','stroke-width':6,'stroke-linecap':'round', opacity:.8},c.svg);
+       el('line',{x1:M.X(0.15),y1:M.Y(0.2),x2:M.X(-0.75),y2:M.Y(-2.4),stroke:'#B5793B','stroke-width':6,'stroke-linecap':'round','stroke-dasharray':'7,5', opacity:.5},c.svg);
+       label(c, 1.3,-1.4, 'where it looks like it is (dashed)', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.6,-3.9, 'the pencil never bent; the light filed a change of speed', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And reflection itself polarizes: at BREWSTER'S ANGLE, where tangent theta-B equals n-two over n-one, the reflected glare is completely polarized parallel to the surface — we shall derive why from dipole physics in Example 5. Strategy for the whole tutorial: angles from the normal, n sine theta as the through-line, and cosine squared for every polarizer. To the examples.",
      pose:'excited',
      board:['\\tan\\theta_B = \\frac{n_2}{n_1}\\quad(\\text{reflected light fully polarized parallel to the surface})',
-            {t:'Strategy: normal-referenced angles → n sinθ through stacks → Malus through filters.'}] },
+            {t:'Strategy: normal-referenced angles → n sinθ through stacks → Malus through filters.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(-5.6),y1:M.Y(-1.8),x2:M.X(2.4),y2:M.Y(-1.8),stroke:'#5A88A8','stroke-width':4},c.svg);
+       label(c, -5.4,-2.6, 'the lake', {fs:12, color:'#1D4568', italic:true});
+       arrow(c, -4.6,2.4, -1.6,-1.75, {color:GOLD, w:2.5});
+       arrow(c, -1.6,-1.75, 1.6,2.4, {color:GOLD, w:2.5});
+       for(const t2 of [0.25,0.55,0.85]){
+         const x=-1.6+3.2*t2, y=-1.75+4.15*t2;
+         el('line',{x1:M.X(x)-11,y1:M.Y(y),x2:M.X(x)+11,y2:M.Y(y),stroke:RED,'stroke-width':2.5},c.svg);
+       }
+       label(c, 0.1,0.1, 'glare: polarized ∥ surface', {fs:11.5, color:RED, italic:true});
+       el('ellipse',{cx:M.X(3.4), cy:M.Y(3.2), rx:0.85*M.s, ry:0.6*M.s, fill:'rgba(90,136,168,.35)', stroke:'#1D4568','stroke-width':2.5},c.svg);
+       el('line',{x1:M.X(3.4),y1:M.Y(3.75),x2:M.X(3.4),y2:M.Y(2.65),stroke:'#1D4568','stroke-width':2.5},c.svg);
+       label(c, 2.4,4.4, 'sunglasses: vertical axis', {fs:11.5, color:'#1D4568', italic:true});
+       label(c, -1.4,-4.2, 'Malus’s law, executed on the glare at Brewster’s angle', {fs:12, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

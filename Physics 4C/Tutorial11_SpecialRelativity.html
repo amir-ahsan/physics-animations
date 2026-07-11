@@ -797,13 +797,51 @@ const EXAMPLES = [
    { say:"The full machinery is the LORENTZ TRANSFORMATION: x-prime is gamma times x minus v t, and t-prime is gamma times t minus v x over c squared. That v x over c-squared term IS the relativity of simultaneity, wearing algebra. Differentiate it — as we shall in Example 3 — and velocities compose by u plus v over one plus u v over c squared: speeds add, but the denominator never lets the total reach c. Feed it light, and it hands back exactly c.",
      pose:'point',
      board:['x^{\\prime} = \\gamma(x - vt), \\qquad t^{\\prime} = \\gamma\\Big(t - \\frac{vx}{c^2}\\Big)',
-            'u_x = \\frac{u_x^{\\prime} + v}{1 + u_x^{\\prime}v/c^2}\\ \\ (\\text{never exceeds } c)'] },
+            'u_x = \\frac{u_x^{\\prime} + v}{1 + u_x^{\\prime}v/c^2}\\ \\ (\\text{never exceeds } c)'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       arrow(c, 0.10,0.4, 0.10,6.6, {color:'#8A7D60', w:2.5, label:'t', fs:13});
+       arrow(c, 0.06,0.6, 1.02,0.6, {color:'#8A7D60', w:2.5, label:'x', fs:13});
+       arrow(c, 0.10,0.6, 0.62,6.4, {color:BLUE, w:2.5, label:"t′ (moving frame)", fs:11.5});
+       arrow(c, 0.10,0.6, 1.02,1.75, {color:BLUE, w:2.5, label:"x′", fs:12});
+       dashLine(c, 0.06,3.6, 1.02,3.6, {color:GOLD});
+       label(c, 0.68,3.9, 'your “now”', {fs:11.5, color:'#8A5A24', italic:true});
+       dashLine(c, 0.10,2.8, 1.02,3.95, {color:GREEN});
+       label(c, 0.68,4.85, 'their “now”: tilted by vx/c²', {fs:11.5, color:'#2E7D4F', italic:true});
+     } },
    { say:"Light from a receding source arrives REDSHIFTED by the relativistic Doppler factor: f-observed equals f-source times the root of one minus beta over one plus beta. Unlike sound, only the RELATIVE velocity appears — light has no medium to referee. This factor, not time dilation alone, is what each twin literally watches in Example 6.",
-     pose:'write',
-     board:['f_{\\rm obs} = f_s\\sqrt{\\frac{1-\\beta}{1+\\beta}}\\ \\ (\\text{receding: redshift; approach: swap signs})'] },
+     pose:'write', solo:true,
+     board:['f_{\\rm obs} = f_s\\sqrt{\\frac{1-\\beta}{1+\\beta}}\\ \\ (\\text{receding: redshift; approach: swap signs})'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0.5), cy:M.Y(4.4), r:9, fill:GOLD},c.svg);
+       arrow(c, 0.545,4.4, 0.63,4.4, {color:'#8A5A24', w:2, head:6});
+       const wl=(x0,lam,y)=>{ const pts=[]; for(let i=0;i<=60;i++){const x=x0+0.36*i/60;
+         pts.push(M.X(x)+','+M.Y(y+0.5*Math.sin(2*Math.PI*(x-x0)/lam)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2.2},c.svg); };
+       wl(0.06,0.09,4.4);
+       label(c, 0.03,5.7, 'behind: stretched — redshift', {fs:11.5, color:RED, italic:true});
+       const pb=[]; for(let i=0;i<=60;i++){const x=0.62+0.36*i/60;
+         pb.push(M.X(x)+','+M.Y(4.4+0.5*Math.sin(2*Math.PI*(x-0.62)/0.045)));}
+       el('polyline',{points:pb.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.2},c.svg);
+       label(c, 0.60,5.7, 'ahead: squeezed — blueshift', {fs:11.5, color:BLUE, italic:true});
+       label(c, 0.10,1.6, 'no medium, no referee: only the RELATIVE velocity appears', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Permit the vertigo, briefly. The muon does not experience the time you assign it; the GPS satellite over your head runs its clocks fast by relativity’s exact prescription, or your map would drift by kilometres within a day. Simultaneity — the innocent word ‘now’ — is private property. Physics did not merely revise some formulas in 1905; it revised the meaning of ‘when’.",
-     pose:'think',
-     board:[{t:'Your phone’s map works because engineers believed a 1905 paper about the word ‘now’.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Your phone’s map works because engineers believed a 1905 paper about the word ‘now’.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0.5), cy:M.Y(1.4), r:52, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2.5},c.svg);
+       label(c, 0.44,1.3, 'Earth', {fs:13, color:'#1D4568'});
+       el('ellipse',{cx:M.X(0.5), cy:M.Y(1.4), rx:110, ry:70, fill:'none', stroke:'#8A7D60','stroke-width':1.8,'stroke-dasharray':'6,5'},c.svg);
+       el('rect',{x:M.X(0.5)+86, y:M.Y(4.1), width:26, height:16, rx:3, fill:GOLD, stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('line',{x1:M.X(0.5)+80,y1:M.Y(4.1)+8,x2:M.X(0.5)+66,y2:M.Y(4.1)+8,stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('line',{x1:M.X(0.5)+112,y1:M.Y(4.1)+8,x2:M.X(0.5)+126,y2:M.Y(4.1)+8,stroke:'#8A5A24','stroke-width':2},c.svg);
+       label(c, 0.75,5.6, 'GPS clock: corrected by +38 μs/day', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 0.75,5.0, '(or your map drifts 10 km daily)', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Dynamics, rebuilt: momentum is gamma m v, total energy gamma m c squared, kinetic energy gamma minus one times m c squared. The master key is the INVARIANT TRIANGLE: E squared equals p c squared plus m c squared, squared — with beta available as p c over E. Massless particles ride the hypotenuse entirely: E equals p c, speed always c. Strategy: name the frames, compute gamma FIRST and keep four figures, prefer the triangle over velocities, and check that everything collapses to Newtonian mechanics when beta is small. To the examples.",
      solo:true, pose:'excited',
      board:['\\vec p = \\gamma m\\vec v, \\quad E = \\gamma mc^2, \\quad K = (\\gamma-1)mc^2',

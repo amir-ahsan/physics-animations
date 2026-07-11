@@ -787,24 +787,95 @@ const EXAMPLES = [
    { say:"Geometric optics: light as RAYS, images as bookkeeping. One equation rules mirrors and lenses alike — one over d-o plus one over d-i equals one over f — provided you swear allegiance to the sign conventions: object distances positive in front; image distances positive where that element actually sends light — in front for mirrors, behind for lenses; and f positive for the converging kind, negative for the diverging.",
      pose:'talk',
      board:['\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}\\quad(\\text{mirrors AND thin lenses})',
-            {t:'f > 0: concave mirror, converging lens. f < 0: convex mirror, diverging lens.'}] },
+            {t:'f > 0: concave mirror, converging lens. f < 0: convex mirror, diverging lens.'}],
+     action(c){
+       arrow(c, -9,-2.2, -0.4,-2.2, {color:GREEN, w:2, head:7});
+       label(c, -7.4,-3.2, 'd_o > 0: in front', {fs:12, color:GREEN, italic:true});
+       arrow(c, 0.4,-2.2, 9,-2.2, {color:PURPLE, w:2, head:7});
+       label(c, 2.6,-3.2, 'd_i > 0: where light really goes', {fs:12, color:PURPLE, italic:true});
+     } },
    { say:"For mirrors, the focal length is half the radius of curvature. For lenses ground from glass, the LENSMAKER'S equation manufactures f from the surface radii and the index contrast with the surroundings — n minus one, times the difference of the curvatures.",
-     pose:'write',
-     board:['f_{\\rm mirror} = \\frac{R}{2}, \\qquad \\frac{1}{f} = (n-1)\\Big(\\frac{1}{R_1} - \\frac{1}{R_2}\\Big)'] },
+     pose:'write', solo:true,
+     board:['f_{\\rm mirror} = \\frac{R}{2}, \\qquad \\frac{1}{f} = (n-1)\\Big(\\frac{1}{R_1} - \\frac{1}{R_2}\\Big)'],
+     action(c){
+       const {M}=c;
+       el('path',{d:`M ${M.X(-1.6)} ${M.Y(4.6)} Q ${M.X(-3.6)} ${M.Y(0)} ${M.X(-1.6)} ${M.Y(-4.6)}`,
+         fill:'none', stroke:'#5C4B30','stroke-width':4},c.svg);
+       dashLine(c, -14.6,0, -1.6,0, {color:'#B0A488', dash:'6,5'});
+       el('circle',{cx:M.X(-12.6), cy:M.Y(0), r:4, fill:'#8A7D60'},c.svg);
+       label(c, -13.2,1.0, 'C (at R)', {fs:12, color:'#7A5A28', italic:true});
+       el('circle',{cx:M.X(-7.6), cy:M.Y(0), r:4, fill:GOLD},c.svg);
+       label(c, -8.4,1.0, 'F (at R/2)', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -13.5,-3.4, 'mirror: geometry alone', {fs:12, color:'#7A5A28', italic:true});
+       el('path',{d:`M ${M.X(8.2)} ${M.Y(4.4)} Q ${M.X(6.0)} ${M.Y(0)} ${M.X(8.2)} ${M.Y(-4.4)} Q ${M.X(10.4)} ${M.Y(0)} ${M.X(8.2)} ${M.Y(4.4)} Z`,
+         fill:'rgba(90,136,168,.25)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
+       label(c, 5.0,5.6, 'R₁', {fs:12.5, color:'#1D4568', italic:true});
+       label(c, 10.6,5.6, 'R₂', {fs:12.5, color:'#1D4568', italic:true});
+       label(c, 4.4,-3.4, 'lens: curvature × contrast (n−1)', {fs:12, color:'#1D4568', italic:true});
+     } },
    { say:"The MAGNIFICATION carries the image's biography in one signed number: m equals minus d-i over d-o. Negative means inverted, positive upright; magnitude above one, enlarged. And the grand dichotomy: positive d-i is a REAL image — light actually converges there, a screen would catch it — while negative d-i is VIRTUAL: the rays only appear to come from it, and no screen anywhere will find it.",
      pose:'point',
      board:['m = -\\frac{d_i}{d_o}\\quad(m<0:\\ \\text{inverted};\\ |m|>1:\\ \\text{enlarged})',
-            {t:'d_i > 0: real (catchable on a screen). d_i < 0: virtual (apparent only).'}] },
+            {t:'d_i > 0: real (catchable on a screen). d_i < 0: virtual (apparent only).'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       arrow(c, -13.4,2.6, -8.6,-1.6, {color:GOLD, w:2});
+       arrow(c, -13.4,-2.6, -8.6,1.6, {color:GOLD, w:2});
+       el('line',{x1:M.X(-8.0),y1:M.Y(3.2),x2:M.X(-8.0),y2:M.Y(-3.2),stroke:'#5C4B30','stroke-width':4},c.svg);
+       el('circle',{cx:M.X(-11.0), cy:M.Y(0), r:5, fill:RED},c.svg);
+       label(c, -14.2,-4.6, 'real: rays truly cross — a screen catches it', {fs:12, color:'#7A2015', italic:true});
+       arrow(c, 4.4,0.6, 9.2,2.8, {color:GOLD, w:2});
+       arrow(c, 4.4,-0.6, 9.2,-2.8, {color:GOLD, w:2});
+       dashLine(c, 4.4,0.6, 0.6,-1.15, {color:'#B0A488'});
+       dashLine(c, 4.4,-0.6, 0.6,1.15, {color:'#B0A488'});
+       el('circle',{cx:M.X(1.6), cy:M.Y(0), r:5, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'4,3'},c.svg);
+       label(c, 0.4,-4.6, 'virtual: only the extensions meet — visible, uncatchable', {fs:12, color:'#7A2015', italic:true});
+     } },
    { say:"Three principal rays draw any image without algebra, as on the stage: parallel to the axis, then through the focus; through the centre, undeviated; through the focus, emerging parallel. Where they meet — or where their backward extensions meet — the image lives. Draw first, compute second; the sketch catches sign errors the calculator loves to keep.",
      pose:'write',
-     board:[{t:'Principal rays: ∥ axis → through F; through centre → straight; through F → ∥ axis. Sketch first!'}] },
+     board:[{t:'Principal rays: ∥ axis → through F; through centre → straight; through F → ∥ axis. Sketch first!'}],
+     action(c){
+       label(c, -4.6,3.2, '① parallel in → through F', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -4.6,0.7, '② centre: straight through', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 2.4,-3.4, 'they meet at the image', {fs:12, color:GREEN, italic:true});
+     } },
    { say:"Geometric optics is the only branch of physics routinely worn on the face. Your eye is a lens obeying today’s equation; your spectacles are a polite correction to its arithmetic. And a telescope is nothing but two lenses agreeing to conspire — through which conspiracies we learned the universe is rather larger than the neighbourhood. Not bad for curved glass.",
-     pose:'think',
-     board:[{t:'The thin-lens equation sits on your nose right now, quietly solving itself.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The thin-lens equation sits on your nose right now, quietly solving itself.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(2.0), cy:M.Y(0), r:4.4*M.s, fill:'rgba(245,241,230,.6)', stroke:'#8A5A24','stroke-width':3},c.svg);
+       el('ellipse',{cx:M.X(-2.2), cy:M.Y(0), rx:0.5*M.s, ry:1.5*M.s, fill:'rgba(90,136,168,.4)', stroke:'#1D4568','stroke-width':2},c.svg);
+       label(c, -3.4,2.4, 'the lens', {fs:12, color:'#1D4568', italic:true});
+       el('path',{d:`M ${M.X(5.9)} ${M.Y(2.6)} Q ${M.X(6.8)} ${M.Y(0)} ${M.X(5.9)} ${M.Y(-2.6)}`, fill:'none', stroke:RED,'stroke-width':3},c.svg);
+       label(c, 5.4,3.6, 'the retina: the screen', {fs:12, color:'#7A2015', italic:true});
+       arrow(c, -8.4,1.6, -2.6,0.6, {color:GOLD, w:2});
+       arrow(c, -8.4,-1.6, -2.6,-0.6, {color:GOLD, w:2});
+       arrow(c, -1.8,0.6, 6.0,-0.4, {color:GOLD, w:2});
+       arrow(c, -1.8,-0.6, 6.0,0.4, {color:GOLD, w:2});
+       label(c, -8.6,-4.2, 'your eye: a camera obeying 1/d_o + 1/d_i = 1/f, all day', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And for INSTRUMENTS — telescopes, microscopes, spectacles, your own eye — one strategy covers all: CHAIN the elements. The image of lens one becomes the object of lens two, distances re-measured from lens two; magnifications MULTIPLY. Every optical device ever built is this sentence, applied with intent. To the examples.",
      pose:'excited',
      board:['d_{o2} = (\\text{separation}) - d_{i1}, \\qquad m = m_1m_2\\cdots',
-            {t:'Strategy: signs first → sketch the rays → chain image-to-object → multiply the m’s.'}] },
+            {t:'Strategy: signs first → sketch the rays → chain image-to-object → multiply the m’s.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       dashLine(c, -14.5,0, 14.5,0, {color:'#B0A488', dash:'6,5'});
+       el('ellipse',{cx:M.X(-7), cy:M.Y(0), rx:0.45*M.s, ry:3.4*M.s, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
+       el('ellipse',{cx:M.X(6), cy:M.Y(0), rx:0.45*M.s, ry:3.4*M.s, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
+       arrow(c, -12.5,1.8, -12.5,0, {color:GOLD, w:3, head:8});
+       label(c, -13.4,2.7, 'object', {fs:12, color:'#8A5A24', italic:true});
+       arrow(c, -1.5,0, -1.5,-2.4, {color:RED, w:3, head:8});
+       label(c, -3.3,-3.3, 'image 1 = object 2', {fs:12, color:'#7A2015', italic:true});
+       arrow(c, 11.4,3.0, 11.4,0, {color:GREEN, w:3, head:8});
+       label(c, 9.6,4.0, 'final image', {fs:12, color:'#2E7D4F', italic:true});
+       arrow(c, -6.0,5.3, -2.2,5.3, {color:'#8A7D60', w:2, head:7});
+       arrow(c, 0.0,5.3, 4.8,5.3, {color:'#8A7D60', w:2, head:7});
+       label(c, -4.4,6.2, 'the relay: m = m₁ × m₂', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

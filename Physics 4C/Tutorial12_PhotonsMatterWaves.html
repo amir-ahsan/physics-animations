@@ -790,11 +790,32 @@ const EXAMPLES = [
    { say:"This tutorial is the crime scene of classical physics: four experiments that forced the quantum. First, BLACKBODY RADIATION. Classical theory predicted ever-growing radiation at short wavelengths — the ultraviolet catastrophe. Planck’s repair: oscillators of frequency f trade energy only in lumps of h f. From his curve survive two lab workhorses: Wien’s law — lambda-max T equals 2.898 ten-to-the-minus-3 metre-kelvin — and Stefan–Boltzmann’s P equals sigma A T-to-the-fourth.",
      pose:'talk',
      board:['E = hf\\ \\text{(Planck’s lumps)}, \\qquad \\lambda_{\\max}T = 2.898\\times10^{-3}\\ \\mathrm{m\\,K}',
-            'P = \\sigma A T^4\\ \\ (\\text{Stefan–Boltzmann})'] },
+            'P = \\sigma A T^4\\ \\ (\\text{Stefan–Boltzmann})'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       arrow(c, -0.4,-1.5, 8.0,-1.5, {color:'#8A7D60', w:2});
+       arrow(c, 0,-1.6, 0,3.1, {color:'#8A7D60', w:2});
+       textAt(c, 7.9,-1.25, 'λ', {fs:13, italic:true, anchor:'end'});
+       const planck=[]; for(let i=1;i<=90;i++){const x=0.15+7.4*i/90;
+         planck.push(M.X(x)+','+M.Y(-1.5+11.5/Math.pow(x,5)/(Math.exp(2.2/x)-1)));}
+       el('polyline',{points:planck.join(' '),fill:'none',stroke:GOLD,'stroke-width':3},c.svg);
+       const cat=[]; for(let i=1;i<=60;i++){const x=0.55+6.9*i/60;
+         cat.push(M.X(x)+','+M.Y(Math.min(3.0,-1.5+2.8/Math.pow(x,4))));}
+       el('polyline',{points:cat.join(' '),fill:'none',stroke:RED,'stroke-width':2.5,'stroke-dasharray':'7,5'},c.svg);
+       textAt(c, 1.7,2.7, 'classical: catastrophe', {fs:11.5, italic:true, color:'#C0392B'});
+       textAt(c, 4.6,0.4, 'Planck’s lumps: the real curve', {fs:11.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"Second, the PHOTOELECTRIC EFFECT — the plot on the stage. Light ejects electrons from a metal, but with a maximum energy that ignores intensity, a sharp frequency threshold, and no delay. Einstein’s reading: light ARRIVES as photons of energy h f, and one photon buys one electron out, paying the metal’s work function phi first. K-max equals h f minus phi. Intensity sets how MANY electrons; frequency sets how ENERGETIC. Below the threshold: nothing, at any brightness.",
      pose:'write',
      board:['K_{\\max} = hf - \\phi = \\frac{hc}{\\lambda} - \\phi, \\qquad eV_{\\rm stop} = K_{\\max}',
-            {t:'The slope of K_max vs f is h itself — the same for every metal. Below f₀ = φ/h: silence.'}] },
+            {t:'The slope of K_max vs f is h itself — the same for every metal. Below f₀ = φ/h: silence.'}],
+     action(c){
+       label(c, 3.1,1.9, 'brighter light: SAME line,', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 3.1,1.55, 'merely more electrons', {fs:11.5, color:'#8A5A24', italic:true});
+       arrow(c, 1.5,-1.35, 2.1,-0.25, {color:RED, w:2, head:7});
+       label(c, 0.3,-1.7, 'below f₀: silence at any brightness', {fs:11, color:RED, italic:true});
+     } },
    { say:"Third, COMPTON SCATTERING: X-ray photons bounce off nearly-free electrons like billiard balls, conserving relativistic energy AND momentum — a photon carries p equals h over lambda. The scattered photon emerges LONGER in wavelength, having paid the electron: delta-lambda equals h over m-e c, times one minus cosine theta. The shift is an absolute length — biggest at backscatter, 4.85 ten-to-the-minus-3 nanometres — which is why Compton needed X-rays: on visible light the same shift is fractionally invisible.",
      solo:true, pose:'point',
      board:['\\Delta\\lambda = \\frac{h}{m_ec}(1-\\cos\\theta), \\qquad \\frac{h}{m_ec} = 2.43\\times10^{-3}\\ \\mathrm{nm}'],
@@ -807,14 +828,53 @@ const EXAMPLES = [
    { say:"Fourth, DE BROGLIE inverted the logic: if waves carry momentum, then particles carry wavelength — lambda equals h over p. Davisson and Germer confirmed it when electron beams diffracted off crystals exactly per Bragg’s law. For an electron accelerated through V volts, the handy form: lambda equals 1.226 nanometres over root V. And confining a wave BUILDS a momentum spread from its Fourier components — Heisenberg’s uncertainty principle, delta-x delta-p at least h-bar over two.",
      pose:'write',
      board:['\\lambda = \\frac{h}{p}, \\qquad \\lambda_e = \\frac{1.226\\ \\mathrm{nm}}{\\sqrt{V}}\\ \\ (\\text{nonrelativistic})',
-            '\\Delta x\\,\\Delta p \\gtrsim \\frac{\\hbar}{2}, \\qquad \\hbar = \\frac{h}{2\\pi}'] },
+            '\\Delta x\\,\\Delta p \\gtrsim \\frac{\\hbar}{2}, \\qquad \\hbar = \\frac{h}{2\\pi}'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-0.6), y:M.Y(0.6), width:36, height:26, rx:5, fill:'#4A4A3A'},c.svg);
+       label(c, -0.75,-0.35, 'e⁻ gun', {fs:11.5, color:'#7A5A28', italic:true});
+       arrow(c, 0.7,0.25, 2.7,0.25, {color:BLUE, w:2.5, label:'particles in', fs:11});
+       for(let i2=0;i2<3;i2++)for(let j=0;j<3;j++)
+         el('circle',{cx:M.X(3.1+i2*0.35), cy:M.Y(-0.35+j*0.6), r:3.5, fill:'#8A5A24'},c.svg);
+       label(c, 2.7,-1.15, 'crystal', {fs:11.5, color:'#7A5A28', italic:true});
+       for(const r2 of [0.7,1.15,1.6])
+         el('path',{d:`M ${M.X(5.4)} ${M.Y(0.25+r2)} A ${r2*28} ${r2*28} 0 0 1 ${M.X(5.4)} ${M.Y(0.25-r2)}`,
+           fill:'none', stroke:GOLD,'stroke-width':2.5, opacity:.85},c.svg);
+       label(c, 5.9,1.9, 'waves out: Bragg rings', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 0.2,2.8, 'Davisson–Germer: λ = h/p, confirmed on a crystal', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Here is the century’s strangest bargain: light, which interference proved to be a wave, arrives as particles; electrons, indisputably particles, diffract like waves. Nature declined to choose, and the universe runs perfectly well on the ambiguity. Your eye — a photon counter — reads this sentence by quantum mechanics; comprehension, alas, remains classical.",
-     pose:'think',
-     board:[{t:'Wave or particle? Nature’s answer: yes. And your retina counts the evidence photon by photon.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Wave or particle? Nature’s answer: yes. And your retina counts the evidence photon by photon.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-0.5), y:M.Y(3.0), width:8.6*M.s+60, height:4.4*M.s+30, rx:6, fill:'none', stroke:'#8A7D60','stroke-width':2},c.svg);
+       let seed=7;
+       const rand=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+       for(let k=0;k<120;k++){
+         const u=rand(); const x=-0.3+8.2*u;
+         const env=Math.pow(Math.cos(1.9*(x-3.95)),2)*Math.exp(-Math.pow((x-3.95)/2.6,2));
+         if(rand()<env) el('circle',{cx:M.X(x), cy:M.Y(-1.3+4.0*rand()), r:2.2, fill:'#5C4B30'},c.svg);
+       }
+       label(c, 0.0,-1.75, 'one dot at a time (particles) — banded in the total (a wave)', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy for the chapter: work in electron-volts and nanometres, with h c equals 1240 e-V nanometres held sacred. One photon, one event — decide whether the problem is energy bookkeeping or momentum bookkeeping. For matter waves, find p FIRST, then divide it into h. And keep the orders of magnitude on call: visible photons two to three e-V; a lab electron’s wavelength, about a nanometre; a baseball’s, ten-to-the-minus-34 metres — which is why doors do not diffract you. To the examples.",
      pose:'excited',
      board:['hc = 1240\\ \\mathrm{eV\\,nm}\\ \\ (\\text{keep it sacred})',
-            {t:'Strategy: eV & nm → one photon, one event → p first, then λ = h/p → check the classical limit.'}] },
+            {t:'Strategy: eV & nm → one photon, one event → p first, then λ = h/p → check the classical limit.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.2), y:M.Y(2.9), width:150, height:44, rx:10, fill:'rgba(181,121,59,.2)', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       label(c, 0.55,2.15, 'hc = 1240 eV·nm', {fs:14, color:'#5C3A16'});
+       const rungs=[['visible photon: 2–3 eV',1.0],['lab electron: λ ≈ 1 nm',0.1],['you, walking: λ ≈ 10⁻³⁶ m',-0.8]];
+       rungs.forEach(([t2,y])=>{
+         el('circle',{cx:M.X(4.4), cy:M.Y(y), r:4, fill:GOLD},c.svg);
+         label(c, 4.7,y-0.1, t2, {fs:12, color:'#7A5A28'});
+       });
+       label(c, 0.4,-1.6, 'hence: electrons diffract, doors decline to diffract you', {fs:12, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

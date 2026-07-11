@@ -793,7 +793,18 @@ const EXAMPLES = [
    { say:"Quantum mechanics proper. A particle’s entire biography is the WAVE FUNCTION, psi — and BORN’S RULE gives it meaning: the probability of finding the particle between a and b is the integral of psi squared over that interval, with the total integral normalised to one. Psi itself is not a probability — it can be negative, and its signs and nodes drive all interference. Predictions are EXPECTATION VALUES: averages of x, and of x squared, weighted by psi squared.",
      pose:'talk',
      board:['P(a\\le x\\le b) = \\int_a^b|\\psi|^2\\,dx, \\qquad \\int_{-\\infty}^{\\infty}|\\psi|^2dx = 1',
-            '\\langle x\\rangle = \\int x|\\psi|^2dx, \\qquad \\Delta x = \\sqrt{\\langle x^2\\rangle - \\langle x\\rangle^2}'] },
+            '\\langle x\\rangle = \\int x|\\psi|^2dx, \\qquad \\Delta x = \\sqrt{\\langle x^2\\rangle - \\langle x\\rangle^2}'],
+     action(c){
+       const {M}=c;
+       const pts=[M.X(3.5)+','+M.Y(1.0)];
+       for(let i=0;i<=30;i++){const x=3.5+3.0*i/30;
+         pts.push(M.X(x)+','+M.Y(1.0+0.85*Math.sin(Math.PI*x/10)));}
+       pts.push(M.X(6.5)+','+M.Y(1.0));
+       el('polygon',{points:pts.join(' '),fill:'rgba(46,109,164,.3)',stroke:'none'},c.svg);
+       label(c, 4.0,2.6, 'P(a≤x≤b) = the shaded area of |ψ|²', {fs:11.5, color:'#1D4568', italic:true});
+       label(c, 11.0,10.3, 'ψ can be negative;', {fs:11, color:'#8A5A24', italic:true});
+       label(c, 11.0,9.6, 'only |ψ|² is a probability', {fs:11, color:'#8A5A24', italic:true});
+     } },
    { say:"Position and momentum are FOURIER PARTNERS of the same wave, so squeezing one spreads the other: delta-x delta-p at least h-bar over two. Not clumsy measurement — anatomy. The working estimate: confinement to a region of size L costs a zero-point energy of order h-bar squared over two m L squared. Small boxes are expensive; that single fact sizes atoms.",
      solo:true, pose:'write',
      board:['\\Delta x\\,\\Delta p \\ge \\frac{\\hbar}{2}, \\qquad E_{\\rm zero{-}point} \\sim \\frac{\\hbar^2}{2mL^2}'],
@@ -804,7 +815,14 @@ const EXAMPLES = [
    { say:"The law of motion is the SCHRÖDINGER EQUATION — for stationary states, minus h-bar squared over two m, times the second derivative of psi, plus U psi, equals E psi. Boundary conditions act exactly like the fixed ends of a string from Tutorial 5: only special energies fit. QUANTIZATION IS THE STANDING-WAVE CONDITION IN DISGUISE. For the infinite box on the stage: psi-n is root two over L, sine n pi x over L, with energies n squared times E-one — gaps that GROW, a ground floor that is not zero, and n minus one nodes in the n-th state.",
      pose:'point',
      board:['-\\frac{\\hbar^2}{2m}\\frac{d^2\\psi}{dx^2} + U\\psi = E\\psi',
-            '\\psi_n = \\sqrt{\\tfrac{2}{L}}\\sin\\tfrac{n\\pi x}{L}, \\qquad E_n = n^2\\frac{h^2}{8mL^2}'] },
+            '\\psi_n = \\sqrt{\\tfrac{2}{L}}\\sin\\tfrac{n\\pi x}{L}, \\qquad E_n = n^2\\frac{h^2}{8mL^2}'],
+     action(c){
+       el('circle',{cx:c.M.X(5), cy:c.M.Y(4.0), r:5, fill:RED},c.svg);
+       label(c, 5.3,4.55, 'node (n−1 of them in state n)', {fs:11, color:RED, italic:true});
+       label(c, 11.0,6.2, 'the guitar string,', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 11.0,5.5, 'reborn as an atom:', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 11.0,4.8, 'boundaries quantize', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"The other exactly-solvable well — and secretly EVERY potential near its minimum — is the HARMONIC OSCILLATOR: energies n plus one half, times h-bar omega. Evenly spaced rungs, which is why a vibrating molecule absorbs at one fundamental frequency; and a zero-point energy of half a rung — a bound quantum particle can never sit perfectly still.",
      solo:true, pose:'write',
      board:['U = \\tfrac12m\\omega^2x^2:\\quad E_n = \\Big(n+\\tfrac12\\Big)\\hbar\\omega, \\quad n = 0,1,2,\\ldots'],
@@ -813,8 +831,24 @@ const EXAMPLES = [
        textAt(c, 12.6,0.25, 'oscillator: even rungs, ħω apart', {fs:10.5, italic:true, anchor:'middle'});
      } },
    { say:"Let the tunnelling sink in: the Sun should not shine. Its protons lack the energy to breach their mutual repulsion — classically, the furnace is unlit. But the wave function leaks where particles cannot go, and that leak, multiplied by ten-to-the-56 protons, is daylight. Every sunrise is a quantum improbability, performed daily, on schedule.",
-     pose:'think',
-     board:[{t:'Classically the Sun is impossible. It shines anyway — by the exponential we just wrote down.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Classically the Sun is impossible. It shines anyway — by the exponential we just wrote down.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(5.4), y:M.Y(8.6), width:2.2*M.s, height:8.0*M.s, fill:'rgba(138,125,96,.35)', stroke:'#8A7D60','stroke-width':2.5},c.svg);
+       label(c, 5.6,9.4, 'the barrier (E < U₀)', {fs:11.5, color:'#7A5A28', italic:true});
+       const win=[]; for(let i=0;i<=50;i++){const x=-1.6+7.0*i/50;
+         win.push(M.X(x)+','+M.Y(4.4+1.3*Math.sin(2.4*x)));}
+       el('polyline',{points:win.join(' '),fill:'none',stroke:GOLD,'stroke-width':2.5},c.svg);
+       const dec=[]; for(let i=0;i<=30;i++){const x=5.4+2.2*i/30;
+         dec.push(M.X(x)+','+M.Y(4.4+1.3*Math.sin(2.4*5.4)*Math.exp(-1.4*(x-5.4))));}
+       el('polyline',{points:dec.join(' '),fill:'none',stroke:RED,'stroke-width':2.5},c.svg);
+       const out=[]; for(let i=0;i<=40;i++){const x=7.6+6.4*i/40;
+         out.push(M.X(x)+','+M.Y(4.4+0.28*Math.sin(2.4*x)));}
+       el('polyline',{points:out.join(' '),fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
+       label(c, 8.2,6.6, 'a whisper survives: T ≈ e^(−2κL)', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, -1.9,1.4, 'the leak that lights the Sun, times 10⁵⁶ protons', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And where a classical particle turns back, the wave function refuses: inside a barrier taller than E it DECAYS exponentially with constant kappa — root of two m U-nought minus E, over h-bar — and a barrier of width L transmits with probability e to the minus two kappa L. That exponential is absurdly sensitive, and it runs the scanning tunnelling microscope, alpha decay, and the Sun. Strategy: identify the potential — box, oscillator, or barrier; compute the SCALE first, E-one or h-bar omega or kappa; photons connect levels by delta-E; probabilities are integrals of psi squared; and the classical limit must emerge at large n. To the examples.",
      pose:'excited',
      board:['\\kappa = \\frac{\\sqrt{2m(U_0-E)}}{\\hbar}, \\qquad T \\approx e^{-2\\kappa L}',

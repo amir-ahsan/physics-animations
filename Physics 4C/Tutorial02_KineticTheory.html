@@ -785,7 +785,20 @@ const EXAMPLES = [
    { say:"This tutorial opens the box and looks at the molecules. First, the macroscopic law they conspire to produce: p V equals n R T — with p the ABSOLUTE pressure, gauge plus atmospheric, and T in kelvin, always. For a sealed sample the constants drop out entirely, and the ratio form p-one V-one over T-one equals p-two V-two over T-two handles any before-and-after comparison without a single value of n.",
      pose:'talk',
      board:['pV = nRT = Nk_BT, \\qquad \\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2}\\ (\\text{sealed})',
-            {t:'Absolute pressure and kelvin — the two classic traps of the chapter.'}] },
+            {t:'Absolute pressure and kelvin — the two classic traps of the chapter.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(150), y:M.Y(1.05), width:M.X(700)-M.X(150), height:M.Y(0.15)-M.Y(1.05), fill:'none', stroke:'#8A5A24','stroke-width':3, rx:4},c.svg);
+       for(let i=0;i<9;i++){
+         const x=210+(i%3)*160+((i*37)%60), y=0.28+Math.floor(i/3)*0.26+((i*13)%10)*0.01, a=(i*2.1)%(2*Math.PI);
+         el('circle',{cx:M.X(x), cy:M.Y(y), r:5, fill:BLUE},c.svg);
+         arrow(c, x,y, x+60*Math.cos(a), y+0.14*Math.sin(a), {color:'#5A88A8', w:1.6, head:5});
+       }
+       el('rect',{x:M.X(700), y:M.Y(0.85), width:26, height:M.Y(0.35)-M.Y(0.85), fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       arrow(c, 760,0.6, 900,0.6, {color:RED, w:2.5, label:'p pushes the piston', fs:12});
+       label(c, 170,1.16, 'pV = nRT: the crowd’s conspiracy, in one line', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Now the central revelation of kinetic theory. Pressure is nothing but the drumbeat of molecular impacts, and working out that drumbeat — as we shall, honestly, in Example 4 — yields p V equals one third N m v-squared-bar. Set that beside p V equals N k-B T and the two match only if temperature IS average translational kinetic energy: three halves k-B T per molecule. Temperature, demystified: it is a speedometer reading, averaged over a crowd.",
      solo:true, pose:'point',
      board:['pV = \\tfrac13Nm\\overline{v^2} \\;\\;\\&\\;\\; pV = Nk_BT \\;\\Rightarrow\\; \\tfrac12m\\overline{v^2} = \\tfrac32k_BT',
@@ -801,19 +814,68 @@ const EXAMPLES = [
        textAt(c, 1145,0.62, 'wall bombardment = pressure', {fs:11, italic:true, anchor:'middle'});
      } },
    { say:"Between impacts a molecule enjoys, on average, one MEAN FREE PATH of open road: k-B T over root-two pi d-squared p, where d is the molecular diameter and the root two politely accounts for the targets moving as well. Divide the mean speed by lambda and you have the collision frequency — billions per second, as Example 3 will make vivid.",
-     pose:'write',
-     board:['\\lambda = \\frac{k_BT}{\\sqrt2\\,\\pi d^2p}, \\qquad f_{\\rm coll} = \\frac{\\bar v}{\\lambda}'] },
+     pose:'write', solo:true,
+     board:['\\lambda = \\frac{k_BT}{\\sqrt2\\,\\pi d^2p}, \\qquad f_{\\rm coll} = \\frac{\\bar v}{\\lambda}'],
+     action(c){
+       const {M}=c;
+       [[300,0.85],[620,0.95],[900,0.55],[440,0.35],[1050,0.9],[760,0.25]].forEach(pt=>
+         el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:9, fill:'#D9C6A5', stroke:'#8A7D60','stroke-width':2},c.svg));
+       const path=[[120,0.5],[300,0.82],[500,0.55],[620,0.92],[820,0.6],[900,0.58],[1080,0.3]];
+       const pts=path.map(q=>M.X(q[0])+','+M.Y(q[1]));
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(120), cy:M.Y(0.5), r:6, fill:RED},c.svg);
+       dashLine(c, 300,0.72, 500,0.45, {color:GREEN});
+       label(c, 350,0.5, 'λ: one leg of open road', {fs:12, color:GREEN, italic:true});
+       label(c, 120,0.08, 'fast feet, no sense of direction — hence perfume’s slow stroll', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"EQUIPARTITION: nature is scrupulously fair, awarding each quadratic degree of freedom exactly one half k-B T. Count the degrees and the heat capacity follows: three halves R for a monatomic gas, five halves for a diatomic at room temperature, roughly three R for polyatomics. And the fine print is quantum: a diatomic's vibrations are frozen out at room temperature — the first place your syllabus quietly touches quantum mechanics.",
      pose:'write',
      board:['E_{\\rm int} = \\tfrac{d}{2}nRT, \\qquad C_V = \\tfrac{d}{2}R:\\ \\ \\tfrac32R\\ (\\text{mono}),\\ \\tfrac52R\\ (\\text{diatomic}),\\ \\approx3R\\ (\\text{poly})',
-            {t:'Vibrations frozen out at room T — a quantum effect in a classical chapter.'}] },
+            {t:'Vibrations frozen out at room T — a quantum effect in a classical chapter.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(230), cy:M.Y(0.72), r:12, fill:GOLD},c.svg);
+       arrow(c, 230,0.72, 330,0.72, {color:'#8A5A24', w:2, head:6});
+       arrow(c, 230,0.72, 230,0.95, {color:'#8A5A24', w:2, head:6});
+       arrow(c, 230,0.72, 160,0.58, {color:'#8A5A24', w:2, head:6});
+       label(c, 120,0.3, 'monatomic: 3 (x, y, z)', {fs:12, color:'#7A5A28'});
+       el('circle',{cx:M.X(600), cy:M.Y(0.72), r:11, fill:BLUE},c.svg);
+       el('circle',{cx:M.X(690), cy:M.Y(0.72), r:11, fill:BLUE},c.svg);
+       el('line',{x1:M.X(611),y1:M.Y(0.72),x2:M.X(679),y2:M.Y(0.72),stroke:'#1D4568','stroke-width':3},c.svg);
+       arc(c, 645,0.72, 80, 40, 140, {color:PURPLE, w:2});
+       label(c, 545,0.3, 'diatomic: 3 + 2 spins = 5', {fs:12, color:'#7A5A28'});
+       [[960,0.78],[1030,0.62],[1100,0.78]].forEach(pt=>el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:9, fill:GREEN},c.svg));
+       label(c, 930,0.3, 'polyatomic: ≈ 6', {fs:12, color:'#7A5A28'});
+       label(c, 300,0.05, 'each quadratic degree of freedom: exactly ½k_BT — nature’s flat rate', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Do pause over the audacity here: nobody had SEEN an atom. Yet by assuming a box of invisible billiard balls, kinetic theory predicted pressure, temperature, even the speeds of molecules — hundreds of metres per second in the still air of this room. You are being bombarded ten billion times per second, everywhere, forever. Stillness is a rumour started by large objects.",
-     pose:'think',
-     board:[{t:'The air in a ‘quiet’ room strikes you 10²³ times a second. Calm is an average, not a fact.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The air in a ‘quiet’ room strikes you 10²³ times a second. Calm is an average, not a fact.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(620), cy:M.Y(0.55), r:52, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       label(c, 585,0.52, 'you', {fs:15, color:'#5C3A16'});
+       for(let k=0;k<12;k++){
+         const a=k*Math.PI/6;
+         const x1=620+330*Math.cos(a), y1=0.55+0.42*Math.sin(a);
+         const x2=620+160*Math.cos(a), y2=0.55+0.20*Math.sin(a);
+         arrow(c, x1,y1, x2,y2, {color:'#5A88A8', w:1.8, head:6});
+       }
+       label(c, 300,1.12, 'ten billion impacts per second, per square centimetre — “stillness”', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Finally, the portrait on the stage: the MAXWELL–BOLTZMANN distribution, the census of molecular speeds at one temperature. It carries three benchmark speeds, in fixed proportion — the most probable at the peak, the mean slightly beyond it, the root-mean-square beyond that, in the ratio one to 1.128 to 1.225. Choose the speed the physics asks for: collisions want the mean; kinetic energy wants the rms. To the examples.",
      pose:'excited',
      board:['v_p = \\sqrt{\\tfrac{2k_BT}{m}} < \\bar v = \\sqrt{\\tfrac{8k_BT}{\\pi m}} < v_{\\rm rms} = \\sqrt{\\tfrac{3k_BT}{m}}\\ \\ (1:1.128:1.225)',
-            {t:'Strategy: kelvin + absolute p → pick k_B or R → ratio form for sealed samples → count degrees of freedom.'}] },
+            {t:'Strategy: kelvin + absolute p → pick k_B or R → ratio form for sealed samples → count degrees of freedom.'}],
+     action(c){
+       dashLine(c, 422,0, 422,1.0, {color:GREEN});
+       dashLine(c, 476,0, 476,0.965, {color:GOLD});
+       dashLine(c, 517,0, 517,0.90, {color:RED});
+       label(c, 400,1.08, 'v_p', {fs:12.5, color:GREEN, italic:true});
+       label(c, 500,1.02, 'v̄', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 545,0.94, 'v_rms', {fs:12.5, color:RED, italic:true});
+     } },
   ]
 },
 

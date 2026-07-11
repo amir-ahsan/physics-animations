@@ -785,20 +785,76 @@ const EXAMPLES = [
    { say:"Waves: the art of sending energy on a journey while the material stays home. The travelling wave's full biography is one function — y equals A sine of k x minus omega t — with amplitude A, wave number k equal to 2 pi over lambda, and angular frequency omega equal to 2 pi f. The pattern's speed is omega over k, which is lambda f; a minus sign between the terms means travel toward plus x, a plus sign toward minus x.",
      pose:'talk',
      board:['y(x,t) = A\\sin(kx - \\omega t), \\qquad k = \\frac{2\\pi}{\\lambda}, \\quad \\omega = 2\\pi f',
-            'v = \\frac{\\omega}{k} = \\lambda f\\quad(kx - \\omega t \\to +x;\\ kx + \\omega t \\to -x)'] },
+            'v = \\frac{\\omega}{k} = \\lambda f\\quad(kx - \\omega t \\to +x;\\ kx + \\omega t \\to -x)'],
+     action(c){
+       arrow(c, 1.21,2.05, 6.04,2.05, {color:GREEN, w:2, head:7});
+       arrow(c, 6.04,2.05, 1.21,2.05, {color:GREEN, w:2, head:7});
+       label(c, 3.3,2.35, 'λ', {fs:15, color:GREEN, italic:true, anchor:'middle'});
+       arrow(c, 1.21,0, 1.21,1.7, {color:PURPLE, w:2, head:7});
+       label(c, 0.75,0.9, 'A', {fs:14, color:PURPLE, italic:true});
+       arrow(c, 8.6,-1.1, 10.1,-1.1, {color:GOLD, w:2.5, label:'v = λf', fs:12});
+     } },
    { say:"On a string, the medium sets the speed — and only the medium: v equals the root of tension over linear mass density. Tighter, faster; heavier, slower. The frequency belongs to whoever is shaking the end; the wavelength is then whatever v over f dictates. Source proposes, medium disposes.",
      pose:'write',
      board:['v = \\sqrt{\\frac{F_T}{\\mu}}, \\qquad \\mu = \\frac{m}{L}',
-            {t:'Medium sets v; source sets f; λ = v/f follows.'}] },
+            {t:'Medium sets v; source sets f; λ = v/f follows.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       const string=(y,thick,bump,col)=>{
+         const pts=[]; for(let i=0;i<=90;i++){const x=0.6+9.4*i/90;
+           pts.push(M.X(x)+','+M.Y(y+1.0*Math.exp(-Math.pow((x-bump)/0.5,2))));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':thick},c.svg);
+       };
+       string(0.8, 2.5, 7.4, GOLD);
+       arrow(c, 8.2,2.35, 9.6,2.35, {color:GOLD, w:2, head:7});
+       label(c, 1.0,2.1, 'light string: fast (v = √(F/μ), small μ)', {fs:12, color:'#8A5A24', italic:true});
+       string(-1.8, 5.5, 3.6, BLUE);
+       arrow(c, 4.4,-0.25, 5.3,-0.25, {color:BLUE, w:2, head:7});
+       label(c, 1.0,-2.45, 'heavy rope: slow — same shaking hand, different medium', {fs:12, color:'#1D4568', italic:true});
+     } },
    { say:"Never confuse the two speeds in the story. The WAVE speed is the pattern's progress down the string; the ELEMENT speed is the transverse bob of the material itself — the partial derivative of y with respect to time, peaking at omega A. They are different quantities with different values, and mixing them is the chapter's most reliable exam wound.",
      pose:'point',
-     board:['v_y = \\frac{\\partial y}{\\partial t}, \\qquad v_{y,\\max} = \\omega A \\ne v\\ \\ (\\text{two different speeds!})'] },
+     board:['v_y = \\frac{\\partial y}{\\partial t}, \\qquad v_{y,\\max} = \\omega A \\ne v\\ \\ (\\text{two different speeds!})'],
+     action(c){
+       arrow(c, 4.4,2.2, 7.0,2.2, {color:GOLD, w:3, label:'the PATTERN: v = ω/k', fs:12});
+       el('circle',{cx:c.M.X(2.42), cy:c.M.Y(0), r:6, fill:RED},c.svg);
+       arrow(c, 2.42,0.25, 2.42,1.35, {color:RED, w:2.5, head:7});
+       arrow(c, 2.42,-0.25, 2.42,-1.35, {color:RED, w:2.5, head:7});
+       label(c, 2.7,-1.0, 'the MATERIAL: bobs at ωA', {fs:12, color:RED, italic:true});
+     } },
    { say:"A wave is energy in transit: average power one half mu omega squared A squared v — quadratic in both frequency and amplitude, as we shall derive honestly in Example 4. And when waves meet, they SUPERPOSE: displacements simply add, point by point, then each wave strolls on unbruised.",
-     pose:'write',
-     board:['P_{\\rm avg} = \\tfrac12\\mu\\omega^2A^2v, \\qquad y_{\\rm net} = y_1 + y_2\\ (\\text{superposition})'] },
+     pose:'write', solo:true,
+     board:['P_{\\rm avg} = \\tfrac12\\mu\\omega^2A^2v, \\qquad y_{\\rm net} = y_1 + y_2\\ (\\text{superposition})'],
+     action(c){
+       const {M}=c;
+       const f1=x=>0.9*Math.exp(-Math.pow((x-4.6)/0.7,2));
+       const f2=x=>0.7*Math.exp(-Math.pow((x-5.8)/0.5,2));
+       const draw=(f,col,w2,dash)=>{ const pts=[]; for(let i=0;i<=90;i++){const x=0.6+9.4*i/90;
+         pts.push(M.X(x)+','+M.Y(f(x)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':w2,...(dash?{'stroke-dasharray':dash}:{})},c.svg); };
+       draw(f1,GOLD,2.5); draw(f2,BLUE,2.5);
+       draw(x=>f1(x)+f2(x),GREEN,3,'7,5');
+       arrow(c, 3.4,1.35, 4.1,1.35, {color:GOLD, w:1.8, head:6});
+       arrow(c, 6.9,1.1, 6.2,1.1, {color:BLUE, w:1.8, head:6});
+       label(c, 6.6,1.9, 'sum (dashed): add, pass, part unbruised', {fs:12, color:'#2E7D4F', italic:true});
+       label(c, 1.0,-1.9, 'meeting waves add point by point — then keep walking', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"A wave is nature’s answer to a lovely riddle: how do you send news without sending anything? The string’s material stays home, bobbing politely, while the PATTERN travels — energy and information hitching a ride on organised motion. Every song you have ever heard was a shape passing through matter that stayed put, minding its own business.",
-     pose:'think',
-     board:[{t:'The medium stays; the message moves. Nothing is mailed, yet everything arrives.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The medium stays; the message moves. Nothing is mailed, yet everything arrives.'}],
+     action(c){
+       const {M}=c;
+       for(let i=0;i<14;i++){
+         const x=0.9+i*0.7;
+         const y=1.1*Math.exp(-Math.pow((x-4.2)/1.1,2));
+         el('circle',{cx:M.X(x), cy:M.Y(y-0.7), r:8, fill:y>0.4?GOLD:'#B0A488'},c.svg);
+       }
+       arrow(c, 3.6,1.3, 5.8,1.3, {color:GOLD, w:2.5, label:'the pattern moves →', fs:12});
+       arrow(c, 4.2,-1.35, 4.2,-2.15, {color:'#8A7D60', w:2, head:6});
+       arrow(c, 4.2,-2.15, 4.2,-1.35, {color:'#8A7D60', w:2, head:6});
+       label(c, 4.6,-1.9, 'each person only stands and sits', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Confine the wave and superposition composes STANDING WAVES: identical waves travelling opposite ways add to A sine k x times cosine omega t — nodes pinned forever at rest, antinodes swinging with doubled amplitude. A string fixed at both ends admits only wavelengths with 2 L over n, hence the harmonic ladder f-n equals n v over 2 L: the entire string family of music. To the examples.",
      solo:true, pose:'excited',
      board:['y = [2A\\sin kx]\\cos\\omega t, \\qquad \\lambda_n = \\frac{2L}{n}, \\quad f_n = \\frac{nv}{2L}',
