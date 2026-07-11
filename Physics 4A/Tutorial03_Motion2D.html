@@ -795,11 +795,21 @@ const EXAMPLES = [
    { say:"Motion escapes the number line. Position, velocity, and acceleration become vectors; the velocity is always TANGENT to the path; and acceleration can change the speed, the direction, or both. The master key to this whole chapter: motions along perpendicular axes are INDEPENDENT — x-equations contain only x-things, y-equations only y-things, and the two share nothing but the clock.",
      pose:'talk',
      board:['\\vec r = x\\hat\\imath+y\\hat\\jmath, \\quad \\vec v = \\frac{d\\vec r}{dt}, \\quad \\vec a = \\frac{d\\vec v}{dt}',
-            {t:'Perpendicular motions are independent — they share only the time t.'}] },
+            {t:'Perpendicular motions are independent — they share only the time t.'}],
+     action(c){
+       arrow(c, 2,4.16, 3.1,5.88, {color:GREEN, w:3, label:'v', vec:true, fs:14});
+       label(c, 3.3,5.0, 'velocity: always tangent to the path', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The projectile is that key turned in a lock: horizontally, NO acceleration — v-x stays constant. Vertically, free fall — a-y equals minus g. Resolve the launch velocity once, then run two separate one-dimensional problems joined by t. The trajectory is a parabola, and at the very top v-y is zero while v-x sails on undisturbed.",
      pose:'write',
      board:['a_x = 0:\\ x = (v_0\\cos\\theta_0)t \\qquad a_y = -g:\\ y = (v_0\\sin\\theta_0)t - \\tfrac12gt^2',
-            'v_y = v_0\\sin\\theta_0 - gt\\quad(\\text{at the top: } v_y=0,\\ v_x\\ne0)'] },
+            'v_y = v_0\\sin\\theta_0 - gt\\quad(\\text{at the top: } v_y=0,\\ v_x\\ne0)'],
+     action(c){
+       dashLine(c, 0,6.5, 5,6.5, {});
+       label(c, 2.0,7.05, 'top: v_y = 0, v_x sails on', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 1.2,2.2, 'x: a_x = 0', {fs:13, color:GREEN, italic:true});
+       label(c, 7.6,2.2, 'y: a_y = −g', {fs:13, color:PURPLE, italic:true});
+     } },
    { say:"Circular motion at constant speed is still ACCELERATED motion — the direction is changing — and the acceleration points at the centre with magnitude v squared over R. If the speed changes too, add a tangential component d-v-d-t along the path; the two components add by Pythagoras, perpendicular as they are.",
      solo:true, pose:'point',
      board:['a_{\\rm rad} = \\frac{v^2}{R} = \\frac{4\\pi^2R}{T^2}\\ (\\text{toward the centre})',
@@ -821,11 +831,30 @@ const EXAMPLES = [
        arrow(c, 0.6,6.2, 4.4,7.2, {color:GREEN, w:3.5, label:'v_P/A', vec:true, fs:12, side:-1});
      } },
    { say:"And notice the delicious trick of projectile motion: the horizontal and vertical stories do not speak to each other. Drop one coin and fling another sideways, and they strike the floor together — every time, to the bewilderment of common sense. The universe processes each axis independently, like a clerk with two ledgers who never confuses them.",
-     pose:'think',
-     board:[{t:'Independence of axes: gravity has no opinion about your horizontal plans.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Independence of axes: gravity has no opinion about your horizontal plans.'}],
+     action(c){
+       el('line',{x1:c.M.X(0.4),y1:c.M.Y(0.4),x2:c.M.X(10.6),y2:c.M.Y(0.4),stroke:'#8A7D60','stroke-width':3},c.svg);
+       dashLine(c, 2.2,6.2, 2.2,0.7, {color:RED});
+       el('circle',{cx:c.M.X(2.2), cy:c.M.Y(0.7), r:7, fill:RED},c.svg);
+       label(c, 1.2,6.7, 'coin dropped', {fs:13, color:RED});
+       const pts=[]; for(let i=0;i<=30;i++){const u=i/30; pts.push(c.M.X(5.2+4.4*u)+','+c.M.Y(6.2-5.5*u*u));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2,'stroke-dasharray':'5,4'},c.svg);
+       el('circle',{cx:c.M.X(9.6), cy:c.M.Y(0.7), r:7, fill:BLUE},c.svg);
+       label(c, 5.0,6.7, 'coin flung sideways', {fs:13, color:BLUE});
+       label(c, 4.3,1.4, 'both strike together — same y-clock', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy for projectiles: origin at launch, resolve v-nought once, write x and y equations separately, and translate the words — 'lands' means y equals ground, 'highest point' means v-y equals zero. Time is the messenger between the two directions: find it in one, spend it in the other. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: resolve once · two 1-D problems · t is the link · translate words into conditions · check limits.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: resolve once · two 1-D problems · t is the link · translate words into conditions · check limits.'}],
+     action(c){
+       const flow=['origin at launch; resolve v₀ once','write x(t) and y(t) separately','translate words into conditions','find t in one direction…','…spend it in the other','check symmetry and limits'];
+       flow.forEach((s,i)=>{
+         const y = 6.9 - i*1.4;
+         label(c, 3.2, y, (i+1)+'. '+s, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.5, y-0.35, 2.5, y-1.0, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -867,7 +896,7 @@ const EXAMPLES = [
      action(c){ dashLine(c, 0,29.4, 44.1,29.4, {}); markPoint(c, 44.1, 29.4, 'H = 29.4 m', {color:GREEN, dy:-12}); } },
    { say:"On we go to part b. Time to the top: 24 over 9.8 — 2.45 seconds. By symmetry the descent takes exactly as long. Total: 4.90 seconds. Symmetry is the laziest and most reliable shortcut in physics. Whenever a problem possesses symmetry, spend it immediately; it is the only currency that halves your work without ever devaluing.",
      pose:'write',
-     board:['t_{\\rm top} = \\frac{v_{0y}}{g} = 2.45\\ \\mathrm{s} \\;\\Rightarrow\\; t = 2(2.45) = 4.90\\ \\mathrm{s}'] },
+     board:['t_{\\rm top} = \\frac{v_{0y}}{g} = \\frac{24.0}{9.80} = 2.45\\ \\mathrm{s} \\;\\Rightarrow\\; t = 2\\,t_{\\rm top} = 2(2.45) = 4.90\\ \\mathrm{s}'] },
    { say:"And now, part c. The range is the horizontal velocity times the flight time — 18 times 4.9 — 88.2 metres. The horizontal motion did nothing clever; it just kept walking while gravity did the drama. I find this division of labour delightful: the vertical component lives a tragedy — rise, despair, fall — while the horizontal component simply goes for a walk. Same ball, two temperaments.",
      pose:'excited',
      board:['R = v_{0x}\\,t = (18.0)(4.90) = 88.2\\ \\mathrm{m}'],
@@ -911,22 +940,22 @@ const EXAMPLES = [
      } },
    { say:"Let us take part a. Set y equal to minus 50 — note the sign; the ground is below us — and out comes a quadratic. The formula gives 5.07 seconds. Again we discard the negative root, which belongs to a different, time-travelling ball. The care with signs at the start of a problem is like the care with foundations at the start of a building: invisible in the finished product, catastrophic when skipped.",
      pose:'write',
-     board:['-50.0 = 15.0\\,t - 4.90\\,t^2 \\;\\Rightarrow\\; 4.90t^2 - 15.0t - 50.0 = 0',
-            't = \\frac{15.0 + \\sqrt{225 + 980}}{9.80} = \\frac{15.0 + \\sqrt{1205}}{9.80} = \\frac{15.0+34.71}{9.80} = 5.07\\ \\mathrm{s}'] },
+     board:['y = v_{0y}t - \\tfrac12 gt^2: \\quad -50.0 = 15.0\\,t - 4.90\\,t^2 \\;\\Rightarrow\\; 4.90t^2 - 15.0t - 50.0 = 0',
+            't = \\frac{-b+\\sqrt{b^2-4ac}}{2a} = \\frac{15.0 + \\sqrt{225 + 980}}{9.80} = \\frac{15.0+34.71}{9.80} = 5.07\\ \\mathrm{s}'] },
    { say:"On we go to part b. The horizontal motion, still oblivious, has been trotting along at 20 metres per second the whole time: 20 times 5.073 — 101 metres from the base of the cliff. There is something almost comic about it — fifty metres of vertical catastrophe, and the horizontal velocity never once looked up from its newspaper.",
      pose:'write',
      board:['x = v_{0x}\\,t = (20.0)(5.073) = 101\\ \\mathrm{m}'],
      action(c){ arrow(c, 0,-53, 101,-53, {color:GREEN, dash:'7,5', w:2, label:'101 m', fs:14, side:-1}); } },
    { say:"And now, part c. At impact: v x is still 20 — untouched, as promised. v y is 15 minus 9.8 times 5.073 — minus 34.7. Pythagoras reassembles them: 40.1 metres per second. Considerably faster than it left; the 50-metre drop was not free. The cliff's fifty metres were converted into speed at gravity's standard rate — nothing lost, nothing negotiable, everything accounted for by Pythagoras at the bottom.",
      pose:'write',
-     board:['v_x = 20.0, \\quad v_y = 15.0 - (9.80)(5.073) = -34.7\\ \\mathrm{m/s}',
-            'v = \\sqrt{(20.0)^2 + (34.7)^2} = 40.1\\ \\mathrm{m/s}'],
+     board:['v_x = v_{0x} = 20.0\\ \\mathrm{m/s}, \\quad v_y = v_{0y} - gt = 15.0 - (9.80)(5.073) = -34.7\\ \\mathrm{m/s}',
+            'v = \\sqrt{v_x^2 + v_y^2} = \\sqrt{(20.0)^2 + (34.7)^2} = 40.1\\ \\mathrm{m/s}'],
      action(c){
        arrow(c, 101,-50, 101+9,-50-15.6, {color:GREEN, label:'40.1 m/s', fs:14});
      } },
    { say:"Now comes the check: compute v y a second way — v y squared equals 225 plus 980, which is 1205, whose root is 34.7. It agrees. Never trust a single calculation you were not forced to. Redundancy is the physicist's seatbelt: rarely needed, cheap to wear, and priceless on the one day the arithmetic swerves.",
      pose:'excited',
-     board:['\\text{Check: } v_y^2 = 15.0^2 + 2(-9.80)(-50.0) = 1205 \\Rightarrow |v_y| = 34.7\\ \\mathrm{m/s}\\;\\checkmark'] },
+     board:['\\text{Check: } v_y^2 = v_{0y}^2 + 2a\\,\\Delta y = 15.0^2 + 2(-9.80)(-50.0) = 1205 \\Rightarrow |v_y| = 34.7\\ \\mathrm{m/s}\\;\\checkmark'] },
   ]
 },
 
@@ -953,7 +982,7 @@ const EXAMPLES = [
      board:['\\vec v_{B/E} = \\vec v_{B/W} + \\vec v_{W/E}'] },
    { say:"Let us take part a. Aim due north and let the river do as it pleases. Northward speed 4, eastward drift 2. The crossing time depends ONLY on the northward component: 120 over 4 — 30 seconds. The river and the rower live on perpendicular axes and, like the projectile's two components, simply do not read each other's mail.",
      pose:'write',
-     board:['t = \\frac{120}{4.00} = 30.0\\ \\mathrm{s}'],
+     board:['t = \\frac{\\text{width}}{v_{B/W}} = \\frac{120\\ \\mathrm{m}}{4.00\\ \\mathrm{m/s}} = 30.0\\ \\mathrm{s}'],
      action(c){
        const b = ball(c, 0,0, 8, GOLD);
        plotCurve(c, t=>[2*t, 4*t], 0, 30, {color:'#D8B48A', w:2, dash:'4,4', dur:500});
@@ -961,11 +990,11 @@ const EXAMPLES = [
      } },
    { say:"Meanwhile the current has quietly carried the boat 2 times 30 — 60 metres downstream. You arrive on the far bank, just... somewhere else. The river never asked where you were going. There is a lesson here that generalises well beyond boats: ignoring a crosswind does not negotiate with it. The current collects its sixty metres whether or not you acknowledge the invoice.",
      pose:'point',
-     board:['\\text{drift} = (2.00)(30.0) = 60.0\\ \\mathrm{m\\ east}'],
+     board:['\\text{drift} = v_{W/E}\\,t = (2.00\\ \\mathrm{m/s})(30.0\\ \\mathrm{s}) = 60.0\\ \\mathrm{m\\ east}'],
      action(c){ arrow(c, 0,110, 60,110, {color:RED, dash:'6,4', w:2, label:'60 m drift', fs:14, side:-1}); } },
    { say:"On we go to part b. To travel due north, aim upstream so the westward part of your paddling cancels the current. The vector triangle: your 4 metre-per-second effort is the hypotenuse; the current is one leg. Sine theta equals 2 over 4 — theta is 30 degrees west of north.",
      pose:'write',
-     board:['\\sin\\theta = \\frac{2.00}{4.00} = 0.500 \\;\\Rightarrow\\; \\theta = 30.0^{\\circ}\\ \\text{west of north}'],
+     board:['\\sin\\theta = \\frac{v_{W/E}}{v_{B/W}} = \\frac{2.00}{4.00} = 0.500 \\;\\Rightarrow\\; \\theta = 30.0^{\\circ}\\ \\text{west of north}'],
      action(c){
        /* velocity triangle drawn LARGE (2× scale) beside the crossing */
        const S=3.2, ax=72, ay=6;
@@ -976,7 +1005,8 @@ const EXAMPLES = [
      } },
    { say:"Your ground speed is now root of 16 minus 4 — 3.46 metres per second. The crossing takes 120 over 3.46 — 34.6 seconds. Slower than before! Fighting the river costs time; geometry sends the invoice. You may point the boat wherever you like; the velocity TRIANGLE decides where you actually go. Geometry, as usual, has the final signature.",
      pose:'write',
-     board:['v_{B/E} = \\sqrt{4.00^2 - 2.00^2} = 3.46\\ \\mathrm{m/s}, \\qquad t = \\frac{120}{3.46} = 34.6\\ \\mathrm{s}'],
+     board:['v_{B/E} = \\sqrt{v_{B/W}^2 - v_{W/E}^2} = \\sqrt{4.00^2 - 2.00^2} = 3.46\\ \\mathrm{m/s}',
+            't = \\frac{\\text{width}}{v_{B/E}} = \\frac{120\\ \\mathrm{m}}{3.46\\ \\mathrm{m/s}} = 34.6\\ \\mathrm{s}'],
      action(c){
        const b = ball(c, 20,20, 8, GREEN);
        moveAlong(c, b, t=>[20, 20+3.46*t*(100/120)], 0, 34.6, {dur:1800});
@@ -1052,7 +1082,8 @@ const EXAMPLES = [
             'a = \\sqrt{a_{\\rm tan}^2 + a_{\\rm rad}^2}'] },
    { say:"Let us take part a. After 10 seconds the speed is 1.5 times 10 — 15 metres per second. The radial component is v squared over R: 225 over 200 — 1.13 metres per second squared. Note it started at zero and is catching up fast. Two accelerations with two different jobs: one makes the car faster, the other makes it turn. They work the same shift and never once trade tasks.",
      pose:'write',
-     board:['v = a_{\\rm tan}t = 15.0\\ \\mathrm{m/s}, \\qquad a_{\\rm rad} = \\frac{v^2}{R} = \\frac{225}{200} = 1.13\\ \\mathrm{m/s^2}'],
+     board:['v = a_{\\rm tan}t = (1.50)(10.0) = 15.0\\ \\mathrm{m/s}',
+            'a_{\\rm rad} = \\frac{v^2}{R} = \\frac{(15.0)^2}{200} = 1.13\\ \\mathrm{m/s^2}'],
      action(c){
        const b = ball(c, 200,0, 9, RED);
        tween(u=>{ const t=10*u; const th = 0.5*1.5*t*t/200;
@@ -1061,8 +1092,8 @@ const EXAMPLES = [
      } },
    { say:"Combine the perpendicular pair: root of 1.5 squared plus 1.125 squared — 1.88 metres per second squared, tilted 36.9 degrees inward from straight ahead. The car accelerates forward while leaning its intentions toward the centre. The Pythagorean recombination at the end is the quiet theme of this whole tutorial: components analysed separately, consequences suffered jointly.",
      pose:'write',
-     board:['a = \\sqrt{(1.50)^2 + (1.125)^2} = \\sqrt{2.25+1.266} = \\sqrt{3.52} = 1.88\\ \\mathrm{m/s^2}',
-            '\\text{at } \\tan^{-1}(1.125/1.50) = 36.9^{\\circ} \\text{ inward from the tangent}'],
+     board:['a = \\sqrt{a_{\\rm tan}^2 + a_{\\rm rad}^2} = \\sqrt{(1.50)^2 + (1.125)^2} = \\sqrt{3.52} = 1.88\\ \\mathrm{m/s^2}',
+            '\\text{at } \\theta = \\tan^{-1}\\!\\left(\\frac{a_{\\rm rad}}{a_{\\rm tan}}\\right) = \\tan^{-1}\\!\\left(\\frac{1.125}{1.50}\\right) = 36.9^{\\circ} \\text{ inward from the tangent}'],
      action(c){
        const th = 0.5*1.5*100/200; /* angle at t=10 */
        const x=200*Math.cos(th), y=200*Math.sin(th);
@@ -1075,7 +1106,7 @@ const EXAMPLES = [
    { say:"On we go to part b. When do the two components tie? Set v squared over R equal to a-tan: v is root of 300 — 17.3 metres per second — so t is 17.32 over 1.5: 11.5 seconds. A photo finish, eleven and a half seconds in. After that instant, the turning increasingly dominates the speeding — a fact every racing driver feels in the seat of the car and we have just computed from the comfort of a chalkboard.",
      pose:'write',
      board:['\\frac{v^2}{R} = a_{\\rm tan} \\Rightarrow v = \\sqrt{a_{\\rm tan}R} = \\sqrt{300} = 17.3\\ \\mathrm{m/s}',
-            't = \\frac{17.32}{1.50} = 11.5\\ \\mathrm{s}'] },
+            't = \\frac{v}{a_{\\rm tan}} = \\frac{17.32}{1.50} = 11.5\\ \\mathrm{s}'] },
    { say:"And after that? The radial component grows as t squared while the tangential sits constant — turning becomes the dominant effort. Now comes the check: at t equals 11.5, both components are 1.5. Equal, as demanded. Past the finish line, the circle wins every time.",
      pose:'excited',
      board:[{t:'Check: at t = 11.5 s, a_rad = (17.32)²/200 = 1.50 m/s² = a_tan ✓. Beyond: a_rad ∝ t² dominates.'}] },

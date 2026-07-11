@@ -805,14 +805,41 @@ const EXAMPLES = [
    { say:"Rotation about a fixed axis — and the good news is that you already know this chapter. Theta, omega, alpha play exactly the roles of x, v, a, and every constant-acceleration formula transfers verbatim. One non-negotiable: RADIANS. The radian is the only angle in which the calculus is true.",
      pose:'talk',
      board:['\\omega = \\frac{d\\theta}{dt}, \\quad \\alpha = \\frac{d\\omega}{dt}',
-            '\\omega = \\omega_0+\\alpha t, \\quad \\theta = \\omega_0t+\\tfrac12\\alpha t^2, \\quad \\omega^2 = \\omega_0^2+2\\alpha\\Delta\\theta'] },
+            '\\omega = \\omega_0+\\alpha t, \\quad \\theta = \\omega_0t+\\tfrac12\\alpha t^2, \\quad \\omega^2 = \\omega_0^2+2\\alpha\\Delta\\theta'],
+     action(c){
+       label(c, -5.2,3.3, 'x ↔ θ', {fs:15, color:'#7A5A28', italic:true});
+       label(c, -5.2,2.5, 'v ↔ ω', {fs:15, color:'#7A5A28', italic:true});
+       label(c, -5.2,1.7, 'a ↔ α', {fs:15, color:'#7A5A28', italic:true});
+       label(c, -5.2,0.7, '(radians only!)', {fs:12, color:RED, italic:true});
+     } },
    { say:"The linear-angular dictionary for a point at radius r: speed r omega, tangential acceleration r alpha, and the centripetal omega squared r that every circling point must pay. All three demand radians; feed them degrees and they return nonsense with a straight face.",
      pose:'write',
-     board:['v = r\\omega, \\qquad a_{\\rm tan} = r\\alpha, \\qquad a_{\\rm rad} = \\omega^2 r'] },
+     board:['v = r\\omega, \\qquad a_{\\rm tan} = r\\alpha, \\qquad a_{\\rm rad} = \\omega^2 r'],
+     action(c){
+       el('circle',{cx:c.M.X(0.92), cy:c.M.Y(-0.92), r:4, fill:RED},c.svg);
+       arrow(c, 0.92,-0.92, 1.55,-0.29, {color:RED, w:2.5, label:'v = rω', fs:11, side:-1});
+       label(c, -5.2,-2.6, 'same ω for every point;', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -5.2,-3.2, 'smaller r → smaller v', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The MOMENT OF INERTIA is rotation's mass — but with a memory for geometry: I equals the sum, or integral, of r squared d-m. Mass far from the axis counts quadratically. The catalogue: hoop M R squared; disk half; sphere two fifths; rod one twelfth about the middle, one third about the end. And the parallel-axis theorem shifts any of them: I equals I-cm plus M d squared.",
      pose:'point',
      board:['I = \\int r^2dm:\\ \\ MR^2\\ (\\text{hoop}),\\ \\tfrac12MR^2\\ (\\text{disk}),\\ \\tfrac25MR^2\\ (\\text{sphere}),\\ \\tfrac1{12}ML^2,\\ \\tfrac13ML^2\\ (\\text{rod})',
-            'I = I_{\\rm cm} + Md^2'] },
+            'I = I_{\\rm cm} + Md^2'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(-3.9), cy:M.Y(1.3), r:0.85*M.s, fill:'none', stroke:'#8A5A24','stroke-width':6},c.svg);
+       label(c, -3.9,-0.2, 'hoop: MR²', {fs:13, color:'#7A5A28', anchor:'middle'});
+       el('circle',{cx:M.X(-1.3), cy:M.Y(1.3), r:0.85*M.s, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       label(c, -1.3,-0.2, 'disk: ½MR²', {fs:13, color:'#7A5A28', anchor:'middle'});
+       el('circle',{cx:M.X(1.3), cy:M.Y(1.3), r:0.85*M.s, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       el('ellipse',{cx:M.X(1.05), cy:M.Y(1.55), rx:0.3*M.s, ry:0.18*M.s, fill:'rgba(255,255,255,.45)'},c.svg);
+       label(c, 1.3,-0.2, 'sphere: ⅖MR²', {fs:13, color:'#7A5A28', anchor:'middle'});
+       el('line',{x1:M.X(2.9),y1:M.Y(1.3),x2:M.X(4.9),y2:M.Y(1.3),stroke:'#8A5A24','stroke-width':7,'stroke-linecap':'round'},c.svg);
+       el('circle',{cx:M.X(3.9), cy:M.Y(1.3), r:4, fill:'#2B2317'},c.svg);
+       label(c, 3.9,-0.2, 'rod: 1/12 ML²', {fs:13, color:'#7A5A28', anchor:'middle'});
+       label(c, -3.4,-2.3, 'mass far from the axis counts as r² — geometry is destiny', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"TORQUE is turning effectiveness: r F sine phi — or, best picture, force times LEVER ARM, the perpendicular distance from axis to the force's line of action. Then the rotational second law: net torque equals I alpha. Work and power come along too: W equals the integral of tau d-theta, P equals tau omega.",
      solo:true, pose:'write',
      board:['\\tau = rF\\sin\\phi = F\\ell, \\qquad \\sum\\tau = I\\alpha',
@@ -826,12 +853,40 @@ const EXAMPLES = [
        textAt(c, -2.0,-3.3, 'lever arm ℓ', {fs:11.5, italic:true, anchor:'middle'});
      } },
    { say:"Rotation is mechanics wearing a costume: every linear law returns with x replaced by theta, m by I, F by tau — the same play, restaged. And the moment of inertia adds its own plot twist: WHERE you put the mass matters as much as how much there is. A figure skater knows more integral calculus in her arms than most of us know on paper.",
-     pose:'think',
-     board:[{t:'Same laws, new wardrobe. And geometry — not mass — decides who spins easily.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Same laws, new wardrobe. And geometry — not mass — decides who spins easily.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(-2.6), cy:M.Y(0.6), r:4, fill:'#2B2317'},c.svg);
+       el('circle',{cx:M.X(-3.2), cy:M.Y(0.6), r:8, fill:GOLD},c.svg);
+       el('circle',{cx:M.X(-2.0), cy:M.Y(0.6), r:8, fill:GOLD},c.svg);
+       arc(c, -2.6,0.6, 1.5, 20, 300, {color:PURPLE, w:3, label:'ω large'});
+       label(c, -3.6,-1.7, 'mass tucked in: small I', {fs:13, color:'#7A5A28'});
+       el('circle',{cx:M.X(2.6), cy:M.Y(0.6), r:4, fill:'#2B2317'},c.svg);
+       el('circle',{cx:M.X(0.8), cy:M.Y(0.6), r:8, fill:BLUE},c.svg);
+       el('circle',{cx:M.X(4.4), cy:M.Y(0.6), r:8, fill:BLUE},c.svg);
+       el('line',{x1:M.X(0.8),y1:M.Y(0.6),x2:M.X(4.4),y2:M.Y(0.6),stroke:'#8A7D60','stroke-width':2},c.svg);
+       arc(c, 2.6,0.6, 0.75, 30, 150, {color:PURPLE, w:2.5, label:'ω small'});
+       label(c, 1.4,-1.7, 'arms out: large I', {fs:13, color:'#7A5A28'});
+     } },
    { say:"Rotational kinetic energy: one half I omega squared. A ROLLING body carries both kinds — half M v squared plus half I omega squared — tied by the no-slip constraint v equals R omega. Hence the great rolling race: spheres beat disks beat hoops down any hill, regardless of mass or radius, because hoops bank more of their energy in spin. Strategy: radians first, dictionary second, lever arms third. To the examples.",
      pose:'excited',
      board:['K_{\\rm roll} = \\tfrac12Mv_{\\rm cm}^2 + \\tfrac12I_{\\rm cm}\\omega^2, \\qquad v_{\\rm cm} = R\\omega',
-            {t:'Sphere beats disk beats hoop — mass and radius cancel; only the SHAPE races.'}] },
+            {t:'Sphere beats disk beats hoop — mass and radius cancel; only the SHAPE races.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       const bar=(y,fT,name)=>{
+         const x0=-4.2, W=6.4;
+         el('rect',{x:M.X(x0), y:M.Y(y), width:W*fT*M.s, height:26, fill:'rgba(46,125,79,.55)', stroke:GREEN,'stroke-width':1.5},c.svg);
+         el('rect',{x:M.X(x0)+W*fT*M.s, y:M.Y(y), width:W*(1-fT)*M.s, height:26, fill:'rgba(123,79,160,.5)', stroke:PURPLE,'stroke-width':1.5},c.svg);
+         label(c, x0+6.7, y-0.35, name, {fs:13, color:'#7A5A28'});
+       };
+       bar(2.6, 5/7, 'sphere: 5/7 forward');
+       bar(1.0, 2/3, 'disk: 2/3 forward');
+       bar(-0.6, 1/2, 'hoop: 1/2 forward');
+       label(c, -4.2,-2.2, 'green = translation, purple = banked in spin — the spin tax decides the race', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -960,7 +1015,8 @@ const EXAMPLES = [
      board:['TR = \\left(\\tfrac12MR^2\\right)\\frac{a}{R} \\;\\Rightarrow\\; T = \\tfrac12Ma'] },
    { say:"Substitute: m g equals m a plus half M a. We solve: a equals g over 1 plus M over 2 m — 9.8 over 2 — 4.90 metres per second squared. Exactly half of g! And the tension: half of 2 times 4.9 — 4.90 newtons. The numbers rhyme; the examiners planned it.",
      pose:'write',
-     board:['a = \\frac{g}{1 + M/2m} = \\frac{9.80}{2.00} = 4.90\\ \\mathrm{m/s^2}, \\qquad T = \\tfrac12Ma = 4.90\\ \\mathrm{N}'] },
+     board:['a = \\frac{g}{1 + M/2m} = \\frac{9.80}{1 + 2.00/(2\\cdot 1.00)} = \\frac{9.80}{2.00} = 4.90\\ \\mathrm{m/s^2}',
+            'T = \\tfrac12Ma = \\tfrac12(2.00)(4.90) = 4.90\\ \\mathrm{N}'] },
    { say:"The checks: let the disk's mass shrink to nothing and a goes to g — free fall, as an unburdened block deserves. And audit the block: m g minus T is 9.8 minus 4.9 — 4.9 newtons — exactly m a. The disk's inertia eats precisely half the gravity. Rotational bureaucracy at its finest.",
      pose:'excited',
      board:[{t:'Checks: M → 0 ⇒ a → g ✓; block audit: mg − T = 4.90 N = ma ✓'}] },
@@ -999,10 +1055,12 @@ const EXAMPLES = [
    { say:"Eliminate friction and behold: a equals g sine theta over 1 plus I over M R squared. Mass gone. Radius gone. Only the SHAPE FACTOR survives — two fifths for a solid sphere, a full 1 for a hoop, which keeps every gram at maximum distance like a miser hiding coins in the walls.",
      pose:'write',
      board:['a_{\\rm cm} = \\frac{g\\sin\\theta}{1 + I_{\\rm cm}/MR^2}',
-            '\\text{sphere: } \\frac{4.90}{1.40} = 3.50\\ \\mathrm{m/s^2}; \\qquad \\text{hoop: } \\frac{4.90}{2} = 2.45\\ \\mathrm{m/s^2}'] },
+            '\\text{sphere } (I=\\tfrac25MR^2):\\ a = \\frac{g\\sin\\theta}{1+\\frac25} = \\frac{4.90}{1.40} = 3.50\\ \\mathrm{m/s^2}',
+            '\\text{hoop } (I=MR^2):\\ a = \\frac{g\\sin\\theta}{1+1} = \\frac{4.90}{2.00} = 2.45\\ \\mathrm{m/s^2}'] },
    { say:"Race time, from L equals half a t squared: the sphere arrives in 1.17 seconds, the hoop in 1.40. The sphere wins by nearly a quarter second — watch it happen. The hoop, carrying ALL its mass at full radius, pays the maximum rotational tax; the sphere, with its mass huddled toward the centre, keeps more of gravity's grant as forward speed. Body plans matter — ask any sprinter.",
      pose:'point',
-     board:['t_{\\rm sphere} = \\sqrt{\\tfrac{2(2.40)}{3.50}} = \\sqrt{1.371} = 1.17\\ \\mathrm{s}, \\qquad t_{\\rm hoop} = \\sqrt{\\tfrac{2(2.40)}{2.45}} = \\sqrt{1.959} = 1.40\\ \\mathrm{s}'],
+     board:['L = \\tfrac12at^2 \\;\\Rightarrow\\; t = \\sqrt{\\frac{2L}{a}}',
+            't_{\\rm sphere} = \\sqrt{\\tfrac{2(2.40)}{3.50}} = 1.17\\ \\mathrm{s}, \\qquad t_{\\rm hoop} = \\sqrt{\\tfrac{2(2.40)}{2.45}} = 1.40\\ \\mathrm{s}'],
      action(c){
        const {M}=c; const th=Math.PI/6;
        const s1=el('circle',{cx:0,cy:0,r:0.16*M.s,fill:GOLD,stroke:'#8A5A24','stroke-width':2},c.svg);

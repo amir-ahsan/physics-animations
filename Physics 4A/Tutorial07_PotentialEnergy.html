@@ -819,15 +819,48 @@ const EXAMPLES = [
   },
   steps:[
    { say:"Potential energy: energy stored in position, waiting patiently. Two workhorses — gravity near the surface, m g y from any reference level you please, since only CHANGES matter; and the spring, one half k x squared from its natural length. Choose the reference once, announce it, and never renegotiate mid-problem.",
-     pose:'talk',
-     board:['U_{\\rm grav} = mgy, \\qquad U_{\\rm el} = \\tfrac12kx^2'] },
+     pose:'talk', solo:true,
+     board:['U_{\\rm grav} = mgy, \\qquad U_{\\rm el} = \\tfrac12kx^2'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0),y1:M.Y(0.6),x2:M.X(10.6),y2:M.Y(0.6),stroke:'#8A7D60','stroke-width':3},c.svg);
+       boxAt ? boxAt(c, 1.8,4.2, 1.3,1.0, {}) : el('rect',{x:M.X(1.2),y:M.Y(5.2),width:44,height:34,fill:'#C98F52',stroke:'#8A5A24','stroke-width':2},c.svg);
+       dashLine(c, 3.2,0.6, 3.2,4.2, {});
+       label(c, 3.45,2.4, 'y', {fs:15, color:'#7A5A28', italic:true});
+       label(c, 0.6,6.0, 'U = mgy (pick y = 0 once!)', {fs:13, color:'#8A5A24', italic:true});
+       spring ? spring(c, 7.6, 0.6, 1.6, 5, 12) : 0;
+       boxAt ? boxAt(c, 7.6,2.2, 1.2,0.8, {}) : 0;
+       arrow(c, 9.3,3.4, 9.3,2.3, {color:PURPLE, w:2.5, label:'x', fs:13});
+       label(c, 6.3,4.6, 'U = ½kx² from natural length', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"The dividing line of the chapter: CONSERVATIVE forces — gravity, springs — do work independent of path, so their work can be banked as potential energy. Friction is the delinquent: its work grows with path length and leaks mechanical energy into heat, unrecoverable. Conservative work equals minus delta U; friction gets no U at all.",
-     pose:'point',
-     board:['W_{\\rm cons} = -\\Delta U\\qquad\\text{friction: path-dependent, } W = -f_ks'] },
+     pose:'point', solo:true,
+     board:['W_{\\rm cons} = -\\Delta U\\qquad\\text{friction: path-dependent, } W = -f_ks'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(1.2), cy:M.Y(1.2), r:6, fill:'#2E7D4F'},c.svg);
+       el('circle',{cx:M.X(9.4), cy:M.Y(6.2), r:6, fill:'#C0392B'},c.svg);
+       label(c, 0.7,0.5, 'A', {fs:15, color:'#2E7D4F'});
+       label(c, 9.7,6.6, 'B', {fs:15, color:'#C0392B'});
+       dashLine(c, 1.2,1.2, 9.4,6.2, {color:GREEN, w:2.5});
+       const pts=[]; for(let i=0;i<=40;i++){const u=i/40;
+         pts.push(M.X(1.2+8.2*u)+','+M.Y(1.2+5.0*u+1.3*Math.sin(3*Math.PI*u)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2.5},c.svg);
+       label(c, 3.4,5.9, 'scenic route', {fs:12, color:RED, italic:true});
+       label(c, 5.4,2.2, 'direct route', {fs:12, color:GREEN, italic:true});
+       label(c, 1.0,7.2, 'gravity: same work either way · friction: charges by the metre', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The master equation: K-one plus U-one plus W-other equals K-two plus U-two, where W-other carries friction and applied forces. With only conservative forces, mechanical energy E equals K plus U is CONSERVED — and the shape of the path never enters. Curved ramps, loops, swings: all invisible to the bookkeeping. That is the superpower.",
      pose:'write',
      board:['K_1 + U_1 + W_{\\rm other} = K_2 + U_2',
-            {t:'Only conservative forces → E = K + U constant. The path’s shape never appears.'}] },
+            {t:'Only conservative forces → E = K + U constant. The path’s shape never appears.'}],
+     action(c){
+       dashLine(c, 3.0,0, 3.0,1.77, {color:BLUE, dash:'4,3'});
+       dashLine(c, 3.0,1.77, 3.0,3.4, {color:GREEN, dash:'4,3'});
+       label(c, 3.25,0.9, 'U', {fs:15, color:BLUE, italic:true});
+       label(c, 3.25,2.6, 'K', {fs:15, color:GREEN, italic:true});
+       label(c, 4.0,1.6, 'the split changes; the sum E never does', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Force and potential are two views of one landscape: F equals minus d-U d-x — force points DOWNHILL. Equilibria sit where the slope vanishes: minima are stable, maxima unstable. On the diagram, motion is confined where E clears the curve; the crossings are turning points, where kinetic energy runs dry and the particle reverses.",
      pose:'write',
      board:['F_x = -\\frac{dU}{dx}\\quad(\\text{stable at minima, unstable at maxima})',
@@ -838,11 +871,31 @@ const EXAMPLES = [
        textAt(c, 5.1,6.4, 'force points downhill on U(x)', {fs:12, italic:true, anchor:'middle'});
      } },
    { say:"Consider what potential energy really is: a promise. Lift a book and you have written the universe an IOU; drop it and the debt is repaid in motion, instantly and in full. Every dam, every drawn bow, every mountain snowpack is stored intention — the landscape itself is a bank vault of deferred kinetic energy, waiting politely for permission.",
-     pose:'think',
-     board:[{t:'U(x) is the universe’s promissory note — always honoured, never early, never late.'}] },
+     pose:'think', solo:true,
+     board:[{t:'U(x) is the universe’s promissory note — always honoured, never early, never late.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.4),y1:M.Y(5.4),x2:M.X(3.6),y2:M.Y(5.4),stroke:'#8A7D60','stroke-width':4},c.svg);
+       boxAt ? boxAt(c, 2.0,5.4, 1.2,0.9, {}) : 0;
+       label(c, 1.2,7.0, 'book on a shelf: an IOU of mgh', {fs:13, color:'#8A5A24', italic:true});
+       dashLine(c, 2.0,5.4, 2.0,0.8, {});
+       arrow(c, 5.6,3.4, 7.4,3.4, {color:'#8A7D60', w:2.5});
+       label(c, 5.7,4.1, 'release', {fs:12, color:'#8A7D60', italic:true});
+       el('circle',{cx:M.X(8.7), cy:M.Y(1.3), r:9, fill:RED},c.svg);
+       arrow(c, 8.7,2.6, 8.7,1.7, {color:GREEN, w:3, label:'v', vec:true, fs:14});
+       label(c, 7.3,4.3, 'debt repaid in ½mv²', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy: two snapshots; declare the U equals zero level; inventory K, gravitational U, spring U at each; route friction through W-other with its path length; solve. Now comes the check: the books must balance, and the simple limits must agree with kinematics — a free drop from height h had better deliver root 2 g h. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: snapshots → reference level → energy inventory → W_other for friction → balance the books.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: snapshots → reference level → energy inventory → W_other for friction → balance the books.'}],
+     action(c){
+       const flow=['pick two snapshots (1 → 2)','declare the U = 0 level','inventory K, U_grav, U_spring at each','friction? route it through W_other','K₁+U₁+W_other = K₂+U₂ → solve','check limits against kinematics'];
+       flow.forEach((sq,i)=>{
+         const y = 6.9 - i*1.4;
+         label(c, 3.2, y, (i+1)+'. '+sq, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.5, y-0.35, 2.5, y-1.0, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -936,7 +989,7 @@ const EXAMPLES = [
      pose:'point',
      board:['\\text{point 1: top, at rest } (K_1 = 0,\\ U_1 = mgh); \\quad \\text{point 2: bottom } (U_2 = 0);\\ W_{\\rm other} = -300\\ \\mathrm J',
             '0 + mgh + (-300) = \\tfrac12mv^2 + 0',
-            '\\tfrac12mv^2 = 1225 - 300 = 925\\ \\mathrm{J}'],
+            '\\tfrac12mv^2 = mgh - 300 = (25.0)(9.80)(5.00) - 300 = 1225 - 300 = 925\\ \\mathrm{J}'],
      action(c){
        const b = el('circle',{cx:c.M.X(0.2),cy:c.M.Y(5.15),r:8,fill:RED,stroke:'#7A2015','stroke-width':1.5},c.svg);
        tween(u=>{
@@ -948,7 +1001,7 @@ const EXAMPLES = [
      } },
    { say:"We solve: v equals root of 2 times 925 over 25 — root 74 — 8.60 metres per second. From a five-metre hill, that is respectable speed — about the pace of a decent sprinter, achieved by simply agreeing to descend.",
      pose:'write',
-     board:['v = \\sqrt{\\frac{2(925)}{25.0}} = \\sqrt{74.0} = 8.60\\ \\mathrm{m/s}'] },
+     board:['v = \\sqrt{\\frac{2K_2}{m}} = \\sqrt{\\frac{2(925)}{25.0}} = \\sqrt{74.0} = 8.60\\ \\mathrm{m/s}'] },
    { say:"Notice what we never asked: the slope's shape, its length, its bumps, its scenery. Energy accounting needs only the HEIGHT and the total friction bill. The mountain's biography is irrelevant; only its altitude appears on the invoice. This is the deep economy of conservative forces: gravity's work depends on the endpoints alone, so every path between them — scenic, direct, or absurd — pays identically. Only friction charges by the metre.",
      pose:'think',
      board:[{t:'Remarkable: the path’s shape never entered — only h and the 300 J loss.'}] },

@@ -793,10 +793,22 @@ const EXAMPLES = [
    { say:"Newton's laws, now with texture. A surface pushes with two components: the normal force, perpendicular, and FRICTION, parallel. Static friction is the adjustable one — it supplies exactly what is needed to prevent slipping, UP TO the ceiling mu-s times n; use the equality only at the verge of slipping. Kinetic friction, once sliding starts, is the steady mu-k times n, always opposing the slide — and mu-k is usually the smaller.",
      pose:'talk',
      board:['f_s \\le \\mu_s n\\ (\\text{equality ONLY at the verge}), \\qquad f_k = \\mu_k n',
-            {t:'Friction tracks the NORMAL force, not the weight.'}] },
+            {t:'Friction tracks the NORMAL force, not the weight.'}],
+     action(c){
+       arrow(c, 4.4,2.9, 3.63,4.19, {color:BLUE, w:3, label:'n', vec:true, fs:14});
+       arrow(c, 4.6,2.87, 5.9,3.65, {color:PURPLE, w:3, label:'f (up-slope)', vec:true, fs:13, side:-1});
+       arrow(c, 4.4,2.4, 4.4,0.6, {color:RED, w:3, label:'mg', vec:true, fs:13});
+       label(c, 0.6,5.8, 'the surface answers with n (⊥) and f (∥)', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"On an incline, tilt the axes with the terrain: x along the slope, y perpendicular. The weight then splits into m g sine theta pulling along the slope and m g cosine theta pressing into it — and the normal force answers the perpendicular equation, m g cosine theta when nothing else pushes that way.",
      pose:'write',
-     board:['\\text{Along: } mg\\sin\\theta, \\qquad \\text{Into: } mg\\cos\\theta \\;\\Rightarrow\\; n = mg\\cos\\theta'] },
+     board:['\\text{Along: } mg\\sin\\theta, \\qquad \\text{Into: } mg\\cos\\theta \\;\\Rightarrow\\; n = mg\\cos\\theta'],
+     action(c){
+       arrow(c, 4.4,2.5, 4.4,0.4, {color:RED, w:3, label:'mg', vec:true, fs:14});
+       arrow(c, 4.4,2.5, 3.11,1.73, {color:RED, dash:'5,4', w:2, label:'mg sinθ', fs:12, side:-1});
+       arrow(c, 4.4,2.5, 5.17,1.22, {color:RED, dash:'5,4', w:2, label:'mg cosθ', fs:12});
+       arc(c, 4.4,2.5, 1.0, 250, 270, {color:'#888', label:'θ'});
+     } },
    { say:"Circular dynamics: something must PROVIDE v squared over R of inward force — tension, gravity, friction, a banked road. Centripetal force is a job description, not a new force, and there is no outward 'centrifugal force' to draw. Point the positive radial axis at the centre and demand that the real forces supply the required sum.",
      solo:true, pose:'point',
      board:['\\sum F_{\\rm rad} = \\frac{mv^2}{R}\\quad(\\text{real forces only — never draw a “centripetal force” arrow})'],
@@ -807,14 +819,43 @@ const EXAMPLES = [
        arrow(c, 10.5,5.6, 9.6,5.6, {color:GREEN, w:2.5, label:'ΣF_rad', vec:true, fs:11, side:-1});
      } },
    { say:"Drag grows with speed — linear in v for the slow and small, quadratic for the fast and large — until it balances gravity and acceleration dies: TERMINAL speed. For linear drag the approach is exponential: v of t is v-terminal times one minus e to the minus t over tau. The skydiver's biography, in one formula.",
-     pose:'write',
-     board:['mg = Dv_t^2 \\Rightarrow v_t = \\sqrt{mg/D}\\qquad\\text{or}\\qquad v(t) = v_t\\big(1-e^{-t/\\tau}\\big),\\ \\tau = \\tfrac{m}{b}'] },
+     pose:'write', solo:true,
+     board:['mg = Dv_t^2 \\Rightarrow v_t = \\sqrt{mg/D}\\qquad\\text{or}\\qquad v(t) = v_t\\big(1-e^{-t/\\tau}\\big),\\ \\tau = \\tfrac{m}{b}'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.3), y:M.Y(5.0), width:34, height:34, rx:4, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       arrow(c, 1.8,4.0, 1.8,2.4, {color:RED, w:3, label:'mg', fs:13});
+       arrow(c, 1.8,5.1, 1.8,6.7, {color:BLUE, w:3, label:'drag = bv', fs:13});
+       label(c, 0.3,1.3, 'drag grows until it matches mg', {fs:12, color:'#8A5A24', italic:true});
+       const pts=[]; for(let i=0;i<=40;i++){const t=6*i/40; pts.push(M.X(4.6+t)+','+M.Y(0.8+4.6*(1-Math.exp(-t/1.6))));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GREEN,'stroke-width':3},c.svg);
+       dashLine(c, 4.6,5.4, 10.7,5.4, {color:RED});
+       label(c, 9.4,5.95, 'v_t', {fs:14, color:RED, italic:true});
+       label(c, 5.0,0.35, 't →', {fs:12, color:'#8A7D60', italic:true});
+     } },
    { say:"Friction deserves a kinder reputation. Yes, it taxes every machine — but without it you could not walk, drive, hold a pencil, or keep your spectacles on your nose. The same force that wastes your engine's effort is the only reason the car grips the road at all. Physics rarely deals in villains; mostly it deals in employees with two jobs.",
-     pose:'think',
-     board:[{t:'Friction: the tax collector who also happens to be holding the whole economy together.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Friction: the tax collector who also happens to be holding the whole economy together.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0),y1:M.Y(1.2),x2:M.X(10.6),y2:M.Y(1.2),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('ellipse',{cx:M.X(3.0), cy:M.Y(1.75), rx:30, ry:14, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       label(c, 2.0,3.0, 'your shoe', {fs:13, color:'#7A5A28'});
+       arrow(c, 2.6,0.75, 1.2,0.75, {color:RED, w:3, label:'foot pushes road back', fs:12, side:-1});
+       arrow(c, 3.6,1.7, 5.2,1.7, {color:GREEN, w:3, label:'friction pushes YOU forward', fs:12});
+       label(c, 1.2,5.6, 'no friction → no walking, no driving, no held pencils', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy: draw the free-body diagram; classify the friction BEFORE computing — sliding gets mu-k n, not sliding gets an unknown f-s checked against its ceiling, 'about to slip' gets the equality; find n from the perpendicular equation FIRST, since angled forces change it; and for circles, radial axis toward the centre. Check the limits, then enjoy. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: FBD → classify friction → n from ⊥ equation first → radial axis toward centre → check limits.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: FBD → classify friction → n from ⊥ equation first → radial axis toward centre → check limits.'}],
+     action(c){
+       const flow=['draw the free-body diagram','classify the friction FIRST','find n from the ⊥ equation','circles: radial axis at the centre','solve symbolically…','…then check the limits'];
+       flow.forEach((sq,i)=>{
+         const y = 6.9 - i*1.4;
+         label(c, 3.2, y, (i+1)+'. '+sq, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.5, y-0.35, 2.5, y-1.0, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -844,7 +885,7 @@ const EXAMPLES = [
    { say:"So what friction acts? Here is the part students get wrong on principle: NOT 29.4. The crate is in equilibrium, so friction matches the push exactly: 20 newtons, no more. Static friction is self-adjusting — it does precisely enough, like a civil servant near retirement.",
      pose:'write',
      board:['x:\\; F - f_s = 0 \\;\\Rightarrow\\; f_s = 20.0\\ \\mathrm{N} \\quad (\\text{NOT } 29.4\\ \\mathrm{N})',
-            'y:\\; n - mg = 0 \\;\\Rightarrow\\; n = 98.0\\ \\mathrm{N}'],
+            'y:\\; n - mg = 0 \\;\\Rightarrow\\; n = mg = (10.0)(9.80) = 98.0\\ \\mathrm{N}'],
      action(c){ arrow(c, 9.5,0.9, 7.6,0.9, {color:BLUE, label:'f_s = 20 N', fs:14}); } },   /* friction OPPOSES the push */
    { say:"Now comes the check: if friction really were 29.4 newtons against a 20-newton push, the crate would accelerate BACKWARD into the worker — a physics-defying act of aggression. Equilibrium demands equality. The equals sign, f-s equals mu-s n, is reserved for the verge of slipping — and only the verge.",
      pose:'excited',
@@ -899,7 +940,7 @@ const EXAMPLES = [
      board:['x:\\; ma = mg\\sin\\theta - \\mu_k mg\\cos\\theta \\;\\Rightarrow\\; a = g(\\sin\\theta - \\mu_k\\cos\\theta)'] },
    { say:"Now we put in the numbers: 9.8 times, bracket, 0.5 minus 0.25 times 0.866, bracket — 9.8 times 0.2835 — 2.78 metres per second squared. And since m cancelled, a feather-crate and a piano-crate slide identically. Galileo nods from the balcony. Mass appearing on both sides of an equation is nature hinting that the answer belongs to geometry and gravity alone — the object itself was never really consulted.",
      pose:'write',
-     board:['a = 9.80(0.500 - 0.250\\times 0.866) = 9.80(0.500-0.2165) = 9.80(0.2835) = 2.78\\ \\mathrm{m/s^2}'],
+     board:['a = g(\\sin\\theta - \\mu_k\\cos\\theta) = 9.80(0.500 - 0.250\\times 0.866) = 9.80(0.2835) = 2.78\\ \\mathrm{m/s^2}'],
      action(c){
        const {M}=c;
        const g2=el('g',{},c.svg);
@@ -948,7 +989,7 @@ const EXAMPLES = [
      board:['\\mu_s mg = \\frac{mv_{\\max}^2}{R} \\;\\Rightarrow\\; v_{\\max} = \\sqrt{\\mu_s g R}'] },
    { say:"Now we put in the numbers: root of 0.5 times 9.8 times 40 — root 196 — a satisfyingly exact 14 metres per second, about 50 kilometres per hour. Above that, the required centripetal force exceeds what friction can invoice, and the car drifts wide, into geometry it did not choose.",
      pose:'write',
-     board:['v_{\\max} = \\sqrt{(0.500)(9.80)(40.0)} = \\sqrt{196} = 14.0\\ \\mathrm{m/s} \\approx 50\\ \\mathrm{km/h}'] },
+     board:['v_{\\max} = \\sqrt{\\mu_s g R} = \\sqrt{(0.500)(9.80)(40.0)} = \\sqrt{196} = 14.0\\ \\mathrm{m/s} \\approx 50\\ \\mathrm{km/h}'] },
    { say:"The checks: the mass cancelled, so a lorry and a hatchback share the same limit on the same tyres — counterintuitive and true. And on a wet road, mu-s drops, v-max falls as its square root. Physics' rain warning is built into the formula. Formulas that carry their own safety advice are rather rare; treat this one with the respect owed to a law that has ruled every wet roundabout since the invention of rain.",
      pose:'excited',
      board:[{t:'Checks: mass-independent ✓; wet road → v_max ∝ √μs drops ✓. Slow down in rain — signed, Newton.'}] },
@@ -995,7 +1036,7 @@ const EXAMPLES = [
      board:['\\tan\\theta = \\frac{v^2}{gR}'] },
    { say:"Now we put in the numbers: 16.9 squared is 286; g R is 784. The ratio is 0.364, and theta is 20 degrees. At exactly 16.9 metres per second, the road holds the car with pure geometry — no grip required, which is why motorway engineers sleep well. Drive faster than the design speed and you drift outward; slower, and you slither inward — the bank is a handshake between road and driver, honoured exactly at one speed.",
      pose:'write',
-     board:['\\tan\\theta = \\frac{(16.9)^2}{(9.80)(80.0)} = \\frac{286}{784} = 0.364 \\;\\Rightarrow\\; \\theta = 20.0^{\\circ}'] },
+     board:['\\tan\\theta = \\frac{v^2}{gR} = \\frac{(16.9)^2}{(9.80)(80.0)} = \\frac{286}{784} = 0.364 \\;\\Rightarrow\\; \\theta = \\tan^{-1}(0.364) = 20.0^{\\circ}'] },
    { say:"Now comes the check: drive slower than 16.9 and you tend to slide DOWN the bank; faster, UP it — in real life friction quietly absorbs the difference, like a good butler. And the design speed is mass-independent: the formula never asked what you drive, only how fast.",
      pose:'excited',
      board:[{t:'Check: slower → slides down-bank, faster → up-bank; friction covers the gap. Mass-independent ✓'}] },
@@ -1033,7 +1074,7 @@ const EXAMPLES = [
      action(c){ plotCurve(c, t=>5*(1-Math.exp(-t/0.510)), 0, 3.1, {color:BLUE, w:3.5, dur:1500}); } },
    { say:"At t equals 1.02 seconds — exactly two time constants — v is 5 times one minus e to the minus 2: 4.32 metres per second, 86 percent of terminal. Now comes the check: at t equals zero the formula gives v equals zero, dropped from rest, as ordered; at large t it approaches 5 and never quite arrives. Like the last guest to leave a party — asymptotically.",
      pose:'excited',
-     board:['v(1.02) = 5.00(1 - e^{-2.00}) = 5.00(0.865) = 4.32\\ \\mathrm{m/s}',
+     board:['v(1.02) = v_t\\big(1 - e^{-t/\\tau}\\big) = 5.00\\big(1 - e^{-1.02/0.510}\\big) = 5.00(0.865) = 4.32\\ \\mathrm{m/s}',
             {t:'Checks: v(0) = 0 ✓; v → v_t as t → ∞, never exceeding it ✓ (86% after 2τ).'}],
      action(c){
        el('circle',{cx:c.M.X(1.02),cy:c.M.Y(4.32),r:5,fill:GREEN},c.svg);

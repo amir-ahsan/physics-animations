@@ -778,11 +778,20 @@ const EXAMPLES = [
   steps:[
    { say:"Dynamics at last: motion meets its causes. Newton's FIRST law — with zero net force, velocity does not change. Forces are not needed to maintain motion, only to CHANGE it; and the law defines the inertial frames in which the other two laws are valid. An accelerating car is not one.",
      pose:'talk',
-     board:[{t:'1st law: ΣF⃗ = 0 ⇒ v⃗ constant. Defines inertial frames.'}] },
+     board:[{t:'1st law: ΣF⃗ = 0 ⇒ v⃗ constant. Defines inertial frames.'}],
+     action(c){
+       el('circle',{cx:c.M.X(0.9), cy:c.M.Y(6.6), r:8, fill:'#2E6DA4'},c.svg);
+       arrow(c, 1.4,6.6, 3.5,6.6, {color:GREEN, w:3, label:'v (constant)', fs:13});
+       label(c, 0.4,5.7, 'ΣF = 0: no force needed to keep moving', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The SECOND law is the engine of mechanics — and it is a VECTOR equation, which we always decompose: sum of F-x equals m a-x, sum of F-y equals m a-y, each holding separately. Only forces acting ON the body enter the sum. And m-a is not itself a force — it is what the net force EQUALS. Never draw it on a diagram.",
      pose:'write',
      board:['\\sum\\vec F = m\\vec a \\;\\Rightarrow\\; \\sum F_x = ma_x, \\quad \\sum F_y = ma_y',
-            {t:'Only forces ON the body. ma is not a force — it is the total.'}] },
+            {t:'Only forces ON the body. ma is not a force — it is the total.'}],
+     action(c){
+       arrow(c, 7.2,6.6, 9.4,6.6, {color:PURPLE, w:3, dash:'6,4', label:'a = ΣF/m', vec:true, fs:14});
+       label(c, 6.6,5.7, 'a points where the NET force points', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The THIRD law: if A pushes on B, then B pushes back on A — equal magnitude, opposite direction, and acting on DIFFERENT bodies. That last clause is everything: an action-reaction pair never appears together in one free-body diagram, and therefore never cancels itself.",
      solo:true, pose:'point',
      board:['\\vec F_{A\\,\\rm on\\,B} = -\\vec F_{B\\,\\rm on\\,A}\\quad(\\text{different bodies — never cancel in one FBD})'],
@@ -794,14 +803,42 @@ const EXAMPLES = [
        arrow(c, 2.5,5.3, 1.5,5.3, {color:BLUE, w:2.5, label:'F_B→A', fs:11, side:-1});
      } },
    { say:"The standard cast of forces. WEIGHT: m g, straight down, everywhere. The NORMAL force: perpendicular to the surface, and NOT automatically equal to m g — solve for it, always. TENSION: along the rope, pulling, the same throughout an ideal rope. Learn their personalities and half of every problem is done.",
-     pose:'write',
-     board:['w = mg\\ (\\text{down}), \\qquad n \\perp \\text{surface}\\ (\\ne mg\\ \\text{in general!}), \\qquad T\\ \\text{along the rope}'] },
+     pose:'write', solo:true,
+     board:['w = mg\\ (\\text{down}), \\qquad n \\perp \\text{surface}\\ (\\ne mg\\ \\text{in general!}), \\qquad T\\ \\text{along the rope}'],
+     action(c){
+       const {M}=c;
+       el('polygon',{points:`${M.X(0.3)},${M.Y(0.5)} ${M.X(4.8)},${M.Y(0.5)} ${M.X(4.8)},${M.Y(3.2)}`,
+         fill:'#E4D6B8', stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(2.9), cy:M.Y(2.25), r:9, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       arrow(c, 2.9,2.25, 1.9,3.95, {color:BLUE, w:3, label:'n ⊥ surface', fs:13, side:-1});
+       arrow(c, 2.9,2.05, 2.9,0.35, {color:RED, w:3, label:'mg', fs:13});
+       label(c, 0.4,4.9, 'on a slope: n = mg cosθ ≠ mg', {fs:12, color:'#8A5A24', italic:true});
+       el('line',{x1:M.X(6.8),y1:M.Y(7),x2:M.X(10.4),y2:M.Y(7),stroke:'#8A7D60','stroke-width':4},c.svg);
+       el('line',{x1:M.X(8.6),y1:M.Y(7),x2:M.X(8.6),y2:M.Y(4.7),stroke:'#5C4B30','stroke-width':2},c.svg);
+       boxAt ? boxAt(c, 8.6,3.6, 1.4,1.1, {fill:'#B5793B'}) : 0;
+       arrow(c, 8.6,4.9, 8.6,6.6, {color:BLUE, w:3, label:'T along the rope', fs:13});
+       arrow(c, 8.6,3.5, 8.6,1.9, {color:RED, w:3, label:'mg', fs:13, side:-1});
+     } },
    { say:"Stand still a moment and feel the third law working: the Earth pulls you down, and you — yes, you — pull the entire planet up, with precisely equal force. The planet declines to notice, having rather more mass, but the books balance to the last newton. Physics is the only enterprise I know where the accounts are never, ever cooked.",
-     pose:'think',
-     board:[{t:'Every force is a handshake. You have been moving the Earth all your life — it is simply too polite to mention it.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Every force is a handshake. You have been moving the Earth all your life — it is simply too polite to mention it.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5.5), cy:M.Y(0.6), r:2.6*M.s, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2},c.svg);
+       label(c, 5.5,0.3, 'Earth', {fs:14, color:'#1D4568', anchor:'middle'});
+       boxAt ? boxAt(c, 5.5,3.6, 0.9,1.3, {fill:'#C98F52'}) : 0;
+       arrow(c, 6.6,4.6, 6.6,2.9, {color:RED, w:3, label:'F Earth on you', fs:12});
+       arrow(c, 4.4,3.0, 4.4,4.7, {color:BLUE, w:3, label:'F you on Earth', fs:12, side:-1});
+       label(c, 2.2,6.6, 'equal magnitude, opposite direction, different bodies', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"And the ritual that solves them all: isolate ONE body; draw ONLY the forces acting on it — the free-body diagram on the stage is the template; choose axes along the acceleration; write the second law in components; add the constraints that tie connected bodies together; solve, and check the limits. The FBD is not decoration. It IS the physics. To the examples.",
      pose:'excited',
-     board:[{t:'Strategy: isolate → FBD → axes along a⃗ → ΣFₓ = maₓ, ΣF_y = ma_y → constraints → check limits.'}] },
+     board:[{t:'Strategy: isolate → FBD → axes along a⃗ → ΣFₓ = maₓ, ΣF_y = ma_y → constraints → check limits.'}],
+     action(c){
+       el('ellipse',{cx:c.M.X(5.5), cy:c.M.Y(1.8), rx:4.6*c.M.s, ry:3.4*c.M.s, fill:'none',
+         stroke:'#B5793B','stroke-width':2,'stroke-dasharray':'8,6'},c.svg);
+       label(c, 1.3,7.0, 'one body · only forces ON it · axes along a', {fs:13, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -826,8 +863,8 @@ const EXAMPLES = [
      } },
    { say:"Now the discipline that carries you through every mechanics course: apply Newton's second law PER COMPONENT. Each axis runs its own private ledger, and they never trade. Along x: 30 newtons equals 10 kilograms times a-x — a-x is 3. Along y: 40 equals 10 a-y — a-y is 4. Two independent equations; no cross-talk whatsoever.",
      pose:'write',
-     board:['x:\\; \\sum F_x = ma_x \\;\\Rightarrow\\; a_x = \\frac{30.0}{10.0} = 3.00\\ \\mathrm{m/s^2}',
-            'y:\\; \\sum F_y = ma_y \\;\\Rightarrow\\; a_y = \\frac{40.0}{10.0} = 4.00\\ \\mathrm{m/s^2}'],
+     board:['x:\\; \\sum F_x = ma_x \\;\\Rightarrow\\; a_x = \\frac{\\sum F_x}{m} = \\frac{30.0\\ \\mathrm{N}}{10.0\\ \\mathrm{kg}} = 3.00\\ \\mathrm{m/s^2}',
+            'y:\\; \\sum F_y = ma_y \\;\\Rightarrow\\; a_y = \\frac{\\sum F_y}{m} = \\frac{40.0\\ \\mathrm{N}}{10.0\\ \\mathrm{kg}} = 4.00\\ \\mathrm{m/s^2}'],
      action(c){
        dashLine(c, 30,0, 30,40, {}); dashLine(c, 0,40, 30,40, {});
        arrow(c, 0,0, 30,40, {color:GREEN, w:4.5, label:'F_net = 50 N', fs:15, side:-1});
@@ -835,7 +872,8 @@ const EXAMPLES = [
    { say:"Reassemble the acceleration from its components: magnitude root of 9 plus 16 — 5 metres per second squared — at arctangent of 4 over 3: 53.1 degrees north of east. The same answer the net-force route gives, because the acceleration is the net force's obedient shadow.",
      pose:'write',
      board:['a = \\sqrt{a_x^2 + a_y^2} = \\sqrt{9.00 + 16.0} = 5.00\\ \\mathrm{m/s^2}',
-            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{a_y}{a_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{4.00}{3.00}\\right) = 53.1^{\\circ}\\ \\text{N of E} \\quad (F_{\\rm net} = ma = 50.0\\ \\mathrm{N})'],
+            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{a_y}{a_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{4.00}{3.00}\\right) = 53.1^{\\circ}\\ \\text{N of E}',
+            'F_{\\rm net} = ma = (10.0)(5.00) = 50.0\\ \\mathrm{N}'],
      action(c){ arrow(c, 0,0, 15,20, {color:PURPLE, w:3, dash:'6,4', label:'a', vec:true, fs:16}); } },
    { say:"The check — and the classic error to avoid: 30 plus 40 is NOT 70 newtons, except for crates pulled in one straight line by very cooperative people. Vectors first. Always vectors first. The Pythagorean result — 50 for a 30 and a 40 — is nature winking at you through a 3-4-5 triangle, the oldest reliable machine in mathematics.",
      pose:'excited',
@@ -862,7 +900,7 @@ const EXAMPLES = [
      } },
    { say:"Part a — zoom out. One system, total mass 10 kilograms, one external horizontal force. The vertical forces cancel; nobody is levitating today. a equals 50 over 10 — 5 metres per second squared. The privilege of choosing your system — the whole train, or one carriage — is the closest physics comes to choosing your own difficulty setting. Choose lazily; that is what the option is for.",
      pose:'write',
-     board:['x:\\; F = (m_1+m_2)a_x \\;\\Rightarrow\\; a = \\frac{50.0}{10.0} = 5.00\\ \\mathrm{m/s^2}',
+     board:['x:\\; F = (m_1+m_2)a_x \\;\\Rightarrow\\; a = \\frac{F}{m_1+m_2} = \\frac{50.0}{4.00+6.00} = 5.00\\ \\mathrm{m/s^2}',
             'y:\\; n - (m_1+m_2)g = 0 \\quad (\\text{no vertical acceleration})'],
      action(c){
        const g1=boxAt(c, 6,0, 4,4, {fill:'rgba(201,143,82,.4)'});
@@ -873,7 +911,7 @@ const EXAMPLES = [
    { say:"Part b — zoom in on m-two alone. The only horizontal force it feels is the contact push P from its neighbour. So P equals m-two times a: 6 times 5 — 30 newtons. The interior block neither knows nor cares about the original 50 newtons; it feels only its neighbour's 30, which is the whole of its world. There is a sociology lecture hiding in that, but we shall press on.",
      pose:'write',
      board:['\\text{Isolate } m_2:\\quad x:\\; P = m_2a_x = (6.00)(5.00) = 30.0\\ \\mathrm{N}',
-            'y:\\; n_2 - m_2g = 0 \\;\\Rightarrow\\; n_2 = 58.8\\ \\mathrm{N}'],
+            'y:\\; n_2 - m_2g = 0 \\;\\Rightarrow\\; n_2 = m_2g = (6.00)(9.80) = 58.8\\ \\mathrm{N}'],
      action(c){
        arrow(c, 8.2,3, 13,3, {color:PURPLE, label:'P = 30 N', fs:14, dy:-62});
        /* clear FBD of m2, isolated at the upper right */
@@ -972,14 +1010,14 @@ const EXAMPLES = [
      } },
    { say:"Case a: accelerating upward at 2. The floor must both hold you AND shove you upward: n equals 70 times 11.8 — 826 newtons. True weight: 686. You feel heavier; the croissant at breakfast is briefly blameless. The scale, poor thing, has never measured your weight in its life — it measures how hard the floor pushes back, which is a different and far more negotiable quantity.",
      pose:'write',
-     board:['(a)\\; n = 70.0(9.80 + 2.00) = 826\\ \\mathrm{N} \\quad (> mg = 686\\ \\mathrm{N})'],
+     board:['(a)\\; n = m(g + a_y) = 70.0(9.80 + 2.00) = 826\\ \\mathrm{N} \\quad (> mg = 686\\ \\mathrm{N})'],
      action(c){ arrow(c, -3.6,3, -3.6,5.4, {color:GREEN, label:'a', vec:true, fs:15}); } },
    { say:"Case b: accelerating downward at 2. Now the floor eases off: 70 times 7.8 — 546 newtons. You feel lighter. Elevators going down are the cheapest diet available, and the least permanent. You have not lost a gram, of course — only the floor's enthusiasm has changed. Bathroom scales, like flattery, report the interaction and not the truth.",
      pose:'write',
-     board:['(b)\\; n = 70.0(9.80 - 2.00) = 546\\ \\mathrm{N} \\quad (< mg)'] },
+     board:['(b)\\; n = m(g + a_y) = 70.0(9.80 + (-2.00)) = 546\\ \\mathrm{N} \\quad (< mg)'] },
    { say:"Case c: moving up at a steady 4 metres per second. Constant velocity — acceleration ZERO. The scale reads exactly 686 newtons, the honest weight. The scale cannot distinguish steady motion from standing still. Neither could Galileo, and it made him famous.",
      pose:'write',
-     board:['(c)\\; a_y = 0: \\; n = mg = 686\\ \\mathrm{N}'] },
+     board:['(c)\\; a_y = 0: \\; n = mg = (70.0)(9.80) = 686\\ \\mathrm{N}'] },
    { say:"Now comes the check: only ACCELERATION changes the reading — not velocity, not direction of travel, not floor number. And the grim extreme confirms it: cut the cable, a equals minus g, and n reads zero. Weightless, briefly and unforgettably. Astronauts float for precisely this reason — not beyond gravity's reach but wholly surrendered to it, the floor of the station falling exactly as fast as they are. Weightlessness is teamwork.",
      pose:'think',
      board:[{t:'Check: reading depends only on a. Free fall (a = −g) → n = 0: weightlessness.'}] },
@@ -998,7 +1036,7 @@ const EXAMPLES = [
   steps:[
    { say:"A traffic light in equilibrium — going nowhere, at rest, and yet a superb physics problem. Equilibrium means the vector sum of the forces is zero. Three forces: two tensions and the weight. Two unknowns, two component equations. The algebra will be brisk.",
      pose:'talk',
-     board:['\\sum\\vec F = \\vec T_1 + \\vec T_2 + \\vec w = 0, \\qquad w = mg = 147\\ \\mathrm{N}'] },
+     board:['\\sum\\vec F = \\vec T_1 + \\vec T_2 + \\vec w = 0, \\qquad w = mg = (15.0)(9.80) = 147\\ \\mathrm{N}'] },
    { say:"We set the geometry first: cable one rises at 30 degrees to the left, cable two at 45 to the right, and the light hangs at the junction, contemplating traffic. The junction is a committee of three forces, and equilibrium insists the meeting adjourn with nothing carried — every component cancelled, every direction satisfied.",
      pose:'point',
      action(c){

@@ -786,11 +786,25 @@ const EXAMPLES = [
    { say:"Gravitation, at full scale. Every pair of masses attracts along the line between them: G m-one m-two over r squared, with G famously feeble — ten to the minus eleven. A spherical body pulls as if squeezed to its centre, so a planet's surface gravity is simply G M over R squared, and your weight is nothing but this formula wearing your name.",
      pose:'talk',
      board:['F = \\frac{Gm_1m_2}{r^2}, \\qquad G = 6.674\\times10^{-11}\\ \\mathrm{N\\,m^2/kg^2}',
-            'g = \\frac{GM}{R^2}\\ \\ (\\text{at altitude: } R\\to R+h)'] },
+            'g = \\frac{GM}{R^2}\\ \\ (\\text{at altitude: } R\\to R+h)'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(1.5), cy:M.Y(3.2), r:12, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(4.2), cy:M.Y(3.2), r:8, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2},c.svg);
+       arrow(c, 1.95,3.2, 2.85,3.2, {color:RED, w:2.5, label:'F', fs:12});
+       arrow(c, 3.85,3.2, 2.95,3.2, {color:RED, w:2.5, label:'F', fs:12, side:-1});
+       label(c, 1.3,1.9, 'equal pulls, both ways — always', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Orbits: gravity plays centripetal. Set G M m over r squared equal to m v squared over r and the satellite's mass CANCELS — orbital speed is root G M over r, and the period follows: T squared proportional to r cubed. Lower orbits are FASTER; and astronauts float not because gravity quit, but because they and their ship are falling together.",
      pose:'write',
      board:['v = \\sqrt{\\frac{GM}{r}}, \\qquad T = 2\\pi\\sqrt{\\frac{r^3}{GM}}',
-            {t:'“Weightless” = in free fall, not beyond gravity.'}] },
+            {t:'“Weightless” = in free fall, not beyond gravity.'}],
+     action(c){
+       el('circle',{cx:c.M.X(3.6), cy:c.M.Y(0), r:7, fill:GOLD, stroke:'#8A5A24','stroke-width':1.5},c.svg);
+       arrow(c, 3.6,0, 1.7,0, {color:PURPLE, w:3, label:'F_g = centripetal', fs:12, side:-1});
+       arrow(c, 3.6,0.3, 3.6,1.8, {color:GREEN, w:3, label:'v', vec:true, fs:13});
+       label(c, 1.4,-2.0, 'falling forever, missing forever', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Kepler's three Laws of orbital motion: first, orbits are ELLIPSES with the sun at one focus; the radius sweeps EQUAL AREAS in equal times — angular momentum conservation in celestial dress, fastest at perihelion; and the HARMONIC law, T squared equals 4 pi squared over G M times a cubed. Three laws, one inverse square behind them.",
      pose:'point',
      board:['T^2 = \\frac{4\\pi^2}{GM}a^3\\qquad(\\text{equal areas} \\equiv L\\ \\text{conserved})'],
@@ -815,13 +829,49 @@ const EXAMPLES = [
    { say:"Energy, done properly: integrate the inverse-square force in from infinity and the potential energy is MINUS G M m over r — zero far away, negative when bound. A circular orbit's total energy is minus G M m over 2 r. Escape demands E reach zero: v-escape equals root 2 G M over R — precisely root 2 times the orbital speed at the same radius. That little root 2 prices every mission to the stars.",
      pose:'write',
      board:['U(r) = -\\frac{GMm}{r}, \\qquad E_{\\rm circ} = -\\frac{GMm}{2r}',
-            'v_{\\rm esc} = \\sqrt{\\frac{2GM}{R}} = \\sqrt2\\,v_{\\rm orb}'] },
+            'v_{\\rm esc} = \\sqrt{\\frac{2GM}{R}} = \\sqrt2\\,v_{\\rm orb}'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(-4.6),y1:M.Y(2.6),x2:M.X(4.8),y2:M.Y(2.6),stroke:'#B0A488','stroke-width':2},c.svg);
+       el('line',{x1:M.X(-4.4),y1:M.Y(3.6),x2:M.X(-4.4),y2:M.Y(-3.6),stroke:'#B0A488','stroke-width':2},c.svg);
+       const pts=[]; for(let i=0;i<=60;i++){const r=0.55+8.6*i/60;
+         pts.push(M.X(-4.4+r)+','+M.Y(2.6-Math.min(6.0, 4.6/r)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3},c.svg);
+       label(c, 3.5,2.95, 'E = 0: free', {fs:12, color:GREEN, italic:true});
+       dashLine(c, -3.4,0.6, 4.6,0.6, {color:RED});
+       label(c, 2.9,0.15, 'E < 0: bound', {fs:12, color:RED, italic:true});
+       label(c, -4.3,-3.3, 'U = −GMm/r', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 4.5,2.25, 'r', {fs:13, color:'#8A7D60', italic:true});
+     } },
    { say:"Allow yourself the vertigo of this one: the force pulling your teacup downward is the same force steering the Moon, herding the tides, and choreographing galaxies. Newton's audacity was not the mathematics — it was the claim that the heavens and the kitchen obey one law. The universe, gratifyingly, agreed.",
-     pose:'think',
-     board:[{t:'One inverse-square law runs the kitchen and the cosmos. The audacity was in asking; the wonder is that it worked.'}] },
+     pose:'think', solo:true,
+     board:[{t:'One inverse-square law runs the kitchen and the cosmos. The audacity was in asking; the wonder is that it worked.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-3.6), y:M.Y(1.6), width:44, height:34, rx:6, fill:'#F5F1E6', stroke:'#8A7D60','stroke-width':2.5},c.svg);
+       el('path',{d:`M${M.X(-2.3)},${M.Y(1.3)} q22,-14 0,-26`, fill:'none', stroke:'#8A7D60','stroke-width':2.5},c.svg);
+       arrow(c, -3.0,0.4, -3.0,-1.0, {color:PURPLE, w:3, label:'g', fs:13});
+       label(c, -4.2,-2.2, 'the teacup', {fs:13, color:'#7A5A28'});
+       const pts=[]; for(let i=0;i<=120;i++){const th=i/120*4.4*Math.PI;
+         const r2=0.085*th; pts.push(M.X(2.6+r2*Math.cos(th))+','+M.Y(0.6+r2*Math.sin(th)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':2.5},c.svg);
+       label(c, 1.4,-2.2, 'the galaxy — same law', {fs:13, color:'#7A5A28'});
+     } },
    { say:"And the fine print: gravity's WEAKENING with distance stretches things — the near side is pulled harder than the far, hence tides, two bulges a day, and the shredding of moons that stray too close. Einstein rewrote the whole story as curved spacetime, but Newtonian gravity remains the working approximation everywhere short of black holes and GPS clocks. Strategy: orbits by force balance, journeys by energy. To the examples.",
      pose:'excited',
-     board:[{t:'Tides: the DIFFERENCE in pull across a body. Strategy: circular orbits → force balance; escape & transfers → energy.'}] },
+     board:[{t:'Tides: the DIFFERENCE in pull across a body. Strategy: circular orbits → force balance; escape & transfers → energy.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('ellipse',{cx:M.X(-1.4), cy:M.Y(0.4), rx:1.75*M.s, ry:1.3*M.s, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2.5},c.svg);
+       label(c, -1.75,0.3, 'Earth', {fs:13, color:'#1D4568'});
+       el('circle',{cx:M.X(4.0), cy:M.Y(0.4), r:12, fill:'#D9CDB4', stroke:'#8A7D60','stroke-width':2},c.svg);
+       label(c, 3.7,-0.6, 'Moon', {fs:12, color:'#7A5A28'});
+       arrow(c, 0.4,0.4, 2.2,0.4, {color:RED, w:3.5, label:'near side: pulled hardest', fs:11});
+       arrow(c, -3.2,0.4, -4.2,0.4, {color:BLUE, w:2.5, label:'far side: left behind', fs:11, side:-1});
+       label(c, -3.6,-2.6, 'the DIFFERENCE stretches the ocean: two bulges, two tides a day', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -878,7 +928,7 @@ const EXAMPLES = [
      board:['v = \\sqrt{\\frac{3.99\\times10^{14}}{6.77\\times10^{6}}} = 7.68\\times10^{3}\\ \\mathrm{m/s} \\approx 7.7\\ \\mathrm{km/s}'] },
    { say:"The period: circumference over speed — 5540 seconds, about 92 minutes. Sixteen sunrises a day. Sixteen sunrises a day, and every one of them earned by the same bargain: fall toward the Earth exactly as fast as the Earth curves away beneath you.",
      pose:'write',
-     board:['T = \\frac{2\\pi r}{v} = 5.54\\times10^{3}\\ \\mathrm{s} \\approx 92\\ \\mathrm{min}'] },
+     board:['T = \\frac{2\\pi r}{v} = \\frac{2\\pi(6.77\\times10^{6})}{7.68\\times10^{3}} = 5.54\\times10^{3}\\ \\mathrm{s} \\approx 92\\ \\mathrm{min}'] },
    { say:"The check is orbiting overhead as we speak: the International Space Station flies at almost exactly this altitude, at almost exactly this speed, once around in almost exactly 92 minutes. When your homework agrees with a 400-tonne laboratory, submit it with confidence.",
      pose:'excited',
      board:[{t:'Check: the ISS — ~400 km up, ~7.7 km/s, ~92 min period. Reality concurs ✓'}] },
@@ -898,7 +948,7 @@ const EXAMPLES = [
             'T^2 = \\frac{4\\pi^2}{GM}\\,r^3 \\;\\Rightarrow\\; r = \\left(\\frac{GMT^2}{4\\pi^2}\\right)^{1/3}'] },
    { say:"Feed the numbers through the cube root: G M times T squared over 4 pi squared — 7.54 times ten to the twenty-two — whose cube root is 4.23 times ten to the seventh metres. Forty-two thousand kilometres from the centre: six point six Earth radii out.",
      pose:'write',
-     board:['r = (7.54\\times10^{22})^{1/3} = 4.23\\times10^{7}\\ \\mathrm{m} \\approx 6.6\\,R_E'],
+     board:['r = \\left(\\frac{(3.99\\times10^{14})(8.64\\times10^{4})^2}{4\\pi^2}\\right)^{1/3} = (7.54\\times10^{22})^{1/3} = 4.23\\times10^{7}\\ \\mathrm{m} \\approx 6.6\\,R_E'],
      action(c){
        planet(c, 0,0, 0.42, '#5B82A6', '#3A5A78');
        orbitRing(c, 0,0, 0.62, {color:'#C9BFA8', w:1.5, dash:'3,4'});
@@ -930,7 +980,7 @@ const EXAMPLES = [
             '\\tfrac12mv_{\\rm esc}^2 + \\Big({-}\\frac{GMm}{R}\\Big) = 0 + 0'] },
    { say:"We solve: v-escape equals root of 2 G M over R — root of 1.25 times ten to the eighth — 11.2 kilometres per second. Thirty-three times the speed of sound, paid up front, all at once. Eleven point two kilometres per second is the price of never returning — and note gravity accepts no instalments: any slower and you are merely on a very tall, very temporary excursion.",
      pose:'write',
-     board:['v_{\\rm esc} = \\sqrt{\\frac{2GM}{R}} = \\sqrt{1.25\\times10^{8}} = 1.12\\times10^{4}\\ \\mathrm{m/s} = 11.2\\ \\mathrm{km/s}'],
+     board:['v_{\\rm esc} = \\sqrt{\\frac{2GM}{R}} = \\sqrt{\\frac{2(3.99\\times10^{14})}{6.37\\times10^{6}}} = \\sqrt{1.25\\times10^{8}} = 1.12\\times10^{4}\\ \\mathrm{m/s} = 11.2\\ \\mathrm{km/s}'],
      action(c){
        planet(c, -2.2,-1.4, 1.0, '#5B82A6', '#3A5A78');
        const {M}=c;

@@ -779,13 +779,31 @@ const EXAMPLES = [
   steps:[
    { say:"Statics: the physics of things that, gratifyingly, stay put. TWO conditions, both mandatory: the forces must sum to zero — no linear acceleration — AND the torques must sum to zero about ANY axis you care to name — no angular acceleration. One balance is not enough; a couple of equal and opposite forces can still spin you.",
      pose:'talk',
-     board:['\\sum\\vec F = 0 \\qquad\\text{AND}\\qquad \\sum\\tau = 0\\ \\text{about ANY axis}'] },
+     board:['\\sum\\vec F = 0 \\qquad\\text{AND}\\qquad \\sum\\tau = 0\\ \\text{about ANY axis}'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(1.4),y1:M.Y(5.2),x2:M.X(3.6),y2:M.Y(5.2),stroke:'#8A5A24','stroke-width':6,'stroke-linecap':'round'},c.svg);
+       arrow(c, 1.4,5.35, 1.4,6.35, {color:RED, w:3, label:'F', fs:12});
+       arrow(c, 3.6,5.05, 3.6,4.05, {color:RED, w:3, label:'F', fs:12, side:-1});
+       arc(c, 2.5,5.2, 1.5, 210, 330, {color:PURPLE, w:2.5});
+       label(c, 0.8,3.3, 'ΣF = 0, yet it spins: a couple. Both balances are mandatory.', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"That word ANY is the professional's weapon. Since the torque balance holds about every axis, CHOOSE the axis through the point where the most unknown forces act — they vanish from the equation, lever arm zero, and the algebra surrenders early. The hinge, the pivot, the ladder's foot: put the axis there.",
      pose:'point',
-     board:[{t:'Axis choice is free — put it where the unknown forces act; they then exert no torque.'}] },
+     board:[{t:'Axis choice is free — put it where the unknown forces act; they then exert no torque.'}],
+     action(c){
+       el('circle',{cx:c.M.X(5), cy:c.M.Y(2.3), r:16, fill:'none', stroke:GREEN,'stroke-width':3,'stroke-dasharray':'6,5'},c.svg);
+       arrow(c, 6.8,4.6, 5.4,2.9, {color:GREEN, w:2.5});
+       label(c, 6.9,5.0, 'axis HERE: the pivot force loses its vote', {fs:12.5, color:GREEN, italic:true});
+     } },
    { say:"For torque purposes, a body's whole weight acts at its CENTRE OF GRAVITY — the midpoint of a uniform beam. The standard cast — beams on supports, struts with cables, ladders against walls — all yield to the same ritual: extended free-body diagram with each force at its true point of application, two force equations, one torque equation.",
      pose:'write',
-     board:[{t:'Weight acts at the centre of gravity (midpoint of a uniform beam). FBD with locations → ΣFₓ, ΣF_y, Στ.'}] },
+     board:[{t:'Weight acts at the centre of gravity (midpoint of a uniform beam). FBD with locations → ΣFₓ, ΣF_y, Στ.'}],
+     action(c){
+       el('circle',{cx:c.M.X(5), cy:c.M.Y(2.4), r:6, fill:'#2B2317'},c.svg);
+       arrow(c, 5,2.25, 5,0.9, {color:RED, w:3.5, label:'Mg at the cg', fs:13});
+       label(c, 3.3,5.2, 'one arrow stands in for every gram', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Then elasticity, because nothing is truly rigid. STRESS is force per area; STRAIN is fractional deformation; and in the Hookean regime they are proportional, with Young's modulus as the stiffness: delta L equals F L-nought over A Y. Steel's Y is two times ten to the eleventh pascals — stiff, but not infinitely so; bridges sag by design.",
      solo:true, pose:'write',
      board:['\\text{stress} = \\frac{F_\\perp}{A}, \\quad \\text{strain} = \\frac{\\Delta L}{L_0}, \\quad Y = \\frac{\\text{stress}}{\\text{strain}} \\Rightarrow \\Delta L = \\frac{F L_0}{AY}'],
@@ -797,12 +815,35 @@ const EXAMPLES = [
        textAt(c, 9.3,5.1, 'ΔL = FL₀/AY', {fs:11.5, italic:true});
      } },
    { say:"Statics is the physics of things that appear to be doing nothing — and appearances deceive. A bridge at rest is a battlefield of enormous forces in perfect stalemate; the calm is not the absence of struggle but its exact cancellation. Engineers, in the end, are professional referees of invisible tugs-of-war.",
-     pose:'think',
-     board:[{t:'Nothing is more dynamic than something perfectly still: equilibrium is a war with no winner, by design.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Nothing is more dynamic than something perfectly still: equilibrium is a war with no winner, by design.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.6),y1:M.Y(3.6),x2:M.X(10.2),y2:M.Y(3.6),stroke:'#8A5A24','stroke-width':7,'stroke-linecap':'round'},c.svg);
+       el('polygon',{points:`${M.X(2.2)},${M.Y(3.5)} ${M.X(1.6)},${M.Y(0.6)} ${M.X(2.8)},${M.Y(0.6)}`, fill:'#8A7D60'},c.svg);
+       el('polygon',{points:`${M.X(8.6)},${M.Y(3.5)} ${M.X(8.0)},${M.Y(0.6)} ${M.X(9.2)},${M.Y(0.6)}`, fill:'#8A7D60'},c.svg);
+       arrow(c, 5.4,3.5, 5.4,2.2, {color:RED, w:3, label:'load', fs:12, side:-1});
+       arrow(c, 2.2,3.75, 2.2,4.9, {color:BLUE, w:3, label:'N₁', fs:12});
+       arrow(c, 8.6,3.75, 8.6,4.9, {color:BLUE, w:3, label:'N₂', fs:12});
+       label(c, 2.6,6.3, 'enormous forces, perfectly cancelled — the calm is engineered', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"The same grammar covers squeezing and shearing: the bulk modulus B for volume under pressure, the shear modulus S for shape under tangential force. Past the elastic limit, deformation becomes permanent; at the ultimate stress, the material files for divorce. Strategy: FBD with locations, axis through the unknowns, then stress equals strain times modulus. To the examples.",
      pose:'excited',
      board:['\\Delta p = -B\\frac{\\Delta V}{V_0}, \\qquad \\frac{F_\\parallel}{A} = S\\frac{\\Delta x}{L_0}',
-            {t:'Strategy: extended FBD → clever axis → two force + one torque equation → elasticity for the “rigid” fiction.'}] },
+            {t:'Strategy: extended FBD → clever axis → two force + one torque equation → elasticity for the “rigid” fiction.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.6), y:M.Y(5.2), width:1.8*M.s, height:1.8*M.s, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       arrow(c, 1.2,4.3, 1.55,4.3, {color:RED, w:2.5}); arrow(c, 4.2,4.3, 3.85,4.3, {color:RED, w:2.5});
+       arrow(c, 2.7,6.1, 2.7,5.35, {color:RED, w:2.5}); arrow(c, 2.7,2.5, 2.7,3.25, {color:RED, w:2.5});
+       label(c, 1.5,1.6, 'bulk B: squeezed volume', {fs:13, color:'#7A5A28'});
+       el('polygon',{points:`${M.X(6.6)},${M.Y(3.4)} ${M.X(8.4)},${M.Y(3.4)} ${M.X(9.0)},${M.Y(5.2)} ${M.X(7.2)},${M.Y(5.2)}`,
+         fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       arrow(c, 7.4,5.5, 9.0,5.5, {color:PURPLE, w:2.5, label:'F∥', fs:12});
+       arrow(c, 8.2,3.1, 6.6,3.1, {color:PURPLE, w:2.5, side:-1});
+       label(c, 6.5,1.6, 'shear S: shifted shape', {fs:13, color:'#7A5A28'});
+     } },
   ]
 },
 
@@ -834,7 +875,7 @@ const EXAMPLES = [
      } },
    { say:"We solve: x equals 30 times 2 over 40 — 1.5 metres. The heavier child sits closer in. Every playground in the world runs this experiment daily, with excellent reproducibility. Mass times lever arm on one side, mass times lever arm on the other — statics reduced to a market stall negotiation, concluded in one line.",
      pose:'point',
-     board:['x = \\frac{(30.0)(2.00)}{40.0} = 1.50\\ \\mathrm{m}'],
+     board:['x = \\frac{m_1 d_1}{m_2} = \\frac{(30.0)(2.00)}{40.0} = 1.50\\ \\mathrm{m}'],
      action(c){
        boxAt(c, 1.5,0.95, 0.62,0.62, {fill:'#B5793B'});
        textAt(c, 1.5,1.8, '40 kg', {anchor:'middle', fs:13});
@@ -875,10 +916,11 @@ const EXAMPLES = [
      } },
    { say:"Torques about A — chosen precisely so N-A, whatever it is, contributes nothing. N-B lifts at 4 metres; the beam drags at 2; the person at 3. We solve: N-B is 2200 over 4 — 550 newtons. Choosing the pivot at A was not luck but strategy — place your pivot atop the force you know least, and that force is silenced for the whole calculation. Statics rewards a well-chosen ignorance.",
      pose:'write',
-     board:['N_B(4.00) - (200)(2.00) - (600)(3.00) = 0 \\;\\Rightarrow\\; N_B = 550\\ \\mathrm{N}'] },
+     board:['N_B(4.00) - (200)(2.00) - (600)(3.00) = 0',
+            'N_B = \\frac{(200)(2.00)+(600)(3.00)}{4.00} = \\frac{2200}{4.00} = 550\\ \\mathrm{N}'] },
    { say:"Then vertical force balance mops up: N-A equals 800 minus 550 — 250 newtons. B carries more, as it should — the person stands nearer to B, and proximity, in statics as in life, is responsibility. Two supports, one load, and an allocation rule as old as carpentry: whoever stands nearest the burden carries the most of it.",
      pose:'write',
-     board:['N_A = 200 + 600 - 550 = 250\\ \\mathrm{N}'] },
+     board:['\\sum F_y = 0:\\; N_A = w_{\\rm beam} + w_{\\rm person} - N_B = 200 + 600 - 550 = 250\\ \\mathrm{N}'] },
    { say:"The check — torques about B this time, where N-B cannot testify: N-A times 4 must equal 200 times 2 plus 600 times 1 — 1000. N-A is 250. Identical. Two independent torque equations agreeing is statics' version of a notarised signature. When two different pivots tell the same story, the structure is not merely balanced on paper — it is balanced in every court where the case could be brought.",
      pose:'excited',
      board:[{t:'Check (torques about B): N_A(4.00) = 400 + 600 = 1000 → N_A = 250 N ✓'}] },
@@ -938,7 +980,7 @@ const EXAMPLES = [
             '\\frac{F}{A} = Y\\,\\frac{\\Delta L}{L_0}'] },
    { say:"First the cross-section: radius one millimetre, area pi r squared — 3.14 times ten to the minus six square metres. A wire is mostly length; its cross-section is a rounding error you could inhale. Hold the two numbers side by side — a metre of length against millionths of a square metre of cross-section — and you see why stretching, however small, is inevitable: the load funnels through almost nothing.",
      pose:'write',
-     board:['A = \\pi(1.00\\times10^{-3})^2 = 3.14\\times10^{-6}\\ \\mathrm{m^2}'],
+     board:['A = \\pi r^2 = \\pi(1.00\\times10^{-3})^2 = 3.14\\times10^{-6}\\ \\mathrm{m^2}'],
      action(c){
        const {M}=c;
        const wl=el('line',{x1:M.X(0),y1:M.Y(3.2),x2:M.X(0),y2:M.Y(1.0),stroke:'#5C4B30','stroke-width':2.5},c.svg);
@@ -989,7 +1031,8 @@ const EXAMPLES = [
      board:['T(L\\sin 30^{\\circ}) = 196\\,\\tfrac{L}{2} + 392\\,L \\;\\Rightarrow\\; T = \\frac{98.0+392}{0.500} = 980\\ \\mathrm{N}'] },
    { say:"Part b — force balance. Horizontally, the hinge must oppose the cable's pull toward the wall: H-x equals T cosine 30 — 849 newtons, pushing outward. Vertically: the weights total 588; the cable lifts T sine 30, which is 490; the hinge supplies the remaining 98 newtons.",
      pose:'write',
-     board:['H_x = T\\cos 30^{\\circ} = 849\\ \\mathrm{N}, \\qquad H_y = 588 - 490 = 98.0\\ \\mathrm{N}'] },
+     board:['H_x = T\\cos 30^{\\circ} = (980)(0.866) = 849\\ \\mathrm{N}',
+            'H_y = (196 + 392) - T\\sin 30^{\\circ} = 588 - (980)(0.500) = 98.0\\ \\mathrm{N}'] },
    { say:"The check — torques about the OUTER end, a fresh witness: only H-y and the strut's weight have leverage there, and H-y times L must equal 196 times L over 2 — 98 newtons. Confirmed. And note the confession: the hinge force, 855 newtons total, is nearly all horizontal COMPRESSION — a direction almost nobody guesses correctly in advance, which is precisely why we never guess.",
      pose:'excited',
      board:[{t:'Check (torques about outer end): H_y·L = 196·L/2 → H_y = 98.0 N ✓. |H| = √(849²+98²) = 855 N, mostly horizontal.'}] },

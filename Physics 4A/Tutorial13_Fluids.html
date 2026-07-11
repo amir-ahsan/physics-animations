@@ -789,10 +789,22 @@ const EXAMPLES = [
   steps:[
    { say:"Fluids: matter that takes the shape of its container and the side of whoever pushes least. DENSITY, rho, mass per volume — water's thousand kilograms per cubic metre is the benchmark. PRESSURE, force per area, pushes perpendicular to every surface and equally in all directions at a point. And at depth h, the column above weighs in: p equals p-nought plus rho g h — depth alone matters, never the container's shape.",
      pose:'talk',
-     board:['p = \\frac{F_\\perp}{A}, \\qquad p = p_0 + \\rho gh\\ \\ (\\text{depth only — shape irrelevant})'] },
+     board:['p = \\frac{F_\\perp}{A}, \\qquad p = p_0 + \\rho gh\\ \\ (\\text{depth only — shape irrelevant})'],
+     action(c){
+       arrow(c, 2.4,4.4, 1.35,4.4, {color:BLUE, w:2, side:-1});
+       arrow(c, 2.9,2.8, 1.35,2.8, {color:BLUE, w:3, side:-1});
+       arrow(c, 3.4,1.2, 1.35,1.2, {color:BLUE, w:4, side:-1});
+       label(c, 3.6,2.8, '← pressure grows with depth', {fs:12.5, color:'#1D4568', italic:true});
+       dashLine(c, 9.6,5.2, 9.6,1.2, {}); label(c, 9.8,3.2, 'h', {fs:15, color:'#7A5A28', italic:true});
+     } },
    { say:"ARCHIMEDES' PRINCIPLE: a body in fluid is buoyed up by the weight of the fluid it DISPLACES — rho-fluid times submerged volume times g. Floating means the buoyancy matches the weight, so a floater displaces exactly its own weight of fluid, and the submerged FRACTION equals the density ratio. Icebergs advertise one part in ten because ice is nine tenths the density of the sea.",
      pose:'point',
-     board:['B = \\rho_{\\rm fluid}V_{\\rm disp}\\,g, \\qquad \\text{floating: } \\frac{V_{\\rm sub}}{V} = \\frac{\\rho_{\\rm obj}}{\\rho_{\\rm fluid}}'] },
+     board:['B = \\rho_{\\rm fluid}V_{\\rm disp}\\,g, \\qquad \\text{floating: } \\frac{V_{\\rm sub}}{V} = \\frac{\\rho_{\\rm obj}}{\\rho_{\\rm fluid}}'],
+     action(c){
+       arrow(c, 3.5,4.6, 3.5,6.3, {color:BLUE, w:3.5, label:'B', vec:true, fs:14});
+       arrow(c, 6.5,6.3, 6.5,4.6, {color:RED, w:3.5, label:'w = B', vec:true, fs:13, side:-1});
+       label(c, 6.3,3.9, 'submerged part: displaced fluid', {fs:12, color:'#1D4568', italic:true});
+     } },
    { say:"Moving fluids, idealised — incompressible, frictionless, steady. CONTINUITY is conservation of matter: A v is constant, so narrow means fast; put a thumb over the hose. BERNOULLI'S EQUATION is conservation of energy per unit volume: pressure plus rho g y plus half rho v squared is constant along a streamline. Fast means LOW pressure — the counterintuitive heart of the chapter.",
      solo:true, pose:'write',
      board:['A_1v_1 = A_2v_2',
@@ -805,15 +817,51 @@ const EXAMPLES = [
        arrow(c, 6.4,2.4, 8.8,2.4, {color:RED, w:2.5, label:'fast, low p', fs:11});
      } },
    { say:"Bernoulli's special cases earn their keep: set v to zero and the statics formula reappears; open a small hole at depth h and out comes Torricelli's result — the water exits at root 2 g h, exactly the speed of a stone dropped that far. Energy conservation, moonlighting as plumbing.",
-     pose:'write',
-     board:['v_{\\rm hole} = \\sqrt{2gh}\\ \\ (\\text{Torricelli’s theorem — free fall in disguise})'] },
+     pose:'write', solo:true,
+     board:['v_{\\rm hole} = \\sqrt{2gh}\\ \\ (\\text{Torricelli’s theorem — free fall in disguise})'],
+     action(c){
+       const {M}=c;
+       el('path',{d:`M${M.X(1.6)},${M.Y(6.6)} L${M.X(1.6)},${M.Y(0.8)} L${M.X(4.4)},${M.Y(0.8)} L${M.X(4.4)},${M.Y(2.2)} M${M.X(4.4)},${M.Y(2.7)} L${M.X(4.4)},${M.Y(6.6)}`,
+         fill:'none',stroke:'#8A7D60','stroke-width':3.5},c.svg);
+       el('rect',{x:M.X(1.6), y:M.Y(6.0), width:2.8*M.s, height:5.2*M.s, fill:'rgba(91,130,166,.3)'},c.svg);
+       dashLine(c, 5.0,6.0, 5.0,2.45, {}); label(c, 5.2,4.2, 'h', {fs:15, color:'#7A5A28', italic:true});
+       const pts=[]; for(let i=0;i<=30;i++){const t=i/30*0.62;
+         pts.push(M.X(4.5+5.2*t)+','+M.Y(2.45-4.9*t*t));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#5B82A6','stroke-width':3},c.svg);
+       arrow(c, 4.5,2.45, 6.1,2.45, {color:GREEN, w:3, label:'v = √2gh', fs:13, side:-1});
+     } },
    { say:"Fluids humble us because everything pushes on everything at once — yet from that chaos rise two serene principles: buoyancy and Bernoulli. The same equations lift a supertanker, curve a cricket ball, and pull your shower curtain inward, that last one being perhaps the least dignified triumph of eighteenth-century mathematics.",
-     pose:'think',
-     board:[{t:'Archimedes floats navies; Bernoulli flies aircraft; together they also mischief your shower curtain.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Archimedes floats navies; Bernoulli flies aircraft; together they also mischief your shower curtain.'}],
+     action(c){
+       const {M}=c;
+       el('path',{d:`M${M.X(2.4)},${M.Y(3.1)} Q${M.X(4.4)},${M.Y(4.5)} ${M.X(7.6)},${M.Y(3.3)} Q${M.X(4.6)},${M.Y(2.6)} ${M.X(2.4)},${M.Y(3.1)} Z`,
+         fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       [4.6,5.3].forEach(y=>{ const pts=[]; for(let i=0;i<=30;i++){const x=1.0+8.4*i/30;
+         pts.push(M.X(x)+','+M.Y(y+0.35*Math.exp(-Math.pow((x-4.8)/1.8,2))));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2,'stroke-dasharray':'6,4'},c.svg); });
+       [1.8,1.1].forEach(y=>el('line',{x1:M.X(1.0),y1:M.Y(y),x2:M.X(9.4),y2:M.Y(y),stroke:BLUE,'stroke-width':2,'stroke-dasharray':'6,4'},c.svg));
+       label(c, 7.9,5.6, 'fast → low p', {fs:13, color:RED, italic:true});
+       label(c, 7.9,0.6, 'slow → high p', {fs:13, color:BLUE, italic:true});
+       arrow(c, 4.9,4.0, 4.9,6.4, {color:GREEN, w:3.5, label:'lift', fs:14});
+     } },
    { say:"Real fluids have VISCOSITY — internal friction, eta — and laminar flow through a pipe obeys Poiseuille's law: flow rate proportional to r to the FOURTH. Halve the artery, lose sixteenfold the flow; ask any cardiologist. Push too fast and the flow trips into turbulence, gauged by the Reynolds number, roughly three thousand at the crossover. Strategy: statics by depth, floaters by displaced weight, movers by continuity plus Bernoulli. To the examples.",
      pose:'excited',
      board:['Q = \\frac{\\pi r^4\\Delta p}{8\\eta\\ell}\\ (r^4!), \\qquad N_R = \\frac{2\\rho vr}{\\eta}',
-            {t:'Strategy: at rest → p = p₀+ρgh; floating → Archimedes’ principle; flowing → continuity + Bernoulli’s equation.'}] },
+            {t:'Strategy: at rest → p = p₀+ρgh; floating → Archimedes’ principle; flowing → continuity + Bernoulli’s equation.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(1.2),y1:M.Y(5.4),x2:M.X(9.2),y2:M.Y(5.4),stroke:'#8A7D60','stroke-width':3.5},c.svg);
+       el('line',{x1:M.X(1.2),y1:M.Y(1.4),x2:M.X(9.2),y2:M.Y(1.4),stroke:'#8A7D60','stroke-width':3.5},c.svg);
+       [[1.55,0.4],[2.15,1.05],[3.4,1.5],[4.65,1.05],[5.25,0.4]].forEach((a,i)=>{
+         const y=1.75+i*0.65;
+         arrow(c, 2.0,y, 2.0+a[1]*3.2,y, {color:BLUE, w:2.5});
+       });
+       label(c, 6.6,3.5, 'stuck at the walls,', {fs:13, color:'#1D4568', italic:true});
+       label(c, 6.6,2.9, 'fastest in the middle', {fs:13, color:'#1D4568', italic:true});
+       label(c, 1.4,0.5, 'viscosity: internal friction — and Q ∝ r⁴ (Poiseuille)', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -917,7 +965,8 @@ const EXAMPLES = [
      } },
    { say:"Buoyancy equals rho-water V g, so the volume is 19 over 9800 — 1.94 litres. And the mass, from the dry weighing, is 5 kilograms. Density: mass over volume — 2580 kilograms per cubic metre. Two thousand six hundred kilograms per cubic metre — the density of respectable granite, and a number obtained without ruler, calliper, or damage to the specimen. Buoyancy is nondestructive testing, vintage 250 BC.",
      pose:'write',
-     board:['V = \\frac{B}{\\rho_{\\rm w}g} = \\frac{19.0}{9800} = 1.94\\times10^{-3}\\ \\mathrm{m^3}',
+     board:['V = \\frac{B}{\\rho_{\\rm w}g} = \\frac{19.0}{(1000)(9.80)} = 1.94\\times10^{-3}\\ \\mathrm{m^3}',
+            'm = \\frac{w}{g} = \\frac{49.0}{9.80} = 5.00\\ \\mathrm{kg}',
             '\\rho = \\frac{m}{V} = \\frac{5.00}{1.94\\times10^{-3}} = 2.58\\times10^{3}\\ \\mathrm{kg/m^3}'] },
    { say:"The verdict: specific gravity 2.6 — granite, concrete, aluminium's neighbourhood. Decidedly NOT gold, which tips the scale at 19.3. If this was sold to you as a crown, summon the guards. Now comes the check: Archimedes ran precisely this test for King Hiero, and the goldsmith's fate suggests the method's error bars were adequate.",
      pose:'excited',
@@ -992,7 +1041,8 @@ const EXAMPLES = [
      board:['p_1 = p_2 = p_{\\rm atm},\\; v_1 \\approx 0:\\quad v_2 = \\sqrt{2gh} = \\sqrt{2(9.80)(4.00)} = 8.85\\ \\mathrm{m/s}'] },
    { say:"On we go to part b. The jet leaves horizontally, one metre up. Fall time: root of 2 over 9.8 — 0.452 seconds. Range: 8.85 times 0.452 — almost exactly 4 metres from the tank. Watch the arc. Note the elegant relay: Bernoulli's equation set the exit speed, then plain projectile motion carried the water to the floor — two chapters of this course cooperating on one wet problem.",
      pose:'point',
-     board:['t = \\sqrt{\\frac{2(1.00)}{9.80}} = 0.452\\ \\mathrm{s}, \\qquad x = v_2t = 4.00\\ \\mathrm{m}'],
+     board:['t = \\sqrt{\\frac{2d}{g}} = \\sqrt{\\frac{2(1.00)}{9.80}} = 0.452\\ \\mathrm{s}',
+            'x = v_2t = (8.85)(0.452) = 4.00\\ \\mathrm{m}'],
      action(c){
        plotCurve(c, t=>[2.28+8.85*t, 1.05-4.9*t*t], 0, 0.452, {color:'#5B82A6', w:3.5, dur:1400});
        const {M}=c;

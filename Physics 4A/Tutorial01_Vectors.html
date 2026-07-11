@@ -758,7 +758,12 @@ const EXAMPLES = [
    { say:"Welcome. Before we solve a single problem, the map of the territory. A VECTOR carries magnitude AND direction — displacement, velocity, force. A SCALAR carries magnitude only — mass, time, energy. And the first commandment: vectors add tip-to-tail, geometrically — the magnitude of A plus B is NOT the sum of the magnitudes unless the vectors happen to be parallel.",
      pose:'talk',
      board:[{t:'Vector: magnitude + direction. Scalar: magnitude only.'},
-            '|\\vec A + \\vec B| \\ne A + B\\ \\text{(unless parallel!) — add geometrically, tip-to-tail}'] },
+            '|\\vec A + \\vec B| \\ne A + B\\ \\text{(unless parallel!) — add geometrically, tip-to-tail}'],
+     action(c){
+       label(c, 0.0,-0.62, 'scalar: m = 70 kg — a number, no direction', {fs:13, color:'#7A5A28'});
+       arrow(c, 6.6,-0.62, 8.3,-0.62, {color:RED, w:2.5});
+       label(c, 8.5,-0.62, 'vector: 70 km/h north', {dy:4, fs:13, color:RED});
+     } },
    { say:"The reliable way to compute with vectors: COMPONENTS. Resolve along axes with cosine and sine of the angle from the plus-x axis; reassemble with Pythagoras and the arctangent. One standing caution: the calculator's arctangent only answers for two quadrants — always sketch the vector and check which quadrant it actually lives in.",
      pose:'write',
      board:['A_x = A\\cos\\theta, \\quad A_y = A\\sin\\theta',
@@ -770,9 +775,18 @@ const EXAMPLES = [
        arc(c, 1,1, 1.6, 0, 37, {color:'#888', label:'θ'});
      } },
    { say:"Unit vectors i-hat, j-hat, k-hat give every vector a tidy address, and addition becomes bookkeeping: x with x, y with y, z with z — components add; magnitudes do not. Dividing any vector by its own magnitude manufactures a unit vector along its direction.",
-     pose:'point',
+     pose:'point', solo:true,
      board:['\\vec A = A_x\\hat\\imath + A_y\\hat\\jmath + A_z\\hat k, \\qquad \\hat A = \\vec A/A',
-            '\\vec R = \\vec A+\\vec B \\iff R_x = A_x+B_x,\\ R_y = A_y+B_y,\\ R_z = A_z+B_z'] },
+            '\\vec R = \\vec A+\\vec B \\iff R_x = A_x+B_x,\\ R_y = A_y+B_y,\\ R_z = A_z+B_z'],
+     action(c){
+       axes2D(c.svg, c.M, {x0:-1,x1:11,y0:-1.2,y1:7.6}, {grid:1});
+       arrow(c, 0,0, 1.5,0, {color:PURPLE, w:3.5, label:'î', fs:15, side:-1});
+       arrow(c, 0,0, 0,1.5, {color:PURPLE, w:3.5, label:'ĵ', fs:15});
+       arrow(c, 0,0, 6,4, {color:GOLD, w:4, label:'A = 6î + 4ĵ', vec:true, fs:15});
+       dashLine(c, 6,0, 6,4, {}); dashLine(c, 0,4, 6,4, {});
+       label(c, 6,-0.15, '6î', {dy:16, color:RED, fs:14, anchor:'middle', italic:true});
+       label(c, -0.25,4, '4ĵ', {dx:-14, color:BLUE, fs:14, anchor:'middle', italic:true});
+     } },
    { say:"Two ways to multiply vectors. The DOT product yields a scalar: A B cosine phi, or the sum of component products — it measures alignment: positive when they agree, zero when perpendicular, negative when opposed. The CROSS product yields a VECTOR of magnitude A B sine phi, perpendicular to both, direction by the right-hand rule — and mind the order: B cross A is MINUS A cross B.",
      pose:'write',
      board:['\\vec A\\cdot\\vec B = AB\\cos\\phi = A_xB_x+A_yB_y+A_zB_z',
@@ -783,11 +797,30 @@ const EXAMPLES = [
        arc(c, 6.5,0.6, 1.2, 0, 53, {color:'#888', label:'φ'});
      } },
    { say:"Pause a moment and admire what we have built. A vector is such a modest invention — an arrow, nothing more — and yet with a handful of arrows we shall describe every push, every orbit, every field in this course. It is the alphabet of the physical universe, and it has exactly two letters: magnitude and direction. Rather more efficient than English.",
-     pose:'think',
-     board:[{t:'One idea — the arrow — carries all of mechanics, electromagnetism, and beyond. Travel light.'}] },
+     pose:'think', solo:true,
+     board:[{t:'One idea — the arrow — carries all of mechanics, electromagnetism, and beyond. Travel light.'}],
+     action(c){
+       el('rect',{x:c.M.X(0.6), y:c.M.Y(5.4), width:c.M.s*1.4, height:c.M.s*1.0, fill:'#D8C9A3', stroke:'#8A7D60'},c.svg);
+       arrow(c, 2.2,4.9, 3.9,4.9, {color:RED, w:3, label:'F', vec:true, fs:14});
+       label(c, 0.6,3.5, 'every push', {fs:13, color:'#7A5A28'});
+       el('ellipse',{cx:c.M.X(6.3), cy:c.M.Y(4.9), rx:c.M.s*1.5, ry:c.M.s*0.9, fill:'none', stroke:'#8A7D60', 'stroke-dasharray':'5,4'},c.svg);
+       el('circle',{cx:c.M.X(6.3), cy:c.M.Y(4.9), r:c.M.s*0.32, fill:'#B5793B'},c.svg);
+       arrow(c, 7.8,4.9, 7.8,6.2, {color:BLUE, w:3, label:'v', vec:true, fs:14});
+       label(c, 5.5,3.5, 'every orbit', {fs:13, color:'#7A5A28'});
+       for(let i=0;i<3;i++) arrow(c, 9.1,4.2+i*0.9, 10.7,4.2+i*0.9, {color:GREEN, w:2.5});
+       label(c, 9.1,3.5, 'every field', {fs:13, color:'#7A5A28'});
+     } },
    { say:"And the strategy that runs the whole course: sketch first; choose axes that flatter the problem; resolve into components; do ALL algebra on components, never on magnitudes; reassemble into magnitude and direction; and CHECK against the sketch. Now — to the worked examples, where all of this earns its keep.",
-     pose:'excited',
-     board:[{t:'Strategy: sketch → axes → components → component algebra → reassemble → check the quadrant.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: sketch → axes → components → component algebra → reassemble → check the quadrant.'}],
+     action(c){
+       const flow=['sketch the situation','choose flattering axes','resolve into components','algebra on components only','reassemble: magnitude + direction','check against the sketch'];
+       flow.forEach((s,i)=>{
+         const y = 7.0 - i*1.5;
+         label(c, 3.4, y, (i+1)+'. '+s, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.7, y-0.35, 2.7, y-1.05, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -817,10 +850,10 @@ const EXAMPLES = [
      action(c){ arrow(c, 0,0, 4,3, {color:GREEN, label:'R', vec:true, w:4.5, dur:1100}); } },
    { say:"The magnitude: root of 4 squared plus 3 squared — exactly 5 kilometres. A 3-4-5 triangle, nature's favourite. When physics hands you one, say thank you and move along briskly.",
      pose:'write',
-     board:['R = \\sqrt{(4.00)^2+(3.00)^2} = 5.00\\ \\mathrm{km}'] },
+     board:['R = \\sqrt{R_x^2 + R_y^2} = \\sqrt{(4.00\\ \\mathrm{km})^2+(3.00\\ \\mathrm{km})^2} = 5.00\\ \\mathrm{km}'] },
    { say:"And the direction? Tangent of theta is 3 over 4, giving 36.9 degrees north of east. State it in words — in all my years, 'that way' has never once received full marks.",
      pose:'point',
-     board:['\\theta = \\tan^{-1}\\!\\left(\\tfrac{3.00}{4.00}\\right) = 36.9^{\\circ}\\ \\text{north of east}'],
+     board:['\\theta = \\tan^{-1}\\!\\left(\\tfrac{R_y}{R_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{3.00}{4.00}\\right) = 36.9^{\\circ}\\ \\text{north of east}'],
      action(c){ arc(c, 0,0, 1.3, 0, 36.87, {color:GREEN, label:'θ', lr:20}); } },
    { say:"Now, the check — always the check! She walked 7 kilometres of trail, yet her displacement is only 5. The missing 2 kilometres? Scenery. Magnitudes do not add unless the vectors are parallel — remember this, my friend!",
      pose:'excited',
@@ -853,19 +886,22 @@ const EXAMPLES = [
                 arrow(c, 0,0, 1,8.196, {color:GREEN, label:'R', vec:true, w:4.5, dur:1100}); } },
    { say:"Now resolve A. Cosine for x, sine for y — because the angle is measured from the x axis, not because cosine asked nicely. A gives 4 metres and 3 metres. The cosine-sine assignment follows the ANGLE'S reference line, not habit — measure from the y-axis one day and the roles swap, to the great sorrow of the unwary.",
      pose:'write',
-     board:['A_x = 5.00\\cos 36.9^{\\circ} = 4.00\\ \\mathrm{m},\\qquad A_y = 5.00\\sin 36.9^{\\circ} = 3.00\\ \\mathrm{m}'],
+     board:['A_x = A\\cos\\theta_A = (5.00\\ \\mathrm{m})\\cos 36.9^{\\circ} = 4.00\\ \\mathrm{m}',
+            'A_y = A\\sin\\theta_A = (5.00\\ \\mathrm{m})\\sin 36.9^{\\circ} = 3.00\\ \\mathrm{m}'],
      action(c){ dashLine(c, 4,0, 4,3,{}); dashLine(c, 0,3, 4,3,{}); } },
    { say:"Resolve B the same way. Cosine of 120 degrees is minus one half, so B x is minus 3. The sketch predicted this. The sketch is never surprised. A sketch that predicts your signs before the calculator confirms them is not decoration; it is the cheapest insurance policy sold in this classroom.",
      pose:'write',
-     board:['B_x = 6.00\\cos 120.0^{\\circ} = -3.00\\ \\mathrm{m},\\qquad B_y = 6.00\\sin 120.0^{\\circ} = 5.20\\ \\mathrm{m}'],
+     board:['B_x = B\\cos\\theta_B = (6.00\\ \\mathrm{m})\\cos 120.0^{\\circ} = -3.00\\ \\mathrm{m}',
+            'B_y = B\\sin\\theta_B = (6.00\\ \\mathrm{m})\\sin 120.0^{\\circ} = 5.20\\ \\mathrm{m}'],
      action(c){ dashLine(c, -3,0, -3,5.196,{}); dashLine(c, 0,5.196, -3,5.196,{}); } },
    { say:"Add the components — x with x, y with y. Never mix them; components are like tea and biscuits: each excellent, but they keep to their own plates. R x is 1 metre; R y is 8.2 metres.",
      pose:'write',
-     board:['R_x = 4.00 - 3.00 = 1.00\\ \\mathrm{m},\\qquad R_y = 3.00 + 5.20 = 8.20\\ \\mathrm{m}'] },
+     board:['R_x = A_x + B_x = 4.00 + (-3.00) = 1.00\\ \\mathrm{m}',
+            'R_y = A_y + B_y = 3.00 + 5.20 = 8.20\\ \\mathrm{m}'] },
    { say:"Reassemble: magnitude 8.26 metres, at 83 degrees above the x axis. Nearly vertical — precisely as the sketch promised. I do love it when a plan comes together.",
      pose:'excited',
-     board:['R = \\sqrt{(1.00)^2+(8.20)^2} = \\sqrt{1.00+67.2} = \\sqrt{68.2} = 8.26\\ \\mathrm{m}',
-            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{8.20}{1.00}\\right) = 83.0^{\\circ}\\ \\text{above the } +x \\text{ axis}'],
+     board:['R = \\sqrt{R_x^2+R_y^2} = \\sqrt{(1.00)^2+(8.20)^2} = \\sqrt{68.2} = 8.26\\ \\mathrm{m}',
+            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{R_y}{R_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{8.20}{1.00}\\right) = 83.0^{\\circ}\\ \\text{above the } +x \\text{ axis}'],
      action(c){ arc(c, 0,0, 1.9, 0, 83, {color:GREEN, label:'83°', lr:22}); } },
    { say:"Check the quadrant: both components positive, so quadrant one — the calculator and the sketch shake hands. And do notice: 8.26 is decidedly not 11. Components, always components!",
      pose:'think',
@@ -895,14 +931,14 @@ const EXAMPLES = [
      } },
    { say:"The dot product: multiply matching components and add. 2 times 4, plus 3 times minus 1, plus minus 1 times 2: that is 8 minus 3 minus 2 — exactly 3. No fuss, no drama. The dot product is a very tidy accountant.",
      pose:'write',
-     board:['\\vec A\\cdot\\vec B = (2)(4) + (3)(-1) + (-1)(2) = 3.00'] },
+     board:['\\vec A\\cdot\\vec B = A_xB_x + A_yB_y + A_zB_z = (2)(4) + (3)(-1) + (-1)(2) = 3.00'] },
    { say:"Now the magnitudes. Square, add, take the root — the oldest recipe in the cookbook. A is root 14, about 3.74; B is root 21, about 4.58. Magnitudes discard direction on purpose — they answer 'how much' with the serene indifference of a butcher's scale, which is precisely what the cosine formula requires of them.",
      pose:'write',
-     board:['A = \\sqrt{2^2+3^2+(-1)^2} = \\sqrt{14.0} = 3.74',
-            'B = \\sqrt{4^2+(-1)^2+2^2} = \\sqrt{21.0} = 4.58'] },
+     board:['A = \\sqrt{A_x^2+A_y^2+A_z^2} = \\sqrt{2^2+3^2+(-1)^2} = \\sqrt{14.0} = 3.74',
+            'B = \\sqrt{B_x^2+B_y^2+B_z^2} = \\sqrt{4^2+(-1)^2+2^2} = \\sqrt{21.0} = 4.58'] },
    { say:"Divide: cosine of phi is 3 over 3.74 times 4.58 — 0.175. The inverse cosine hands us 79.9 degrees, no questions asked.",
      pose:'excited',
-     board:['\\cos\\phi = \\frac{3.00}{(3.74)(4.58)} = \\frac{3.00}{17.1} = 0.175 \\;\\Longrightarrow\\; \\phi = \\cos^{-1}(0.175) = 79.9^{\\circ}'],
+     board:['\\cos\\phi = \\frac{\\vec A\\cdot\\vec B}{AB} = \\frac{3.00}{(3.74)(4.58)} = 0.175 \\;\\Longrightarrow\\; \\phi = \\cos^{-1}(0.175) = 79.9^{\\circ}'],
      action(c){
        const A=proj(2,3,-1), B=proj(4,-1,2);
        const a1=Math.atan2(A[1],A[0])*180/Math.PI, a2=Math.atan2(B[1],B[0])*180/Math.PI;
@@ -949,7 +985,8 @@ const EXAMPLES = [
      } },
    { say:"Now comes the check: the magnitude should equal A B sine phi. 3.61 times 4.12 times sine of 47.7 degrees... 11.0. It agrees! Two methods, one answer — that is how physicists manage to sleep at night.",
      pose:'think',
-     board:['\\text{Check: } AB\\sin\\phi = (3.61)(4.12)\\sin 47.7^{\\circ} = 11.0 \\;\\checkmark'] },
+     board:['A = \\sqrt{A_x^2+A_y^2} = \\sqrt{2^2+3^2} = 3.61,\\qquad B = \\sqrt{(-1)^2+4^2} = 4.12',
+            '\\text{Check: } |\\vec A\\times\\vec B| = AB\\sin\\phi = (3.61)(4.12)\\sin 47.7^{\\circ} = 11.0 \\;\\checkmark'] },
    { say:"One last warning, and it is a classic: order matters. B cross A is minus 11 k-hat — into the page. Reverse the order, flip the sign. The cross product, unlike the dot product, holds grudges.",
      pose:'talk',
      board:[{t:'Pitfall: B⃗ × A⃗ = −A⃗ × B⃗ = −11.0 k̂ (into the page). Order matters!'}] },
@@ -991,7 +1028,8 @@ const EXAMPLES = [
      board:['\\vec{PQ}\\cdot\\vec{PR} = (-1)(-1) + (2)(0) + (0)(3) = 1.00'] },
    { say:"Their magnitudes are root 5 and root 10, so the cosine is 1 over root 50 — about 0.141 — giving 81.9 degrees at P. Nearly a right angle, exactly as the tiny dot product foretold. It is a modest oracle, but a reliable one.",
      pose:'write',
-     board:['\\cos\\phi = \\frac{1.00}{\\sqrt{5.00}\\,\\sqrt{10.0}} = 0.141 \\;\\Longrightarrow\\; \\phi = 81.9^{\\circ}'],
+     board:['|\\vec{PQ}| = \\sqrt{(-1)^2+2^2} = \\sqrt{5.00},\\qquad |\\vec{PR}| = \\sqrt{(-1)^2+3^2} = \\sqrt{10.0}',
+            '\\cos\\phi = \\frac{\\vec{PQ}\\cdot\\vec{PR}}{|\\vec{PQ}|\\,|\\vec{PR}|} = \\frac{1.00}{\\sqrt{5.00}\\,\\sqrt{10.0}} = 0.141 \\;\\Longrightarrow\\; \\phi = 81.9^{\\circ}'],
      action(c){
        const P=proj(1,0,0), Q=proj(0,2,0), R=proj(0,0,3);
        const a1=Math.atan2(Q[1]-P[1],Q[0]-P[0])*180/Math.PI;
@@ -1012,7 +1050,8 @@ const EXAMPLES = [
      board:['\\vec{PQ}\\times\\vec{PR} = (2\\cdot 3 - 0)\\,\\ihat + (0-(-1)(3))\\,\\jhat + (0-(2)(-1))\\,\\khat = 6\\,\\ihat + 3\\,\\jhat + 2\\,\\khat'] },
    { say:"Its magnitude: root of 36 plus 9 plus 4 — root 49 — exactly 7! So the area is half of 7: 3.50 square metres. When numbers come out this clean, smile politely — then verify anyway. Cleanliness is not correctness.",
      pose:'excited',
-     board:['\\big|\\vec{PQ}\\times\\vec{PR}\\big| = \\sqrt{36+9+4} = 7.00 \\;\\Longrightarrow\\; \\text{Area} = 3.50\\ \\mathrm{m^2}'] },
+     board:['\\big|\\vec{PQ}\\times\\vec{PR}\\big| = \\sqrt{6^2+3^2+2^2} = \\sqrt{49.0} = 7.00',
+            '\\text{Area} = \\tfrac12\\big|\\vec{PQ}\\times\\vec{PR}\\big| = \\tfrac12(7.00) = 3.50\\ \\mathrm{m^2}'] },
    { say:"The cross-check, using part a: one half, times root 5, times root 10, times sine of 81.9 degrees... 3.50 square metres. Two roads, one answer. That, my friends, is certainty you can take home to meet your parents.",
      pose:'think',
      board:['\\text{Check: } \\tfrac12\\sqrt{5.00}\\sqrt{10.0}\\,\\sin 81.9^{\\circ} = 3.50\\ \\mathrm{m^2}\\;\\checkmark'] },

@@ -783,15 +783,46 @@ const EXAMPLES = [
    { say:"Momentum: m v, a vector, and Newton's second law in its most honest form — net force equals d-p d-t. Integrate over a time interval and you get the IMPULSE-momentum theorem: J equals F-average times delta t equals delta p. Same momentum change, longer time, smaller force — which is the entire engineering of airbags, crumple zones, and bent knees.",
      pose:'talk',
      board:['\\vec p = m\\vec v, \\qquad \\sum\\vec F = \\frac{d\\vec p}{dt}',
-            '\\vec J = \\vec F_{\\rm avg}\\Delta t = \\Delta\\vec p'] },
+            '\\vec J = \\vec F_{\\rm avg}\\Delta t = \\Delta\\vec p'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(1),y1:M.Y(3.2),x2:M.X(1),y2:M.Y(6.4),stroke:'#B0A488','stroke-width':1.8},c.svg);
+       el('line',{x1:M.X(1),y1:M.Y(3.2),x2:M.X(5.4),y2:M.Y(3.2),stroke:'#B0A488','stroke-width':1.8},c.svg);
+       const pts=[]; for(let i=0;i<=40;i++){const u=i/40;
+         pts.push(M.X(1+3.9*u)+','+M.Y(3.2+2.9*Math.exp(-Math.pow((u-0.5)/0.22,2))));}
+       el('polygon',{points:pts.join(' ')+' '+M.X(4.9)+','+M.Y(3.2)+' '+M.X(1)+','+M.Y(3.2),
+         fill:'rgba(192,57,43,.22)', stroke:RED,'stroke-width':2.5},c.svg);
+       label(c, 2.5,4.1, 'area = J = Δp', {fs:13, color:RED, italic:true, anchor:'middle'});
+       label(c, 5.0,2.85, 't', {fs:12, color:'#8A7D60', italic:true});
+       label(c, 0.5,6.3, 'F', {fs:12, color:'#8A7D60', italic:true});
+     } },
    { say:"Conservation: internal forces cancel in third-law pairs, so when the EXTERNAL net force on a system vanishes — or is negligible during a brief violence — the total momentum is frozen. And momentum is a VECTOR: conserve x and y separately, always.",
      pose:'point',
      board:['\\vec P = \\sum m_i\\vec v_i = \\text{constant}\\quad(\\text{if } \\sum\\vec F_{\\rm ext} = 0)',
-            {t:'Conserve each component separately.'}] },
+            {t:'Conserve each component separately.'}],
+     action(c){
+       arrow(c, 4.2,2.4, 5.4,2.4, {color:RED, w:3, label:'F on 2', fs:12});
+       arrow(c, 5.4,3.4, 4.2,3.4, {color:BLUE, w:3, label:'F on 1', fs:12, side:-1});
+       label(c, 2.3,4.6, 'internal forces cancel in third-law pairs', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Collisions, classified by their honesty with energy. PERFECTLY INELASTIC: they stick; momentum conserved, kinetic energy partly murdered. ELASTIC: both conserved — and in one dimension with a stationary target, the closed formulas on the board. In EVERY collision momentum is conserved; energy is what separates the gentlemen from the wrecks.",
      pose:'write',
      board:['v_1\\prime = \\frac{m_1-m_2}{m_1+m_2}v_1, \\qquad v_2\\prime = \\frac{2m_1}{m_1+m_2}v_1\\quad(\\text{elastic, target at rest})',
-            {t:'ALL collisions conserve p⃗; only elastic ones conserve K.'}] },
+            {t:'ALL collisions conserve p⃗; only elastic ones conserve K.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(1.6), cy:M.Y(5.4), r:9, fill:GOLD},c.svg);
+       el('circle',{cx:M.X(3.4), cy:M.Y(5.4), r:11, fill:BLUE},c.svg);
+       arrow(c, 1.0,4.4, 0.2,4.4, {color:GOLD, w:2.5, side:-1});
+       arrow(c, 4.1,4.4, 5.2,4.4, {color:BLUE, w:2.5});
+       label(c, 0.4,6.5, 'elastic: bounce apart — p ✓ and K ✓', {fs:13, color:GREEN});
+       el('circle',{cx:M.X(7.5), cy:M.Y(5.4), r:9, fill:GOLD},c.svg);
+       el('circle',{cx:M.X(8.3), cy:M.Y(5.4), r:11, fill:BLUE},c.svg);
+       arrow(c, 9.0,4.4, 10.0,4.4, {color:PURPLE, w:2.5, label:'together', fs:11});
+       label(c, 6.4,6.5, 'perfectly inelastic: stick — p ✓, K lost', {fs:13, color:RED});
+       label(c, 1.6,2.2, 'the momentum ledger survives every taxonomy', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"The centre of mass — the mass-weighted average position — moves as if every external force acted on all the mass gathered there. Internal drama is powerless: explosions, collisions, passengers changing seats — the centre of mass sails on, serene, obeying M a-cm equals the external force alone.",
      solo:true, pose:'write',
      board:['\\vec r_{\\rm cm} = \\frac{\\sum m_i\\vec r_i}{\\sum m_i}, \\qquad M\\vec a_{\\rm cm} = \\sum\\vec F_{\\rm ext}'],
@@ -804,12 +835,30 @@ const EXAMPLES = [
        arrow(c, 4.0,4.6, 6.6,4.6, {color:GREEN, dash:'6,5', w:2, label:'sails on, serene', fs:11});
      } },
    { say:"Momentum conservation has a purity the others lack: it holds DURING the collision, in the fire and chaos where forces are unknowable and Newtonian bookkeeping fails. Two cars crumple, glass flies — and the total momentum sails through the catastrophe untouched, serene as a swan over rapids. When the details are hopeless, conservation laws are what remain.",
-     pose:'think',
-     board:[{t:'In the worst milliseconds of a collision, momentum is the only witness that never lies.'}] },
+     pose:'think', solo:true,
+     board:[{t:'In the worst milliseconds of a collision, momentum is the only witness that never lies.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(3.4), y:M.Y(4.6), width:56, height:40, rx:4, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2, transform:`rotate(-8 ${M.X(3.4)} ${M.Y(4.6)})`},c.svg);
+       el('rect',{x:M.X(5.2), y:M.Y(4.9), width:60, height:44, rx:4, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2, transform:`rotate(7 ${M.X(5.2)} ${M.Y(4.9)})`},c.svg);
+       [[2.9,5.3],[6.9,5.5],[4.8,5.9],[5.9,2.9],[3.8,2.7]].forEach(pt=>
+         el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:2.5, fill:'#8A7D60'},c.svg));
+       arrow(c, 2.2,1.4, 8.4,1.4, {color:GREEN, w:4, label:'P⃗: identical before and after', vec:true, fs:14});
+     } },
    { say:"And momentum's masterpiece, the rocket: throw mass backward, gain speed forward. Conservation on each puff of exhaust gives d-v equals minus u d-m over m; integrate the one-over-m and out comes the logarithm — delta v equals u log m-nought over m-final. The tyranny AND the poetry of spaceflight in one line. Strategy: define the system, check external forces, conserve componentwise, and audit the kinetic energy to classify the collision. To the examples.",
      pose:'excited',
      board:['\\Delta v = u\\ln\\!\\frac{m_0}{m_f}\\ \\ (\\text{the rocket equation})',
-            {t:'Strategy: choose the system → ΣF_ext ≈ 0? → conserve pₓ, p_y → energy audit classifies the collision.'}] },
+            {t:'Strategy: choose the system → ΣF_ext ≈ 0? → conserve pₓ, p_y → energy audit classifies the collision.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(4.2), y:M.Y(5.6), width:100, height:34, rx:14, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('polygon',{points:`${M.X(7.0)},${M.Y(5.6)} ${M.X(7.0)},${M.Y(4.55)} ${M.X(7.9)},${M.Y(5.1)}`, fill:'#B5793B', stroke:'#8A5A24','stroke-width':2},c.svg);
+       for(let i=0;i<3;i++) arrow(c, 4.0,5.35-0.28+0.28*i, 2.4,5.35-0.28+0.28*i, {color:RED, w:2.5});
+       label(c, 1.1,4.3, 'exhaust: −u dm', {fs:13, color:RED, italic:true});
+       arrow(c, 6.0,6.6, 8.2,6.6, {color:GREEN, w:3.5, label:'Δv forward', fs:13});
+       label(c, 2.2,1.8, 'throw mass one way, drift the other — bookkeeping with fire', {fs:13, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -908,7 +957,7 @@ const EXAMPLES = [
      pose:'point',
      board:['\\text{Act 1 (the embedding): system = bullet + block; } \\vec p_{\\rm before} = \\vec p_{\\rm after}',
             'p_{\\rm before} = mv + M(0); \\qquad p_{\\rm after} = (m+M)V',
-            'mv = (m+M)V \\;\\Rightarrow\\; V = \\frac{(0.0100)(400)}{2.01} = 1.99\\ \\mathrm{m/s}'],
+            'mv = (m+M)V \\;\\Rightarrow\\; V = \\frac{mv}{m+M} = \\frac{(0.0100)(400)}{2.01} = 1.99\\ \\mathrm{m/s}'],
      action(c){
        const {M}=c;
        el('line',{x1:M.X(-1),y1:M.Y(8),x2:M.X(-1),y2:M.Y(2.6),stroke:'#5C4B30','stroke-width':2},c.svg);
@@ -970,7 +1019,7 @@ const EXAMPLES = [
      } },
    { say:"Part b — the centre of mass, the system's stately average. Before: 2 times 6 plus nothing, over 6 — 2 metres per second. After: 2 times minus 2, plus 4 times 4 — minus 4 plus 16 — 12 over 6 — 2 metres per second. Identical. The collision was loud, dramatic, and utterly invisible to the centre of mass, which glided on like a monarch through a market squabble.",
      pose:'write',
-     board:['v_{\\rm cm} = \\frac{(2.00)(6.00)+0}{6.00} = 2.00\\ \\mathrm{m/s} \\;\\text{(before)}',
+     board:['v_{\\rm cm} = \\frac{m_1v_1 + m_2v_2}{m_1+m_2} = \\frac{(2.00)(6.00)+0}{6.00} = 2.00\\ \\mathrm{m/s} \\;\\text{(before)}',
             'v_{\\rm cm} = \\frac{(2.00)(-2.00)+(4.00)(4.00)}{6.00} = \\frac{12.0}{6.00} = 2.00\\ \\mathrm{m/s} \\;\\text{(after)}'],
      action(c){
        arrow(c, -3,5.6, 0,5.6, {color:PURPLE, label:'v_cm', vec:true, fs:14});
@@ -978,7 +1027,8 @@ const EXAMPLES = [
      } },
    { say:"The energy audit, because 'elastic' is a claim requiring evidence: before, half of 2 times 36 — 36 joules. After: half of 2 times 4, plus half of 4 times 16 — 4 plus 32 — 36 joules. Conserved to the joule. The collision merely redistributed the estate.",
      pose:'excited',
-     board:['K_{\\rm before} = 36.0\\ \\mathrm{J}; \\quad K_{\\rm after} = 4.00 + 32.0 = 36.0\\ \\mathrm{J} \\;\\checkmark'] },
+     board:['K_{\\rm before} = \\tfrac12m_1v_1^2 = \\tfrac12(2.00)(6.00)^2 = 36.0\\ \\mathrm{J}',
+            'K_{\\rm after} = \\tfrac12(2.00)(2.00)^2 + \\tfrac12(4.00)(4.00)^2 = 4.00 + 32.0 = 36.0\\ \\mathrm{J} \\;\\checkmark'] },
    { say:"The check, via limiting cases — the formulas' favourite party pieces: equal masses would swap velocities entirely, like polite billiard balls. An immovable m-two would return m-one at full speed, like a wall. Our case sits sensibly between. Formulas that behave at the extremes may be trusted in the middle.",
      pose:'think',
      board:[{t:'Limits: m₁ = m₂ → swap (0 and 6) ✓; m₂ → ∞ → v₁′ = −6, wall-like bounce ✓'}] },
@@ -1021,7 +1071,8 @@ const EXAMPLES = [
             'v_2 = 3.45\\ \\mathrm{m/s}, \\qquad v_1 = 2.93\\ \\mathrm{m/s}'] },
    { say:"Elastic? Audit the energy. Before: half of 0.5 times 16 — 4 joules. After: 2.14 plus 1.79 — 3.93. A shortfall of seven hundredths of a joule: mildly, forgivably inelastic — the pucks kept a little for the scratch and the click. Note carefully: momentum alone fixed both speeds. The energy comparison is a diagnostic, never an extra given.",
      pose:'excited',
-     board:['K_{\\rm before} = 4.00\\ \\mathrm{J}; \\quad K_{\\rm after} = 2.14 + 1.79 = 3.93\\ \\mathrm{J} \\;\\Rightarrow\\; \\text{slightly inelastic}'] },
+     board:['K_{\\rm before} = \\tfrac12(0.500)(4.00)^2 = 4.00\\ \\mathrm{J}',
+            'K_{\\rm after} = \\tfrac12(0.500)(2.93)^2 + \\tfrac12(0.300)(3.45)^2 = 2.14 + 1.79 = 3.93\\ \\mathrm{J} \\;\\Rightarrow\\; \\text{slightly inelastic}'] },
    { say:"Now comes the check: reassemble the after-momenta. East: 1.27 plus 0.73 — 2.00, as delivered. North: 0.73 up, 0.73 down — zero, as required. Every component accounted for. Momentum, as always, leaves the till exactly as it found it. A two-dimensional collision reconciled to the last decimal in both directions — if accountancy were always this satisfying, physicists would have gone into finance, and physics would be the poorer and the richer for it.",
      pose:'think',
      board:[{t:'Check: Px = 0.500(2.93)cos30° + 0.300(3.45)cos45° = 1.27 + 0.73 = 2.00 ✓; Py = 0.73 − 0.73 = 0 ✓'}] },

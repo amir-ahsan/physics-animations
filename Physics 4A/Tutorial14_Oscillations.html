@@ -800,11 +800,41 @@ const EXAMPLES = [
    { say:"Oscillations — the physics of everything that wiggles, which is nearly everything. SIMPLE HARMONIC MOTION occurs whenever the restoring force is proportional to displacement: F equals minus k x. Newton’s second law then serves the famous differential equation, and the solution is a cosine: amplitude A, angular frequency root k over m, phase set by the initial conditions. The miracle: the PERIOD does not care about the amplitude.",
      pose:'talk',
      board:['F = -kx \\;\\Rightarrow\\; \\frac{d^2x}{dt^2} = -\\omega^2x, \\qquad \\omega = \\sqrt{\\frac{k}{m}}',
-            'x(t) = A\\cos(\\omega t+\\phi)\\quad(\\text{period independent of amplitude!})'] },
+            'x(t) = A\\cos(\\omega t+\\phi)\\quad(\\text{period independent of amplitude!})'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.6),y1:M.Y(2.6),x2:M.X(0.6),y2:M.Y(-0.6),stroke:'#8A7D60','stroke-width':4},c.svg);
+       const zig=[]; const y0=1.0; zig.push(M.X(0.6)+','+M.Y(y0));
+       for(let i=0;i<8;i++) zig.push(M.X(0.9+i*0.42)+','+M.Y(y0+(i%2?0.45:-0.45)));
+       zig.push(M.X(4.4)+','+M.Y(y0));
+       el('polyline',{points:zig.join(' '),fill:'none',stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       el('rect',{x:M.X(4.4), y:M.Y(1.65), width:44, height:40, rx:4, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       dashLine(c, 3.6,2.6, 3.6,-0.4, {});
+       label(c, 3.35,-0.9, 'equilibrium', {fs:12, color:'#8A7D60', italic:true, anchor:'middle'});
+       arrow(c, 3.7,-0.1, 5.0,-0.1, {color:GOLD, w:2.5, label:'x', fs:13});
+       arrow(c, 4.9,0.45, 3.9,0.45, {color:RED, w:3, label:'F = −kx', fs:13, side:-1});
+       label(c, 6.5,2.6, 'displace right → pushed left,', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 6.5,2.0, 'always toward home', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Differentiate and the family appears: velocity, a sine with peak omega A at the CENTRE; acceleration, minus omega squared x, peaking at the TURNING points where the speed dies. Given x-nought and v-nought, the amplitude and phase follow from the boxed pair.",
      pose:'write',
      board:['v_{\\max} = \\omega A\\ (\\text{at } x=0), \\qquad a_{\\max} = \\omega^2A\\ (\\text{at } x=\\pm A)',
-            'A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}}, \\qquad \\tan\\phi = -\\frac{v_0}{\\omega x_0}'] },
+            'A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}}, \\qquad \\tan\\phi = -\\frac{v_0}{\\omega x_0}'],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.2),y1:M.Y(0),x2:M.X(10.6),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.6},c.svg);
+       const draw=(f,col)=>{ const pts=[]; for(let i=0;i<=90;i++){const t=10.4*i/90;
+         pts.push(M.X(0.2+t)+','+M.Y(f(t)));} 
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':2.5},c.svg); };
+       draw(t=>2.6*Math.cos(1.25*t), GOLD);
+       draw(t=>-2.6*Math.sin(1.25*t), GREEN);
+       draw(t=>-2.6*Math.cos(1.25*t), PURPLE);
+       label(c, 0.35,2.95, 'x', {fs:15, color:GOLD, italic:true});
+       label(c, 1.3,-3.1, 'v (¼ cycle ahead)', {fs:12.5, color:GREEN, italic:true});
+       label(c, 5.6,3.0, 'a = −ω²x (opposite x)', {fs:12.5, color:PURPLE, italic:true});
+     } },
    { say:"Energy in SHM is a closed economy: half m v squared plus half k x squared equals half k A squared, forever. All kinetic through the centre, all potential at the extremes, endlessly exchanged and never spent — until friction arrives, later in this review, to collect taxes.",
      solo:true, pose:'point',
      board:['E = \\tfrac12mv^2 + \\tfrac12kx^2 = \\tfrac12kA^2 = \\text{const}'],
@@ -817,15 +847,54 @@ const EXAMPLES = [
        textAt(c, 1.7,-3.55, 'trading places, total fixed', {fs:11, italic:true, anchor:'middle'});
      } },
    { say:"Pendulums, the chapter's menagerie: the SIMPLE pendulum, at small angles, swings with period 2 pi root L over g — no mass, no amplitude in sight. The PHYSICAL pendulum — any rigid body on a pivot — generalises to 2 pi root I over m g d, and the TORSIONAL one twists at 2 pi root I over kappa. A vertical spring oscillates about its sagged equilibrium exactly as a horizontal one would.",
-     pose:'write',
-     board:['T_{\\rm simple} = 2\\pi\\sqrt{\\frac{L}{g}}, \\qquad T_{\\rm phys} = 2\\pi\\sqrt{\\frac{I}{mgd}}, \\qquad T_{\\rm tors} = 2\\pi\\sqrt{\\frac{I}{\\kappa}}'] },
+     pose:'write', solo:true,
+     board:['T_{\\rm simple} = 2\\pi\\sqrt{\\frac{L}{g}}, \\qquad T_{\\rm phys} = 2\\pi\\sqrt{\\frac{I}{mgd}}, \\qquad T_{\\rm tors} = 2\\pi\\sqrt{\\frac{I}{\\kappa}}'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.6),y1:M.Y(3.0),x2:M.X(10.4),y2:M.Y(3.0),stroke:'#8A7D60','stroke-width':4},c.svg);
+       el('line',{x1:M.X(1.9),y1:M.Y(3.0),x2:M.X(1.35),y2:M.Y(0.4),stroke:'#5C4B30','stroke-width':1.8},c.svg);
+       el('circle',{cx:M.X(1.35), cy:M.Y(0.25), r:11, fill:GOLD, stroke:'#8A5A24','stroke-width':2},c.svg);
+       label(c, 0.7,-1.3, 'simple: all mass in the bob', {fs:12, color:'#7A5A28'});
+       el('line',{x1:M.X(5.3),y1:M.Y(3.0),x2:M.X(4.5),y2:M.Y(0.2),stroke:'#B5793B','stroke-width':7,'stroke-linecap':'round'},c.svg);
+       el('circle',{cx:M.X(5.3), cy:M.Y(3.0), r:4, fill:'#2B2317'},c.svg);
+       label(c, 4.2,-1.3, 'physical: any rigid body', {fs:12, color:'#7A5A28'});
+       el('line',{x1:M.X(8.7),y1:M.Y(3.0),x2:M.X(8.7),y2:M.Y(1.2),stroke:'#5C4B30','stroke-width':1.8},c.svg);
+       el('ellipse',{cx:M.X(8.7), cy:M.Y(0.9), rx:0.85*M.s, ry:0.3*M.s, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2},c.svg);
+       arc(c, 8.7,0.9, 1.15, -20, 200, {color:PURPLE, w:2});
+       label(c, 7.7,-1.3, 'torsional: a twisting fibre', {fs:12, color:'#7A5A28'});
+     } },
    { say:"And here is the secret that makes this final chapter the most useful of all: ANY system nudged gently from equilibrium — a bridge, an atom, a heartbeat, a skyscraper in wind — oscillates harmonically, because every smooth valley looks like a parabola at the bottom. Learn one oscillator and you have learned, to first approximation, everything that trembles.",
-     pose:'think',
-     board:[{t:'Zoom into any potential minimum: a parabola. Which is why one chapter explains everything that wiggles.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Zoom into any potential minimum: a parabola. Which is why one chapter explains everything that wiggles.'}],
+     action(c){
+       const {M}=c;
+       const pts=[]; for(let i=0;i<=90;i++){const x=0.4+7.0*i/90;
+         pts.push(M.X(x)+','+M.Y(-2.9+2.2*Math.pow(x-3.4,2)*0.28+0.7*Math.sin(1.6*x)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3},c.svg);
+       el('circle',{cx:M.X(2.95), cy:M.Y(-3.15), r:26, fill:'none', stroke:GREEN,'stroke-width':2.5,'stroke-dasharray':'6,5'},c.svg);
+       const par=[]; for(let i=0;i<=40;i++){const u=-1+2*i/40;
+         par.push(M.X(9.0+u*1.3)+','+M.Y(0.2+2.4*u*u));}
+       el('polyline',{points:par.join(' '),fill:'none',stroke:GREEN,'stroke-width':3},c.svg);
+       arrow(c, 3.9,-2.4, 7.5,0.2, {color:'#8A7D60', w:2, dash:'5,4'});
+       label(c, 7.6,-1.2, 'zoomed in: ½kx²', {fs:13, color:GREEN, italic:true});
+       label(c, 0.5,2.9, 'any smooth U(x), any minimum → SHM for small nudges', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Add a drag force minus b v, and the oscillation lives inside a dying exponential envelope, at a frequency slightly flattened — the stage shows the portrait. Critical damping returns to rest fastest with no overshoot; your car's shock absorbers aspire to it. And DRIVE the system near its natural frequency and the amplitude erupts: RESONANCE — shattered goblets, swaying bridges, and every radio dial. Lighter damping, taller and narrower peak. To the examples.",
      pose:'excited',
      board:['x = A_0e^{-bt/2m}\\cos(\\omega\\prime t+\\phi), \\qquad \\omega\\prime = \\sqrt{\\omega_0^2 - \\big(\\tfrac{b}{2m}\\big)^2}',
-            {t:'Resonance: drive near ω₀ → amplitude peaks; damping sets the height of the peak.'}] },
+            {t:'Resonance: drive near ω₀ → amplitude peaks; damping sets the height of the peak.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(6.6),y1:M.Y(-3.3),x2:M.X(10.4),y2:M.Y(-3.3),stroke:'#B0A488','stroke-width':1.6},c.svg);
+       const peak=(h,w2,col)=>{ const pts=[]; for(let i=0;i<=50;i++){const u=6.7+3.6*i/50;
+         pts.push(M.X(u)+','+M.Y(-3.3+h/(1+Math.pow((u-8.5)/w2,2))));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':2.2},c.svg); };
+       peak(1.5,0.28,RED); peak(0.8,0.75,BLUE);
+       dashLine(c, 8.5,-3.3, 8.5,-1.75, {});
+       label(c, 8.4,-1.5, 'ω₀', {fs:12, color:'#7A5A28', italic:true, anchor:'middle'});
+       label(c, 9.1,-2.0, 'light damping', {fs:11, color:RED, italic:true});
+       label(c, 9.3,-2.9, 'heavy', {fs:11, color:BLUE, italic:true});
+     } },
   ]
 },
 
@@ -874,11 +943,13 @@ const EXAMPLES = [
             '\\omega = \\sqrt{\\frac{k}{m}}'] },
    { say:"Omega first, the master frequency: root of k over m — root 400 — 20 radians per second. The period follows: 2 pi over omega — 0.314 seconds. Three full oscillations per second, with change. Notice what omega ignored: the amplitude. Pull the mass twice as far and it travels twice the distance in the same period — moving faster precisely in proportion to its longer errand. That indifference is the very soul of harmonic motion.",
      pose:'write',
-     board:['\\omega = \\sqrt{\\frac{200}{0.500}} = 20.0\\ \\mathrm{rad/s}, \\qquad T = \\frac{2\\pi}{\\omega} = 0.314\\ \\mathrm{s}'],
+     board:['\\omega = \\sqrt{\\frac{k}{m}} = \\sqrt{\\frac{200}{0.500}} = 20.0\\ \\mathrm{rad/s}',
+            'T = \\frac{2\\pi}{\\omega} = \\frac{2\\pi}{20.0} = 0.314\\ \\mathrm{s}'],
      action(c){ plotCurve(c, t=>[t, 0.05*Math.cos(20*t)], 0, 0.345, {color:BLUE, w:3.5, dur:1600}); } },
    { say:"Released from REST at 5 centimetres, so the amplitude is exactly 5 centimetres — the release point is the turning point. Top speed, at the centre: omega A — exactly 1 metre per second. Top acceleration, at the extremes: omega squared A — 20 metres per second squared. Twice gravity, delivered by a spring you could compress with one finger.",
      pose:'write',
-     board:['v_{\\max} = \\omega A = 1.00\\ \\mathrm{m/s}, \\qquad a_{\\max} = \\omega^2A = 20.0\\ \\mathrm{m/s^2}'] },
+     board:['v_{\\max} = \\omega A = (20.0)(0.0500) = 1.00\\ \\mathrm{m/s}',
+            'a_{\\max} = \\omega^2A = (20.0)^2(0.0500) = 20.0\\ \\mathrm{m/s^2}'] },
    { say:"The energy: half k A squared — a quarter of a joule, fixed at the moment of release and thereafter merely SLOSHING between kinetic and potential, twice per cycle, forever, friction permitting. A quarter of a joule with a lifetime appointment: at every extreme it is all spring, at every crossing all speed, and at every instant in between the two columns sum — to the last decimal — to the same quarter joule.",
      pose:'write',
      board:['E = K + U = \\tfrac12mv^2 + \\tfrac12kx^2\\ \\text{(the same at every instant)}',
@@ -903,10 +974,11 @@ const EXAMPLES = [
             'x(t) = A\\cos(\\omega t + \\phi)'] },
    { say:"The amplitude combines both clues in quadrature: root of x-nought squared plus v-nought over omega, squared — root of 9 plus 4, in ten-thousandths — 3.61 centimetres. LARGER than the starting displacement: the initial kinetic energy carries the glider beyond its launch point before turning. Motion is credit toward amplitude.",
      pose:'write',
-     board:['A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}} = \\sqrt{(0.0300)^2 + (0.0200)^2} = 0.0361\\ \\mathrm{m}'] },
+     board:['\\frac{v_0}{\\omega} = \\frac{0.400}{20.0} = 0.0200\\ \\mathrm{m}',
+            'A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}} = \\sqrt{(0.0300)^2 + (0.0200)^2} = 0.0361\\ \\mathrm{m}'] },
    { say:"The phase: tangent phi equals minus v-nought over omega x-nought — plus two thirds — giving 0.588 radians. But the arctangent is a double agent — it offers two quadrants. Check BOTH conditions: cosine phi positive matches x-nought positive; sine phi positive makes v-nought negative. Quadrant one, confirmed on both counts. Never let the calculator choose your quadrant unsupervised.",
      pose:'write',
-     board:['\\tan\\phi = -\\frac{v_0}{\\omega x_0} = +0.667 \\;\\Rightarrow\\; \\phi = 0.588\\ \\mathrm{rad}\\;(33.7^{\\circ})',
+     board:['\\tan\\phi = -\\frac{v_0}{\\omega x_0} = -\\frac{(-0.400)}{(20.0)(0.0300)} = +0.667 \\;\\Rightarrow\\; \\phi = 0.588\\ \\mathrm{rad}\\;(33.7^{\\circ})',
             {t:'Quadrant check: cos φ > 0 (x₀ > 0 ✓), sin φ > 0 (v₀ < 0 ✓) → quadrant I.'}] },
    { say:"Assembled: x of t equals 3.61 centimetres, cosine of 20 t plus 0.588. There is the curve — note it starts at 3 centimetres, already descending, and peaks at 3.61 only on the far side. The graph remembers its launch conditions the way handwriting remembers its author.",
      pose:'point',
@@ -970,7 +1042,7 @@ const EXAMPLES = [
      board:['\\omega^{\\prime} = \\sqrt{\\omega_0^2 - \\left(\\frac{b}{2m}\\right)^2} = \\sqrt{400-4.00} = 19.9\\ \\mathrm{rad/s}'] },
    { say:"On we go to part b. Set the envelope to one half: t-half equals 2 m natural-log 2 over b — 0.347 seconds. Behold the whole tragedy on one graph: the cosine dancing, the envelope closing in like theatre curtains. The envelope is the damping's signature and the cosine is the spring's — the graph shows both personalities at once, one insisting on rhythm, the other on retirement.",
      pose:'point',
-     board:['t_{1/2} = \\frac{2m\\ln 2}{b} = \\frac{\\ln 2}{2.00} = 0.347\\ \\mathrm{s}'],
+     board:['e^{-bt/2m} = \\tfrac12 \\;\\Rightarrow\\; t_{1/2} = \\frac{2m\\ln 2}{b} = \\frac{2(0.500)\\ln 2}{2.00} = 0.347\\ \\mathrm{s}'],
      action(c){
        plotCurve(c, t=>[t, 0.05*Math.exp(-2*t)*Math.cos(19.9*t)], 0, 1.25, {color:BLUE, w:3, dur:2000});
        plotCurve(c, t=>[t, 0.05*Math.exp(-2*t)], 0, 1.25, {color:RED, w:2, dash:'6,4', dur:1200});
@@ -980,7 +1052,7 @@ const EXAMPLES = [
      } },
    { say:"And now, part c. The damped period is 0.316 seconds, so the halving time holds roughly 1.1 oscillations. The amplitude halves nearly every single cycle — this oscillator is fighting hard and losing steadily. An oscillator losing half its amplitude per cycle is heavily damped indeed — a door-closer rather than a church bell. Where you want ringing, keep b small; where you want silence, spend generously on it.",
      pose:'write',
-     board:['T^{\\prime} = \\frac{2\\pi}{\\omega^{\\prime}} = 0.316\\ \\mathrm{s} \\;\\Rightarrow\\; \\frac{t_{1/2}}{T^{\\prime}} \\approx 1.1\\ \\text{oscillations}'] },
+     board:['T^{\\prime} = \\frac{2\\pi}{\\omega^{\\prime}} = \\frac{2\\pi}{19.9} = 0.316\\ \\mathrm{s} \\;\\Rightarrow\\; \\frac{t_{1/2}}{T^{\\prime}} = \\frac{0.347}{0.316} \\approx 1.1\\ \\text{oscillations}'] },
    { say:"The final check of the final tutorial: energy rides the SQUARE of amplitude, so each halving of amplitude surrenders three-QUARTERS of the remaining energy. Halve, and halve, and halve — and the motion fades to stillness. Which is, I suppose, how every course must end. Fourteen tutorials, seventy examples, and one rule above all the others: the check — ALWAYS the check. It has been the greatest of pleasures. Class dismissed.",
      pose:'excited',
      board:[{t:'Check: E ∝ A² → each amplitude halving removes ¾ of the energy. And that concludes Physics 4A — the check, always the check!'}] },

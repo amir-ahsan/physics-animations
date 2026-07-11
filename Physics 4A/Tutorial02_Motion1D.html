@@ -805,7 +805,14 @@ const EXAMPLES = [
    { say:"Kinematics: describing motion while postponing all questions about its causes. In one dimension the position x of t tells the entire story, and calculus extracts the rest — velocity is the derivative of position, acceleration the derivative of velocity. Integration runs the film backwards: area under a gives the change in v; area under v gives the displacement.",
      pose:'talk',
      board:['v = \\frac{dx}{dt}, \\qquad a = \\frac{dv}{dt}',
-            '\\Delta v = \\int a\\,dt, \\qquad \\Delta x = \\int v\\,dt'] },
+            '\\Delta v = \\int a\\,dt, \\qquad \\Delta x = \\int v\\,dt'],
+     action(c){
+       dashLine(c, 4,4.4, 6,4.4, {}); dashLine(c, 6,4.4, 6,5.6, {});
+       label(c, 5.0,4.05, 'dt', {fs:13, color:'#7A5A28', anchor:'middle', italic:true});
+       label(c, 6.15,5.0, 'dv', {fs:13, color:'#7A5A28', italic:true});
+       label(c, 6.9,4.35, 'slope = dv/dt = a', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 3.2,0.8, 'area = ∫v dt = Δx', {fs:12, color:'#8A5A24', italic:true, anchor:'middle'});
+     } },
    { say:"Guard the distinctions: DISPLACEMENT is signed, distance is not; average VELOCITY is displacement over time, average speed is distance over time. And on graphs — the slope of x-t is velocity, the slope of v-t is acceleration, the AREA under v-t is displacement. A ball at the top of its flight has v equal zero yet is accelerating the whole while.",
      pose:'point',
      board:[{t:'Displacement (signed) ≠ distance. Slope of x–t = v; slope of v–t = a; area under v–t = Δx.'},
@@ -816,9 +823,19 @@ const EXAMPLES = [
        textAt(c, 4.9,6.7, 'displacement carries a sign; distance never does', {fs:12, italic:true, anchor:'middle'});
      } },
    { say:"When acceleration is CONSTANT, four equations do all the work — and each one omits exactly one of the five quantities: displacement, initial velocity, final velocity, acceleration, time. Choose the equation missing the thing you neither know nor want. That is the entire art.",
-     pose:'write',
+     pose:'write', solo:true,
      board:['v = v_0+at, \\qquad x = x_0+v_0t+\\tfrac12at^2',
-            'v^2 = v_0^2+2a\\,\\Delta x, \\qquad \\Delta x = \\tfrac12(v_0+v)t'] },
+            'v^2 = v_0^2+2a\\,\\Delta x, \\qquad \\Delta x = \\tfrac12(v_0+v)t'],
+     action(c){
+       axes2D(c.svg, c.M, {x0:-1,x1:11,y0:-1.2,y1:8.2}, {xlab:'t', ylab:'v'});
+       shadePoly(c, [[0,0],[0,2],[8,2],[8,0]], {color:'rgba(46,109,164,.25)'});
+       shadePoly(c, [[0,2],[8,6.8],[8,2]], {color:'rgba(192,57,43,.22)'});
+       el('line',{x1:c.M.X(0),y1:c.M.Y(2),x2:c.M.X(8),y2:c.M.Y(6.8),stroke:'#B5793B','stroke-width':3.5,'stroke-linecap':'round'},c.svg);
+       label(c, 4,1.0, 'v₀t', {fs:16, color:'#1D4568', anchor:'middle', italic:true});
+       label(c, 6.4,3.6, '½at²', {fs:16, color:RED, anchor:'middle', italic:true});
+       label(c, 0.15,2.25, 'v₀', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 2.8,7.4, 'Δx = v₀t + ½at² — read it off the graph', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Free fall is the constant-acceleration special case nature provides for free: near Earth's surface everything falls with the same g, 9.8 metres per second squared. With up as positive, a equals MINUS g for the entire flight — on the way up, at the top, and on the way down. The acceleration never takes a holiday at the apex.",
      solo:true, pose:'write',
      board:['\\text{Free fall (up +): } a = -g = -9.80\\ \\mathrm{m/s^2}\\ \\text{throughout — including the top}'],
@@ -829,11 +846,31 @@ const EXAMPLES = [
        arrow(c, 10.3,6.4, 10.3,4.8, {color:PURPLE, w:2.5, label:'a = −g', fs:12});
      } },
    { say:"Here is the quiet miracle of this chapter: a falling apple, a thrown stone, and a rocket coasting between planets all obey the same three kinematic sentences. Nature, it turns out, is not verbose. She wrote one paragraph for all constant acceleration and has been reusing it for thirteen billion years — the ultimate economy of authorship.",
-     pose:'think',
-     board:[{t:'Three equations govern every constant-acceleration motion in the universe. Nature does not repeat herself; she quotes.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Three equations govern every constant-acceleration motion in the universe. Nature does not repeat herself; she quotes.'}],
+     action(c){
+       el('circle',{cx:c.M.X(1.4), cy:c.M.Y(6.0), r:9, fill:RED},c.svg);
+       arrow(c, 1.4,5.6, 1.4,4.2, {color:PURPLE, w:2.5, label:'g', fs:13});
+       label(c, 0.6,3.2, 'falling apple', {fs:13, color:'#7A5A28'});
+       plotCurve ? plotCurve(c, t=>5.0+2.6*(t-5.2)-0.65*(t-5.2)*(t-5.2), 3.4, 7.6, {color:'#8A7D60', w:2, dash:'5,4'}) : 0;
+       el('circle',{cx:c.M.X(5.2), cy:c.M.Y(7.6), r:6, fill:BLUE},c.svg);
+       label(c, 4.4,3.2, 'thrown stone', {fs:13, color:'#7A5A28'});
+       el('rect',{x:c.M.X(8.9), y:c.M.Y(6.2), width:34, height:14, rx:6, fill:'#7B4FA0'},c.svg);
+       el('polygon',{points:`${c.M.X(8.9)},${c.M.Y(6.2)} ${c.M.X(8.9)},${c.M.Y(6.2)+14} ${c.M.X(8.9)-12},${c.M.Y(6.2)+7}`, fill:'#7B4FA0'},c.svg);
+       label(c, 8.7,3.2, 'coasting probe', {fs:13, color:'#7A5A28'});
+       label(c, 2.6,1.4, 'one constant-acceleration toolkit — the same three sentences', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy: choose an origin and a positive direction and be loyal to them — every quantity then carries a sign. List knowns and the target. Constant acceleration? Pick the right equation. Given functions? Differentiate or integrate. Multi-stage motion? Split it; one stage's end is the next stage's beginning. Solve symbolically first, and interrogate both roots of every quadratic. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: signs from your chosen axis · list knowns · pick the equation missing the useless variable · split stages · check roots.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: signs from your chosen axis · list knowns · pick the equation missing the useless variable · split stages · check roots.'}],
+     action(c){
+       const flow=['choose origin + positive direction','list knowns and the target','constant a? pick the equation','a(t) given? integrate / differentiate','multi-stage? split at the joins','check both roots, check the signs'];
+       flow.forEach((s,i)=>{
+         const y = 7.6 - i*1.6;
+         label(c, 3.4, y, (i+1)+'. '+s, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.7, y-0.4, 2.7, y-1.15, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -858,7 +895,7 @@ const EXAMPLES = [
      board:[{t:'Given: v₀ = 30.0 m/s, |a| = 5.00 m/s². Find (a) stopping time, (b) stopping distance.'}] },
    { say:"Choose the direction of motion as positive. Then the acceleration — which opposes the motion — is minus 5. The sign is not a decoration; it is the entire physics of braking. Every equation we write from here on will quietly assume we made this choice, so make it once, make it consciously, and then — like all the best decisions — never think about it again.",
      pose:'point',
-     board:['\\vec a = -5.00\\,\\hat{\imath}\\ \\mathrm{m/s^2} \\quad\\text{(opposes }\\vec v\\text{)}'],
+     board:['\\vec a = -5.00\\,\\ihat\\ \\mathrm{m/s^2} \\quad\\text{(opposes }\\vec v\\text{)}'],
      action(c){
        boxAt(c, 6,1, 11,6, {fill:'#2E6DA4', stroke:'#1D4568'});
        arrow(c, 12,10, 34,10, {color:GREEN, label:'v₀ = 30 m/s', fs:15});
@@ -866,7 +903,7 @@ const EXAMPLES = [
      } },
    { say:"Let us take part a. Velocity drops linearly: v equals v-nought plus a t. Set v to zero — the whole point of brakes — and solve. Six seconds. An eternity, if the trouble is close. Do sit with that number a moment: six full seconds of physics between the foot and the outcome, every one of them governed by an equation written three centuries before the motor car.",
      pose:'write',
-     board:['v = v_0 + at = 0 \\;\\Rightarrow\\; t = \\frac{0 - 30.0}{-5.00} = 6.00\\ \\mathrm{s}'],
+     board:['v = v_0 + at = 0 \\;\\Rightarrow\\; t = \\frac{v - v_0}{a} = \\frac{0 - 30.0}{-5.00} = 6.00\\ \\mathrm{s}'],
      action(c){
        const car = boxAt(c, 6,1, 11,6, {fill:'rgba(46,109,164,.35)', stroke:'#1D4568'});
        /* car glides from 0 to 90 m with decreasing speed */
@@ -875,7 +912,7 @@ const EXAMPLES = [
      } },
    { say:"On we go to part b. For distance without time, use v squared equals v-nought squared plus 2 a delta x. Ninety metres. Nine tenths of a football pitch, spent entirely on regret. And notice what the equation did for us: it traded away time, which we neither knew nor cared about, and handed us distance directly. Choosing the right kinematic equation is choosing which ignorance to keep.",
      pose:'write',
-     board:['v^2 = v_0^2 + 2a\\,\\Delta x \\;\\Rightarrow\\; \\Delta x = \\frac{0-(30.0)^2}{2(-5.00)} = \\frac{-900}{-10.0} = 90.0\\ \\mathrm{m}'],
+     board:['v^2 = v_0^2 + 2a\\,\\Delta x \\;\\Rightarrow\\; \\Delta x = \\frac{v^2 - v_0^2}{2a} = \\frac{0-(30.0)^2}{2(-5.00)} = 90.0\\ \\mathrm{m}'],
      action(c){
        dashLine(c, 0,22, 90,22, {color:GREEN});
        arrow(c, 0,22, 90,22, {color:GREEN, dash:'7,5', w:2, label:'90.0 m', fs:15});
@@ -916,7 +953,7 @@ const EXAMPLES = [
      } },
    { say:"Stage two is even easier — constant velocity draws a flat roof, and the area is a rectangle: 24 times 4, which is 96 metres. Rectangles: the honest workers of geometry. There is no shame in easy geometry; the universe does not award extra credit for suffering.",
      pose:'point',
-     board:['\\Delta x_2 = (24.0)(4.00) = 96.0\\ \\mathrm{m}'],
+     board:['\\Delta x_2 = v\\,t = (24.0\\ \\mathrm{m/s})(4.00\\ \\mathrm{s}) = 96.0\\ \\mathrm{m}'],
      action(c){
        plotCurve(c, t=>24, 6, 10, {color:BLUE, w:4});
        shadePoly(c, [[6,0],[6,24],[10,24],[10,0]], {color:'rgba(46,125,79,.25)'});
@@ -925,10 +962,11 @@ const EXAMPLES = [
      } },
    { say:"Add them: 72 plus 96 — 168 metres in ten seconds. Triangle plus rectangle. Your calculus lecturer calls this 'integration'; your eyes call it 'looking'. And this, quietly, is the great secret of the calculus: it is nothing but adding up areas of shapes too small to see. Newton and Leibniz merely automated the looking.",
      pose:'excited',
-     board:['\\Delta x = 72.0 + 96.0 = 168\\ \\mathrm{m}'] },
+     board:['\\Delta x = \\Delta x_1 + \\Delta x_2 = 72.0 + 96.0 = 168\\ \\mathrm{m}'] },
    { say:"Now comes the check: average speed is 168 over 10 — 16.8 metres per second, comfortably between 0 and 24. If your average ever escapes the range of your actual speeds, the error is yours, not the car's. Cultivate this reflex — every answer must sit inside its own plausible neighbourhood, and an average that wanders outside its extremes is a confession, not a result.",
      pose:'think',
-     board:[{t:'Check: average speed 16.8 m/s lies between 0 and 24 m/s ✓'}] },
+     board:['\\bar v = \\frac{\\Delta x}{\\Delta t} = \\frac{168\\ \\mathrm{m}}{10.0\\ \\mathrm{s}} = 16.8\\ \\mathrm{m/s}',
+            {t:'Check: average speed 16.8 m/s lies between 0 and 24 m/s ✓'}] },
   ]
 },
 
@@ -968,7 +1006,7 @@ const EXAMPLES = [
             'a(1.00) = -6.00\\ \\mathrm{m/s^2}, \\qquad a(2.00) = +6.00\\ \\mathrm{m/s^2}'] },
    { say:"And now, part c. Where is the first stop? Substitute t equals 1 into the ORIGINAL x of t — not the derivative; the derivative has told us all it knows. Two minus nine plus twelve: 5 metres. A common tragedy: students solve the derivative for t, then substitute back into the derivative. The velocity knows WHEN; only the position knows WHERE. Ask each function what it actually knows.",
      pose:'write',
-     board:['x(1.00) = 2.00 - 9.00 + 12.0 = 5.00\\ \\mathrm{m}'],
+     board:['x(1.00) = 2.00(1.00)^3 - 9.00(1.00)^2 + 12.0(1.00) = 5.00\\ \\mathrm{m}'],
      action(c){ dashLine(c, 0,5, 1,5, {}); dashLine(c, 1,0, 1,5, {}); } },
    { say:"Now comes the check: zero velocity with nonzero acceleration is a turning point, and indeed the graph turns at both marks. A particle at rest is not necessarily a particle at peace. Never confuse stillness with equilibrium — the pause at the top of a toss is the busiest moment in the flight.",
      pose:'think',
@@ -1014,14 +1052,15 @@ const EXAMPLES = [
             '4.90\\,t^2 - 15.0\\,t - 20.0 = 0'] },
    { say:"The quadratic formula gives t equals 15 plus-or-minus root 617, all over 9.8. Take the positive root: 4.07 seconds. The negative root describes a ball thrown before we threw it — poetic, but unhelpful. Physics equations, you will find, are scrupulously honest about the past as well as the future — it falls to us to tell them which direction we actually care about.",
      pose:'write',
-     board:['t = \\frac{15.0 + \\sqrt{15.0^2 + 4(4.90)(20.0)}}{2(4.90)} = \\frac{15.0+\\sqrt{225+392}}{9.80} = \\frac{15.0+24.84}{9.80} = 4.07\\ \\mathrm{s}'] },
+     board:['t = \\frac{-b+\\sqrt{b^2-4ac}}{2a}\\ \\text{with } a\\!=\\!4.90,\\ b\\!=\\!-15.0,\\ c\\!=\\!-20.0',
+            't = \\frac{15.0 + \\sqrt{15.0^2 + 4(4.90)(20.0)}}{2(4.90)} = \\frac{15.0+24.84}{9.80} = 4.07\\ \\mathrm{s}'] },
    { say:"On we go to part b. Speed at the street: v equals 15 minus 9.8 times 4.066 — minus 24.8 metres per second. The minus sign is the direction; the 24.8 is the news. Signs carry the geometry; magnitudes carry the consequences. Read them separately and you will never be confused by either.",
      pose:'write',
      board:['v = v_0 + at = 15.0 - (9.80)(4.066) = -24.8\\ \\mathrm{m/s} \\;\\Rightarrow\\; |v| = 24.8\\ \\mathrm{m/s}'],
      action(c){ arrow(c, 0.9,-13, 0.9,-19, {color:GREEN, label:'24.8 m/s', fs:14}); } },
    { say:"The check — by a second road: v squared equals v-nought squared plus 2 a delta y — 225 plus 980 — 617, whose root is 24.8. Two methods, same speed. When independent calculations agree, somewhere a physicist smiles. I encourage this habit even when — especially when — you are confident. Confidence is a mood; agreement between independent methods is evidence.",
      pose:'excited',
-     board:['\\text{Check: } v^2 = 15.0^2 + 2(-9.80)(-20.0) = 617 \\Rightarrow |v| = 24.8\\ \\mathrm{m/s}\\;\\checkmark'] },
+     board:['\\text{Check: } v^2 = v_0^2 + 2a\\,\\Delta y = 15.0^2 + 2(-9.80)(-20.0) = 617 \\Rightarrow |v| = 24.8\\ \\mathrm{m/s}\\;\\checkmark'] },
   ]
 },
 
@@ -1048,7 +1087,8 @@ const EXAMPLES = [
             {t:'Check: dx/dt = v(t) ✓ and dv/dt = a(t) ✓'}] },
    { say:"On we go to part b. Maximum velocity where its derivative — the acceleration — is zero: t equals 3. Then v is 2 plus 18 minus 9: 11 metres per second. The peak of the curve, right where a crosses zero. No coincidence; that IS the condition. Extremes live where derivatives vanish — a fact that will follow you loyally through economics, engineering, and the rest of your life's optimisation problems.",
      pose:'point',
-     board:['a = 0 \\Rightarrow t = 3.00\\ \\mathrm{s}: \\quad v_{\\max} = 2.00 + 18.0 - 9.00 = 11.0\\ \\mathrm{m/s}'],
+     board:['a = 0 \\Rightarrow t = 3.00\\ \\mathrm{s}',
+            'v_{\\max} = v(3.00) = 2.00 + 6.00(3.00) - (3.00)^2 = 11.0\\ \\mathrm{m/s}'],
      action(c){ markPoint(c, 3, 11, 'v_max = 11.0 m/s', {color:GREEN, dy:-12, dx:-40}); dashLine(c, 3,0, 3,11, {}); } },
    { say:"And now, part c. The particle stops when v is zero: t squared minus 6 t minus 2 equals zero, so t is 3 plus root 11 — 6.32 seconds. Only the positive root; the other happened before the experiment began. Mathematics, having no calendar, cheerfully offers solutions from before the beginning; physics, having a memory, declines them.",
      pose:'write',

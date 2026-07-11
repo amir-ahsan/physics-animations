@@ -792,13 +792,38 @@ const EXAMPLES = [
    { say:"The chapter of spin. First, rolling without slipping: translation and rotation handcuffed by v equals R omega. The contact point is momentarily at REST — which is why static friction runs the show and does no work — while the top of the wheel streaks past at double the centre's speed.",
      pose:'talk',
      board:['v_{\\rm cm} = R\\omega, \\qquad K = \\tfrac12Mv_{\\rm cm}^2 + \\tfrac12I_{\\rm cm}\\omega^2',
-            {t:'Contact point at rest → static friction, zero work. Top of wheel: 2v.'}] },
+            {t:'Contact point at rest → static friction, zero work. Top of wheel: 2v.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(-0.5),y1:M.Y(0.6),x2:M.X(10.6),y2:M.Y(0.6),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('circle',{cx:M.X(4.6), cy:M.Y(2.6), r:2.0*M.s, fill:'#D9C6A5', stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('circle',{cx:M.X(4.6), cy:M.Y(2.6), r:4, fill:'#5C4B30'},c.svg);
+       arrow(c, 4.6,2.6, 6.6,2.6, {color:GOLD, w:3, label:'v', vec:true, fs:14});
+       arrow(c, 4.6,4.6, 8.6,4.6, {color:GREEN, w:3, label:'2v (top)', vec:true, fs:13});
+       el('circle',{cx:M.X(4.6), cy:M.Y(0.6), r:5, fill:RED},c.svg);
+       label(c, 5.0,0.05, 'contact point: momentarily at REST', {fs:12, color:RED, italic:true});
+       label(c, 0.3,6.6, 'v = Rω ties the two motions together', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"Angular momentum of a particle: L equals r cross p — magnitude m v times the PERPENDICULAR distance from the origin to the line of flight. Note the scandal: a ball in a dead-straight line HAS angular momentum about any point off its path, and keeps it forever if no force acts. The stage shows the geometry.",
      pose:'point',
-     board:['\\vec L = \\vec r\\times\\vec p, \\qquad L = mvr\\sin\\phi = mv\\ell'] },
+     board:['\\vec L = \\vec r\\times\\vec p, \\qquad L = mvr\\sin\\phi = mv\\ell'],
+     action(c){
+       arc(c, 8,5, 1.4, 180, 211, {color:'#888', label:'φ'});
+       label(c, 0.6,6.7, 'ℓ = r sinφ: fixed for a straight path → L never changes', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"For a rigid body on a fixed axis, L equals I omega — and the rotational twin of Newton's second law: net TORQUE equals d-L d-t. No torque, no change. That single sentence is the skater, the merry-go-round, and the falling cat. Angular momentum is the quantity nature refuses to misplace: torque may spend it, transfer it, or redirect it — but in torque's absence, L persists with the stubbornness of a family heirloom.",
-     pose:'write',
-     board:['L = I\\omega, \\qquad \\sum\\vec\\tau = \\frac{d\\vec L}{dt}'] },
+     pose:'write', solo:true,
+     board:['L = I\\omega, \\qquad \\sum\\vec\\tau = \\frac{d\\vec L}{dt}'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5), cy:M.Y(3.4), r:2.4*M.s, fill:'#D9C6A5', stroke:'#8A7D60','stroke-width':3},c.svg);
+       arc(c, 5,3.4, 2.9, 15, 110, {color:GOLD, w:3, label:'ω'});
+       el('circle',{cx:M.X(5), cy:M.Y(3.4), r:14, fill:'none', stroke:PURPLE,'stroke-width':3},c.svg);
+       el('circle',{cx:M.X(5), cy:M.Y(3.4), r:4, fill:PURPLE},c.svg);
+       label(c, 5.7,3.0, 'L (out of the page)', {fs:13, color:PURPLE, italic:true});
+       label(c, 1.0,6.8, 'no torque → L frozen: the skater, the cat, the merry-go-round', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Conservation: zero external torque freezes L even while the body REARRANGES itself. The skater pulls in her arms: I drops, omega leaps, I-one omega-one equals I-two omega-two. But mind the ledger — kinetic energy L squared over 2 I RISES; her muscles paid for it. Conservation of angular momentum is not conservation of energy.",
      solo:true, pose:'write',
      board:['I_1\\omega_1 = I_2\\omega_2\\quad(\\tau_{\\rm ext} = 0)',
@@ -811,12 +836,35 @@ const EXAMPLES = [
        textAt(c, 8.6,0.6, 'I↓ ⇒ ω↑', {fs:12, italic:true, anchor:'middle'});
      } },
    { say:"Angular momentum is the universe's stubbornest habit. Stars collapse and spin up into pulsars; dust clouds flatten into solar systems; a cat mid-fall rearranges itself with nothing to push on. All of it is L refusing to change without external torque. The night sky is largely a museum of angular momentum with nowhere to go.",
-     pose:'think',
-     board:[{t:'Why do galaxies spiral, planets orbit in a plane, and cats land feet-first? L, unspent, since the beginning.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Why do galaxies spiral, planets orbit in a plane, and cats land feet-first? L, unspent, since the beginning.'}],
+     action(c){
+       const {M}=c;
+       const pts=[]; for(let i=0;i<=120;i++){const th=i/120*4.4*Math.PI;
+         const r=0.09*th; pts.push(M.X(2.6+r*Math.cos(th))+','+M.Y(4.4+r*Math.sin(th)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':2.5},c.svg);
+       label(c, 1.6,2.2, 'a galaxy: L with nowhere to go', {fs:13, color:'#7A5A28'});
+       el('circle',{cx:M.X(8.0), cy:M.Y(4.4), r:6, fill:GOLD},c.svg);
+       el('ellipse',{cx:M.X(8.0), cy:M.Y(4.4), rx:1.9*M.s, ry:0.55*M.s, fill:'none', stroke:'#8A7D60','stroke-dasharray':'5,4','stroke-width':2},c.svg);
+       el('circle',{cx:M.X(9.9), cy:M.Y(4.4), r:4, fill:BLUE},c.svg);
+       label(c, 7.0,2.2, 'orbits flatten into a plane', {fs:13, color:'#7A5A28'});
+     } },
    { say:"Two professional finishing touches. PRECESSION: torque a fast spin sideways and you change L's direction, not its size — the gyroscope's axis sweeps a cone at rate tau over L; faster spin, slower wobble. And the strategist's move: in rotational collisions, put the axis AT the pivot — the pivot force then has no lever arm, and angular momentum about that axis survives the crash untouched. To the examples.",
      pose:'excited',
      board:['\\Omega = \\frac{\\tau}{L} = \\frac{Mgr}{I\\omega}\\ (\\text{precession})',
-            {t:'Strategy: axis at the pivot → pivot force exerts no torque → L conserved through the collision.'}] },
+            {t:'Strategy: axis at the pivot → pivot force exerts no torque → L conserved through the collision.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(3.4),y1:M.Y(0.6),x2:M.X(6.6),y2:M.Y(0.6),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('circle',{cx:M.X(5), cy:M.Y(0.7), r:5, fill:'#5C4B30'},c.svg);
+       el('line',{x1:M.X(5),y1:M.Y(0.7),x2:M.X(7.2),y2:M.Y(4.4),stroke:'#B5793B','stroke-width':5,'stroke-linecap':'round'},c.svg);
+       el('ellipse',{cx:M.X(7.2), cy:M.Y(4.4), rx:0.75*M.s, ry:0.3*M.s, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5, transform:`rotate(-30 ${M.X(7.2)} ${M.Y(4.4)})`},c.svg);
+       arrow(c, 7.2,4.4, 8.4,6.4, {color:PURPLE, w:3, label:'L', vec:true, fs:14});
+       el('ellipse',{cx:M.X(5), cy:M.Y(5.3), rx:2.3*M.s, ry:0.6*M.s, fill:'none', stroke:'#888','stroke-dasharray':'6,5','stroke-width':2},c.svg);
+       arrow(c, 3.4,5.9, 2.7,5.25, {color:GOLD, w:2.5, label:'Ω = τ/L', fs:13, side:-1});
+       label(c, 0.6,2.0, 'torque redirects L — the axis sweeps a cone', {fs:13, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
@@ -956,7 +1004,7 @@ const EXAMPLES = [
             'I\\omega_1 = (I + mr^2)\\,\\omega_2'] },
    { say:"The clay adds m r squared — 0.2 times 0.16 — 0.032 to the inertia. New omega: 2 over 0.532 — 3.76 radians per second. A modest slowdown; the clay landed reasonably close in, where inertia is cheap. Had the clay struck the RIM instead, the slowdown would have been dramatic — inertia charges by the square of the radius, so real estate at the edge is ruinously expensive.",
      pose:'point',
-     board:['\\omega_2 = \\frac{(0.500)(4.00)}{0.500 + (0.200)(0.400)^2} = \\frac{2.00}{0.532} = 3.76\\ \\mathrm{rad/s}'],
+     board:['\\omega_2 = \\frac{I\\omega_1}{I + mr^2} = \\frac{(0.500)(4.00)}{0.500 + (0.200)(0.400)^2} = \\frac{2.00}{0.532} = 3.76\\ \\mathrm{rad/s}'],
      action(c){
        spinGroup(c, 0,0, (g,cx,cy)=>{
          el('circle',{cx,cy,r:110,fill:'#D9C6A5',stroke:'#8A7D60','stroke-width':3},g);
@@ -967,7 +1015,8 @@ const EXAMPLES = [
      } },
    { say:"The energy audit. Before: half of 0.5 times 16 — 4 joules. After: half of 0.532 times 3.76 squared — 3.76 joules. Fraction lost: six percent, spent as heat in the brief skid while the clay was persuaded to keep up. Six percent lost is remarkably cheap for a collision; inelastic encounters near the axis are gentle precisely because so little velocity had to be argued away.",
      pose:'write',
-     board:['K_1 = 4.00\\ \\mathrm{J}, \\quad K_2 = \\tfrac12(0.532)(3.759)^2 = 3.76\\ \\mathrm{J}',
+     board:['K_1 = \\tfrac12I\\omega_1^2 = \\tfrac12(0.500)(4.00)^2 = 4.00\\ \\mathrm{J}',
+            'K_2 = \\tfrac12I_2\\omega_2^2 = \\tfrac12(0.532)(3.759)^2 = 3.76\\ \\mathrm{J}',
             '\\frac{K_1-K_2}{K_1} = \\frac{0.24}{4.00} = 6.0\\%'] },
    { say:"The elegant check: with L fixed, K equals L squared over 2 I, so K-two over K-one is just I-one over I-two — 0.5 over 0.532 — 94 percent. Same answer, no omegas required. Sticking collisions always tax the energy; angular momentum, as ever, sails through customs untouched.",
      pose:'excited',

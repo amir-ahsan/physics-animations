@@ -794,13 +794,29 @@ const EXAMPLES = [
   },
   steps:[
    { say:"Energy methods: the art of answering questions about speeds without solving for the motion. WORK, for a constant force, is F s cosine phi — force, displacement, and the angle BETWEEN them. Positive along the motion, negative against it, and ZERO when perpendicular: the normal force and the string tension of a pendulum are unpaid spectators.",
-     pose:'talk',
+     pose:'talk', solo:true,
      board:['W = \\vec F\\cdot\\vec s = Fs\\cos\\phi\\ \\ (\\mathrm{joules})',
-            {t:'φ is measured between force and DISPLACEMENT. Perpendicular ⇒ W = 0.'}] },
+            {t:'φ is measured between force and DISPLACEMENT. Perpendicular ⇒ W = 0.'}],
+     action(c){
+       boxAt ? boxAt(c, 2.0,2.6, 1.6,1.2, {}) : 0;
+       arrow(c, 2.9,3.3, 5.4,5.1, {color:GOLD, w:3.5, label:'F', vec:true, fs:15});
+       arrow(c, 2.9,3.3, 5.4,3.3, {color:GOLD, dash:'5,4', w:2, label:'F cosφ', fs:12, side:-1});
+       arc(c, 2.9,3.3, 1.1, 0, 36, {color:'#888', label:'φ'});
+       arrow(c, 1.4,1.5, 7.4,1.5, {color:GREEN, w:3, label:'s (displacement)', fs:13, side:-1});
+       label(c, 7.6,6.6, 'φ < 90°: W > 0', {fs:13, color:GREEN});
+       label(c, 7.6,5.8, 'φ = 90°: W = 0', {fs:13, color:'#8A7D60'});
+       label(c, 7.6,5.0, 'φ > 90°: W < 0', {fs:13, color:RED});
+     } },
    { say:"When the force varies, work becomes the integral of F-x d-x — the AREA under the force-position curve, as the stage shows. The star example is the spring: Hooke's law F equals minus k x, so stretching from x-one to x-two costs one half k x-two squared minus one half k x-one squared. The quadratic is the area of that triangle.",
      pose:'write',
      board:['W = \\int_{x_1}^{x_2}F_x\\,dx',
-            'F_{\\rm spring} = -kx \\;\\Rightarrow\\; W = \\tfrac12kx_2^2 - \\tfrac12kx_1^2'] },
+            'F_{\\rm spring} = -kx \\;\\Rightarrow\\; W = \\tfrac12kx_2^2 - \\tfrac12kx_1^2'],
+     action(c){
+       dashLine(c, 2.4,0, 2.4,2.07, {}); dashLine(c, 6.6,0, 6.6,5.0, {});
+       label(c, 2.4,-0.45, 'x₁', {fs:14, color:'#8A5A24', anchor:'middle', italic:true});
+       label(c, 6.6,-0.45, 'x₂', {fs:14, color:'#8A5A24', anchor:'middle', italic:true});
+       label(c, 6.9,6.9, 'F = kx: the area is a trapezoid', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The centrepiece: the WORK–ENERGY theorem. Define kinetic energy one half m v squared; then the TOTAL work by ALL forces equals the change in kinetic energy. Derived straight from Newton's second law, valid for varying forces, and blissfully indifferent to time — it compares two snapshots and asks nothing about the journey.",
      solo:true, pose:'point',
      board:['K = \\tfrac12mv^2, \\qquad W_{\\rm tot} = K_2 - K_1'],
@@ -812,14 +828,46 @@ const EXAMPLES = [
        textAt(c, 2.8,4.8, 'W_tot becomes ΔK', {fs:12, italic:true, anchor:'middle'});
      } },
    { say:"POWER is the rate of working: d-W d-t, or more usefully F dot v — force times velocity, when you need engines, hills, and horsepower. One watt is one joule per second. Keep the dot product in view: an engine straining at right angles to the motion delivers precisely nothing, however heroic the noise. Power pays only for the component that agrees with the velocity.",
-     pose:'write',
-     board:['P = \\frac{dW}{dt} = \\vec F\\cdot\\vec v\\ \\ (\\mathrm{watts})'] },
+     pose:'write', solo:true,
+     board:['P = \\frac{dW}{dt} = \\vec F\\cdot\\vec v\\ \\ (\\mathrm{watts})'],
+     action(c){
+       boxAt ? boxAt(c, 2.2,4.6, 2.0,1.3, {}) : 0;
+       arrow(c, 3.4,5.2, 5.6,5.2, {color:GOLD, w:3, label:'F', vec:true, fs:14});
+       arrow(c, 2.2,6.4, 4.4,6.4, {color:GREEN, w:3, label:'v', vec:true, fs:14});
+       label(c, 6.4,5.9, 'aligned: P = Fv', {fs:13, color:GREEN});
+       boxAt ? boxAt(c, 2.2,0.9, 2.0,1.3, {}) : 0;
+       arrow(c, 3.2,2.4, 3.2,3.9, {color:GOLD, w:3, label:'F', vec:true, fs:14});
+       arrow(c, 2.2,0.6, 4.4,0.6, {color:GREEN, w:3, label:'v', vec:true, fs:14, side:-1});
+       label(c, 6.4,1.6, '⊥: P = 0 — heroic noise, no pay', {fs:13, color:RED});
+     } },
    { say:"Energy is physics' greatest accounting scheme — and here is the wonder: the currency never inflates. Every joule your morning tea surrendered to the cup is still somewhere, doing something, unglamorous but conserved. The work-energy theorem is merely the first page of a ledger the universe has kept, without a single error, since the beginning of time.",
-     pose:'think',
-     board:[{t:'The universe’s books have balanced for 13.8 billion years. No auditor has ever found a missing joule.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The universe’s books have balanced for 13.8 billion years. No auditor has ever found a missing joule.'}],
+     action(c){
+       const {M}=c;
+       const cell=(x,y,w2,h2,txt,col)=>{
+         el('rect',{x:M.X(x), y:M.Y(y), width:w2, height:h2, rx:10, fill:'none', stroke:col,'stroke-width':2.5},c.svg);
+         label(c, x+0.25,y-0.75, txt, {fs:14, color:col});
+       };
+       cell(0.8,5.6, 120,44, 'kinetic  ½mv²', GREEN);
+       cell(4.4,5.6, 120,44, 'potential  U', BLUE);
+       cell(8.0,5.6, 120,44, 'heat  (friction)', RED);
+       arrow(c, 3.2,4.1, 4.4,4.1, {color:'#8A7D60', w:2}); arrow(c, 5.0,3.5, 3.8,3.5, {color:'#8A7D60', w:2});
+       arrow(c, 6.8,4.1, 8.0,4.1, {color:'#8A7D60', w:2});
+       label(c, 8.35,3.4, 'one-way door', {fs:11, color:RED, italic:true});
+       label(c, 1.6,1.6, 'joules change accounts; the total never changes', {fs:14, color:'#8A5A24', italic:true});
+     } },
    { say:"Strategy: pick the two snapshots; inventory every force over the displacement and its work, WITH signs; watch that the angle is measured to the displacement, not to some axis; integrate when the force varies; then W-total equals delta K. The sanity check is built in: speeding up demands positive total work, and kinetic energy is never, ever negative. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: two snapshots → work of each force (signs!) → W_tot = ΔK → check the sign of the story.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: two snapshots → work of each force (signs!) → W_tot = ΔK → check the sign of the story.'}],
+     action(c){
+       const flow=['choose two snapshots (1 → 2)','inventory every force over s','bill each: W = Fs cosφ, signs!','varying force? integrate','W_tot = K₂ − K₁ → solve','check: K is never negative'];
+       flow.forEach((sq,i)=>{
+         const y = 6.9 - i*1.4;
+         label(c, 3.2, y, (i+1)+'. '+sq, {fs:15, color:'#7A5A28'});
+         if(i<5) arrow(c, 2.5, y-0.35, 2.5, y-1.0, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 
@@ -837,7 +885,7 @@ const EXAMPLES = [
             'W = \\vec F\\cdot\\vec s = Fs\\cos\\phi'] },
    { say:"Constant speed means zero acceleration, so the student's upward force exactly matches the weight: 12 times 9.8 — about 118 newtons. The box rises serenely, a triumph of equilibrium over ambition. Equilibrium during motion strikes students as contradictory — surely lifting requires winning? — but no: constant velocity is a tie, and a tie needs only a matched force, not a superior one.",
      pose:'point',
-     board:['\\text{Constant speed} \\Rightarrow F = mg = 118\\ \\mathrm{N}'],
+     board:['\\text{Constant speed} \\Rightarrow F = mg = (12.0)(9.80) = 118\\ \\mathrm{N}'],
      action(c){
        const b = boxAt(c, 0,0, 1.6,1.2, {});
        tween(u=>{ b.setAttribute('y', c.M.Y(1.5*u + 1.2)); }, 1800, c.instant);
@@ -846,10 +894,10 @@ const EXAMPLES = [
      } },
    { say:"The student's force points up; the displacement points up; the angle between them is zero and cosine of zero is one. Work by the student: plus 176 joules. Honest labour, honestly counted. Work, note, cares nothing for effort, sweat, or moral character — only force, distance, and the angle between them. The student's biceps may file a complaint; the ledger will not read it.",
      pose:'write',
-     board:['W_{\\rm student} = +mgh = (117.6)(1.50) = +176\\ \\mathrm{J}'] },
+     board:['W_{\\rm student} = Fs\\cos 0^{\\circ} = +mgh = (12.0)(9.80)(1.50) = +176\\ \\mathrm{J}'] },
    { say:"Gravity, meanwhile, points DOWN while the box moves UP — the angle is 180 degrees, cosine minus one. Work by gravity: minus 176 joules. Gravity is not being difficult; it is simply keeping accounts in the other column. Keep both entries: the plus 176 and the minus 176 cancel because the box neither sped up nor slowed down. Energy accounting balances to zero for any journey at constant speed — the first of many perfectly boring, perfectly correct audits.",
      pose:'write',
-     board:['W_{\\rm grav} = -mgh = -176\\ \\mathrm{J} \\quad (\\phi = 180^{\\circ})'] },
+     board:['W_{\\rm grav} = mgh\\cos 180^{\\circ} = -mgh = -(12.0)(9.80)(1.50) = -176\\ \\mathrm{J}'] },
    { say:"Net work: plus 176 minus 176 — zero. And the check, via the work-energy theorem: net work equals the CHANGE in kinetic energy, and at constant speed that change is zero. Perfect agreement. The student's energy was not wasted — it was deposited with gravity, retrievable on the way down. Gravity pays no interest, but it never loses the principal.",
      pose:'excited',
      board:['W_{\\rm net} = 0 = \\Delta K \\;\\checkmark \\quad \\text{(constant speed)}',
@@ -893,7 +941,7 @@ const EXAMPLES = [
    { say:"Total work: 400 minus 136 — 264 joules, and every one of them became kinetic energy. Half m v squared equals 264, so v is root of 26.4 — 5.14 metres per second. Watch it go. Two hundred and sixty-four joules, gathered from a rope and taxed by a floor, now entirely resident in motion — energy bookkeeping at its most satisfying: every joule with a paper trail.",
      pose:'write',
      board:['W_{\\rm tot} = 400 - 136 = 264\\ \\mathrm{J} = \\tfrac12mv^2',
-            'v = \\sqrt{\\frac{2(264)}{20.0}} = \\sqrt{26.4} = 5.14\\ \\mathrm{m/s}'],
+            'v = \\sqrt{\\frac{2W_{\\rm tot}}{m}} = \\sqrt{\\frac{2(264)}{20.0}} = \\sqrt{26.4} = 5.14\\ \\mathrm{m/s}'],
      action(c){
        const b2 = boxAt(c, 2,0, 2.4,1.8, {fill:'rgba(201,143,82,.45)'});
        tween(u=>{ b2.setAttribute('x', c.M.X(2-1.2+5*u*u)); }, 1800, c.instant);
@@ -931,7 +979,7 @@ const EXAMPLES = [
      board:['W = \\int_0^{2.00} 3.00\\,x^2\\,dx = \\Big[x^3\\Big]_0^{2.00} = 8.00\\ \\mathrm{J}'] },
    { say:"The work-energy theorem does the rest: 8 joules equals half m v squared, so v equals root 8 — 2.83 metres per second. Notice how the theorem happily digested a VARIABLE force — it never asked whether F held still, only what total work arrived. Robust laws make no small talk.",
      pose:'write',
-     board:['\\tfrac12mv^2 = 8.00 \\;\\Rightarrow\\; v = \\sqrt{\\frac{2(8.00)}{2.00}} = 2.83\\ \\mathrm{m/s}'] },
+     board:['W_{\\rm tot} = \\Delta K = \\tfrac12mv^2 \\;\\Rightarrow\\; v = \\sqrt{\\frac{2W}{m}} = \\sqrt{\\frac{2(8.00)}{2.00}} = 2.83\\ \\mathrm{m/s}'] },
    { say:"Now comes the check: the constant-acceleration formulas would be helpless here — the acceleration changes at every point. The energy method never asked HOW the speed accumulated, only how much work was done in total. Energy methods are gloriously indifferent to the journey. They only audit the destination.",
      pose:'excited',
      board:[{t:'Check: a = F/m varies with x → kinematic formulas invalid; the energy method sidesteps the entire history.'}] },
@@ -1016,7 +1064,7 @@ const EXAMPLES = [
    { say:"Part b — the descent. Friction flips allegiance and now opposes the slide DOWN, so gravity's help is partially taxed: sine theta MINUS mu-k cosine theta. Friction has no loyalty, only a rule: oppose whatever motion presents itself. On the way up it conspired with gravity; on the way down it defects without a blush.",
      pose:'write',
      board:['\\tfrac12mv^2 = mg(\\sin\\theta - \\mu_k\\cos\\theta)\\,d',
-            'v = \\sqrt{2(9.80)(0.327)(2.728)} = 4.18\\ \\mathrm{m/s}'],
+            'v = \\sqrt{2g(\\sin\\theta - \\mu_k\\cos\\theta)\\,d} = \\sqrt{2(9.80)(0.327)(2.728)} = 4.18\\ \\mathrm{m/s}'],
      action(c){
        const {M}=c;
        const g=el('g',{},c.svg);
@@ -1031,7 +1079,7 @@ const EXAMPLES = [
      } },
    { say:"It left at 6 and returned at 4.18. Where did the difference go? Half m times, 36 minus 17.5 — about 18.5 joules — turned to heat along the round trip: friction's fee, mu-k m g cosine theta, collected over BOTH legs of the journey. More than half the original kinetic energy, gone to warming a slope that did not ask to be warmed.",
      pose:'excited',
-     board:['\\Delta E_{\\rm heat} = \\tfrac12m(v_0^2 - v^2) = 18.5\\ \\mathrm{J} \\;\\text{of}\\; 36.0\\ \\mathrm{J}',
+     board:['\\Delta E_{\\rm heat} = \\tfrac12m(v_0^2 - v^2) = \\tfrac12(2.00)(36.0 - 17.5) = 18.5\\ \\mathrm{J} \\;\\text{of}\\; 36.0\\ \\mathrm{J}',
             {t:'Check: energy lost = μk mg cosθ × (2d) = (0.200)(2)(9.80)(0.866)(5.46) = 18.5 J ✓'}] },
    { say:"The check, and a lovely symmetry to close on: with NO friction the return speed would be exactly 6 — energy fully refunded. With friction, up-speed exceeds down-speed, always. If a problem hands you a block returning FASTER than it left, mark it wrong and send it back. Physics does not run charity slopes.",
      pose:'think',
