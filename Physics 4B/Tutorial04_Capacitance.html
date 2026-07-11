@@ -812,21 +812,76 @@ const EXAMPLES = [
        textAt(c, 8.9,4.4, '−Q   E uniform inside', {fs:11.5, anchor:'middle', color:'#1D4568'});
      } },
    { say:"The universal recipe for ANY geometry — coax, spheres, whatever tomorrow brings: ASSUME plus and minus Q; find E between the conductors by Gauss's law; integrate E for V; divide. Q always cancels, as it must. This recipe is Examples 4 and 5 of this tutorial, and half the exam.",
-     pose:'point',
-     board:[{t:'Recipe: ±Q → Gauss for E → V = ∫E dℓ → C = Q/V (Q cancels — geometry remains).'}] },
+     pose:'point', solo:true,
+     board:[{t:'Recipe: ±Q → Gauss for E → V = ∫E dℓ → C = Q/V (Q cancels — geometry remains).'}],
+     action(c){
+       const flow=['assume ±Q on the conductors','Gauss’s law → E in the gap','V = ∫E dℓ across the gap','C = Q/V — watch Q cancel'];
+       flow.forEach((sq,i)=>{
+         const y = 6.2 - i*1.7;
+         label(c, 3.1, y, (i+1)+'. '+sq, {fs:15, color:'#7A5A28'});
+         if(i<3) arrow(c, 2.4, y-0.4, 2.4, y-1.25, {color:GOLD, w:2, head:7});
+       });
+     } },
    { say:"Networks — and note the rules are REVERSED from resistors. PARALLEL capacitors share V and simply ADD. SERIES capacitors share Q — the inner plates are an isolated island — and add by reciprocals. Collapse the network to one equivalent, find the total charge, then expand back, distributing Q to series and V to parallel.",
-     pose:'write',
-     board:['\\text{Parallel: } C_{\\rm eq} = \\sum C_i \\qquad \\text{Series: } \\frac{1}{C_{\\rm eq}} = \\sum\\frac{1}{C_i}'] },
+     pose:'write', solo:true,
+     board:['\\text{Parallel: } C_{\\rm eq} = \\sum C_i \\qquad \\text{Series: } \\frac{1}{C_{\\rm eq}} = \\sum\\frac{1}{C_i}'],
+     action(c){
+       const {M}=c;
+       const cap=(x,y)=>{ el('line',{x1:M.X(x),y1:M.Y(y-0.55),x2:M.X(x),y2:M.Y(y+0.55),stroke:'#5C4B30','stroke-width':4},c.svg);
+                          el('line',{x1:M.X(x+0.45),y1:M.Y(y-0.55),x2:M.X(x+0.45),y2:M.Y(y+0.55),stroke:'#5C4B30','stroke-width':4},c.svg); };
+       el('line',{x1:M.X(0.6),y1:M.Y(5.6),x2:M.X(4.4),y2:M.Y(5.6),stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('line',{x1:M.X(0.6),y1:M.Y(3.4),x2:M.X(4.4),y2:M.Y(3.4),stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('line',{x1:M.X(1.6),y1:M.Y(5.6),x2:M.X(1.6),y2:M.Y(3.4),stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('line',{x1:M.X(3.4),y1:M.Y(5.6),x2:M.X(3.4),y2:M.Y(3.4),stroke:'#8A7D60','stroke-width':2},c.svg);
+       cap(1.38,4.5); cap(3.18,4.5);
+       label(c, 0.6,2.4, 'parallel: same V, C’s add', {fs:12.5, color:'#7A5A28'});
+       el('line',{x1:M.X(6.2),y1:M.Y(4.5),x2:M.X(10.4),y2:M.Y(4.5),stroke:'#8A7D60','stroke-width':2},c.svg);
+       cap(7.2,4.5); cap(8.9,4.5);
+       label(c, 6.2,2.4, 'series: same Q, gaps add', {fs:12.5, color:'#7A5A28'});
+       label(c, 2.4,0.8, 'note: the rules are the REVERSE of resistors', {fs:12.5, color:RED, italic:true});
+     } },
    { say:"Energy: charging hauls each increment across a growing voltage, so the total is Q squared over 2 C — or half C V squared, or half Q V, all the same number. And it lives in the FIELD, at density half epsilon-nought E squared per cubic metre — a formula that outlives capacitors and holds for every electric field in the universe.",
      pose:'write',
-     board:['U = \\frac{Q^2}{2C} = \\tfrac12CV^2 = \\tfrac12QV, \\qquad u_E = \\tfrac12\\varepsilon_0E^2'] },
+     board:['U = \\frac{Q^2}{2C} = \\tfrac12CV^2 = \\tfrac12QV, \\qquad u_E = \\tfrac12\\varepsilon_0E^2'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(3.95), y:M.Y(5.4), width:M.X(6.05)-M.X(3.95), height:M.Y(0.6)-M.Y(5.4),
+         fill:'rgba(181,121,59,.22)'},c.svg);
+       label(c, 6.6,3.6, '← the energy lives HERE,', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 6.6,3.0, 'in the field between the plates', {fs:13, color:'#8A5A24', italic:true});
+     } },
    { say:"A capacitor is astonishing on its own terms: two plates that never touch, holding energy in the EMPTY SPACE between them. The vacuum itself is the warehouse. When the field is the commodity, nothing — literally nothing — becomes valuable real estate. Every camera flash sells you a little parcel of organised emptiness.",
-     pose:'think',
-     board:[{t:'The energy lives in the gap — ½ε₀E² per cubic metre of nothing at all.'}] },
+     pose:'think', solo:true,
+     board:[{t:'The energy lives in the gap — ½ε₀E² per cubic metre of nothing at all.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.2), y:M.Y(5.2), width:3.4*M.s, height:2.6*M.s, rx:8, fill:'#4A4A3A', stroke:'#2E2E24','stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(2.4), cy:M.Y(3.9), r:0.65*M.s, fill:'#D9CDB4', stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('line',{x1:M.X(3.6),y1:M.Y(4.6),x2:M.X(3.6),y2:M.Y(3.2),stroke:GOLD,'stroke-width':4},c.svg);
+       el('line',{x1:M.X(3.9),y1:M.Y(4.6),x2:M.X(3.9),y2:M.Y(3.2),stroke:GOLD,'stroke-width':4},c.svg);
+       el('polygon',{points:`${M.X(6.6)},${M.Y(6.0)} ${M.X(5.9)},${M.Y(4.0)} ${M.X(6.5)},${M.Y(4.0)} ${M.X(5.8)},${M.Y(2.0)} ${M.X(7.1)},${M.Y(4.5)} ${M.X(6.5)},${M.Y(4.5)}`,
+         fill:GOLD, stroke:'#8A5A24','stroke-width':1.5},c.svg);
+       label(c, 1.3,1.4, 'a camera flash: organised emptiness, sold by the joule', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"DIELECTRICS multiply C by kappa — the slab polarises and partially cancels the field. The entire game is ONE question: what is held fixed? Battery CONNECTED: V pinned, Q grows to kappa Q-nought, energy RISES, the battery paying. DISCONNECTED: Q trapped, V falls to V-nought over kappa, energy DROPS — the field spends it pulling the slab in. Decide what is fixed, then rescale. To the examples.",
      pose:'excited',
      board:['C = \\kappa C_0',
-            {t:'Battery connected: V fixed, U → κU₀. Disconnected: Q fixed, U → U₀/κ (slab pulled in). Ask “what is fixed?” first.'}] },
+            {t:'Battery connected: V fixed, U → κU₀. Disconnected: Q fixed, U → U₀/κ (slab pulled in). Ask “what is fixed?” first.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(2.6),y1:M.Y(0.8),x2:M.X(2.6),y2:M.Y(6.0),stroke:RED,'stroke-width':6,'stroke-linecap':'round'},c.svg);
+       el('line',{x1:M.X(7.4),y1:M.Y(0.8),x2:M.X(7.4),y2:M.Y(6.0),stroke:BLUE,'stroke-width':6,'stroke-linecap':'round'},c.svg);
+       el('rect',{x:M.X(3.4), y:M.Y(5.6), width:3.2*M.s, height:4.4*M.s, rx:6, fill:'rgba(123,79,160,.15)', stroke:PURPLE,'stroke-width':2},c.svg);
+       for(let r=0;r<3;r++)for(let k=0;k<2;k++){
+         const x=4.0+k*1.6, y=4.9-r*1.5;
+         textAt(c, x-0.35,y-0.2, '−', {fs:15, color:'#2E6DA4'});
+         textAt(c, x+0.45,y-0.2, '+', {fs:14, color:'#C0392B'});
+         el('ellipse',{cx:M.X(x+0.15), cy:M.Y(y), rx:0.62*M.s, ry:0.32*M.s, fill:'none', stroke:'#8A7D60','stroke-width':1.4},c.svg);
+       }
+       label(c, 2.9,6.7, 'molecules stretch: − ends face the + plate', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 3.3,-0.1, 'their field partly cancels E → C grows by κ', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

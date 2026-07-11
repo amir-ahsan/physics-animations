@@ -792,10 +792,28 @@ const EXAMPLES = [
   steps:[
    { say:"CURRENT is charge past a checkpoint per second — one ampere, one coulomb per second — with conventional direction that of POSITIVE flow, opposite the actual electrons in a metal. Spread across the wire's cross-section it becomes the current DENSITY, J equals I over A, and microscopically J equals n q v-drift.",
      pose:'talk',
-     board:['I = \\frac{dQ}{dt}, \\qquad J = \\frac{I}{A} = nqv_d'] },
+     board:['I = \\frac{dQ}{dt}, \\qquad J = \\frac{I}{A} = nqv_d'],
+     action(c){
+       dashLine(c, 5,1.4, 5,4.6, {color:RED});
+       label(c, 4.3,0.95, 'checkpoint: count coulombs/second', {fs:11.5, color:RED, italic:true});
+       arrow(c, 6.6,2.9, 5.4,2.9, {color:BLUE, w:2, head:7});
+       label(c, 6.8,2.75, 'electrons drift ←', {fs:11.5, color:'#1D4568', italic:true});
+       label(c, 1.0,6.3, 'conventional I: the + direction', {fs:11.5, color:'#8A3324', italic:true});
+     } },
    { say:"And v-drift is the great anticlimax: with n around ten to the 29 per cubic metre, the electrons SHUFFLE at fractions of a millimetre per second while the signal races near light speed — the FIELD carries the news; the crowd barely moves. Keep the three speeds straight: signal, near c; thermal jiggle, a million metres per second; drift, ten to the minus four.",
-     pose:'point',
-     board:[{t:'Drift ~0.1 mm/s; signal ~c; thermal ~10⁶ m/s (aimless). The field carries the message.'}] },
+     pose:'point', solo:true,
+     board:[{t:'Drift ~0.1 mm/s; signal ~c; thermal ~10⁶ m/s (aimless). The field carries the message.'}],
+     action(c){
+       const {M}=c;
+       const bar=(y,len,col,name,val)=>{
+         el('rect',{x:M.X(0.6), y:M.Y(y), width:len*M.s, height:26, rx:6, fill:col, opacity:.75},c.svg);
+         label(c, 0.6+len+0.25, y-0.35, name+'  '+val, {fs:13, color:'#5C4B30'});
+       };
+       bar(6.2, 9.0, GREEN, 'signal (the field)', '~3×10⁸ m/s');
+       bar(4.4, 5.2, BLUE, 'thermal jiggle', '~10⁶ m/s (aimless)');
+       bar(2.6, 0.35, RED, 'drift', '~10⁻⁴ m/s');
+       label(c, 0.6,1.2, 'log scale — the messenger and the message travel at wildly different speeds', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Materials resist by RESISTIVITY, rho: E equals rho J, the microscopic Ohm's law. Geometry turns material into device: R equals rho L over A — long and thin resists, short and fat conducts — and the macroscopic Ohm's law reads V equals I R. Stretch a wire to double length at constant volume and R QUADRUPLES: L up, A down, both against you.",
      solo:true, pose:'write',
      board:['\\vec E = \\rho\\vec J, \\qquad R = \\frac{\\rho L}{A}, \\qquad V = IR'],
@@ -808,14 +826,50 @@ const EXAMPLES = [
    { say:"Temperature moves the goalposts: resistivity climbs roughly linearly, rho equals rho-nought times one plus alpha delta T — hotter lattice, more scattering. Hence the light bulb's inrush drama and the thermometer you can build from a coil of platinum. Below a critical temperature, some materials quit resisting ENTIRELY: superconductors, rho exactly zero, currents that circulate for years.",
      pose:'write',
      board:['\\rho(T) = \\rho_0\\big[1+\\alpha(T-T_0)\\big]',
-            {t:'Superconductors: ρ = 0 below T_c — persistent currents (MRI magnets).'}] },
+            {t:'Superconductors: ρ = 0 below T_c — persistent currents (MRI magnets).'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.8),y1:M.Y(0.8),x2:M.X(10.2),y2:M.Y(0.8),stroke:'#B0A488','stroke-width':2},c.svg);
+       el('line',{x1:M.X(1.2),y1:M.Y(0.4),x2:M.X(1.2),y2:M.Y(6.6),stroke:'#B0A488','stroke-width':2},c.svg);
+       el('line',{x1:M.X(1.2),y1:M.Y(2.0),x2:M.X(9.6),y2:M.Y(5.9),stroke:GOLD,'stroke-width':3.5,'stroke-linecap':'round'},c.svg);
+       label(c, 9.6,0.25, 'T', {fs:14, color:'#8A7D60', italic:true});
+       label(c, 0.4,6.4, 'ρ', {fs:14, color:'#8A7D60', italic:true});
+       label(c, 5.6,2.6, 'hotter lattice → more scattering', {fs:12.5, color:'#8A5A24', italic:true});
+       el('line',{x1:M.X(1.2),y1:M.Y(0.8),x2:M.X(2.6),y2:M.Y(0.8),stroke:PURPLE,'stroke-width':4},c.svg);
+       label(c, 1.3,1.5, 'superconductor: ρ = 0 below T_c', {fs:11.5, color:PURPLE, italic:true});
+     } },
    { say:"Here is the joke buried in every wire: the electrons drift slower than a garden snail — a tenth of a millimetre per second — yet the lamp lights the instant you flick the switch. The electrons are not couriers; they are a crowd already filling the corridor, and the FIELD gives the order to shuffle. News travels fast because nobody has to travel far.",
-     pose:'think',
-     board:[{t:'Drift speed: snail-like. Signal speed: near light. The wire is a corridor already full of messengers.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Drift speed: snail-like. Signal speed: near light. The wire is a corridor already full of messengers.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.4),y1:M.Y(4.6),x2:M.X(10.6),y2:M.Y(4.6),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('line',{x1:M.X(0.4),y1:M.Y(2.2),x2:M.X(10.6),y2:M.Y(2.2),stroke:'#8A7D60','stroke-width':3},c.svg);
+       for(let i=0;i<14;i++) el('circle',{cx:M.X(0.9+i*0.72), cy:M.Y(3.0+(i%3)*0.55), r:5, fill:BLUE},c.svg);
+       arrow(c, 0.6,5.6, 10.4,5.6, {color:GOLD, w:3, label:'the field: the order to shuffle, at ~c', fs:12});
+       label(c, 1.0,1.3, 'the crowd was already everywhere — nobody has to travel far', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"POWER: charge falling through voltage delivers P equals I V — equal to I squared R or V squared over R; choose the form whose variables are actually fixed. The electric company bills the kilowatt-HOUR, an energy: 3.6 megajoules. Strategy: translate micro to macro with J equals n q v-d and E equals rho J; slice nonuniform conductors into series disks; convert to kWh only at the very end. To the examples.",
      pose:'excited',
      board:['P = IV = I^2R = \\frac{V^2}{R}, \\qquad 1\\ \\mathrm{kWh} = 3.6\\times10^{6}\\ \\mathrm J',
-            {t:'Strategy: micro ↔ macro dictionary · slice odd shapes into series disks · pick the power form with fixed variables.'}] },
+            {t:'Strategy: micro ↔ macro dictionary · slice odd shapes into series disks · pick the power form with fixed variables.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.6),y1:M.Y(3.4),x2:M.X(2.4),y2:M.Y(3.4),stroke:'#5C4B30','stroke-width':3},c.svg);
+       const zig=[]; zig.push(M.X(2.4)+','+M.Y(3.4));
+       for(let i=0;i<7;i++) zig.push(M.X(2.7+i*0.65)+','+M.Y(3.4+(i%2?0.55:-0.55)));
+       zig.push(M.X(7.4)+','+M.Y(3.4));
+       el('polyline',{points:zig.join(' '),fill:'none',stroke:'#8A5A24','stroke-width':3},c.svg);
+       el('line',{x1:M.X(7.4),y1:M.Y(3.4),x2:M.X(9.4),y2:M.Y(3.4),stroke:'#5C4B30','stroke-width':3},c.svg);
+       arrow(c, 0.8,4.1, 2.0,4.1, {color:GOLD, w:2.5, label:'I', fs:13});
+       for(const x of [3.4,4.8,6.2]){ const pts=[];
+         for(let i=0;i<=12;i++) pts.push(M.X(x+0.18*Math.sin(i*1.1))+','+M.Y(4.2+i*0.16));
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2},c.svg); }
+       label(c, 3.2,6.6, 'P = IV = I²R = V²/R, spent as heat', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 2.5,1.6, 'pick the form whose variables are actually fixed', {fs:12, color:'#7A5A28', italic:true});
+     } },
   ]
 },
 
@@ -894,7 +948,7 @@ const EXAMPLES = [
             'R = R_0\\big[1 + \\alpha(T - T_0)\\big]'] },
    { say:"Let us take part a. Delta T is 2600 minus 20 — 2580 kelvin. Alpha times that: 11.6. Add the 1: a factor of 12.6. Times 1.1 ohms — 14 ohms hot. Watch the line climb across the whole graph. A factor of twelve between cold and glowing — the humble light bulb is a resistor with a fever, and its resistance rises with its temperature like any honest metal's.",
      pose:'write',
-     board:['R = 1.1\\big[1 + (4.5\\times10^{-3})(2580)\\big] = 1.1(12.6) = 14\\ \\Omega'],
+     board:['R = R_0\\big[1+\\alpha\\,\\Delta T\\big] = 1.1\\big[1 + (4.5\\times10^{-3})(2580)\\big] = 1.1(12.6) = 14\\ \\Omega'],
      action(c){
        plotCurve(c, T=>[T, 1.1*(1+4.5e-3*(T-20))], 20, 2800, {color:GOLD, w:3.5, dur:1600});
        dashLine(c, 2600,0, 2600,13.9, {color:'#8A7D60'});

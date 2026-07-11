@@ -775,20 +775,68 @@ const EXAMPLES = [
   steps:[
    { say:"Alternating current: the source sings a sine, V-nought sine omega t, and since the average of a sine is a useless zero, we quote ROOT-MEAN-SQUARE values — peak over root 2. The socket's '120 volts' is rms; the peak is quietly 170. With rms in hand, AC power arithmetic dresses like DC.",
      pose:'talk',
-     board:['V_{\\rm rms} = \\frac{V_0}{\\sqrt2}, \\qquad I_{\\rm rms} = \\frac{I_0}{\\sqrt2}'] },
+     board:['V_{\\rm rms} = \\frac{V_0}{\\sqrt2}, \\qquad I_{\\rm rms} = \\frac{I_0}{\\sqrt2}'],
+     action(c){
+       dashLine(c, 0,2.8, 10.6,2.8, {color:'#B0A488', dash:'3,5'});
+       label(c, 0.4,3.25, 'peak V₀', {fs:12, color:'#8A7D60', italic:true});
+       arrow(c, 3.2,0.1, 3.2,1.9, {color:GREEN, w:2, head:7});
+       arrow(c, 3.2,1.9, 3.2,0.1, {color:GREEN, w:2, head:7});
+       label(c, 3.5,1.0, 'rms: the DC-equivalent heater', {fs:11.5, color:'#2E7D4F', italic:true});
+     } },
    { say:"Each element opposes current in its own style. The resistor: R, voltage and current in step. The inductor: reactance omega L, voltage LEADING by ninety degrees. The capacitor: one over omega C, voltage LAGGING by ninety. The mnemonic that has carried generations: ELI the ICE man. And the frequency behaviour is opposite — inductors smother the fast, capacitors block the slow.",
      pose:'write',
      board:['X_L = \\omega L\\ (\\text{ELI: V leads I}), \\qquad X_C = \\frac{1}{\\omega C}\\ (\\text{ICE: V lags I})',
-            {t:'X_L grows with f; X_C shrinks. Filters are built from this opposition.'}] },
+            {t:'X_L grows with f; X_C shrinks. Filters are built from this opposition.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       const wave=(x0,ph,col,w2)=>{ const pts=[]; for(let i=0;i<=60;i++){const t=i/60*4.4;
+         pts.push(M.X(x0+t)+','+M.Y(1.15*Math.sin(2.0*t+ph)));}
+         el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':w2},c.svg); };
+       el('line',{x1:M.X(0.4),y1:M.Y(0),x2:M.X(10.6),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.4},c.svg);
+       wave(0.5,0,GOLD,3); wave(0.5,-Math.PI/2,BLUE,2.2);
+       label(c, 0.6,2.0, 'ELI: V (gold) leads I (blue) in an inductor', {fs:12, color:'#8A5A24', italic:true});
+       wave(5.7,0,GOLD,3); wave(5.7,Math.PI/2,RED,2.2);
+       label(c, 5.8,-2.3, 'ICE: I (red) leads V in a capacitor', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Series RLC: all elements share the current, so draw the voltages as PHASORS — V-R along the current, V-L at plus ninety, V-C at minus ninety — and add as vectors. Out falls the impedance: Z equals root of R squared plus X-L minus X-C squared, with the phase angle from their ratio. Element voltages add as VECTORS, mind — their arithmetic sum can cheerfully exceed the source.",
-     pose:'point',
-     board:['V_0 = I_0Z, \\qquad Z = \\sqrt{R^2+(X_L-X_C)^2}, \\qquad \\tan\\varphi = \\frac{X_L-X_C}{R}'] },
+     pose:'point', solo:true,
+     board:['V_0 = I_0Z, \\qquad Z = \\sqrt{R^2+(X_L-X_C)^2}, \\qquad \\tan\\varphi = \\frac{X_L-X_C}{R}'],
+     action(c){
+       arrow(c, 2.0,-1.6, 7.2,-1.6, {color:GOLD, w:3.5, label:'V_R (with I)', fs:12, side:-1});
+       arrow(c, 2.0,-1.6, 2.0,1.8, {color:BLUE, w:3.5, label:'V_L (+90°)', fs:12});
+       arrow(c, 2.0,-1.6, 2.0,-3.3, {color:RED, w:3, label:'V_C (−90°)', fs:12, side:-1});
+       arrow(c, 2.0,-1.6, 7.2,0.1, {color:GREEN, w:4, label:'V₀ (the vector sum)', vec:true, fs:12.5});
+       arc(c, 2.0,-1.6, 1.6, 0, 18, {color:'#888', label:'φ'});
+       label(c, 6.4,2.6, 'phasors: Tutorial 4A-1, rotated into time', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"Power: only the RESISTOR spends. Inductors and capacitors borrow energy half of each cycle and return it in the other half, immaculate lenders. The average power is I-rms V-rms times the POWER FACTOR cosine phi — R over Z — the number utilities watch like hawks.",
-     pose:'write',
-     board:['P_{\\rm avg} = I_{\\rm rms}V_{\\rm rms}\\cos\\varphi = I_{\\rm rms}^2R, \\qquad \\cos\\varphi = \\frac{R}{Z}'] },
+     pose:'write', solo:true,
+     board:['P_{\\rm avg} = I_{\\rm rms}V_{\\rm rms}\\cos\\varphi = I_{\\rm rms}^2R, \\qquad \\cos\\varphi = \\frac{R}{Z}'],
+     action(c){
+       const {M}=c;
+       el('polygon',{points:`${M.X(2.2)},${M.Y(-2.2)} ${M.X(8.2)},${M.Y(-2.2)} ${M.X(8.2)},${M.Y(1.6)}`,
+         fill:'rgba(181,121,59,.15)', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       label(c, 4.7,-2.9, 'R — the only spender', {fs:13, color:GOLD, italic:true, anchor:'middle'});
+       label(c, 8.5,-0.4, 'X_L − X_C', {fs:13, color:BLUE, italic:true});
+       label(c, 4.2,0.4, 'Z', {fs:14, color:GREEN, italic:true});
+       arc(c, 2.2,-2.2, 1.5, 0, 32, {color:'#888', label:'φ'});
+       label(c, 1.6,2.6, 'cos φ = R/Z: the fraction of the current that pays rent', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Alternating current is physics set to a metronome, and resonance is the payoff: tune omega to one over root L C and the circuit sings. Every radio ever built finds its station this way — a little LC circuit agreeing enthusiastically with one frequency and snubbing all others. Selective enthusiasm: the engineering term is Q factor; the human term is taste.",
-     pose:'think',
-     board:[{t:'Resonance is a circuit with taste — it applauds one frequency and ignores the rest.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Resonance is a circuit with taste — it applauds one frequency and ignores the rest.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.6),y1:M.Y(-2.6),x2:M.X(10.4),y2:M.Y(-2.6),stroke:'#B0A488','stroke-width':2},c.svg);
+       const pts=[]; for(let i=0;i<=90;i++){const w2=0.4+i/90*9.6;
+         pts.push(M.X(0.6+w2)+','+M.Y(-2.6+5.2/(1+22*Math.pow(w2/5.4-5.4/w2,2))));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':3},c.svg);
+       [1.8,3.3,6.0,8.2,9.4].forEach(x=>el('circle',{cx:M.X(0.6+x), cy:M.Y(-2.95), r:4, fill:'#8A7D60'},c.svg));
+       el('circle',{cx:M.X(6.0), cy:M.Y(-2.95), r:5, fill:GREEN},c.svg);
+       label(c, 5.0,3.1, 'your station', {fs:12.5, color:GREEN, italic:true});
+       label(c, 7.6,-1.9, 'everyone else, snubbed', {fs:11.5, color:'#8A7D60', italic:true});
+     } },
    { say:"RESONANCE: at omega-nought equals one over root L C the reactances cancel, Z collapses to bare R, the current peaks, and the internal voltages V-L and V-C — equal, opposite, cancelling — can each dwarf the source. Sharpness is Q equals omega-nought L over R; radio tuning is a high-Q needle. And TRANSFORMERS: shared flux scales voltage by the turns ratio at constant power — voltage traded for current — which is why the grid ships kilovolts on AC and why Edison lost. To the examples.",
      solo:true, pose:'excited',
      board:['\\omega_0 = \\frac{1}{\\sqrt{LC}}, \\qquad Q = \\frac{\\omega_0L}{R}, \\qquad \\frac{V_s}{V_p} = \\frac{N_s}{N_p},\\ I_sV_s = I_pV_p',

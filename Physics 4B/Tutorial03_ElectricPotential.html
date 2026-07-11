@@ -796,20 +796,72 @@ const EXAMPLES = [
    { say:"The electric force is conservative, so it banks potential energy: for two point charges, U equals k q-one q-two over r — SIGNED charges now, negative meaning bound. The POTENTIAL is potential energy per unit charge: V equals U over q, volts, and delta U equals q delta V. The handy currency: one ELECTRON-VOLT is one electron pushed through one volt.",
      pose:'talk',
      board:['U = \\frac{kq_1q_2}{r}\\ (\\text{signed}), \\qquad V = \\frac{U}{q}, \\qquad \\Delta U = q\\Delta V',
-            {t:'1 eV = 1.60×10⁻¹⁹ J. Positive charges fall toward low V; negative toward high V.'}] },
+            {t:'1 eV = 1.60×10⁻¹⁹ J. Positive charges fall toward low V; negative toward high V.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0), cy:M.Y(-2.2), r:7, fill:RED},c.svg);
+       arrow(c, 0,-2.45, 0,-3.5, {color:RED, w:2.5, label:'+q: downhill', fs:11, side:-1});
+       el('circle',{cx:M.X(2.2), cy:M.Y(0), r:7, fill:BLUE},c.svg);
+       arrow(c, 1.95,0, 1.05,0, {color:BLUE, w:2.5, label:'−q: uphill', fs:11});
+       textAt(c, -5.3,3.5, 'same map, opposite readings', {fs:12, italic:true});
+     } },
    { say:"V is a SCALAR — the luxury of the chapter. Superposition is plain addition of signed numbers, k q over r each, no components in sight. The price of the luxury: the SIGNS now live in the numbers themselves, not in any diagram. Cherish this luxury while it lasts: after a chapter of vector decomposition, potential hands you plain arithmetic — the sole cost being vigilance about minus signs, which is the cheapest vigilance in physics.",
-     pose:'write',
-     board:['V = \\sum_i\\frac{kq_i}{r_i}\\quad(\\text{scalar sum — keep the signs!})'] },
+     pose:'write', solo:true,
+     board:['V = \\sum_i\\frac{kq_i}{r_i}\\quad(\\text{scalar sum — keep the signs!})'],
+     action(c){
+       const {M}=c;
+       const q=(x,y,sgn)=>{ el('circle',{cx:M.X(x), cy:M.Y(y), r:11, fill:sgn>0?RED:BLUE},c.svg);
+         const t=el('text',{x:M.X(x), y:M.Y(y)+5, fill:'#fff','font-size':14,'text-anchor':'middle','font-weight':'bold'},c.svg);
+         t.textContent=sgn>0?'+':'−'; };
+       q(-3.4,2.2,+1); q(3.2,2.6,-1); q(-0.6,-2.6,+1);
+       el('circle',{cx:M.X(0), cy:M.Y(0.4), r:5, fill:'#5C4B30'},c.svg);
+       textAt(c, 0.3,0.7, 'P', {fs:15, italic:true});
+       dashLine(c, -3.4,2.2, 0,0.4, {}); dashLine(c, 3.2,2.6, 0,0.4, {}); dashLine(c, -0.6,-2.6, 0,0.4, {});
+       textAt(c, -4.9,-3.5, 'V_P = +135 − 225 + 60 = −30 V: arithmetic, not geometry', {fs:12.5, italic:true});
+     } },
    { say:"The two-way street between field and potential. Given E, integrate: V-B minus V-A is minus the line integral of E dot d-ell; in a uniform field, delta V is minus E d. Given V, differentiate: each field component is MINUS the partial derivative. The minus signs say one thing, twice: E points DOWNHILL in potential, and its magnitude is the steepness.",
-     pose:'point',
-     board:['V_B - V_A = -\\int_A^B\\vec E\\cdot d\\vec\\ell \\qquad\\Longleftrightarrow\\qquad E_x = -\\frac{\\partial V}{\\partial x}'] },
+     pose:'point', solo:true,
+     board:['V_B - V_A = -\\int_A^B\\vec E\\cdot d\\vec\\ell \\qquad\\Longleftrightarrow\\qquad E_x = -\\frac{\\partial V}{\\partial x}'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(-4.8),y1:M.Y(-3.0),x2:M.X(4.8),y2:M.Y(-3.0),stroke:'#B0A488','stroke-width':2},c.svg);
+       const pts=[]; for(let i=0;i<=60;i++){const x=-4.6+9.2*i/60;
+         pts.push(M.X(x)+','+M.Y(-3.0+5.6/(1+Math.exp(x))));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GOLD,'stroke-width':3},c.svg);
+       label(c, -4.5,3.2, 'V(x): the hill', {fs:13, color:'#8A5A24', italic:true});
+       arrow(c, 0,0.1, 1.8,0.1, {color:GREEN, w:3.5, label:'E: downhill, ∝ steepness', fs:12, side:-1});
+       dashLine(c, -0.6,-0.06, 0.6,-0.62, {color:'#888'});
+       label(c, -0.3,-1.4, 'slope = −E', {fs:12, color:'#8A7D60', italic:true});
+     } },
    { say:"Continuous distributions: chop into d-q and add SCALARS — V equals the integral of k d-q over r, almost always easier than the field integral it replaces. But it needs the reference at infinity, so infinite lines and planes are off the menu; integrate the field for those. And keep the two facts straight: V zero does not force E zero, nor the reverse — the ring's centre has E zero and V at full cry.",
      pose:'write',
      board:['V = \\int\\frac{k\\,dq}{r}\\quad(V(\\infty)=0;\\ \\text{finite distributions only})',
-            {t:'E and V are independent facts: E = 0 with V ≠ 0 (ring centre); V = 0 with E ≠ 0 (dipole midpoint).'}] },
+            {t:'E and V are independent facts: E = 0 with V ≠ 0 (ring centre); V = 0 with E ≠ 0 (dipole midpoint).'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('ellipse',{cx:M.X(-2.9), cy:M.Y(1.0), rx:9, ry:1.7*M.s, fill:'none', stroke:RED,'stroke-width':3},c.svg);
+       el('circle',{cx:M.X(-2.9), cy:M.Y(1.0), r:4, fill:'#5C4B30'},c.svg);
+       textAt(c, -4.9,-1.6, 'ring centre: E = 0, V ≠ 0', {fs:12.5, italic:true});
+       el('circle',{cx:M.X(1.6), cy:M.Y(1.0), r:9, fill:RED},c.svg);
+       el('circle',{cx:M.X(4.6), cy:M.Y(1.0), r:9, fill:BLUE},c.svg);
+       el('circle',{cx:M.X(3.1), cy:M.Y(1.0), r:4, fill:'#5C4B30'},c.svg);
+       arrow(c, 3.1,0.65, 4.1,0.65, {color:GOLD, w:2.5, label:'E', fs:12, side:-1});
+       textAt(c, 1.1,-1.6, 'dipole midpoint: V = 0, E ≠ 0', {fs:12.5, italic:true});
+     } },
    { say:"Consider what the potential map really buys you: the entire vector battlefield of E, compressed into one scalar landscape. Charges simply roll downhill on it. Whenever physics hands you a landscape in place of a swarm of arrows, accept immediately — scalars add like grocery bills, and no components are harmed.",
-     pose:'think',
-     board:[{t:'One number per point instead of three: V is the finest data compression in electromagnetism.'}] },
+     pose:'think', solo:true,
+     board:[{t:'One number per point instead of three: V is the finest data compression in electromagnetism.'}],
+     action(c){
+       const {M}=c;
+       for(let i=0;i<3;i++)for(let j=0;j<3;j++){
+         const x=-4.4+i*1.3, y=-0.4+j*1.3;
+         arrow(c, x,y, x+0.7*Math.cos(0.5+i-j*0.7), y+0.7*Math.sin(0.5+i-j*0.7), {color:GOLD, w:2, head:6});
+       }
+       textAt(c, -4.8,-2.0, 'the field: an arrow at every point', {fs:12, italic:true});
+       for(const r of [0.6,1.15,1.7,2.25]) el('circle',{cx:M.X(3.0), cy:M.Y(0.9), r:r*M.s, fill:'none', stroke:'#8A7D60','stroke-width':1.6,'stroke-dasharray':'5,5'},c.svg);
+       textAt(c, 1.4,-2.0, 'the potential: one contour map', {fs:12, italic:true});
+     } },
    { say:"Conductors are EQUIPOTENTIALS — constant V throughout, with E spiking where the surface curves sharpest; ask any lightning rod. Assembly energy: sum k q-i q-j over r for each pair ONCE. Strategy: energy conservation for moving charges — half m v squared meets q delta V; scalar superposition for V; differentiate when handed V, integrate when handed E. To the examples.",
      solo:true, pose:'excited',
      board:[{t:'Conductor = equipotential; E largest at sharp points. Pairs counted once in assembly energy.'},

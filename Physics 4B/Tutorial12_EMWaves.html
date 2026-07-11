@@ -776,15 +776,50 @@ const EXAMPLES = [
   },
   steps:[
    { say:"The finale of electromagnetism. Ampère's law had a gap — between charging capacitor plates flows no charge, yet a magnetic field circles anyway — and MAXWELL repaired it with pure thought: a changing electric flux acts as a current, the displacement current epsilon-nought d-phi-E d-t. With that term, the four equations close into a loop: changing E makes B, changing B makes E.",
-     pose:'talk',
-     board:['I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt}, \\qquad \\oint\\vec B\\cdot d\\vec\\ell = \\mu_0(I + I_d)'] },
+     pose:'talk', solo:true,
+     board:['I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt}, \\qquad \\oint\\vec B\\cdot d\\vec\\ell = \\mu_0(I + I_d)'],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.4),y1:M.Y(0),x2:M.X(4.4),y2:M.Y(0),stroke:'#5C4B30','stroke-width':3.5},c.svg);
+       el('line',{x1:M.X(6.6),y1:M.Y(0),x2:M.X(10.6),y2:M.Y(0),stroke:'#5C4B30','stroke-width':3.5},c.svg);
+       el('line',{x1:M.X(4.4),y1:M.Y(-1.8),x2:M.X(4.4),y2:M.Y(1.8),stroke:RED,'stroke-width':5},c.svg);
+       el('line',{x1:M.X(6.6),y1:M.Y(-1.8),x2:M.X(6.6),y2:M.Y(1.8),stroke:BLUE,'stroke-width':5},c.svg);
+       arrow(c, 1.2,0.5, 2.8,0.5, {color:GOLD, w:2.5, label:'I', fs:13});
+       for(const x of [4.9,5.5,6.1]) arrow(c, x,-1.2, x,1.2, {color:GREEN, w:2, head:7});
+       label(c, 4.7,2.4, 'growing E: the “current” of pure change', {fs:12, color:'#2E7D4F', italic:true, anchor:'middle'});
+       el('ellipse',{cx:M.X(5.5), cy:M.Y(0), rx:1.5*M.s, ry:0.55*M.s, fill:'none', stroke:PURPLE,'stroke-width':2.2,'stroke-dasharray':'6,5'},c.svg);
+       label(c, 3.2,-2.6, 'B circles the gap as if charge flowed there', {fs:12, color:PURPLE, italic:true});
+     } },
    { say:"And a loop that closes can RUN: the pair bootstraps itself through empty space at a speed built entirely from the constants of electricity and magnetism — one over root mu-nought epsilon-nought — which computes to three times ten to the eighth metres per second. The speed of light, derived from tabletop constants. Maxwell measured the units and discovered what light IS.",
-     pose:'write',
-     board:['c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} = 3.00\\times10^{8}\\ \\mathrm{m/s}, \\qquad c = \\lambda f'] },
+     pose:'write', solo:true,
+     board:['c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} = 3.00\\times10^{8}\\ \\mathrm{m/s}, \\qquad c = \\lambda f'],
+     action(c){
+       const {M}=c;
+       const box=(x,txt,sub,col)=>{
+         el('rect',{x:M.X(x), y:M.Y(1.5), width:2.5*M.s, height:1.9*M.s, rx:8, fill:'none', stroke:col,'stroke-width':2.5},c.svg);
+         label(c, x+0.3,0.7, txt, {fs:14, color:col});
+         label(c, x+0.25,-1.0, sub, {fs:11, color:'#8A7D60', italic:true});
+       };
+       box(0.6,'μ₀ (magnetism)','from wires', BLUE);
+       box(4.2,'ε₀ (electricity)','from jars', RED);
+       arrow(c, 7.1,0.5, 8.1,0.5, {color:'#8A7D60', w:2.5});
+       label(c, 8.3,0.9, '1/√(μ₀ε₀)', {fs:14, color:GOLD, italic:true});
+       label(c, 8.3,-0.1, '= 3×10⁸ m/s', {fs:13, color:GOLD});
+       label(c, 1.0,-2.7, 'two bench-top constants, multiplied — and out fell light', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"The wave's anatomy, on the stage: E and B perpendicular to each other and to the travel direction, IN PHASE — peaks together, zeros together, no quarter-cycle lag — with magnitudes locked by E equals c B, and E cross B pointing the way forward. From radio to gamma rays, one physics at wildly different wavelengths.",
      pose:'point',
      board:['E = cB, \\qquad \\vec E\\perp\\vec B\\perp\\hat v, \\qquad \\hat v \\parallel \\vec E\\times\\vec B',
-            {t:'In PHASE — not 90° apart. Spectrum: radio → micro → IR → visible → UV → X → γ.'}] },
+            {t:'In PHASE — not 90° apart. Spectrum: radio → micro → IR → visible → UV → X → γ.'}],
+     action(c){
+       const {M}=c;
+       arrow(c, 2.6,-2.7, 2.6,-1.3, {color:RED, w:2.5, label:'E', vec:true, fs:12, side:-1});
+       el('circle',{cx:M.X(2.6), cy:M.Y(-2.7), r:7, fill:'none', stroke:BLUE,'stroke-width':2},c.svg);
+       el('line',{x1:M.X(2.6)-5,y1:M.Y(-2.7)-5,x2:M.X(2.6)+5,y2:M.Y(-2.7)+5,stroke:BLUE,'stroke-width':2},c.svg);
+       el('line',{x1:M.X(2.6)-5,y1:M.Y(-2.7)+5,x2:M.X(2.6)+5,y2:M.Y(-2.7)-5,stroke:BLUE,'stroke-width':2},c.svg);
+       label(c, 3.0,-3.15, 'B (into page)', {fs:11, color:BLUE, italic:true});
+       arrow(c, 3.3,-2.7, 4.9,-2.7, {color:GREEN, w:2.5, label:'v = E×B way', fs:11});
+     } },
    { say:"Energy rides the wave. The POYNTING vector E cross B over mu-nought is the power per area, and its time average is the INTENSITY: half epsilon-nought c E-nought squared. The electric and magnetic accounts hold exactly equal shares, always — the c that shrinks B is repaid, squared, in the energy.",
      solo:true, pose:'write',
      board:['\\vec S = \\frac{\\vec E\\times\\vec B}{\\mu_0}, \\qquad I = \\tfrac12\\varepsilon_0cE_0^2 = \\frac{E_0B_0}{2\\mu_0}',
@@ -795,12 +830,36 @@ const EXAMPLES = [
        arrow(c, 7.3,-2.2, 7.9,-3.1, {color:BLUE, w:2.2, label:'B', vec:true, fs:11});
      } },
    { say:"And here the course’s longest joke lands its punchline: E makes B, B makes E, and the pair bootstrap themselves across the void at a speed Maxwell computed from two constants measured with wires and jars on a bench. The number came out as the speed of light — because it IS light. Every sunbeam is electromagnetism, applauding itself across a vacuum for eight minutes.",
-     pose:'think',
-     board:[{t:'Maxwell multiplied two bench-top constants and out fell the speed of light. Few equations have earned more.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Maxwell multiplied two bench-top constants and out fell the speed of light. Few equations have earned more.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(1.4), cy:M.Y(0.4), r:1.1*M.s, fill:GOLD, stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       for(let k=0;k<8;k++){ const a=k*Math.PI/4;
+         el('line',{x1:M.X(1.4+1.35*Math.cos(a)),y1:M.Y(0.4+1.35*Math.sin(a)),x2:M.X(1.4+1.8*Math.cos(a)),y2:M.Y(0.4+1.8*Math.sin(a)),stroke:GOLD,'stroke-width':2.5},c.svg); }
+       const pts=[]; for(let i=0;i<=70;i++){const x=3.4+5.6*i/70;
+         pts.push(M.X(x)+','+M.Y(0.4+0.5*Math.sin(4.2*x)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(9.8), cy:M.Y(0.4), r:0.45*M.s, fill:'#5B82A6', stroke:'#3A5A78','stroke-width':2},c.svg);
+       label(c, 4.6,1.9, 'E begets B begets E… for 8 minutes', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 3.9,-1.5, 'every sunbeam: electromagnetism, self-applauding across vacuum', {fs:11.5, color:'#7A5A28', italic:true});
+     } },
    { say:"And light PUSHES: it carries momentum, energy over c, so absorption presses with I over c and REFLECTION with twice that — reversing the light's momentum costs double, which is why solar sails wear mirrors. Feeble, tireless, and propellant-free. Strategy: intensity from power over area; fields from inverting I; pressure from I over c, doubled for mirrors. And with that, the electromagnetic term stands complete. To the examples.",
      pose:'excited',
      board:['P_{\\rm abs} = \\frac{I}{c}, \\qquad P_{\\rm refl} = \\frac{2I}{c}',
-            {t:'Strategy: I = P/A → E₀, B₀ from I → pressure I/c (×2 mirrored). Maxwell closes the course.'}] },
+            {t:'Strategy: I = P/A → E₀, B₀ from I → pressure I/c (×2 mirrored). Maxwell closes the course.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(6.4),y1:M.Y(-2.6),x2:M.X(6.4),y2:M.Y(2.6),stroke:'#B7BDC4','stroke-width':6,'stroke-linecap':'round'},c.svg);
+       label(c, 6.7,2.6, 'mirror sail', {fs:12, color:'#7A8288', italic:true});
+       [[-1.6],[0],[1.6]].forEach(([y])=>{
+         arrow(c, 2.0,y, 5.9,y, {color:GOLD, w:2.2, head:8});
+         arrow(c, 5.9,y-0.45, 2.0,y-0.45, {color:'#C9A86A', w:1.8, head:7});
+       });
+       arrow(c, 6.9,0, 9.3,0, {color:GREEN, w:3.5, label:'F = 2IA/c', fs:13});
+       label(c, 1.2,-3.0, 'reflection reverses the light’s momentum — double the push', {fs:12, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

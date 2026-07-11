@@ -831,10 +831,37 @@ const EXAMPLES = [
    { say:"Real batteries carry an internal resistance r: the EMF epsilon is the promise, and the terminal voltage — epsilon minus I r — is what is actually delivered under load. It sags while discharging, equals epsilon at open circuit, and EXCEEDS epsilon when the battery is being charged backward. The power ledger: epsilon I from chemistry, I squared R to the load, I squared r to warming the battery's own pockets.",
      pose:'talk',
      board:['\\varepsilon = I(R+r), \\qquad V_{\\rm term} = \\varepsilon - Ir',
-            '\\varepsilon I = I^2R + I^2r\\ (\\text{always audit})'] },
+            '\\varepsilon I = I^2R + I^2r\\ (\\text{always audit})'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.9), y:M.Y(3.9), width:1.2*M.s, height:2.4*M.s, rx:6, fill:'none', stroke:'#8A5A24','stroke-width':2,'stroke-dasharray':'5,4'},c.svg);
+       el('line',{x1:M.X(1.2),y1:M.Y(3.4),x2:M.X(1.8),y2:M.Y(3.4),stroke:'#5C4B30','stroke-width':4},c.svg);
+       el('line',{x1:M.X(1.32),y1:M.Y(3.15),x2:M.X(1.68),y2:M.Y(3.15),stroke:'#5C4B30','stroke-width':3},c.svg);
+       label(c, 2.2,3.3, 'ε', {fs:15, color:'#5C4B30', italic:true});
+       el('rect',{x:M.X(1.28), y:M.Y(2.6), width:0.44*M.s, height:0.75*M.s, fill:'#C98F52', stroke:'#8A5A24','stroke-width':1.6},c.svg);
+       label(c, 2.2,2.3, 'r (internal)', {fs:12, color:'#8A5A24', italic:true});
+       arrow(c, 3.4,5.55, 6.6,5.55, {color:GOLD, w:2.5, label:'I', fs:13});
+       label(c, 6.6,3.0, 'V_term = ε − Ir: the promise,', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 6.6,2.4, 'minus the internal toll', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Reduction: SERIES resistors share the current and ADD; PARALLEL resistors share the voltage and add by reciprocals — the pair rule, product over sum, always beats the smaller one. Collapse the network step by step, find the total current, then expand back out, assigning V to parallel and I to series at each stage.",
-     pose:'write',
-     board:['\\text{Series: } R_{\\rm eq} = \\sum R_i \\qquad \\text{Parallel: } R_{\\rm eq} = \\Big(\\sum\\tfrac1{R_i}\\Big)^{-1}'] },
+     pose:'write', solo:true,
+     board:['\\text{Series: } R_{\\rm eq} = \\sum R_i \\qquad \\text{Parallel: } R_{\\rm eq} = \\Big(\\sum\\tfrac1{R_i}\\Big)^{-1}'],
+     action(c){
+       const {M}=c;
+       const box=(x,y)=>el('rect',{x:M.X(x), y:M.Y(y+0.35), width:1.3*M.s, height:0.7*M.s, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('line',{x1:M.X(0.4),y1:M.Y(5.3),x2:M.X(4.9),y2:M.Y(5.3),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       box(1.0,5.3); box(2.9,5.3);
+       arrow(c, 0.5,6.0, 1.4,6.0, {color:GOLD, w:2, label:'same I', fs:11});
+       label(c, 0.6,3.9, 'series: tolls in a row — they add', {fs:12.5, color:'#7A5A28'});
+       el('line',{x1:M.X(6.2),y1:M.Y(5.9),x2:M.X(9.9),y2:M.Y(5.9),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       el('line',{x1:M.X(6.2),y1:M.Y(4.4),x2:M.X(9.9),y2:M.Y(4.4),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       el('line',{x1:M.X(6.6),y1:M.Y(5.9),x2:M.X(6.6),y2:M.Y(4.4),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       el('line',{x1:M.X(9.5),y1:M.Y(5.9),x2:M.X(9.5),y2:M.Y(4.4),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       box(7.4,5.55); box(7.4,4.05);
+       label(c, 6.2,2.9, 'parallel: extra doors — resists LESS', {fs:12.5, color:'#7A5A28'});
+       label(c, 1.6,1.4, 'the pair rule: product over sum, always below the smaller', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"When reduction fails — multiple batteries, bridges — KIRCHHOFF: label a current in EVERY branch with a guessed arrow; junction rule, current in equals current out; loop rule, voltage changes around any closed walk sum to zero. Sign discipline: through a resistor WITH the arrow, minus I R; against it, plus; through an EMF minus-to-plus, plus epsilon. A negative answer is not failure — it is the current confessing it flows the other way.",
      solo:true, pose:'point',
      board:[{t:'Junction: ΣI_in = ΣI_out. Loop: ΣΔV = 0.'},
@@ -850,13 +877,48 @@ const EXAMPLES = [
    { say:"RC circuits bring in time. Charging: the charge creeps up as one minus e to the minus t over tau, the current dies from epsilon over R; tau equals R C is the circuit's patience. The incantations: at t zero-plus an uncharged capacitor is a plain WIRE — its voltage cannot jump; at infinity it is an OPEN circuit — no current. Analyse those two easy circuits and bridge them with tau.",
      pose:'write',
      board:['q(t) = Q_f\\big(1-e^{-t/\\tau}\\big), \\qquad i(t) = \\frac{\\varepsilon}{R}e^{-t/\\tau}, \\qquad \\tau = RC',
-            {t:'t = 0⁺: capacitor = wire. t → ∞: capacitor = open. τ from the R the capacitor actually sees.'}] },
+            {t:'t = 0⁺: capacitor = wire. t → ∞: capacitor = open. τ from the R the capacitor actually sees.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(0.8),y1:M.Y(0.9),x2:M.X(10.3),y2:M.Y(0.9),stroke:'#B0A488','stroke-width':2},c.svg);
+       el('line',{x1:M.X(1.1),y1:M.Y(0.5),x2:M.X(1.1),y2:M.Y(6.6),stroke:'#B0A488','stroke-width':2},c.svg);
+       const q=[],i2=[]; for(let k=0;k<=70;k++){const t=k/70*5;
+         q.push(M.X(1.1+1.8*t)+','+M.Y(0.9+4.8*(1-Math.exp(-t))));
+         i2.push(M.X(1.1+1.8*t)+','+M.Y(0.9+4.8*Math.exp(-t)));}
+       el('polyline',{points:q.join(' '),fill:'none',stroke:GREEN,'stroke-width':3},c.svg);
+       el('polyline',{points:i2.join(' '),fill:'none',stroke:RED,'stroke-width':3},c.svg);
+       dashLine(c, 2.9,0.9, 2.9,3.93, {color:'#888'});
+       label(c, 2.75,0.3, 'τ', {fs:14, color:'#7A5A28', italic:true, anchor:'middle'});
+       label(c, 7.8,5.5, 'q(t): creeps up (63% at τ)', {fs:12, color:GREEN, italic:true});
+       label(c, 7.8,1.6, 'i(t): dies away', {fs:12, color:RED, italic:true});
+     } },
    { say:"Kirchhoff’s rules are bookkeeping, yes — but bookkeeping elevated to law. Charge in equals charge out; voltage gains equal voltage drops around any loop. Your entire electrified civilisation — grids, laptops, pacemakers — rests on double-entry accounting that nature audits continuously and has never once let slide.",
-     pose:'think',
-     board:[{t:'Civilisation runs on two accounting identities, enforced at every junction, forever.'}] },
+     pose:'think', solo:true,
+     board:[{t:'Civilisation runs on two accounting identities, enforced at every junction, forever.'}],
+     action(c){
+       const {M}=c;
+       el('polygon',{points:`${M.X(5.4)},${M.Y(4.2)} ${M.X(5.0)},${M.Y(2.6)} ${M.X(5.8)},${M.Y(2.6)}`, fill:'#8A7D60'},c.svg);
+       el('line',{x1:M.X(2.0),y1:M.Y(4.4),x2:M.X(8.8),y2:M.Y(4.4),stroke:'#5C4B30','stroke-width':4},c.svg);
+       el('line',{x1:M.X(2.0),y1:M.Y(4.4),x2:M.X(2.0),y2:M.Y(3.7),stroke:'#5C4B30','stroke-width':2},c.svg);
+       el('line',{x1:M.X(8.8),y1:M.Y(4.4),x2:M.X(8.8),y2:M.Y(3.7),stroke:'#5C4B30','stroke-width':2},c.svg);
+       el('rect',{x:M.X(1.0), y:M.Y(3.7), width:2.0*M.s, height:0.8*M.s, rx:6, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('rect',{x:M.X(7.8), y:M.Y(3.7), width:2.0*M.s, height:0.8*M.s, rx:6, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2},c.svg);
+       label(c, 1.35,3.35, 'ε·I in', {fs:13, color:'#5C4B30'});
+       label(c, 8.0,3.35, 'ΣI²R out', {fs:13, color:'#5C4B30'});
+       label(c, 2.6,1.5, 'the books must balance — nature audits continuously', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"And the professional reflex: AUDIT THE POWER. Battery watts must equal resistor watts plus whatever a charging battery absorbs — every missing watt is an algebra error waving a flag. Strategy: reduce when you can, Kirchhoff when you cannot, capacitor rules at the ends of time, and balance the books before you trust any answer. To the examples.",
-     pose:'excited',
-     board:[{t:'Strategy: reduce → expand back; else Kirchhoff’s rules with sign discipline; RC endpoints + τ; ALWAYS run the power audit.'}] },
+     pose:'excited', solo:true,
+     board:[{t:'Strategy: reduce → expand back; else Kirchhoff’s rules with sign discipline; RC endpoints + τ; ALWAYS run the power audit.'}],
+     action(c){
+       const flow=['reducible? collapse, solve, expand','not reducible? Kirchhoff, sign discipline','capacitors: wire at t=0⁺, open at t→∞','bridge the endpoints with τ = R_seen·C','power audit: every watt accounted for'];
+       flow.forEach((sq,i)=>{
+         const y = 6.4 - i*1.5;
+         label(c, 3.0, y, (i+1)+'. '+sq, {fs:14.5, color:'#7A5A28'});
+         if(i<4) arrow(c, 2.35, y-0.35, 2.35, y-1.1, {color:GOLD, w:2, head:7});
+       });
+     } },
   ]
 },
 

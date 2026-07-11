@@ -796,7 +796,13 @@ const EXAMPLES = [
    { say:"The crown jewel: FARADAY'S LAW. Magnetic flux — B A cosine theta for a flat loop — is the quantity to watch, and a CHANGING flux drives an emf: minus N d-phi d-t, each turn counting once. Nature offers exactly three knobs: change the FIELD, change the AREA, or change the ANGLE. Every generator, transformer, and induction cooktop turns one of them.",
      pose:'talk',
      board:['\\Phi_B = BA\\cos\\theta, \\qquad \\varepsilon = -N\\frac{d\\Phi_B}{dt}',
-            {t:'Three knobs: B(t), A(t), θ(t).'}] },
+            {t:'Three knobs: B(t), A(t), θ(t).'}],
+     action(c){
+       label(c, 0.2,6.4, 'knob 1: B(t) — strengthen the field', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.2,5.7, 'knob 2: A(t) — shrink the loop', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.2,5.0, 'knob 3: θ(t) — spin it', {fs:12, color:'#8A5A24', italic:true});
+       arrow(c, 8.0,0.35, 9.4,0.35, {color:GOLD, w:2.5, label:'ε appears', fs:12});
+     } },
    { say:"The minus sign has a name: LENZ'S LAW. The induced current opposes the CHANGE in flux — not the flux itself, the CHANGE. Growing into-page flux? The loop fights back with out-of-page flux. Three questions, in order: which way is the flux now; is it growing or shrinking; which circulation opposes that. It is energy conservation in disguise — aid the change and you build a free-lunch machine, which the universe declines to cater.",
      solo:true, pose:'point',
      board:[{t:'Lenz’s law: oppose the CHANGE. Ask: flux direction? growing or shrinking? which current fights it?'}],
@@ -808,18 +814,68 @@ const EXAMPLES = [
        textAt(c, 8.8,4.1, 'induced I opposes the change', {fs:11, italic:true, anchor:'middle'});
      } },
    { say:"MOTIONAL emf: slide a conductor of length L at speed v across a field and the emf is B L v, plain as that. In a circuit: current B L v over R, a drag force B I L on the slider — always opposing the motion, Lenz's law in mechanical dress — and the books balance exactly: your pushing power F v equals the electrical I squared R. Muscles in, heat out, joule for joule.",
-     pose:'write',
-     board:['\\varepsilon = BLv, \\qquad I = \\frac{BLv}{R}, \\qquad Fv = \\varepsilon I = I^2R\\ \\checkmark'] },
+     pose:'write', solo:true,
+     board:['\\varepsilon = BLv, \\qquad I = \\frac{BLv}{R}, \\qquad Fv = \\varepsilon I = I^2R\\ \\checkmark'],
+     action(c){
+       const {M}=c;
+       for(let i=0;i<4;i++)for(let j=0;j<3;j++){
+         const x=1.6+i*2.3, y=1.6+j*1.8, s2=4;
+         el('line',{x1:M.X(x)-s2,y1:M.Y(y)-s2,x2:M.X(x)+s2,y2:M.Y(y)+s2,stroke:'#B0A488','stroke-width':1.5},c.svg);
+         el('line',{x1:M.X(x)-s2,y1:M.Y(y)+s2,x2:M.X(x)+s2,y2:M.Y(y)-s2,stroke:'#B0A488','stroke-width':1.5},c.svg);
+       }
+       el('line',{x1:M.X(0.8),y1:M.Y(5.4),x2:M.X(9.8),y2:M.Y(5.4),stroke:'#5C4B30','stroke-width':3.5},c.svg);
+       el('line',{x1:M.X(0.8),y1:M.Y(0.8),x2:M.X(9.8),y2:M.Y(0.8),stroke:'#5C4B30','stroke-width':3.5},c.svg);
+       el('line',{x1:M.X(0.8),y1:M.Y(5.4),x2:M.X(0.8),y2:M.Y(0.8),stroke:'#8A5A24','stroke-width':3},c.svg);
+       label(c, 0.15,3.1, 'R', {fs:14, color:'#8A5A24', italic:true});
+       el('line',{x1:M.X(6.4),y1:M.Y(5.4),x2:M.X(6.4),y2:M.Y(0.8),stroke:GOLD,'stroke-width':5,'stroke-linecap':'round'},c.svg);
+       arrow(c, 6.8,3.1, 8.4,3.1, {color:GREEN, w:3, label:'v', vec:true, fs:14});
+       arrow(c, 6.0,3.1, 4.6,3.1, {color:RED, w:2.5, label:'F drag (Lenz)', fs:11.5, side:-1});
+       label(c, 1.6,6.3, 'ε = BLv: induction you can feel in your arm', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Spin a coil and you have a GENERATOR: flux swings as cosine omega t, so the emf swings as sine — alternating voltage with peak N B A omega. Spin faster and you raise the frequency AND the amplitude; the derivative pays by the radian. And note the quarter-cycle choreography: emf peaks precisely where the flux crosses zero, changing fastest.",
-     pose:'write',
-     board:['\\varepsilon = NBA\\,\\omega\\sin\\omega t, \\qquad \\varepsilon_0 = NBA\\omega, \\qquad \\varepsilon_{\\rm rms} = \\frac{\\varepsilon_0}{\\sqrt2}'] },
+     pose:'write', solo:true,
+     board:['\\varepsilon = NBA\\,\\omega\\sin\\omega t, \\qquad \\varepsilon_0 = NBA\\omega, \\qquad \\varepsilon_{\\rm rms} = \\frac{\\varepsilon_0}{\\sqrt2}'],
+     action(c){
+       const {M}=c;
+       el('ellipse',{cx:M.X(1.9), cy:M.Y(3.4), rx:0.55*M.s, ry:1.6*M.s, fill:'none', stroke:'#8A5A24','stroke-width':3.5, transform:`rotate(-28 ${M.X(1.9)} ${M.Y(3.4)})`},c.svg);
+       arc(c, 1.9,3.4, 2.1, 40, 130, {color:GOLD, w:2.5, label:'ω'});
+       arrow(c, 0.3,3.4, 3.5,3.4, {color:'#8A7D60', w:2, label:'B', fs:12, side:-1});
+       el('line',{x1:M.X(4.4),y1:M.Y(3.4),x2:M.X(10.4),y2:M.Y(3.4),stroke:'#B0A488','stroke-width':1.6},c.svg);
+       const pts=[]; for(let i=0;i<=80;i++){const t=i/80*2;
+         pts.push(M.X(4.6+t*2.8)+','+M.Y(3.4+2.0*Math.sin(2*Math.PI*t)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:GREEN,'stroke-width':3},c.svg);
+       label(c, 7.4,6.1, 'ε(t): rotation, differentiated', {fs:12.5, color:GREEN, italic:true});
+     } },
    { say:"Faraday’s discovery deserves a drum-roll it rarely gets: wiggle a magnet, and electricity appears from nowhere — no battery, no chemistry, just CHANGE itself, monetised. Every power station on Earth, from coal to hydro to nuclear, is at bottom the same machine: something expensive spinning a magnet near a coil. The rest is plumbing.",
-     pose:'think',
-     board:[{t:'All power generation is one idea: change the flux, collect the EMF. The fuel merely spins the magnet.'}] },
+     pose:'think', solo:true,
+     board:[{t:'All power generation is one idea: change the flux, collect the EMF. The fuel merely spins the magnet.'}],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.2), y:M.Y(4.3), width:2.4*M.s, height:1.2*M.s, rx:6, fill:'#C0392B', stroke:'#7A2015','stroke-width':2, transform:`rotate(-20 ${M.X(2.4)} ${M.Y(3.7)})`},c.svg);
+       label(c, 1.5,3.55, 'N', {fs:14, color:'#fff'});
+       label(c, 3.0,4.15, 'S', {fs:14, color:'#fff'});
+       arc(c, 2.4,3.7, 2.3, 30, 130, {color:GOLD, w:2.5, label:'spun by coal, water, or atoms'});
+       for(let k=0;k<4;k++) el('ellipse',{cx:M.X(6.7+k*0.5), cy:M.Y(3.7), rx:5, ry:1.1*M.s, fill:'none', stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       el('line',{x1:M.X(8.9),y1:M.Y(3.7),x2:M.X(10.2),y2:M.Y(3.7),stroke:'#5C4B30','stroke-width':2.5},c.svg);
+       label(c, 6.2,1.3, 'coil: collects the emf', {fs:12.5, color:'#7A5A28', italic:true});
+       label(c, 1.2,0.4, 'the rest is plumbing', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"Deepest of all: what pushes the charges is an induced ELECTRIC field — circulating in closed loops, existing in empty space whether or not a wire is present, and answering to no potential function. The circulation of E equals minus d-phi d-t. Eddy currents are its bulk signature: magnetic brakes, induction cooktops. Strategy: identify the changing knob, compute d-phi d-t, direction by the three questions of Lenz's law, and audit the energy. To the examples.",
      pose:'excited',
      board:['\\oint\\vec E\\cdot d\\vec\\ell = -\\frac{d\\Phi_B}{dt}\\quad(\\text{closed field lines — nonconservative})',
-            {t:'Strategy: which knob changes? → dΦ/dt → Lenz’s law for direction → power balance as the check.'}] },
+            {t:'Strategy: which knob changes? → dΦ/dt → Lenz’s law for direction → power balance as the check.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5.0), cy:M.Y(3.4), r:1.3*M.s, fill:'rgba(90,136,168,.18)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
+       label(c, 4.1,3.3, 'dB/dt', {fs:13, color:'#5A88A8', italic:true});
+       for(const r2 of [2.1,2.9]){
+         el('circle',{cx:M.X(5.0), cy:M.Y(3.4), r:r2*M.s, fill:'none', stroke:GOLD,'stroke-width':2.2,'stroke-dasharray':'8,6'},c.svg);
+         arrow(c, 5.0+r2,3.4+0.02, 5.0+r2-0.02,3.4+0.35, {color:GOLD, w:2.2, head:7});
+       }
+       label(c, 8.2,5.6, 'induced E: closed loops,', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 8.2,5.0, 'no start, no end, no V', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 

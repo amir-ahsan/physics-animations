@@ -808,22 +808,80 @@ const EXAMPLES = [
        textAt(c, 8.6,3.9, 'B out of page: circular orbit', {fs:11.5, italic:true, anchor:'middle'});
      } },
    { say:"Perpendicular entry means CIRCLES: q v B plays centripetal, giving radius m v over q B — fast and heavy rides wide, strong field reins in tight. The period 2 pi m over q B has NO v in it: every lap takes the same time regardless of speed — the cyclotron principle, one cancellation worth a Nobel. Velocity partly along B? That component is untouched: the path becomes a HELIX.",
-     pose:'write',
-     board:['r = \\frac{mv}{qB}, \\qquad T = \\frac{2\\pi m}{qB}\\ (\\text{no } v!), \\qquad f = \\frac{qB}{2\\pi m}'] },
+     pose:'write', solo:true,
+     board:['r = \\frac{mv}{qB}, \\qquad T = \\frac{2\\pi m}{qB}\\ (\\text{no } v!), \\qquad f = \\frac{qB}{2\\pi m}'],
+     action(c){
+       const {M}=c;
+       for(let i=0;i<5;i++)for(let j=0;j<4;j++){
+         el('circle',{cx:M.X(1.2+i*2.1), cy:M.Y(0.6+j*1.7), r:5, fill:'none', stroke:'#5A88A8','stroke-width':1.5},c.svg);
+         el('circle',{cx:M.X(1.2+i*2.1), cy:M.Y(0.6+j*1.7), r:1.3, fill:'#5A88A8'},c.svg);
+       }
+       el('circle',{cx:M.X(3.4), cy:M.Y(3.2), r:0.9*M.s, fill:'none', stroke:GOLD,'stroke-width':3},c.svg);
+       label(c, 2.6,1.7, 'slow: tight circle', {fs:12, color:'#8A5A24', italic:true});
+       el('circle',{cx:M.X(7.2), cy:M.Y(3.2), r:2.1*M.s, fill:'none', stroke:GREEN,'stroke-width':3},c.svg);
+       label(c, 6.3,0.35, 'fast: wide circle — SAME lap time', {fs:12, color:'#2E7D4F', italic:true});
+       label(c, 1.2,6.6, 'B out of the page everywhere', {fs:11.5, color:'#5A88A8', italic:true});
+     } },
    { say:"Wires: each element feels I d-ell cross B, and a straight wire in a uniform field carries F equals I L B sine theta. The elegant theorem: in a UNIFORM field, any curved wire feels exactly the force of its straight CHORD — and a closed loop feels none at all. The wiggles cancel among themselves.",
-     pose:'point',
+     pose:'point', solo:true,
      board:['F = ILB\\sin\\theta',
-            {t:'Uniform field: curved wire ≡ its chord; closed loop → zero net force.'}] },
+            {t:'Uniform field: curved wire ≡ its chord; closed loop → zero net force.'}],
+     action(c){
+       const {M}=c;
+       const pts=[]; for(let i=0;i<=50;i++){const u=i/50;
+         pts.push(M.X(1.4+7.2*u)+','+M.Y(2.2+1.6*Math.sin(3*Math.PI*u)*Math.exp(-0.5*u)+1.0*Math.sin(Math.PI*u)));}
+       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#8A5A24','stroke-width':3.5},c.svg);
+       dashLine(c, 1.4,2.2, 8.6,2.2, {color:GREEN, w:2.5});
+       label(c, 4.2,1.5, 'the chord', {fs:13, color:GREEN, italic:true});
+       arrow(c, 5.0,4.4, 5.0,6.2, {color:PURPLE, w:3, label:'same F for both', fs:12.5});
+       label(c, 1.4,0.5, 'the wiggles cancel among themselves', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"But a loop DOES feel torque. Its personality compresses into the dipole moment mu equals N I A, normal by the right-hand rule; the field twists it with tau equals mu B sine theta and banks energy minus mu dot B. Stable aligned, unstable reversed — the physics of every electric motor and every compass needle.",
-     pose:'write',
-     board:['\\mu = NIA, \\qquad \\tau = \\mu B\\sin\\theta, \\qquad U = -\\vec\\mu\\cdot\\vec B'] },
+     pose:'write', solo:true,
+     board:['\\mu = NIA, \\qquad \\tau = \\mu B\\sin\\theta, \\qquad U = -\\vec\\mu\\cdot\\vec B'],
+     action(c){
+       const {M}=c;
+       [1.4,2.9,4.4,5.9].forEach(y=>arrow(c, 0.8,y, 10.2,y, {color:'#8A7D60', w:2, head:8}));
+       label(c, 9.6,6.5, 'B', {fs:14, color:'#8A7D60', italic:true});
+       el('ellipse',{cx:M.X(5.0), cy:M.Y(3.6), rx:0.5*M.s, ry:1.5*M.s, fill:'rgba(181,121,59,.2)', stroke:GOLD,'stroke-width':3.5, transform:`rotate(-25 ${M.X(5.0)} ${M.Y(3.6)})`},c.svg);
+       arrow(c, 5.0,3.6, 6.9,4.5, {color:RED, w:3.5, label:'μ = NIA', vec:true, fs:14});
+       arc(c, 5.0,3.6, 1.35, 0, 25, {color:PURPLE, w:2.5, label:'τ'});
+       label(c, 2.0,0.5, 'the torque campaigns for alignment: every motor, every compass', {fs:12, color:'#8A5A24', italic:true});
+     } },
    { say:"The magnetic force has the strangest employment contract in physics: always perpendicular, therefore NEVER doing work. It cannot speed a charge up, only redirect it — the eternal traffic officer of the cosmos. Yet with nothing but detours it builds cyclotrons, mass spectrometers, and the aurora. One can accomplish a great deal by refusing to push forward.",
-     pose:'think',
-     board:[{t:'F ⊥ v always: the magnetic force does no work — it merely rearranges everyone’s plans.'}] },
+     pose:'think', solo:true,
+     board:[{t:'F ⊥ v always: the magnetic force does no work — it merely rearranges everyone’s plans.'}],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5.0), cy:M.Y(3.2), r:2.4*M.s, fill:'none', stroke:'#B0A488','stroke-width':2,'stroke-dasharray':'7,5'},c.svg);
+       [[0,1],[Math.PI/2,1],[Math.PI,1],[3*Math.PI/2,1]].forEach(([a,_])=>{
+         const x=5.0+2.4*Math.cos(a), y=3.2+2.4*Math.sin(a);
+         el('circle',{cx:M.X(x), cy:M.Y(y), r:6, fill:RED},c.svg);
+         arrow(c, x,y, x-1.5*Math.sin(a), y+1.5*Math.cos(a), {color:GREEN, w:2.5, head:8});
+         arrow(c, x,y, x-1.1*Math.cos(a), y-1.1*Math.sin(a), {color:PURPLE, w:2.5, head:8});
+       });
+       label(c, 8.3,5.9, 'v (tangent)', {fs:12, color:GREEN, italic:true});
+       label(c, 5.9,3.0, 'F (radial)', {fs:12, color:PURPLE, italic:true});
+       label(c, 2.4,-0.4, 'always perpendicular → the speedometer never moves', {fs:12.5, color:'#8A5A24', italic:true});
+     } },
    { say:"And the HALL EFFECT, the experiment that identified the electron's role in metals: carriers in a current-carrying strip get shoved to one edge until the piled-up charge pushes back — q E-H equals q v-d B — leaving a measurable Hall voltage across the width. Its SIGN names the carriers; its size measures n or B. Strategy: right hand always ready, radians and signs disciplined, and remember the force never does work. To the examples.",
      pose:'excited',
      board:['eE_H = ev_dB \\Rightarrow V_H = \\frac{IB}{net}',
-            {t:'Strategy: right-hand rule (flip for −q) · circles from r = mv/qB · chord theorem · sign of V_H names the carrier.'}] },
+            {t:'Strategy: right-hand rule (flip for −q) · circles from r = mv/qB · chord theorem · sign of V_H names the carrier.'}],
+     solo:true,
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.4), y:M.Y(4.6), width:7.6*M.s, height:2.6*M.s, rx:4, fill:'rgba(201,143,82,.25)', stroke:'#8A5A24','stroke-width':2.5},c.svg);
+       arrow(c, 9.4,3.3, 10.6,3.3, {color:GOLD, w:3, label:'I', fs:13});
+       for(let i=0;i<6;i++) textAt(c, 2.0+i*1.3, 4.15, '−', {fs:16, color:'#2E6DA4'});
+       for(let i=0;i<6;i++) textAt(c, 2.0+i*1.3, 1.85, '+', {fs:14, color:'#C0392B'});
+       el('circle',{cx:M.X(5.2), cy:M.Y(3.3), r:6, fill:'none', stroke:'#5A88A8','stroke-width':1.8},c.svg);
+       el('line',{x1:M.X(5.2)-4,y1:M.Y(3.3)-4,x2:M.X(5.2)+4,y2:M.Y(3.3)+4,stroke:'#5A88A8','stroke-width':1.8},c.svg);
+       el('line',{x1:M.X(5.2)-4,y1:M.Y(3.3)+4,x2:M.X(5.2)+4,y2:M.Y(3.3)-4,stroke:'#5A88A8','stroke-width':1.8},c.svg);
+       label(c, 5.7,2.8, 'B in', {fs:11.5, color:'#5A88A8', italic:true});
+       arrow(c, 0.9,4.2, 0.9,2.4, {color:PURPLE, w:2.5, label:'V_H', fs:13, side:-1});
+       label(c, 1.5,6.3, 'carriers shoved to one edge — the edge’s sign names them', {fs:12, color:'#8A5A24', italic:true});
+     } },
   ]
 },
 
