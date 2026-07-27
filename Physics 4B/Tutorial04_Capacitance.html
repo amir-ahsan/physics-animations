@@ -907,7 +907,11 @@ const EXAMPLES = [
    { say:"First, the ritual sacrifice of units: 200 square centimetres is 2 times ten to the minus 2 square metres — centimetres SQUARED means the factor of ten to the minus 4, the single most profitable conversion to remember. Then: epsilon-nought times the area, over one millimetre — 0.18 nanofarads.",
      pose:'write',
      board:['A = 200\\ \\mathrm{cm^2} = 200\\times10^{-4} = 2.0\\times10^{-2}\\ \\mathrm{m^2}',
-            'C = \\frac{(8.85\\times10^{-12})(2.0\\times10^{-2})}{1.0\\times10^{-3}} = 1.8\\times10^{-10}\\ \\mathrm F = 0.18\\ \\mathrm{nF}'] },
+            'C = \\frac{(8.85\\times10^{-12})(2.0\\times10^{-2})}{1.0\\times10^{-3}} = 1.8\\times10^{-10}\\ \\mathrm F = 0.18\\ \\mathrm{nF}'],
+     action(c){
+       arrow(c, 22.5,-5, 43.5,-5, {color:'#8A7D60', w:2, label:'d = 1.0 mm', fs:11, head:8, side:-1});
+       textAt(c, 6,52, 'A = 2.0×10⁻² m²', {fs:11.5, italic:true, anchor:'middle'});
+     } },
    { say:"Connect 12 volts and the charge marches on: Q equals C V — 2.1 nanocoulombs. Watch the plates load up, positive on the left, negative on the right, rigidly equal and opposite. A capacitor never stores NET charge; it stores separation. Separation is the commodity, and it is worth pausing on that: the plates hold equal and opposite charges, net zero, yet the ARRANGEMENT stores energy — organisation itself, bottled and sold by the farad.",
      pose:'point',
      board:['Q = CV = (1.77\\times10^{-10})(12) = 2.1\\times10^{-9}\\ \\mathrm C = 2.1\\ \\mathrm{nC}'],
@@ -959,7 +963,15 @@ const EXAMPLES = [
    { say:"Collapse. The parallel pair: 4 plus 4 — 8 microfarads. That 8 now sits in series with C-one's 8: reciprocals add, one eighth plus one eighth is one quarter — 4 microfarads for the whole network. Note the eternal rule: series makes capacitance SMALLER — the gaps add up.",
      pose:'write',
      board:['C_{23} = C_2 + C_3 = 4.0 + 4.0 = 8.0\\ \\mu\\mathrm F',
-            'C_{\\rm eq} = \\left(\\frac{1}{8.0} + \\frac{1}{8.0}\\right)^{-1} = 4.0\\ \\mu\\mathrm F'] },
+            'C_{\\rm eq} = \\left(\\frac{1}{8.0} + \\frac{1}{8.0}\\right)^{-1} = 4.0\\ \\mu\\mathrm F'],
+     action(c){
+       const {M}=c;
+       /* collapse annotations: bracket the parallel pair, then the whole network */
+       el('rect',{x:M.X(4.2), y:M.Y(2.85), width:M.X(8.3)-M.X(4.2), height:M.Y(1.1)-M.Y(2.85),
+         fill:'none', stroke:GREEN,'stroke-width':1.8,'stroke-dasharray':'6,4', rx:8},c.svg);
+       textAt(c, 6.25,0.55, 'C₂₃ = 8.0 μF', {fs:12.5, color:GREEN, anchor:'middle'});
+       textAt(c, 3.6,4.7, 'C_eq = 4.0 μF (whole network)', {fs:12.5, color:PURPLE});
+     } },
    { say:"Total charge from the battery: C-equivalent times V — 4 microfarads times 24 volts — 96 microcoulombs. Series elements ALL carry this charge; it has nowhere else to go. So C-one holds 96 microcoulombs, and the parallel pair holds 96 between them.",
      pose:'point',
      board:['Q = C_{\\rm eq}V = (4.0\\ \\mu\\mathrm F)(24\\ \\mathrm V) = 96\\ \\mu\\mathrm C = Q_1'],
@@ -1013,8 +1025,11 @@ const EXAMPLES = [
    { say:"The capacitance jumps by the factor kappa: 6 becomes 15 microfarads. But the charge cannot change — so the voltage must fall: Q over C, 600 over 15 — 40 volts. Equivalently, V-nought over kappa. The same charge, held more comfortably. Same charge, lower voltage, more capacitance — the dielectric has made the capacitor a more gracious host, holding the identical guests with less electrical strain.",
      pose:'write',
      board:['C = \\kappa C_0 = (2.5)(6.0) = 15\\ \\mu\\mathrm F',
-            'V = \\frac{Q}{C} = \\frac{600\\ \\mu\\mathrm C}{15\\ \\mu\\mathrm F} = 40\\ \\mathrm V = \\frac{V_0}{\\kappa}'] },
-   { say:"The energy. Before: half C-nought V-nought squared — 30 millijoules. After — use the form Q squared over 2 C, because Q is what we trust here — 12 millijoules. The energy FELL by 18 millijoules. Watch the bars. Where did 18 millijoules go? Into pulling the slab inward — the field does WORK on the dielectric, drawing it in like a doormat into a vacuum cleaner. Energy bookkeeping never leaves a line blank.",
+            'V = \\frac{Q}{C} = \\frac{600\\ \\mu\\mathrm C}{15\\ \\mu\\mathrm F} = 40\\ \\mathrm V = \\frac{V_0}{\\kappa}'],
+     action(c){
+       textAt(c, 33,55, 'V: 100 V → 40 V   (Q trapped at 600 μC)', {fs:12.5, anchor:'middle', color:'#8A5A24', italic:true});
+     } },
+   { say:"The energy. Before: half C-nought V-nought squared — 30 millijoules. After — use the form Q squared over 2 C, because Q is what we trust here — 12 millijoules. The energy FELL by 18 millijoules. Watch the bars. Energy bookkeeping never leaves a line blank — so hold the question for a moment: where did 18 millijoules go?",
      pose:'write',
      board:['U_0 = \\tfrac12 C_0V_0^2 = \\tfrac12(6.0\\times10^{-6})(100)^2 = 3.0\\times10^{-2}\\ \\mathrm J',
             'U = \\frac{Q^2}{2C} = \\frac{(6.0\\times10^{-4})^2}{2(15\\times10^{-6})} = 1.2\\times10^{-2}\\ \\mathrm J'],
@@ -1063,7 +1078,13 @@ const EXAMPLES = [
    { say:"Step two, integrate from the inner conductor to the outer — from plus to minus. The integral of d r over r is the logarithm: log of b minus log of a — the log of the RATIO b over a. Every step on the board; no 'clearly' anywhere. The logarithm is geometry's signature for cylinders — field thinning as one over r, summed, always yields a log of the ratio. Learn to expect it and coaxial problems lose their menace.",
      pose:'write',
      board:['V = \\int_a^b E\\,dr = \\frac{Q}{2\\pi\\varepsilon_0 L}\\int_a^b\\frac{dr}{r} = \\frac{Q}{2\\pi\\varepsilon_0 L}\\Big[\\ln r\\Big]_a^b',
-            'V = \\frac{Q}{2\\pi\\varepsilon_0 L}\\,\\ln\\!\\frac{b}{a}'] },
+            'V = \\frac{Q}{2\\pi\\varepsilon_0 L}\\,\\ln\\!\\frac{b}{a}'],
+     action(c){
+       /* the integration path: radially from a to b */
+       const rad=210*Math.PI/180;
+       arrow(c, 2.1*Math.cos(rad), 2.1*Math.sin(rad), 5.85*Math.cos(rad), 5.85*Math.sin(rad),
+         {color:RED, w:3, label:'path a → b', fs:12, dash:'6,4'});
+     } },
    { say:"Step three, divide — and watch Q evaporate, as promised. C equals 2 pi epsilon-nought L over the log of b over a. Now we put in the numbers: b over a is 3, log of 3 is 1.099, and out comes 7.6 picofarads. Small — picofarads are the pocket change of capacitance — but at radio frequencies, decisive.",
      pose:'write',
      board:['C = \\frac{Q}{V} = \\frac{2\\pi\\varepsilon_0 L}{\\ln(b/a)}',
@@ -1107,7 +1128,13 @@ const EXAMPLES = [
      } },
    { say:"Limit one: send the outer sphere to infinity. a b over b minus a tends to a, and C tends to 4 pi epsilon-nought a — the capacitance of a LONE sphere in empty space. For our 5 centimetre sphere, that is just 5.6 picofarads. The nearby shell had raised it sixfold; capacitance loves company.",
      pose:'point',
-     board:['b\\to\\infty:\\ \\frac{ab}{b-a}\\to a \\;\\Rightarrow\\; C \\to 4\\pi\\varepsilon_0 a = 5.6\\ \\mathrm{pF}\\ (\\text{isolated sphere})'] },
+     board:['b\\to\\infty:\\ \\frac{ab}{b-a}\\to a \\;\\Rightarrow\\; C \\to 4\\pi\\varepsilon_0 a = 5.6\\ \\mathrm{pF}\\ (\\text{isolated sphere})'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(7)-M.X(0)),fill:'none',stroke:'#B0A488',
+         'stroke-width':2.5,'stroke-dasharray':'8,6'},c.svg);
+       textAt(c, 5.2,5.6, 'b → ∞', {fs:13, italic:true, color:'#8A7D60'});
+     } },
    { say:"Limit two: squeeze the gap, b equals a plus d with d tiny. Then a b is essentially a squared, and C becomes 4 pi epsilon-nought a squared over d — but 4 pi a squared is the sphere's AREA. Epsilon-nought A over d: the parallel-plate formula, hiding inside the sphere all along. When the gap is thin, the plates cannot tell they are curved. Two limits, both passed — the formula is telling the truth.",
      pose:'excited',
      board:['b = a+d,\\ d\\ll a:\\ C \\approx \\frac{4\\pi\\varepsilon_0 a^2}{d} = \\frac{\\varepsilon_0 A}{d},\\quad A = 4\\pi a^2\\ \\checkmark',

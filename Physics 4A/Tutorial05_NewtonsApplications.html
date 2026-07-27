@@ -807,7 +807,7 @@ const EXAMPLES = [
        arrow(c, 4.4,2.5, 4.4,0.4, {color:RED, w:3, label:'mg', vec:true, fs:14});
        arrow(c, 4.4,2.5, 3.11,1.73, {color:RED, dash:'5,4', w:2, label:'mg sinθ', fs:12, side:-1});
        arrow(c, 4.4,2.5, 5.17,1.22, {color:RED, dash:'5,4', w:2, label:'mg cosθ', fs:12});
-       arc(c, 4.4,2.5, 1.0, 250, 270, {color:'#888', label:'θ'});
+       arc(c, 4.4,2.5, 1.0, 270, 301, {color:'#888', label:'θ'});
      } },
    { say:"Circular dynamics: something must PROVIDE v squared over R of inward force — tension, gravity, friction, a banked road. Centripetal force is a job description, not a new force, and there is no outward 'centrifugal force' to draw. Point the positive radial axis at the centre and demand that the real forces supply the required sum.",
      solo:true, pose:'point',
@@ -869,19 +869,23 @@ const EXAMPLES = [
   steps:[
    { say:"Static friction — the most misunderstood force in the building. It is NOT always mu-s times n. It is whatever is needed to prevent sliding, UP TO that maximum. A bouncer with a limit, not a fixed fee. Today we find out whether 20 newtons gets past him.",
      pose:'talk',
-     board:[{t:'m = 10.0 kg, μs = 0.300, μk = 0.200, push F = 20.0 N. Does it move?'}] },
+     board:[{t:'m = 10.0 kg, μs = 0.300, μk = 0.200, push F = 20.0 N. Does it move?'}],
+     action(c){
+       boxAt(c, 5,0, 5,5, {});
+       textAt(c, 5,2.2, '10.0 kg', {fs:14, color:'#6B4A1E', anchor:'middle'});
+       arrow(c, 0.5,2.5, 2.4,2.5, {color:RED, label:'20 N', fs:14});
+     } },
    { say:"First, the ceiling: the maximum static friction available is mu-s times n — and on level ground n is simply m g. Point-three times 10 times 9.8 — 29.4 newtons. That is the bouncer's limit. Notice the philosophy of static friction: it is not a force with a fixed opinion but a force with a MAXIMUM — it supplies exactly what the situation demands, up to its limit, like a good butler with a firm contract.",
      pose:'write',
      board:['f_{s,\\max} = \\mu_s n = \\mu_s mg = (0.300)(10.0)(9.80) = 29.4\\ \\mathrm{N}'],
      action(c){
-       boxAt(c, 5,0, 5,5, {});
-       arrow(c, 0.5,2.5, 2.4,2.5, {color:RED, label:'20 N', fs:14});
        arrow(c, 5,5.1, 5,8.3, {color:BLUE, w:3, label:'n', vec:true, fs:14});
        arrow(c, 5,2.5, 5,-0.9, {color:'#8A4326', w:3, label:'mg', vec:true, fs:13, side:-1});
      } },
    { say:"Our worker offers 20 newtons. Twenty is less than 29.4. The crate consults the arithmetic... and declines to move. No drama, no motion, no paperwork. Static friction matched those 20 newtons exactly, mirror-perfect, and will match 21, 25, or 29 with the same silent competence — until the ceiling, where it resigns without notice.",
      pose:'point',
-     board:['20.0\\ \\mathrm{N} < 29.4\\ \\mathrm{N} \\;\\Rightarrow\\; \\text{the crate does NOT move}'] },
+     board:['20.0\\ \\mathrm{N} < 29.4\\ \\mathrm{N} \\;\\Rightarrow\\; \\text{the crate does NOT move}'],
+     action(c){ textAt(c, 5, 6.6, 'push 20 N < ceiling 29.4 N → it stays put', {fs:13, color:'#8A5A24', italic:true, anchor:'middle'}); } },
    { say:"So what friction acts? Here is the part students get wrong on principle: NOT 29.4. The crate is in equilibrium, so friction matches the push exactly: 20 newtons, no more. Static friction is self-adjusting — it does precisely enough, like a civil servant near retirement.",
      pose:'write',
      board:['x:\\; F - f_s = 0 \\;\\Rightarrow\\; f_s = 20.0\\ \\mathrm{N} \\quad (\\text{NOT } 29.4\\ \\mathrm{N})',
@@ -932,9 +936,10 @@ const EXAMPLES = [
        arrow(c, 8.2,2.2, 9.9,1.22, {color:'#8A7D60', w:2, label:'x', fs:13, side:-1});
        arrow(c, 8.2,2.2, 9.18,3.9, {color:'#8A7D60', w:2, label:'y', fs:13});
      } },
-   { say:"The y-equation, perpendicular to the slope, where nothing accelerates: n equals m g cosine theta — 5 times 9.8 times 0.866 — 42.4 newtons. Note it is LESS than the full weight; the slope only asks the surface to carry the perpendicular share.",
+   { say:"The y-equation, perpendicular to the slope, where nothing accelerates: n equals m g cosine theta — 5 times 9.8 times 0.866 — 42.4 newtons. Note it is LESS than the full weight of 49 newtons; the slope only asks the surface to carry the perpendicular share.",
      pose:'write',
-     board:['y:\\; n = mg\\cos\\theta = (5.00)(9.80)\\cos 30.0^{\\circ} = 42.4\\ \\mathrm{N}'] },
+     board:['y:\\; n = mg\\cos\\theta = (5.00)(9.80)\\cos 30.0^{\\circ} = 42.4\\ \\mathrm{N}\\;(<mg = 49.0\\ \\mathrm{N})'],
+     action(c){ textAt(c, 6.0,6.55, 'n = 42.4 N', {fs:13, color:BLUE, italic:true}); } },
    { say:"The x-equation, down the slope: gravity's component m g sine theta, minus friction mu-k n. Divide by m — watch the mass CANCEL — and a equals g times sine theta minus mu-k cosine theta. Watch how the tilted axes earned their keep: one clean equation per direction, no cross-talk, and the acceleration reads straight off. Choose coordinates to flatter the physics, and the physics returns the compliment.",
      pose:'write',
      board:['x:\\; ma = mg\\sin\\theta - \\mu_k mg\\cos\\theta \\;\\Rightarrow\\; a = g(\\sin\\theta - \\mu_k\\cos\\theta)'] },
@@ -989,7 +994,10 @@ const EXAMPLES = [
      board:['\\mu_s mg = \\frac{mv_{\\max}^2}{R} \\;\\Rightarrow\\; v_{\\max} = \\sqrt{\\mu_s g R}'] },
    { say:"Now we put in the numbers: root of 0.5 times 9.8 times 40 — root 196 — a satisfyingly exact 14 metres per second, about 50 kilometres per hour. Above that, the required centripetal force exceeds what friction can invoice, and the car drifts wide, into geometry it did not choose.",
      pose:'write',
-     board:['v_{\\max} = \\sqrt{\\mu_s g R} = \\sqrt{(0.500)(9.80)(40.0)} = \\sqrt{196} = 14.0\\ \\mathrm{m/s} \\approx 50\\ \\mathrm{km/h}'] },
+     board:['v_{\\max} = \\sqrt{\\mu_s g R} = \\sqrt{(0.500)(9.80)(40.0)} = \\sqrt{196} = 14.0\\ \\mathrm{m/s} \\approx 50\\ \\mathrm{km/h}'],
+     action(c){
+       arrow(c, 12.4,-38.0, 29.5,-32.4, {color:GREEN, w:3, label:'v_max = 14 m/s', fs:13, side:-1});
+     } },
    { say:"The checks: the mass cancelled, so a lorry and a hatchback share the same limit on the same tyres — counterintuitive and true. And on a wet road, mu-s drops, v-max falls as its square root. Physics' rain warning is built into the formula. Formulas that carry their own safety advice are rather rare; treat this one with the respect owed to a law that has ruled every wet roundabout since the invention of rain.",
      pose:'excited',
      board:[{t:'Checks: mass-independent ✓; wet road → v_max ∝ √μs drops ✓. Slow down in rain — signed, Newton.'}] },
@@ -1036,7 +1044,8 @@ const EXAMPLES = [
      board:['\\tan\\theta = \\frac{v^2}{gR}'] },
    { say:"Now we put in the numbers: 16.9 squared is 286; g R is 784. The ratio is 0.364, and theta is 20 degrees. At exactly 16.9 metres per second, the road holds the car with pure geometry — no grip required, which is why motorway engineers sleep well. Drive faster than the design speed and you drift outward; slower, and you slither inward — the bank is a handshake between road and driver, honoured exactly at one speed.",
      pose:'write',
-     board:['\\tan\\theta = \\frac{v^2}{gR} = \\frac{(16.9)^2}{(9.80)(80.0)} = \\frac{286}{784} = 0.364 \\;\\Rightarrow\\; \\theta = \\tan^{-1}(0.364) = 20.0^{\\circ}'] },
+     board:['\\tan\\theta = \\frac{v^2}{gR} = \\frac{(16.9)^2}{(9.80)(80.0)} = \\frac{286}{784} = 0.364 \\;\\Rightarrow\\; \\theta = \\tan^{-1}(0.364) = 20.0^{\\circ}'],
+     action(c){ textAt(c, 4.0,0.45, 'θ = 20.0°', {fs:14, color:'#8A5A24', italic:true}); } },
    { say:"Now comes the check: drive slower than 16.9 and you tend to slide DOWN the bank; faster, UP it — in real life friction quietly absorbs the difference, like a good butler. And the design speed is mass-independent: the formula never asked what you drive, only how fast.",
      pose:'excited',
      board:[{t:'Check: slower → slides down-bank, faster → up-bank; friction covers the gap. Mass-independent ✓'}] },
@@ -1064,7 +1073,11 @@ const EXAMPLES = [
      action(c){ dashLine(c, 0,5, 3.2,5, {color:RED}); textAt(c, 2.35,5.28, 'v_t = 5.00 m/s (terminal)', {color:RED, fs:13, italic:true}); } },
    { say:"On we go to part b. The time constant, tau equals m over b — 0.510 seconds. Tau is the problem's metronome: it sets how quickly the truce is approached. Small tau, quick surrender; large tau, a long argument with the atmosphere. Every exponential process in nature carries such a metronome — capacitors charging, coffee cooling, epidemics fading — and once you can read a time constant, all of them become the same story in different costumes.",
      pose:'write',
-     board:['\\tau = \\frac{m}{b} = \\frac{2.00}{3.92} = 0.510\\ \\mathrm{s}'] },
+     board:['\\tau = \\frac{m}{b} = \\frac{2.00}{3.92} = 0.510\\ \\mathrm{s}'],
+     action(c){
+       dashLine(c, 0.510,0, 0.510,5, {color:'#999'});
+       textAt(c, 0.56,0.6, 'τ = 0.510 s', {fs:12, color:'#8A7D60', italic:true});
+     } },
    { say:"And now, part c. Separate the variables — all the v's to one side, all the t's to the other, like feuding relatives at a wedding — and integrate. The logarithm appears, as it always does when growth feeds on itself. Separation of variables is the diplomat of differential equations: it cannot solve every dispute, but where it works, both sides go home content and integrated.",
      pose:'write',
      board:['\\frac{dv}{v_t - v} = \\frac{b}{m}dt \\;\\Rightarrow\\; \\ln\\!\\left(\\frac{v_t}{v_t - v}\\right) = \\frac{t}{\\tau}'] },

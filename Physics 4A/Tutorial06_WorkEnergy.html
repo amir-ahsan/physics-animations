@@ -882,7 +882,11 @@ const EXAMPLES = [
    { say:"Welcome to work — the physicist's kind, measured in joules rather than misery. Work is force times displacement times the cosine of the angle between them. Today's cast: a student lifting a box slowly, steadily, and — as we shall see — with absolutely no net work to show for it.",
      pose:'talk',
      board:[{t:'m = 12.0 kg, h = 1.50 m, constant speed.'},
-            'W = \\vec F\\cdot\\vec s = Fs\\cos\\phi'] },
+            'W = \\vec F\\cdot\\vec s = Fs\\cos\\phi'],
+     action(c){
+       dashLine(c, -2.6,1.5, 2.6,1.5, {color:'#B0A488'});
+       textAt(c, 1.7,1.72, 'h = 1.50 m', {fs:13, color:'#8A7D60', italic:true});
+     } },
    { say:"Constant speed means zero acceleration, so the student's upward force exactly matches the weight: 12 times 9.8 — about 118 newtons. The box rises serenely, a triumph of equilibrium over ambition. Equilibrium during motion strikes students as contradictory — surely lifting requires winning? — but no: constant velocity is a tie, and a tie needs only a matched force, not a superior one.",
      pose:'point',
      board:['\\text{Constant speed} \\Rightarrow F = mg = (12.0)(9.80) = 118\\ \\mathrm{N}'],
@@ -894,10 +898,12 @@ const EXAMPLES = [
      } },
    { say:"The student's force points up; the displacement points up; the angle between them is zero and cosine of zero is one. Work by the student: plus 176 joules. Honest labour, honestly counted. Work, note, cares nothing for effort, sweat, or moral character — only force, distance, and the angle between them. The student's biceps may file a complaint; the ledger will not read it.",
      pose:'write',
-     board:['W_{\\rm student} = Fs\\cos 0^{\\circ} = +mgh = (12.0)(9.80)(1.50) = +176\\ \\mathrm{J}'] },
+     board:['W_{\\rm student} = Fs\\cos 0^{\\circ} = +mgh = (12.0)(9.80)(1.50) = +176\\ \\mathrm{J}'],
+     action(c){ textAt(c, 1.75,2.5, '+176 J', {fs:14, color:GREEN, italic:true}); } },
    { say:"Gravity, meanwhile, points DOWN while the box moves UP — the angle is 180 degrees, cosine minus one. Work by gravity: minus 176 joules. Gravity is not being difficult; it is simply keeping accounts in the other column. Keep both entries: the plus 176 and the minus 176 cancel because the box neither sped up nor slowed down. Energy accounting balances to zero for any journey at constant speed — the first of many perfectly boring, perfectly correct audits.",
      pose:'write',
-     board:['W_{\\rm grav} = mgh\\cos 180^{\\circ} = -mgh = -(12.0)(9.80)(1.50) = -176\\ \\mathrm{J}'] },
+     board:['W_{\\rm grav} = mgh\\cos 180^{\\circ} = -mgh = -(12.0)(9.80)(1.50) = -176\\ \\mathrm{J}'],
+     action(c){ textAt(c, -2.7,0.35, '−176 J', {fs:14, color:RED, italic:true}); } },
    { say:"Net work: plus 176 minus 176 — zero. And the check, via the work-energy theorem: net work equals the CHANGE in kinetic energy, and at constant speed that change is zero. Perfect agreement. The student's energy was not wasted — it was deposited with gravity, retrievable on the way down. Gravity pays no interest, but it never loses the principal.",
      pose:'excited',
      board:['W_{\\rm net} = 0 = \\Delta K \\;\\checkmark \\quad \\text{(constant speed)}',
@@ -932,7 +938,8 @@ const EXAMPLES = [
    { say:"Vertically nothing accelerates, so the normal force is the weight minus the rope's upward help, T sine phi — one hundred newtons times 0.600, sixty newtons of gentle lift — leaving 136 newtons for the floor to carry. The rope is quietly doing part of the floor's job, and friction, which feeds on the normal force, becomes correspondingly cheaper.",
      pose:'write',
      board:['y:\\; n + T\\sin\\phi - mg = 0 \\;\\Rightarrow\\; n = mg - T\\sin\\phi = 196 - (100)(0.600) = 136\\ \\mathrm{N}',
-            {t:'(the x-direction is handled by the work–energy theorem below)'}] },
+            {t:'(the x-direction is handled by the work–energy theorem below)'}],
+     action(c){ textAt(c, 2.2,3.45, 'n = 136 N < mg = 196 N', {fs:12, color:BLUE, italic:true}); } },
    { say:"Now the invoices. Tension: 100 times 5 times cosine 36.9 — plus 400 joules. Friction: minus mu-k n s — minus 136 joules. The normal force and gravity? Both perpendicular to the motion: zero. Perpendicular forces work hard at doing nothing. Do savour the zero-work entries: the normal force pushes all day and accomplishes nothing, like a doorman applauding traffic. Perpendicularity is the only force diet that always works.",
      pose:'write',
      board:['W_T = Ts\\cos\\phi = (100)(5.00)(0.800) = +400\\ \\mathrm{J}',
@@ -976,7 +983,11 @@ const EXAMPLES = [
      } },
    { say:"Integrate: 3 x squared integrates to x cubed. Evaluate from 0 to 2: eight minus nothing — 8 joules. The area of that curved sliver, computed without a single approximation. Newton and Leibniz argued for decades over who owned this trick; we get it for free.",
      pose:'write',
-     board:['W = \\int_0^{2.00} 3.00\\,x^2\\,dx = \\Big[x^3\\Big]_0^{2.00} = 8.00\\ \\mathrm{J}'] },
+     board:['W = \\int_0^{2.00} 3.00\\,x^2\\,dx = \\Big[x^3\\Big]_0^{2.00} = 8.00\\ \\mathrm{J}'],
+     action(c){
+       dashLine(c, 0,12, 2,12, {}); dashLine(c, 2,0, 2,12, {});
+       textAt(c, 1.45,2.6, 'area = 8.00 J', {fs:13, color:BLUE, italic:true, anchor:'middle'});
+     } },
    { say:"The work-energy theorem does the rest: 8 joules equals half m v squared, so v equals root 8 — 2.83 metres per second. Notice how the theorem happily digested a VARIABLE force — it never asked whether F held still, only what total work arrived. Robust laws make no small talk.",
      pose:'write',
      board:['W_{\\rm tot} = \\Delta K = \\tfrac12mv^2 \\;\\Rightarrow\\; v = \\sqrt{\\frac{2W}{m}} = \\sqrt{\\frac{2(8.00)}{2.00}} = 2.83\\ \\mathrm{m/s}'] },
@@ -1010,13 +1021,19 @@ const EXAMPLES = [
      } },
    { say:"Half k x-two squared minus half k x-one squared: 100 times, bracket, 0.04 minus 0.01, bracket — 3 joules exactly. Note the moral inside the subtraction: the SECOND centimetre of stretch costs three times the first. Springs, like tailors, charge quadratically for alterations.",
      pose:'write',
-     board:['W = \\tfrac12(200)\\big[(0.200)^2 - (0.100)^2\\big] = 100(0.0300) = 3.00\\ \\mathrm{J}'] },
+     board:['W = \\tfrac12(200)\\big[(0.200)^2 - (0.100)^2\\big] = 100(0.0300) = 3.00\\ \\mathrm{J}'],
+     action(c){ textAt(c, 0.15,8, 'W = 3.00 J', {fs:13, color:GREEN, italic:true, anchor:'middle'}); } },
    { say:"Now the trap, marked with flags: this is NOT half k times the CHANGE in x, squared — that gives 1 joule and a red mark on the exam. The second stretch is dearer than the first because the spring fights harder as it goes. Springs, like people, resist change in proportion to how far you have already pushed them.",
      pose:'think',
      board:[{t:'Trap: ½k(x₂−x₁)² = 1.00 J ≠ 3.00 J. Energies subtract; displacements do not square nicely.'}] },
    { say:"For part b, the motor. Constant velocity: the pull balances the 150-newton resistance exactly. Power is force times velocity — 150 times 4 — 600 watts. Six hundred joules of effort every second, forever, just to keep the score at nil-nil. Six hundred watts to stand perfectly still, energetically speaking — welcome to the thermodynamic truth of transport, where most of the fuel bill is spent arguing with resistance rather than going anywhere.",
      pose:'write',
-     board:['P = Fv = (150)(4.00) = 600\\ \\mathrm{W}'] },
+     board:['P = Fv = (150)(4.00) = 600\\ \\mathrm{W}'],
+     action(c){
+       boxAt(c, 0.05,37, 0.05,4.5, {});
+       arrow(c, 0.08,39.2, 0.14,39.2, {color:GREEN, w:2.5, label:'v = 4.00 m/s', fs:12, side:-1});
+       arrow(c, 0.145,35.5, 0.085,35.5, {color:RED, w:2.5, label:'150 N drag', fs:12});
+     } },
    { say:"Now comes the check: at constant speed the sled's kinetic energy never changes, yet the motor works furiously — every watt goes to the resistance, converted to heat in the snow. Zero net work, six hundred watts of expenditure. Ask any treadmill. Distinguish, always, between doing NET work and doing work NET of nothing: the motor's joules are real, spent, and warming Finland — they simply never appear in the kinetic column.",
      pose:'excited',
      board:[{t:'Check: ΔK = 0 while P = 600 W — all of it fed to friction. Constant speed is not free speed.'}] },
@@ -1050,7 +1067,7 @@ const EXAMPLES = [
        const g=el('g',{},c.svg);
        const r=el('rect',{width:34,height:30,fill:'#C98F52',stroke:'#8A5A24','stroke-width':2,rx:3},g);
        tween(u=>{
-         const s = 2.36*u*(2-u);              /* decelerating climb along the slope */
+         const s = 2.73*u*(2-u);              /* decelerating climb along the slope: d = 2.73 m */
          const x = 0.6+s*Math.cos(Math.PI/6), y = (0.6+s*Math.cos(Math.PI/6))*0.5774;
          const bx=M.X(x), by=M.Y(y);
          r.setAttribute('x',bx-17); r.setAttribute('y',by-30);
@@ -1060,7 +1077,11 @@ const EXAMPLES = [
      } },
    { say:"Solve for d: v-nought squared over 2 g times sine theta plus mu-k cosine theta. Now we put in the numbers: 36 over 2 times 9.8 times 0.673 — 2.73 metres of slope. Then, for one suspended instant at the top, the block is at rest and considering its options. I do enjoy that instant of poise at the top: kinetic energy exhausted, the block motionless, gravity and friction pausing to renegotiate their alliance before the return leg.",
      pose:'write',
-     board:['d = \\frac{v_0^2}{2g(\\sin\\theta + \\mu_k\\cos\\theta)} = \\frac{36.0}{2(9.80)(0.500+0.173)} = \\frac{36.0}{13.19} = 2.73\\ \\mathrm{m}'] },
+     board:['d = \\frac{v_0^2}{2g(\\sin\\theta + \\mu_k\\cos\\theta)} = \\frac{36.0}{2(9.80)(0.500+0.173)} = \\frac{36.0}{13.19} = 2.73\\ \\mathrm{m}'],
+     action(c){
+       dashLine(c, 0.6,0.35, 2.96,1.71, {color:GREEN, dash:'7,5'});
+       textAt(c, 1.35,1.45, 'd = 2.73 m', {fs:13, color:GREEN, italic:true});
+     } },
    { say:"Part b — the descent. Friction flips allegiance and now opposes the slide DOWN, so gravity's help is partially taxed: sine theta MINUS mu-k cosine theta. Friction has no loyalty, only a rule: oppose whatever motion presents itself. On the way up it conspired with gravity; on the way down it defects without a blush.",
      pose:'write',
      board:['\\tfrac12mv^2 = mg(\\sin\\theta - \\mu_k\\cos\\theta)\\,d',
@@ -1070,7 +1091,7 @@ const EXAMPLES = [
        const g=el('g',{},c.svg);
        const r=el('rect',{width:34,height:30,fill:'rgba(201,143,82,.5)',stroke:'#8A5A24','stroke-width':2,rx:3},g);
        tween(u=>{
-         const s = 2.36*(1-u*u);
+         const s = 2.73*(1-u*u);
          const x = 0.6+s*Math.cos(Math.PI/6), y = (0.6+s*Math.cos(Math.PI/6))*0.5774;
          const bx=M.X(x), by=M.Y(y);
          r.setAttribute('x',bx-17); r.setAttribute('y',by-30);

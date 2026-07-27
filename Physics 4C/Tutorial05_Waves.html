@@ -890,10 +890,19 @@ const EXAMPLES = [
      } },
    { say:"The wave speed: omega over k — 8.70 over 1.25 — six point nine six metres per second, toward PLUS x, because the sign between k x and omega t is negative: as t grows, x must grow to keep the phase fixed, so the pattern chases the positive direction.",
      pose:'write',
-     board:['v = \\frac{\\omega}{k} = \\frac{8.70}{1.25} = 6.96\\ \\mathrm{m/s}\\ \\ (\\text{toward } +x:\\ \\text{the } - \\text{ sign})'] },
+     board:['v = \\frac{\\omega}{k} = \\frac{8.70}{1.25} = 6.96\\ \\mathrm{m/s}\\ \\ (\\text{toward } +x:\\ \\text{the } - \\text{ sign})'],
+     action(c){
+       arrow(c, 7.6,-0.043, 10.2,-0.043, {color:GREEN, w:3, label:'v = 6.96 m/s', fs:12});
+     } },
    { say:"Now the OTHER speed — the string element's own bobbing. Differentiate with respect to time: the maximum transverse speed is omega A — 8.70 times 0.034 — 0.296 metres per second. The pattern outruns its own material more than twenty-fold. Hold both numbers side by side — pattern at nearly seven metres per second, material at a third — and you have the deepest fact about waves: the message and the messenger travel at utterly different speeds.",
      pose:'write',
-     board:['v_{y,\\max} = \\omega A = (8.70)(0.034) = 0.296\\ \\mathrm{m/s}'] },
+     board:['v_{y,\\max} = \\omega A = (8.70)(0.034) = 0.296\\ \\mathrm{m/s}'],
+     action(c){
+       el('circle',{cx:c.M.X(0.9),cy:c.M.Y(0),r:6,fill:RED},c.svg);
+       arrow(c, 0.9,0.006, 0.9,0.030, {color:RED, w:2.5, head:7});
+       arrow(c, 0.9,-0.006, 0.9,-0.030, {color:RED, w:2.5, head:7});
+       textAt(c, 1.25,-0.028, 'element bobs at ωA = 0.296 m/s', {fs:12, color:RED, italic:true});
+     } },
    { say:"The check is the comparison itself: element speed under five per cent of wave speed — as it must be for a gentle wave, since their ratio is 2 pi A over lambda, the steepness of the string. A wave is a rumour passing through a crowd: the rumour crosses town; each gossip merely leans to a neighbour.",
      pose:'excited',
      board:[{t:'Check: v_y,max/v = 2πA/λ ≈ 0.04 — small slope, gentle wave ✓. Pattern travels; material bobs.'}] },
@@ -919,7 +928,11 @@ const EXAMPLES = [
    { say:"Let us take part a. The linear density: three grams over 0.65 metres — 4.62 ten-to-the-minus-3 kilograms per metre. The speed: root of 82 over that — one hundred and thirty-three metres per second. A third of the speed of sound in air, running along a nylon thread.",
      pose:'write',
      board:['\\mu = \\frac{m}{L} = \\frac{3.00\\times10^{-3}}{0.650} = 4.62\\times10^{-3}\\ \\mathrm{kg/m}',
-            'v = \\sqrt{\\frac{82.0}{4.62\\times10^{-3}}} = 133\\ \\mathrm{m/s}'] },
+            'v = \\sqrt{\\frac{82.0}{4.62\\times10^{-3}}} = 133\\ \\mathrm{m/s}'],
+     action(c){
+       arrow(c, 0.66,0.03, 0.74,0.03, {color:BLUE, w:3, label:'F_T = 82.0 N', fs:11.5});
+       textAt(c, 0.2,0.062, 'μ = 4.62 g/m → v = 133 m/s', {fs:12, italic:true, color:'#8A5A24'});
+     } },
    { say:"For part b, the geometry. Fixed at both ends, the string's gentlest standing wave fits exactly HALF a wavelength between the posts — watch it breathe on the stage — so lambda-one is 2 L, one point three metres, and the fundamental is v over 2 L: one hundred and two and a half hertz.",
      pose:'point',
      board:['\\lambda_1 = 2L = 1.30\\ \\mathrm m, \\qquad f_1 = \\frac{v}{2L} = \\frac{133}{1.30} = 102.5\\ \\mathrm{Hz}'],
@@ -929,7 +942,11 @@ const EXAMPLES = [
      } },
    { say:"For part c, the tuning. The fundamental scales as the SQUARE ROOT of the tension — f-one equals root F-T over mu, over 2 L — so to lift the pitch, square the frequency ratio: new tension equals 82 times 110 over 102.5, squared — ninety-four point four newtons.",
      pose:'write',
-     board:['f_1 \\propto \\sqrt{F_T} \\;\\Rightarrow\\; F_T\\prime = F_T\\Big(\\frac{f\\prime}{f}\\Big)^2 = 82.0\\Big(\\frac{110}{102.5}\\Big)^2 = 94.4\\ \\mathrm N'] },
+     board:['f_1 \\propto \\sqrt{F_T} \\;\\Rightarrow\\; F_T\\prime = F_T\\Big(\\frac{f\\prime}{f}\\Big)^2 = 82.0\\Big(\\frac{110}{102.5}\\Big)^2 = 94.4\\ \\mathrm N'],
+     action(c){
+       arrow(c, 0.66,-0.03, 0.745,-0.03, {color:RED, w:3, label:'crank to 94.4 N', fs:11.5, side:-1});
+       textAt(c, 0.05,-0.062, '102.5 Hz → 110 Hz: +7% pitch costs +15% tension', {fs:11.5, italic:true, color:RED});
+     } },
    { say:"The check carries the guitarist's lament: a seven per cent correction of pitch demanded fifteen per cent more tension — the square at work, both ways. It is why fine tuning is fine, why strings snap at the top of their range, and why the tuning peg is a worm gear and not a lever. Respect the exponent.",
      pose:'excited',
      board:[{t:'Check: Δf/f = 7% → ΔF/F = 15% (the square) ✓. Small pitch moves need delicate tension moves.'}] },
@@ -967,7 +984,11 @@ const EXAMPLES = [
      } },
    { say:"The check is elegant and universal: notice a-y equals minus omega squared times y — every element of a sinusoidal wave is a little simple harmonic oscillator, its acceleration forever pointing home to y equals zero. Here the element sits below the axis and accelerates upward: velocity and acceleration disagree, which simply means the element is slowing on its way to the bottom of its swing. Oscillations, riding in single file.",
      pose:'excited',
-     board:['\\text{Check: } a_y = -\\omega^2y\\ (\\text{SHM, element by element}):\\ y<0 \\text{ here, so } a_y>0\\ \\checkmark'] },
+     board:['\\text{Check: } a_y = -\\omega^2y\\ (\\text{SHM, element by element}):\\ y<0 \\text{ here, so } a_y>0\\ \\checkmark'],
+     action(c){
+       dashLine(c, 1.2,-0.0198, 1.2,0, {color:'#8A7D60'});
+       textAt(c, 3.0,0.033, 'a_y = −ω²y: every element pulled home to the axis', {fs:12, italic:true, color:'#2E7D4F'});
+     } },
   ]
 },
 
@@ -985,7 +1006,12 @@ const EXAMPLES = [
    { say:"Average cosine squared over one wavelength — the workhorse identity: cosine squared is one half plus half the cosine of the doubled angle, and the doubled-angle term integrates to exactly zero over a full period. The mean is one half, today and always. So the kinetic energy per unit length averages one quarter mu omega squared A squared.",
      pose:'write',
      board:['\\frac{1}{\\lambda}\\int_0^\\lambda\\cos^2(kx-\\omega t)\\,dx = \\frac{1}{\\lambda}\\int_0^\\lambda\\frac{1+\\cos[2(kx-\\omega t)]}{2}dx = \\frac12',
-            '\\overline{\\frac{dK}{dx}} = \\tfrac14\\mu\\omega^2A^2'] },
+            '\\overline{\\frac{dK}{dx}} = \\tfrac14\\mu\\omega^2A^2'],
+     action(c){
+       plotCurve(c, x=>[x, -2.3+0.8*Math.pow(Math.cos(1.3*x),2)], 0.2, 10.2, {color:PURPLE, w:2.5, dur:1000});
+       dashLine(c, 0.2,-1.9, 10.2,-1.9, {color:'#8A7D60'});
+       textAt(c, 8.4,-1.62, 'cos²: mean = ½', {fs:12, italic:true, color:PURPLE});
+     } },
    { say:"The stretching of the string stores POTENTIAL energy too, and for a travelling wave it contributes an exactly EQUAL share — the element is most stretched precisely where it moves fastest, at the zero crossings. Total energy density: one half mu omega squared A squared, evenly split between motion and stretch.",
      pose:'point',
      board:['\\frac{dE}{dx} = \\underbrace{\\tfrac14\\mu\\omega^2A^2}_{\\rm kinetic} + \\underbrace{\\tfrac14\\mu\\omega^2A^2}_{\\rm elastic} = \\tfrac12\\mu\\omega^2A^2'],
@@ -999,7 +1025,11 @@ const EXAMPLES = [
    { say:"Numbers. The speed: root of 65 over 5.2 grams per metre — one hundred and eleven point eight. Omega: 2 pi times 120 — seven hundred and fifty-four. Assemble: half, times 5.2 ten-to-the-minus-3, times 754 squared, times six millimetres squared, times 111.8 — five point nine five watts. Now comes the check: watts from millimetres, because omega squared amplifies mercilessly — frequency is the wave's pay grade.",
      pose:'excited',
      board:['v = \\sqrt{\\frac{65}{5.2\\times10^{-3}}} = 111.8\\ \\mathrm{m/s}, \\qquad \\omega = 2\\pi(120) = 754.0\\ \\mathrm{rad/s}',
-            'P = \\tfrac12(5.2\\times10^{-3})(754.0)^2(6.0\\times10^{-3})^2(111.8) = 5.95\\ \\mathrm W'] },
+            'P = \\tfrac12(5.2\\times10^{-3})(754.0)^2(6.0\\times10^{-3})^2(111.8) = 5.95\\ \\mathrm W'],
+     action(c){
+       dashLine(c, 5.2,-2.1, 5.2,2.1, {color:GREEN, dash:'7,5'});
+       textAt(c, 5.45,-2.1, 'checkpoint: 5.95 J crosses each second', {fs:12, italic:true, color:'#2E7D4F'});
+     } },
   ]
 },
 
@@ -1027,7 +1057,12 @@ const EXAMPLES = [
      } },
    { say:"Write it out: d-F-y equals F-T times, bracket, the slope at x plus d-x minus the slope at x, close bracket. And the difference of a function's values across d-x, divided by d-x, is the very DEFINITION of its derivative — so the bracket is the second partial of y with respect to x, times d-x. The curvature. A curved element is pulled toward straightness; a straight one feels nothing.",
      pose:'write',
-     board:['dF_y = F_T\\Big[\\Big(\\frac{\\partial y}{\\partial x}\\Big)_{x+dx} - \\Big(\\frac{\\partial y}{\\partial x}\\Big)_{x}\\Big] = F_T\\,\\frac{\\partial^2y}{\\partial x^2}\\,dx'] },
+     board:['dF_y = F_T\\Big[\\Big(\\frac{\\partial y}{\\partial x}\\Big)_{x+dx} - \\Big(\\frac{\\partial y}{\\partial x}\\Big)_{x}\\Big] = F_T\\,\\frac{\\partial^2y}{\\partial x^2}\\,dx'],
+     action(c){
+       textAt(c, 6.5,1.6, 'slope at x+dx', {fs:11.5, italic:true, color:'#1D4568'});
+       textAt(c, 1.6,0.55, 'slope at x', {fs:11.5, italic:true, color:'#1D4568'});
+       textAt(c, 4.6,-0.35, 'their DIFFERENCE = curvature × dx', {fs:12, italic:true, color:'#8A5A24', anchor:'middle'});
+     } },
    { say:"Now Newton’s second law. The element's mass is mu d-x, its acceleration the second partial of y with respect to TIME. Set force equal to mass times acceleration, and watch d-x cancel from both sides — the equation cares nothing for how finely we sliced.",
      pose:'write',
      board:['F_T\\frac{\\partial^2y}{\\partial x^2}\\,dx = (\\mu\\,dx)\\frac{\\partial^2y}{\\partial t^2}',
@@ -1038,7 +1073,11 @@ const EXAMPLES = [
    { say:"Now comes the check: feed our travelling sine into the equation — the left side yields minus k squared y, the right minus omega squared y over v squared — and they balance precisely when v is omega over k. Consistency, closed. And a parting thought worth carrying to the next tutorial: ANY function of x minus v t solves this equation — pulses, wiggles, profanities scrawled on the string — all travel intact at v. The wave equation does not care what you say; only how fast it is permitted to travel.",
      pose:'excited',
      board:['y = A\\sin(kx-\\omega t):\\ -k^2y = -\\frac{\\omega^2}{v^2}y \\;\\Rightarrow\\; v = \\frac{\\omega}{k}\\ \\checkmark',
-            {t:'Any f(x − vt) solves it — every shape travels at the same v. On to sound.'}] },
+            {t:'Any f(x − vt) solves it — every shape travels at the same v. On to sound.'}],
+     action(c){
+       plotCurve(c, x=>[x, -0.95+0.75*Math.exp(-Math.pow((x-2.6)/0.55,2))+0.45*Math.exp(-Math.pow((x-3.6)/0.35,2))], 0.4, 9.6, {color:GREEN, w:3, dur:1000});
+       arrow(c, 4.6,-0.45, 6.4,-0.45, {color:GREEN, w:2.5, label:'any f(x − vt), same v', fs:12});
+     } },
   ]
 },
 ];

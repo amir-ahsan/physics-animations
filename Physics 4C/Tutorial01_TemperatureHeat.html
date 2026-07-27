@@ -801,8 +801,8 @@ const EXAMPLES = [
      solo:true,
      action(c){
        const {M}=c;
-       el('rect',{x:M.X(0.8), y:M.Y(95), width:5.4*M.s_x||150, height:26, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
-       el('rect',{x:M.X(0.8), y:M.Y(95), width:190, height:26, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'6,4'},c.svg);
+       el('rect',{x:M.X(0.8), y:M.Y(95), width:M.X(4.6)-M.X(0.8), height:26, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
+       el('rect',{x:M.X(0.8), y:M.Y(95), width:M.X(5.6)-M.X(0.8), height:26, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'6,4'},c.svg);
        label(c, 0.8,110, 'warm rod: ΔL = αL₀ΔT', {fs:12.5, color:'#7A5A28', italic:true});
        el('circle',{cx:M.X(8.6), cy:M.Y(60), r:34, fill:'#E4D6B8', stroke:'#8A5A24','stroke-width':2.5},c.svg);
        el('circle',{cx:M.X(8.6), cy:M.Y(60), r:18, fill:'#EFE7D8', stroke:'#8A5A24','stroke-width':2},c.svg);
@@ -889,7 +889,7 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'Steel: α = 1.2×10⁻⁵ K⁻¹, Y = 2.0×10¹¹ Pa, L₀ = 40.0 m, ΔT = 50 K, A = 2.5×10⁻² m².'},
             '\\Delta L = \\alpha L_0\\,\\Delta T'] },
-   { say:"For part a, symbol first, numbers second. Delta L equals alpha L-nought delta T: 1.2 ten-to-the-minus-5, times forty metres, times fifty kelvin — twenty-four millimetres. Watch the girder claim its extra length. Two and a half centimetres sounds humble until you remember the bridge cannot negotiate with it.",
+   { say:"For part a, symbol first, numbers second. Delta L equals alpha L-nought delta T: 1.2 ten-to-the-minus-5, times forty metres, times fifty kelvin — twenty-four millimetres. Watch the girder claim its extra length. Nearly two and a half centimetres sounds humble until you remember the bridge cannot negotiate with it.",
      pose:'point',
      board:['\\Delta L = (1.2\\times10^{-5})(40.0)(50) = 2.4\\times10^{-2}\\ \\mathrm m = 24\\ \\mathrm{mm}'],
      action(c){
@@ -902,10 +902,18 @@ const EXAMPLES = [
      pose:'write',
      board:['\\text{denied strain: } \\frac{\\Delta L}{L_0} = \\alpha\\,\\Delta T = (1.2\\times10^{-5})(50) = 6.0\\times10^{-4}',
             '\\frac{F}{A} = Y\\,\\frac{\\Delta L}{L_0} = Y\\alpha\\,\\Delta T'] },
-   { say:"The numbers: 2 ten-to-the-eleventh pascals times 6 ten-to-the-minus-4 — one hundred and twenty megapascals of stress. Across the girder's quarter of a square metre, that is three MILLION newtons on the clamps — the weight of some three hundred tonnes, leaning on your bolts, forever, every summer.",
+   { say:"The numbers: 2 ten-to-the-eleventh pascals times 6 ten-to-the-minus-4 — one hundred and twenty megapascals of stress. Across the girder's cross-section of 250 square centimetres, that is three MILLION newtons on the clamps — the weight of some three hundred tonnes, leaning on your bolts, forever, every summer. Watch the clamps take the squeeze on the stage.",
      pose:'write',
      board:['\\frac{F}{A} = (2.0\\times10^{11})(6.0\\times10^{-4}) = 1.2\\times10^{8}\\ \\mathrm{Pa} = 120\\ \\mathrm{MPa}',
-            'F = (1.2\\times10^{8})(2.5\\times10^{-2}) = 3.0\\times10^{6}\\ \\mathrm N'] },
+            'F = (1.2\\times10^{8})(2.5\\times10^{-2}) = 3.0\\times10^{6}\\ \\mathrm N'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(-2.2),y:M.Y(5.4),width:M.X(0.2)-M.X(-2.2),height:M.Y(2)-M.Y(5.4),fill:'#7A8288',stroke:'#4A5258','stroke-width':2},c.svg);
+       el('rect',{x:M.X(39.8),y:M.Y(5.4),width:M.X(42.2)-M.X(39.8),height:M.Y(2)-M.Y(5.4),fill:'#7A8288',stroke:'#4A5258','stroke-width':2},c.svg);
+       arrow(c, 7,9.5, 1.5,9.5, {color:RED, w:3.5, label:'F = 3.0 MN', fs:12});
+       arrow(c, 33,9.5, 38.5,9.5, {color:RED, w:3.5, label:'F = 3.0 MN', fs:12, side:-1});
+       textAt(c, 20,-3.5, 'clamped: the denied 24 mm returns as 120 MPa', {fs:12, italic:true, color:RED, anchor:'middle'});
+     } },
    { say:"The check is the engineering itself: no sane clamp survives three meganewtons, which is why every real bridge wears expansion joints — those comb-toothed seams your tyres thump over. You do not fight thermal expansion; you book it a room. Nature always collects, so the engineer arranges affordable payments.",
      pose:'excited',
      board:[{t:'Check: 3×10⁶ N ≈ the weight of 300 tonnes — hence expansion joints, not clamps. Accommodate; never resist.'}] },
@@ -940,15 +948,26 @@ const EXAMPLES = [
        tween(u=>{ ice.setAttribute('y', M.Y(30-20*u)); }, 1200, c.instant);
        textAt(c, 8.5,28, 'ice, −10 °C', {fs:12, italic:true});
      } },
-   { say:"Step two, the funds available. Cooling the water AND the cup all the way to zero would release their combined heat capacity — 1255.8 plus 90, about 1346 joules per kelvin — times twenty-five degrees: thirty-three thousand six hundred joules. Comfortably more than the seventeen thousand seven hundred required. Verdict: ALL the ice melts, and the final temperature lies strictly between zero and twenty-five, everything liquid.",
+   { say:"Step two, the funds available. Cooling the water AND the cup all the way to zero would release their combined heat capacity — 1255.8 plus 90, about 1346 joules per kelvin — times twenty-five degrees: thirty-three thousand six hundred and forty-five joules. Comfortably more than the seventeen thousand seven hundred required. Verdict: ALL the ice melts, and the final temperature lies strictly between zero and twenty-five, everything liquid.",
      pose:'point',
-     board:['Q_{\\rm avail} = \\big[(0.300)(4186)+(0.100)(900)\\big](25.0) = (1345.8)(25.0) = 33{,}600\\ \\mathrm J',
-            {t:'Q_avail > Q_need → all ice melts; 0 < T_f < 25 °C, all liquid.'}] },
+     board:['Q_{\\rm avail} = \\big[(0.300)(4186)+(0.100)(900)\\big](25.0) = (1345.8)(25.0) = 33{,}645\\ \\mathrm J',
+            {t:'Q_avail > Q_need → all ice melts; 0 < T_f < 25 °C, all liquid.'}],
+     action(c){
+       textAt(c, 8.3,22, '33,645 J on offer', {fs:12, italic:true, color:RED});
+       textAt(c, 8.3,19, '17,750 J demanded', {fs:12, italic:true, color:BLUE});
+       textAt(c, 8.3,16, '→ all the ice melts', {fs:12, italic:true, color:GREEN});
+     } },
    { say:"Step three, the single golden equation: the sum of every Q is zero. The ice's warming and melting, seventeen thousand seven hundred and fifty; the meltwater warming from zero to T-f; and the water-plus-cup cooling from twenty-five to T-f, written as m c times T-f minus twenty-five so its sign minds itself. Gather the T-f terms and divide: T-f equals fifteen thousand nine hundred over 1555 — ten point two degrees.",
      pose:'write',
      board:['17{,}750 + (0.0500)(4186)(T_f - 0) + (1345.8)(T_f - 25.0) = 0',
             '17{,}750 + 209.3\\,T_f + 1345.8\\,T_f - 33{,}645 = 0',
-            'T_f = \\frac{15{,}895}{1555.1} = 10.2^{\\circ}\\mathrm C'] },
+            'T_f = \\frac{15{,}895}{1555.1} = 10.2^{\\circ}\\mathrm C'],
+     action(c){
+       const {M}=c;
+       const ice=c.svg.querySelector('rect[fill="#DCEBF7"]');
+       if(ice) tween(u=>ice.setAttribute('opacity',1-u), 900, c.instant);
+       textAt(c, 2,10, 'T_f = 10.2 °C, all liquid', {fs:13, italic:true, color:'#1D4568', anchor:'middle'});
+     } },
    { say:"The check, twice over. First, ten point two sits obediently between zero and twenty-five — a final temperature outside the extremes is an arithmetic confession. Second, the counterfactual: had the funds fallen SHORT of the melting bill, the answer would have been zero degrees with an ice-water mixture, and the unknown would have changed to how much ice melts. In calorimetry, the phase check is not a preliminary — it IS the physics.",
      pose:'excited',
      board:[{t:'Check: 0 < 10.2 < 25 ✓. If Q_avail < Q_need instead: T_f = 0 °C and the unknown becomes the melted mass.'}] },
@@ -1020,7 +1039,17 @@ const EXAMPLES = [
    { say:"Evaluate the right-hand side, keeping every step visible. The linear piece: five hundred even. The quadratic piece: b over two — 2 ten-to-the-minus-4 — times the difference of squares, two hundred and seventy thousand four hundred minus four hundred — which contributes fifty-four. Together: alpha-nought times five hundred and fifty-four, which is nine point nine seven ten-to-the-minus-3.",
      pose:'write',
      board:['T - T_0 = 500.0, \\qquad \\tfrac{b}{2}(T^2 - T_0^2) = (2.0\\times10^{-4})(270{,}400-400) = 54.0',
-            '\\ln\\!\\frac{L}{L_0} = (1.8\\times10^{-5})(554.0) = 9.972\\times10^{-3}'] },
+            '\\ln\\!\\frac{L}{L_0} = (1.8\\times10^{-5})(554.0) = 9.972\\times10^{-3}'],
+     action(c){
+       const {M}=c;
+       /* the integral IS the shaded area under α(T) between 20 and 520 */
+       const pts=[`${M.X(20)},${M.Y(0)}`];
+       for(let i=0;i<=60;i++){ const T=20+500*i/60; pts.push(M.X(T)+','+M.Y(1.8e-5*(1+4.0e-4*T))); }
+       pts.push(`${M.X(520)},${M.Y(0)}`);
+       const p=el('polygon',{points:pts.join(' '),fill:GOLD,opacity:0},c.svg);
+       tween(u=>p.setAttribute('opacity',.25*u), 900, c.instant);
+       textAt(c, 270,0.9e-5, 'shaded area = ∫α dT = 9.97×10⁻³', {fs:12.5, italic:true, color:'#8A5A24', anchor:'middle'});
+     } },
    { say:"Exponentiate: L equals L-nought times e to the 0.00997 — 2.02004 metres — an elongation of twenty millimetres. And notice the quiet grace of the mathematics: because the exponent is tiny, e to the x is nearly one plus x, so the everyday formula delta-L equals L-nought times the integral of alpha is simply the first-order term of the truth. The textbook formula was never wrong; it was a Taylor series being modest.",
      pose:'write',
      board:['L = L_0\\,e^{9.972\\times10^{-3}} = 2.000(1.010022) = 2.02004\\ \\mathrm m \\;\\Rightarrow\\; \\Delta L = 20.0\\ \\mathrm{mm}',

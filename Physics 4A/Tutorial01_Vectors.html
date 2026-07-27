@@ -848,9 +848,15 @@ const EXAMPLES = [
      pose:'write',
      board:['\\vec R = \\vec R_x + \\vec R_y \\quad\\text{(legs are perpendicular)}'],
      action(c){ arrow(c, 0,0, 4,3, {color:GREEN, label:'R', vec:true, w:4.5, dur:1100}); } },
-   { say:"The magnitude: root of 4 squared plus 3 squared — exactly 5 kilometres. A 3-4-5 triangle, nature's favourite. When physics hands you one, say thank you and move along briskly.",
+   { say:"The magnitude: root of 4 squared plus 3 squared — exactly 5 kilometres. A 3-4-5 triangle, nature's favourite. When physics hands you one, say thank you and move along briskly. I mark the right angle on the sketch — it is the licence Pythagoras requires before he will work for us.",
      pose:'write',
-     board:['R = \\sqrt{R_x^2 + R_y^2} = \\sqrt{(4.00\\ \\mathrm{km})^2+(3.00\\ \\mathrm{km})^2} = 5.00\\ \\mathrm{km}'] },
+     board:['R = \\sqrt{R_x^2 + R_y^2} = \\sqrt{(4.00\\ \\mathrm{km})^2+(3.00\\ \\mathrm{km})^2} = 5.00\\ \\mathrm{km}'],
+     action(c){
+       const {M}=c;
+       el('polyline',{points:`${M.X(3.7)},${M.Y(0)} ${M.X(3.7)},${M.Y(0.3)} ${M.X(4)},${M.Y(0.3)}`,
+         fill:'none',stroke:'#8A7D60','stroke-width':1.6},c.svg);
+       label(c, 1.7,2.15, 'R = 5.00 km', {color:GREEN, fs:14, italic:true, anchor:'middle', dy:-8});
+     } },
    { say:"And the direction? Tangent of theta is 3 over 4, giving 36.9 degrees north of east. State it in words — in all my years, 'that way' has never once received full marks.",
      pose:'point',
      board:['\\theta = \\tan^{-1}\\!\\left(\\tfrac{R_y}{R_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{3.00}{4.00}\\right) = 36.9^{\\circ}\\ \\text{north of east}'],
@@ -871,13 +877,11 @@ const EXAMPLES = [
    { say:"Two vectors, two directions. The temptation: 5 plus 6 equals 11. A lovely answer — to a question nobody asked. We add components. But first, as always: we sketch.",
      pose:'talk',
      board:[{t:'A⃗ = 5.00 m at 36.9°;  B⃗ = 6.00 m at 120.0°.  Find R⃗ = A⃗ + B⃗.'}] },
-   { say:"Vector A: 5 metres at 36.9 degrees above the x axis. Off it goes into quadrant one, full of optimism. Optimism, in vector language, means both components positive — a technical term I shall continue to misuse all term.",
+   { say:"Vector A first: 5 metres at 36.9 degrees, off into quadrant one, full of optimism — both components positive. Then vector B: 6 metres at 120 degrees — past 90, leaning into quadrant two the way students lean away from an 8 a.m. lecture. Its x component will be negative. Note that now, before the algebra bites you! An angle past ninety degrees is the algebra's early-warning system: forewarned is fore-signed.",
      pose:'point',
      action(c){ arrow(c, 0,0, 4,3, {color:RED, label:'A', vec:true, dur:900});
-                arc(c, 0,0, 1.1, 0, 36.9, {color:RED, label:'36.9°', lr:26}); } },
-   { say:"Vector B: 6 metres at 120 degrees — past 90, leaning into quadrant two the way students lean away from an 8 a.m. lecture. Its x component will be negative. Note that now, before the algebra bites you! An angle past ninety degrees is the algebra's early-warning system: some component is about to go negative, and forewarned is fore-signed.",
-     pose:'point',
-     action(c){ arrow(c, 0,0, -3,5.196, {color:BLUE, label:'B', vec:true, dur:900});
+                arc(c, 0,0, 1.1, 0, 36.9, {color:RED, label:'36.9°', lr:26});
+                arrow(c, 0,0, -3,5.196, {color:BLUE, label:'B', vec:true, dur:900});
                 arc(c, 0,0, 0.85, 0, 120, {color:BLUE, label:'120°', lr:22}); } },
    { say:"Tip-to-tail: B slides over to the head of A, and R stretches from origin to the final tip. Long and steep, in quadrant one. Photograph this with your mind — it is our alibi for later.",
      pose:'point',
@@ -894,10 +898,16 @@ const EXAMPLES = [
      board:['B_x = B\\cos\\theta_B = (6.00\\ \\mathrm{m})\\cos 120.0^{\\circ} = -3.00\\ \\mathrm{m}',
             'B_y = B\\sin\\theta_B = (6.00\\ \\mathrm{m})\\sin 120.0^{\\circ} = 5.20\\ \\mathrm{m}'],
      action(c){ dashLine(c, -3,0, -3,5.196,{}); dashLine(c, 0,5.196, -3,5.196,{}); } },
-   { say:"Add the components — x with x, y with y. Never mix them; components are like tea and biscuits: each excellent, but they keep to their own plates. R x is 1 metre; R y is 8.2 metres.",
+   { say:"Add the components — x with x, y with y. Never mix them; components are like tea and biscuits: each excellent, but they keep to their own plates. R x is 1 metre; R y is 8.2 metres. There they are on the sketch: R's own shadow on each axis, ready to be reassembled.",
      pose:'write',
      board:['R_x = A_x + B_x = 4.00 + (-3.00) = 1.00\\ \\mathrm{m}',
-            'R_y = A_y + B_y = 3.00 + 5.20 = 8.20\\ \\mathrm{m}'] },
+            'R_y = A_y + B_y = 3.00 + 5.20 = 8.20\\ \\mathrm{m}'],
+     action(c){
+       dashLine(c, 1,0, 1,8.196, {color:GREEN});
+       dashLine(c, 0,8.196, 1,8.196, {color:GREEN});
+       label(c, 0.55,-0.55, 'Rx = 1.00 m', {color:GREEN, fs:12, anchor:'middle'});
+       label(c, -1.7,8.55, 'Ry = 8.20 m', {color:GREEN, fs:12, anchor:'middle'});
+     } },
    { say:"Reassemble: magnitude 8.26 metres, at 83 degrees above the x axis. Nearly vertical — precisely as the sketch promised. I do love it when a plan comes together.",
      pose:'excited',
      board:['R = \\sqrt{R_x^2+R_y^2} = \\sqrt{(1.00)^2+(8.20)^2} = \\sqrt{68.2} = 8.26\\ \\mathrm{m}',
@@ -1023,12 +1033,10 @@ const EXAMPLES = [
        arrow(c, P[0],P[1], Q[0],Q[1], {color:RED, label:'PQ', vec:true, dur:900});
        arrow(c, P[0],P[1], R[0],R[1], {color:BLUE, label:'PR', vec:true, dur:900});
      } },
-   { say:"Part a — the angle. The dot product of the two sides: 1 plus 0 plus 0 — just 1. So small! Expect something close to 90 degrees. The suspense, I assure you, is entirely manageable. A small dot product between sizeable vectors whispers 'nearly perpendicular' before any arccosine confirms it — learn to hear these hints and the answers stop surprising you.",
+   { say:"Part a — the angle. The dot product of the two sides: 1 plus 0 plus 0 — just 1. So small! A small dot product between sizeable vectors whispers 'nearly perpendicular' before any arccosine confirms it. The magnitudes are root 5 and root 10, so the cosine is 1 over root 50 — about 0.141 — giving 81.9 degrees at P. Nearly a right angle, exactly as the tiny dot product foretold — a modest oracle, but a reliable one.",
      pose:'write',
-     board:['\\vec{PQ}\\cdot\\vec{PR} = (-1)(-1) + (2)(0) + (0)(3) = 1.00'] },
-   { say:"Their magnitudes are root 5 and root 10, so the cosine is 1 over root 50 — about 0.141 — giving 81.9 degrees at P. Nearly a right angle, exactly as the tiny dot product foretold. It is a modest oracle, but a reliable one.",
-     pose:'write',
-     board:['|\\vec{PQ}| = \\sqrt{(-1)^2+2^2} = \\sqrt{5.00},\\qquad |\\vec{PR}| = \\sqrt{(-1)^2+3^2} = \\sqrt{10.0}',
+     board:['\\vec{PQ}\\cdot\\vec{PR} = (-1)(-1) + (2)(0) + (0)(3) = 1.00',
+            '|\\vec{PQ}| = \\sqrt{(-1)^2+2^2} = \\sqrt{5.00},\\qquad |\\vec{PR}| = \\sqrt{(-1)^2+3^2} = \\sqrt{10.0}',
             '\\cos\\phi = \\frac{\\vec{PQ}\\cdot\\vec{PR}}{|\\vec{PQ}|\\,|\\vec{PR}|} = \\frac{1.00}{\\sqrt{5.00}\\,\\sqrt{10.0}} = 0.141 \\;\\Longrightarrow\\; \\phi = 81.9^{\\circ}'],
      action(c){
        const P=proj(1,0,0), Q=proj(0,2,0), R=proj(0,0,3);

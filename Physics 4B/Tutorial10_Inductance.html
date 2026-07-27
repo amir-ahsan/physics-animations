@@ -1005,10 +1005,26 @@ const EXAMPLES = [
    { say:"The RL transient — and this time we shall DERIVE the exponential, not accept it as folklore. Kirchhoff's loop at any instant: battery, minus resistor drop, minus the inductor's L d I d t, equals zero. A differential equation. Do not flinch; it separates like a gentleman.",
      pose:'talk',
      board:[{t:'ε = 12 V, R = 6.0 Ω, L = 30 mH, switch closes at t = 0.'},
-            '\\varepsilon - IR - L\\frac{dI}{dt} = 0 \\;\\Rightarrow\\; L\\frac{dI}{dt} = \\varepsilon - IR'] },
+            '\\varepsilon - IR - L\\frac{dI}{dt} = 0 \\;\\Rightarrow\\; L\\frac{dI}{dt} = \\varepsilon - IR'],
+     action(c){
+       /* small circuit inset (screen coords) so the loop being analysed is on stage */
+       const s=c.svg, P='#5C4B30';
+       el('path',{d:'M470,250 L470,216 M470,204 L470,170 L500,170 M540,170 L570,170 L570,190 M570,230 L570,250 L470,250',
+         fill:'none',stroke:P,'stroke-width':2.2},s);
+       el('line',{x1:460,y1:206,x2:480,y2:206,stroke:P,'stroke-width':3},s);
+       el('line',{x1:465,y1:213,x2:475,y2:213,stroke:P,'stroke-width':4.5},s);
+       el('polyline',{points:'500,170 505,163 513,177 521,163 529,177 535,163 540,170',fill:'none',stroke:P,'stroke-width':2.2},s);
+       el('path',{d:'M570,190 C586,190 586,200 570,200 C586,200 586,210 570,210 C586,210 586,220 570,220 C586,220 586,230 570,230',
+         fill:'none',stroke:P,'stroke-width':2.2},s);
+       const t1=el('text',{x:449,y:214,fill:P,'font-size':13,'font-style':'italic','font-family':'Georgia,serif','text-anchor':'end'},s); t1.textContent='ε';
+       const t2=el('text',{x:520,y:154,fill:P,'font-size':13,'font-style':'italic','font-family':'Georgia,serif','text-anchor':'middle'},s); t2.textContent='R';
+       const t3=el('text',{x:594,y:214,fill:P,'font-size':13,'font-style':'italic','font-family':'Georgia,serif'},s); t3.textContent='L';
+       const cap=el('text',{x:520,y:272,fill:'#8A7D60','font-size':11.5,'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},s);
+       cap.textContent='the loop we walk with Kirchhoff';
+     } },
    { say:"Separate: d I over epsilon minus I R on the left, d t over L on the right, and integrate both from the start — current zero at time zero. The left side, with the substitution u equals epsilon minus I-prime R, becomes minus one over R, log of epsilon minus I R over epsilon. Every step is on the board; check each against your own pen.",
      pose:'write',
-     board:['\\int_0^I\\frac{dI\\prime}{\\varepsilon - I\\prime R} = \\int_0^t\\frac{dt\\prime}{L}',
+     board:['\\int_0^I\\frac{dI^{\\prime}}{\\varepsilon - I^{\\prime} R} = \\int_0^t\\frac{dt^{\\prime}}{L}',
             '-\\frac1R\\ln\\!\\frac{\\varepsilon - IR}{\\varepsilon} = \\frac{t}{L}'] },
    { say:"Exponentiate and solve: epsilon minus I R equals epsilon e to the minus t over tau, with tau equal to L over R. Rearranged: I equals epsilon over R, times one minus e to the minus t over tau. The same saturating curve as the charging capacitor — nature owns exactly one transient and rents it to everybody.",
      pose:'write',
@@ -1102,10 +1118,10 @@ const EXAMPLES = [
    { say:"For part b, the peak current — by energy, the cleanest road: ALL the capacitor's initial half C V-nought squared periodically lives as half L I-max squared. We solve: I-max is V-nought root C over L — 12 times root of 25 micro over 60 milli — 0.24 amperes.",
      pose:'write',
      board:['\\tfrac12 CV_0^2 = \\tfrac12 LI_{\\max}^2 \\;\\Rightarrow\\; I_{\\max} = V_0\\sqrt{\\frac{C}{L}} = 12\\sqrt{\\frac{25\\times10^{-6}}{0.060}} = 0.24\\ \\mathrm A'] },
-   { say:"And now, part c. Starting the clock at maximum charge: q of t is Q-nought cosine omega t, with Q-nought equal to C V-nought — 300 microcoulombs — and the current is the derivative, a sine. Watch them chase each other, a quarter cycle apart: charge maximal when current rests, current maximal as the charge sweeps through zero. Position and velocity, in electrical dress.",
+   { say:"And now, part c. Starting the clock at maximum charge: q of t is Q-nought cosine omega t, with Q-nought equal to C V-nought — 300 microcoulombs — and the discharge current, minus d-q d-t, is a sine. Watch them chase each other, a quarter cycle apart: charge maximal when current rests, current maximal as the charge sweeps through zero. Position and velocity, in electrical dress.",
      pose:'point',
      board:['q(t) = Q_0\\cos\\omega_0 t = (3.0\\times10^{-4})\\cos(816\\,t)\\ \\mathrm C',
-            'I(t) = \\omega_0 Q_0\\sin\\omega_0 t'],
+            'I(t) = -\\frac{dq}{dt} = \\omega_0 Q_0\\sin\\omega_0 t'],
      action(c){
        plotCurve(c, t=>[t, 3.0e-4*Math.cos(816*t)], 0, 0.0165, {color:GOLD, w:3.5, dur:2400});
        plotCurve(c, t=>[t, 3.0e-4*Math.sin(816*t)], 0, 0.0165, {color:BLUE, w:2.5, dash:'7,5', dur:2400});

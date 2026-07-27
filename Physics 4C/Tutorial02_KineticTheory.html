@@ -849,9 +849,9 @@ const EXAMPLES = [
        label(c, 930,0.3, 'polyatomic: ≈ 6', {fs:12, color:'#7A5A28'});
        label(c, 300,0.05, 'each quadratic degree of freedom: exactly ½k_BT — nature’s flat rate', {fs:12, color:'#8A5A24', italic:true});
      } },
-   { say:"Do pause over the audacity here: nobody had SEEN an atom. Yet by assuming a box of invisible billiard balls, kinetic theory predicted pressure, temperature, even the speeds of molecules — hundreds of metres per second in the still air of this room. You are being bombarded ten billion times per second, everywhere, forever. Stillness is a rumour started by large objects.",
+   { say:"Do pause over the audacity here: nobody had SEEN an atom. Yet by assuming a box of invisible billiard balls, kinetic theory predicted pressure, temperature, even the speeds of molecules — hundreds of metres per second in the still air of this room. Every square centimetre of you is struck some ten-to-the-twenty-three times per second, everywhere, forever. Stillness is a rumour started by large objects.",
      pose:'think', solo:true,
-     board:[{t:'The air in a ‘quiet’ room strikes you 10²³ times a second. Calm is an average, not a fact.'}],
+     board:[{t:'The air strikes each cm² of you ~10²³ times a second (flux = ¼n·v̄). Calm is an average, not a fact.'}],
      action(c){
        const {M}=c;
        el('circle',{cx:M.X(620), cy:M.Y(0.55), r:52, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2.5},c.svg);
@@ -862,7 +862,7 @@ const EXAMPLES = [
          const x2=620+160*Math.cos(a), y2=0.55+0.20*Math.sin(a);
          arrow(c, x1,y1, x2,y2, {color:'#5A88A8', w:1.8, head:6});
        }
-       label(c, 300,1.12, 'ten billion impacts per second, per square centimetre — “stillness”', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 300,1.12, '~10²³ impacts per second, per square centimetre — “stillness”', {fs:12.5, color:'#8A5A24', italic:true});
      } },
    { say:"Finally, the portrait on the stage: the MAXWELL–BOLTZMANN distribution, the census of molecular speeds at one temperature. It carries three benchmark speeds, in fixed proportion — the most probable at the peak, the mean slightly beyond it, the root-mean-square beyond that, in the ratio one to 1.128 to 1.225. Choose the speed the physics asks for: collisions want the mean; kinetic energy wants the rms. To the examples.",
      pose:'excited',
@@ -909,9 +909,15 @@ const EXAMPLES = [
        vBar2(c, 6.5, 356, 46, RED, 'p₂ = 356.0');
        textAt(c, 6.5, 30, 'hot', {fs:12, anchor:'middle', italic:true});
      } },
-   { say:"Then translate back to what the gauge will actually display: 356.0 minus 101.3 — 255 kilopascals. The tire gained thirty-five kilopascals from nothing but temperature; your tyre-pressure warning light knows this chapter well. A tyre that gains pressure by sitting in sunshine has performed no work and received no air — only its molecules, urged on by warmth, now strike the walls harder and more often. Thermodynamics in the driveway.",
+   { say:"Then translate back to what the gauge will actually display: 356.0 minus 101.3 — 255 kilopascals. See it on the stage: the gauge reads only the portion of the hot bar standing above the atmospheric line. The tire gained thirty-five kilopascals from nothing but temperature; your tyre-pressure warning light knows this chapter well. A tyre that gains pressure by sitting in sunshine has performed no work and received no air — only its molecules, urged on by warmth, now strike the walls harder and more often.",
      pose:'write',
-     board:['p_{2,\\rm gauge} = 356.0 - 101.3 = 255\\ \\mathrm{kPa}'] },
+     board:['p_{2,\\rm gauge} = 356.0 - 101.3 = 255\\ \\mathrm{kPa}'],
+     action(c){
+       arrow(c, 9.5,101.3, 9.5,356, {color:GREEN, w:2.5, head:8});
+       arrow(c, 9.5,356, 9.5,101.3, {color:GREEN, w:2.5, head:8});
+       textAt(c, 10.0,220, 'gauge: 255 kPa', {fs:12, color:GREEN, italic:true});
+       textAt(c, 10.0,55, 'atm: 101.3', {fs:11.5, color:'#8A7D60', italic:true});
+     } },
    { say:"The check carries the moral: the ABSOLUTE pressure rose by exactly the 10.8 per cent that the kelvin temperature rose — as the law demands — yet the GAUGE pressure jumped sixteen per cent. Had we lazily taken ratios of gauge readings, the answer would be confidently, quietly wrong. Absolute quantities in the law; conversions at the border, both directions.",
      pose:'excited',
      board:[{t:'Check: Δp/p = ΔT/T = 10.8% for ABSOLUTE p ✓ — but 16% in gauge. Ratios of gauge pressures lie.'}] },
@@ -945,9 +951,13 @@ const EXAMPLES = [
      pose:'write',
      board:['v_{\\rm rms} \\propto \\frac{1}{\\sqrt M}:\\quad v_{\\rm H_2} = 517\\sqrt{\\frac{28.0}{2.02}} = 517(3.72) = 1.92\\times10^{3}\\ \\mathrm{m/s}'],
      action(c){ vBar2(c, 13, 1920, 44, RED, 'H₂: 1920'); } },
-   { say:"And the check is written in the sky. Hydrogen's speed puts a meaningful slice of its Maxwell–Boltzmann tail above Earth's escape speed of 11.2 kilometres per second, so over geological time hydrogen leaks away into space — while sluggish nitrogen stays faithfully put. The composition of the very atmosphere you are breathing is this example, integrated over four billion years.",
+   { say:"And the check is written in the sky. Hydrogen's speed puts a meaningful slice of its Maxwell–Boltzmann tail above Earth's escape speed of 11.2 kilometres per second — nearly six of these charts stacked on end — so over geological time hydrogen leaks away into space, while sluggish nitrogen stays faithfully put. The composition of the very atmosphere you are breathing is this example, integrated over four billion years.",
      pose:'excited',
-     board:[{t:'Check: same T → same KE per molecule; speed ∝ 1/√M ✓. H₂’s fast tail escapes Earth — hence our N₂ sky.'}] },
+     board:[{t:'Check: same T → same KE per molecule; speed ∝ 1/√M ✓. H₂’s fast tail escapes Earth — hence our N₂ sky.'}],
+     action(c){
+       arrow(c, 18,1500, 18,2100, {color:PURPLE, w:2.5, head:9, dash:'6,5'});
+       textAt(c, 15.2,1330, 'escape: 11,200 m/s — off the chart', {fs:11.5, color:PURPLE, italic:true});
+     } },
   ]
 },
 
@@ -979,10 +989,16 @@ const EXAMPLES = [
        tween(u=>pl.setAttribute('points', P.slice(0, Math.max(2, Math.round(u*P.length))).join(' ')), 2000, c.instant);
        textAt(c, 6.9,6.6, 'the drunkard’s walk of diffusion', {fs:12, italic:true, color:RED});
      } },
-   { say:"On we go to part b. Collisions are paced by the MEAN speed — 476 metres per second for nitrogen, slightly under the rms, as the distribution ordains. Time between collisions: lambda over v-bar — 2.1 ten-to-the-minus-10 seconds. Five BILLION collisions every second, for every molecule. Hence the perfume's leisurely stroll: fast feet, no sense of direction.",
+   { say:"On we go to part b. Collisions are paced by the MEAN speed — 476 metres per second for nitrogen, slightly under the rms, as the distribution ordains. Time between collisions: lambda over v-bar — 2.1 ten-to-the-minus-10 seconds. Five BILLION collisions every second, for every molecule — every kink in the red path on the stage is one of them. Hence the perfume's leisurely stroll: fast feet, no sense of direction.",
      pose:'point',
      board:['\\bar v = \\sqrt{\\frac{8RT}{\\pi M}} = 476\\ \\mathrm{m/s}',
-            '\\tau = \\frac{\\lambda}{\\bar v} = \\frac{1.0\\times10^{-7}}{476} = 2.1\\times10^{-10}\\ \\mathrm s\\ \\ (\\sim5\\times10^{9}\\ \\text{collisions/s})'] },
+            '\\tau = \\frac{\\lambda}{\\bar v} = \\frac{1.0\\times10^{-7}}{476} = 2.1\\times10^{-10}\\ \\mathrm s\\ \\ (\\sim5\\times10^{9}\\ \\text{collisions/s})'],
+     action(c){
+       const {M}=c;
+       [[2.6,2.2],[1.9,3.8],[3.6,4.6],[5.1,3.4],[6.2,5.2],[7.8,4.4]].forEach(p=>
+         el('circle',{cx:M.X(p[0]),cy:M.Y(p[1]),r:4,fill:'none',stroke:RED,'stroke-width':1.8},c.svg));
+       textAt(c, 0.6,0.0, 'each kink: one collision, every 0.21 ns', {fs:12, italic:true, color:RED});
+     } },
    { say:"For part c, the ratio that justifies the whole chapter: lambda over d is about three hundred and forty. A molecule travels hundreds of its own diameters between encounters — the room is crowded by our standards and yet, to a molecule, almost entirely empty space. THAT emptiness is what 'ideal gas' means: molecules that meet briefly and otherwise ignore one another.",
      pose:'write',
      board:['\\frac{\\lambda}{d} = \\frac{1.0\\times10^{-7}}{3.0\\times10^{-10}} \\approx 340',
@@ -1020,9 +1036,17 @@ const EXAMPLES = [
      pose:'write',
      board:['F_1 = \\frac{\\Delta p_x}{\\Delta t} = \\frac{2mv_x}{2L/v_x} = \\frac{mv_x^2}{L}',
             'F = \\frac{m}{L}\\sum_i v_{x,i}^2 = \\frac{Nm\\,\\overline{v_x^2}}{L}'] },
-   { say:"Now the elegant step — ISOTROPY. The molecules have no compass; no direction is privileged, so the averages of v-x squared, v-y squared, and v-z squared are equal, and since they sum to v squared, each is one third of it. Geometry hands us the famous factor of three without a single integral.",
+   { say:"Now the elegant step — ISOTROPY. The molecules have no compass; no direction is privileged, so the averages of v-x squared, v-y squared, and v-z squared are equal — the three equal arrows on the stage — and since they sum to v squared, each is one third of it. Geometry hands us the famous factor of three without a single integral.",
      pose:'write',
-     board:['\\overline{v_x^2} = \\overline{v_y^2} = \\overline{v_z^2} = \\tfrac13\\overline{v^2}\\quad(\\text{isotropy})'] },
+     board:['\\overline{v_x^2} = \\overline{v_y^2} = \\overline{v_z^2} = \\tfrac13\\overline{v^2}\\quad(\\text{isotropy})'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(5),cy:M.Y(3.5),r:6,fill:BLUE},c.svg);
+       arrow(c, 5,3.5, 6.6,3.5, {color:GOLD, w:2.5, label:'vₓ', fs:12, head:8});
+       arrow(c, 5,3.5, 5,5.1, {color:GOLD, w:2.5, label:'v_y', fs:12, head:8});
+       arrow(c, 5,3.5, 3.9,2.4, {color:GOLD, w:2.5, label:'v_z', fs:12, head:8, side:-1});
+       textAt(c, 5.6,1.2, 'no compass: all three directions equal shares', {fs:12, italic:true, anchor:'middle'});
+     } },
    { say:"Divide the force by the wall's area L squared, and pressure emerges: N m v-squared-bar over 3 L cubed — that is, p V equals one third N m v-squared-bar, or two thirds N times the average kinetic energy. Set it beside the empirical p V equals N k-B T, and the two agree only if k-B T is two thirds of the average kinetic energy — temperature IS molecular motion. Newtonian mechanics in, thermometer out. Few derivations in physics buy so much with so little.",
      pose:'excited',
      board:['p = \\frac{F}{L^2} = \\frac{Nm\\overline{v^2}}{3L^3} \\;\\Rightarrow\\; pV = \\tfrac13Nm\\overline{v^2} = \\tfrac23N\\,\\overline{KE}',
@@ -1045,10 +1069,15 @@ const EXAMPLES = [
      action(c){
        plotCurve(c, v=>[v, MB(v,422)], 0, 1250, {color:GOLD, w:3.5, dur:1600});
      } },
-   { say:"The MOST PROBABLE speed sits at the peak: differentiate v-squared e to the minus m v-squared over 2 k-B T, set the derivative to zero. The product rule gives 2v minus m v-cubed over k-B T, all times the exponential; the bracket vanishes when v squared equals 2 k-B T over m. Peak found: v-p is root 2 k-B T over m.",
+   { say:"The MOST PROBABLE speed sits at the peak: differentiate v-squared e to the minus m v-squared over 2 k-B T, set the derivative to zero. The product rule gives 2v minus m v-cubed over k-B T, all times the exponential; the bracket vanishes when v squared equals 2 k-B T over m. Peak found — see the level tangent on the stage: v-p is root 2 k-B T over m.",
      pose:'write',
      board:['\\frac{d}{dv}\\big(v^2e^{-mv^2/2k_BT}\\big) = e^{-mv^2/2k_BT}\\Big(2v - \\frac{mv^3}{k_BT}\\Big) = 0',
-            'v_p = \\sqrt{\\frac{2k_BT}{m}}'] },
+            'v_p = \\sqrt{\\frac{2k_BT}{m}}'],
+     action(c){
+       dashLine(c, 300,1.0, 545,1.0, {color:GREEN, dash:'6,5'});
+       el('circle',{cx:c.M.X(422),cy:c.M.Y(1.0),r:5,fill:GREEN},c.svg);
+       textAt(c, 620,1.06, 'peak: df/dv = 0', {fs:12, italic:true, color:GREEN});
+     } },
    { say:"The MEAN speed is the integral of v times f of v — which contains the workhorse Gaussian integral of v-cubed e to the minus a v-squared, equal to one over 2 a-squared. Carry the constants through and out comes root 8 k-B T over pi m — a shade faster than the peak, dragged upward by the distribution's long right tail.",
      pose:'write',
      board:['\\bar v = \\int_0^\\infty vf(v)dv\\quad\\text{with}\\quad\\int_0^\\infty v^3e^{-av^2}dv = \\frac{1}{2a^2}',

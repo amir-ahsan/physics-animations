@@ -907,7 +907,10 @@ const EXAMPLES = [
    { say:"Both point toward plus x, so they add: 0.431 plus 1.798 — 2.2 newtons in the plus-x direction, to two significant figures. Now comes the check: the attraction dominates, exactly as the diagram predicted — bigger charge, shorter distance, no contest. Had we blindly fed SIGNED charges into the formula, the minus signs would have staged an ambush. Magnitudes in the formula; directions from the picture. Always.",
      pose:'excited',
      board:['F_{\\rm net} = 0.431 + 1.798 = 2.23\\ \\mathrm{N} \\approx 2.2\\ \\mathrm{N}\\ (+x)',
-            {t:'Check: q₂ dominates — larger charge AND closer (distance enters squared) ✓'}] },
+            {t:'Check: q₂ dominates — larger charge AND closer (distance enters squared) ✓'}],
+     action(c){
+       arrow(c, 27,-6.5, 47.1,-6.5, {color:GREEN, w:4, label:'F_net = 2.2 N', vec:true, fs:13});
+     } },
   ]
 },
 
@@ -945,10 +948,10 @@ const EXAMPLES = [
      pose:'write',
      board:['E_x = 0 + E_2\\cos\\theta = (7.19\\times10^{4})(0.60) = 4.32\\times10^{4}\\ \\mathrm{N/C}',
             'E_y = E_1 - E_2\\sin\\theta = 2.25\\times10^{5} - (7.19\\times10^{4})(0.80) = 1.67\\times10^{5}\\ \\mathrm{N/C}'] },
-   { say:"Reassemble: magnitude root of E-x squared plus E-y squared — 1.7 times ten to the fifth newtons per coulomb, at arctangent E-y over E-x: 76 degrees above the x-axis. Mostly up, tilted slightly toward the negative charge. Never surrender a field as bare components; reassembled magnitude and direction are what an experimentalist could actually measure, and what an examiner actually rewards.",
+   { say:"Reassemble: magnitude root of E-x squared plus E-y squared — 1.7 times ten to the fifth newtons per coulomb, at arctangent E-y over E-x: 75 and a half degrees above the x-axis. Mostly up, tilted slightly toward the negative charge. Never surrender a field as bare components; reassembled magnitude and direction are what an experimentalist could actually measure, and what an examiner actually rewards.",
      pose:'write',
      board:['E = \\sqrt{E_x^2 + E_y^2} = 1.73\\times10^{5}\\ \\mathrm{N/C}',
-            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{E_y}{E_x}\\right) = \\tan^{-1}(3.86) = 75.5^{\\circ}\\ \\text{above } +x'],
+            '\\theta = \\tan^{-1}\\!\\left(\\tfrac{E_y}{E_x}\\right) = \\tan^{-1}(3.87) = 75.5^{\\circ}\\ \\text{above } +x'],
      action(c){
        /* tip-to-tail: E2 moved onto E1's tip; the resultant closes the triangle.
           Its x-extent equals E2's x-extent exactly (E1 has no x-component). */
@@ -958,7 +961,7 @@ const EXAMPLES = [
        dashLine(c, 0,40, 6.47,40, {color:'#2E7D4F'});
        textAt(c, 1.3,36.6, 'E_x = E₂ₓ', {fs:12, italic:true, color:'#2E7D4F'});
      } },
-   { say:"Now comes the check: E-one dwarfs E-two threefold, so the field should be mostly plus-y with a small eastward lean — 76 degrees is precisely that. When your arithmetic and your sketch tell the same story, hand the work in with confidence. Cultivate the sketch-first habit: five seconds of arrows before the algebra buys you an infallible witness against your own arithmetic afterwards.",
+   { say:"Now comes the check: E-one dwarfs E-two threefold, so the field should be mostly plus-y with a small eastward lean — 75 and a half degrees is precisely that. When your arithmetic and your sketch tell the same story, hand the work in with confidence. Cultivate the sketch-first habit: five seconds of arrows before the algebra buys you an infallible witness against your own arithmetic afterwards.",
      pose:'excited',
      board:[{t:'Check: E₁ ≈ 3×E₂ → field mostly +y with a small tilt toward q₂ — exactly 75.5° ✓'}] },
   ]
@@ -995,12 +998,15 @@ const EXAMPLES = [
        arrow(c, bx,by, bx, by-1.5, {color:RED, w:3.5, label:'mg', vec:true, fs:14, side:-1});
        arrow(c, bx,by, bx+0.40, by, {color:GOLD, w:3.5, label:'qE', vec:true, fs:13, dy:-14});
        dashLine(c, 0.2,3.3, 0.2,1.0, {});
-       arc(c, 0.2,3.3, 0.55, 262, 285, {color:'#888', label:'θ'});
+       arc(c, 0.2,3.3, 0.55, 270, 285, {color:'#888', label:'θ'});
      } },
    { say:"Divide x by y — the classic manoeuvre — and the tension politely excuses itself: tangent theta equals q E over m g. Solve for E: m g tangent 15 over q — 1.1 times ten to the third newtons per coulomb. Dividing equations to evict an unknown is one of the oldest tricks in the theoretician's coat — the tension never mattered to the question, so we arranged for it never to appear.",
      pose:'write',
      board:['\\frac{x}{y}:\\; \\tan\\theta = \\frac{qE}{mg} \\;\\Rightarrow\\; E = \\frac{mg\\tan\\theta}{q}',
-            'E = \\frac{(5.0\\times10^{-3})(9.80)(0.268)}{12\\times10^{-6}} = 1.09\\times10^{3}\\ \\mathrm{N/C}'] },
+            'E = \\frac{(5.0\\times10^{-3})(9.80)(0.268)}{12\\times10^{-6}} = 1.09\\times10^{3}\\ \\mathrm{N/C}'],
+     action(c){
+       textAt(c, -2.55,0.15, 'E = 1.09×10³ N/C', {fs:11.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"The tension, from the y-equation alone: m g over cosine 15 — 5.07 times ten to the minus two newtons. And note the tension exceeds the bare weight by a whisker — the string leans, so it must both carry the ball and argue with the field, and both duties appear in the cosine.",
      pose:'write',
      board:['T = \\frac{mg}{\\cos\\theta} = \\frac{(5.0\\times10^{-3})(9.80)}{0.966} = 5.07\\times10^{-2}\\ \\mathrm{N}'] },
@@ -1046,8 +1052,11 @@ const EXAMPLES = [
             'E_z = \\frac{kQz}{(z^2+a^2)^{3/2}}'] },
    { say:"Part b — numbers. z is 0.2, a is 0.1: k Q times 0.2, over 0.05 to the three-halves — 8.0 times ten to the third newtons per coulomb. And the limit checks, our permanent ritual: far away, z cubed dominates below and we recover k Q over z squared — a point charge, as any shrinking ring must impersonate. At the centre, z equals zero and E vanishes by symmetry — every crumb outvoted by its opposite.",
      pose:'write',
-     board:['E_z = \\frac{(8.99\\times10^{9})(50\\times10^{-9})(0.20)}{(0.20^2+0.10^2)^{3/2}} = \\frac{89.9(0.20)}{(0.0500)^{3/2}} = 8.0\\times10^{3}\\ \\mathrm{N/C}',
-            {t:'Limits: z ≫ a → kQ/z² (point charge) ✓; z = 0 → E = 0 (symmetry) ✓'}] },
+     board:['E_z = \\frac{(8.99\\times10^{9})(50\\times10^{-9})(0.20)}{(0.20^2+0.10^2)^{3/2}} = \\frac{89.9}{(0.0500)^{3/2}} = \\frac{89.9}{0.0112} = 8.0\\times10^{3}\\ \\mathrm{N/C}',
+            {t:'Limits: z ≫ a → kQ/z² (point charge) ✓; z = 0 → E = 0 (symmetry) ✓'}],
+     action(c){
+       textAt(c, 24,-5.5, 'at P: E = 8.0×10³ N/C, along +z', {fs:11.5, italic:true, color:'#2E7D4F', anchor:'middle'});
+     } },
    { say:"Part c — where does the field peak? Differentiate and set to zero: z-star equals a over root 2 — 7.1 centimetres — where E reaches 1.7 times ten to the fourth. The maximum HAD to exist: zero at the centre by symmetry, zero at infinity by distance; somewhere between, the field enjoys its brief supremacy. Watch the curve tell the whole story.",
      pose:'excited',
      board:['\\frac{dE_z}{dz} = 0 \\;\\Rightarrow\\; (z^2+a^2) - 3z^2 = 0 \\;\\Rightarrow\\; z^* = \\frac{a}{\\sqrt2} = 7.1\\ \\mathrm{cm}',
@@ -1097,10 +1106,10 @@ const EXAMPLES = [
      pose:'write',
      board:['E_y = \\frac{kQ}{y\\sqrt{y^2+L^2}}',
             'E_y = \\frac{(8.99\\times10^{9})(8.0\\times10^{-9})}{(0.20)\\sqrt{0.20^2+0.30^2}} = \\frac{71.9}{(0.20)(0.361)} = 1.0\\times10^{3}\\ \\mathrm{N/C}'] },
-   { say:"And now the harvest — part c, the limits. Let L grow without bound: the root becomes L, and E tends to 2 k lambda over y — the INFINITE LINE, exactly as catalogued. Let y grow instead: the root becomes y, and E tends to k Q over y squared — the POINT CHARGE, as every distant object must appear. Our 997 sits obediently between the two limiting values. One formula, three physics regimes, all checks passed. THAT is what a finished integral looks like.",
+   { say:"And now the harvest — part c, the limits. Let L grow without bound: the root becomes L, and E tends to 2 k lambda over y — the INFINITE LINE, exactly as catalogued. Let y grow instead: the root becomes y, and E tends to k Q over y squared — the POINT CHARGE, as every distant object must appear. And our 997 sits BELOW both limiting values, precisely as it must: the infinite line carries infinitely more charge than our rod, and the point charge packs all of Q at the nearest possible distance. The finite rod can beat neither. One formula, three physics regimes, all checks passed. THAT is what a finished integral looks like.",
      pose:'excited',
      board:['L\\to\\infty:\\; E \\to \\frac{2k\\lambda}{y}\\ \\text{(infinite line)}\\ \\checkmark \\qquad y\\gg L:\\; E \\to \\frac{kQ}{y^2}\\ \\text{(point charge)}\\ \\checkmark',
-            {t:'Check: 997 N/C sits between the line value (1.2×10³) and point value (1.8×10³) — as it must for y ~ L.'}] },
+            {t:'Check: 997 N/C < line value (1.2×10³: more charge) and < point value (1.8×10³: all of Q closer) ✓'}] },
   ]
 },
 ];

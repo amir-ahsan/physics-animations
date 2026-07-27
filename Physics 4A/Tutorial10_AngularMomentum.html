@@ -884,15 +884,20 @@ const EXAMPLES = [
      pose:'point',
      board:['\\omega_2 = \\frac{I_1}{I_2}\\,\\omega_1 = \\frac{3.00}{1.00}(2.00) = 6.00\\ \\mathrm{rev/s}'],
      action(c){
-       spinGroup(c, 0,0, (g,cx,cy)=>{
-         el('circle',{cx,cy,r:16,fill:'#C98F52',stroke:'#8A5A24','stroke-width':2},g);
-         el('line',{x1:cx-70,y1:cy,x2:cx+70,y2:cy,stroke:'#8A5A24','stroke-width':5,'stroke-linecap':'round'},g);
-         el('circle',{cx:cx-70,cy,r:9,fill:GOLD},g); el('circle',{cx:cx+70,cy,r:9,fill:GOLD},g);
-       }, u=>{
-         /* arms pull in halfway through: spin rate triples */
-         return u<0.5 ? 12.57*u*2*0.5*2 : 12.57*0.5*2 + 37.7*(u-0.5)*2*0.5*2;
-       }, 3600);
-       textAt(c, -3.7, 2.4, 'arms out → in: ω triples', {fs:13, italic:true});
+       const {M}=c; const cx=M.X(0), cy=M.Y(0);
+       const g=el('g',{},c.svg);
+       el('circle',{cx,cy,r:16,fill:'#C98F52',stroke:'#8A5A24','stroke-width':2},g);
+       const bar=el('line',{x1:cx-70,y1:cy,x2:cx+70,y2:cy,stroke:'#8A5A24','stroke-width':5,'stroke-linecap':'round'},g);
+       const hL=el('circle',{cx:cx-70,cy,r:9,fill:GOLD},g), hR=el('circle',{cx:cx+70,cy,r:9,fill:GOLD},g);
+       tween(u=>{
+         /* arms pull in halfway through: I drops to a third, spin rate triples */
+         const th = u<0.5 ? 25.13*u : 12.57 + 75.40*(u-0.5);
+         const R  = u<0.5 ? 70 : Math.max(40, 70 - 600*(u-0.5));   /* 70 px → 40 px ≈ 70/√3 */
+         bar.setAttribute('x1',cx-R); bar.setAttribute('x2',cx+R);
+         hL.setAttribute('cx',cx-R); hR.setAttribute('cx',cx+R);
+         g.setAttribute('transform',`rotate(${-th*180/Math.PI} ${cx} ${cy})`);
+       }, 3600, c.instant);
+       textAt(c, -3.7, 2.4, 'arms out → in: I drops to ⅓, ω triples', {fs:13, italic:true});
      } },
    { say:"Now the energy — and here is the beautiful sting. Kinetic energy is L squared over 2 I, and with L fixed, shrinking I RAISES K. The ratio is I-one over I-two: three. Her kinetic energy TRIPLES. The tripled energy is not conjured; it is the honest wage of the WORK her muscles did dragging mass inward against the spin. The ice rink is a physics laboratory with better costumes and much better lighting.",
      pose:'write',
@@ -985,9 +990,20 @@ const EXAMPLES = [
          spoke.setAttribute('x2',M.X(x)+0.18*M.s*Math.cos(a)); spoke.setAttribute('y2',M.Y(y)+0.18*M.s*Math.sin(a));
        }, 2200, c.instant);
      } },
-   { say:"The comparison: a frictionless SLIDING block from the same height arrives at root 2 g h — 5.42 metres per second. The cylinder is a full metre per second slower, its missing speed banked as spin. Now comes the check: one third of three-quarters-M-v-squared sits in rotation — exactly the deficit. The books, as always, balance.",
+   { say:"The comparison — watch the rematch on the stage: a frictionless SLIDING block from the same height arrives at root 2 g h — 5.42 metres per second, beating the cylinder to the bottom. The cylinder is a full metre per second slower, its missing speed banked as spin. Now comes the check: one third of three-quarters-M-v-squared sits in rotation — exactly the deficit. The books, as always, balance.",
      pose:'excited',
-     board:[{t:'Sliding block: √(2gh) = 5.42 m/s > 4.43 m/s. The difference lives in ½Iω² = ¼Mv² ✓'}] },
+     board:[{t:'Sliding block: √(2gh) = 5.42 m/s > 4.43 m/s. The difference lives in ½Iω² = ¼Mv² ✓'}],
+     action(c){
+       const {M}=c; const th=Math.atan2(1.5,3.4);
+       const blk=el('rect',{x:0,y:0,width:18,height:18,rx:3,fill:BLUE,stroke:'#1D4568','stroke-width':2},c.svg);
+       tween(u=>{                       /* same 3.72 m of slope, but a ∝ v²: arrives in 0.82 of the time */
+         const d=Math.min(1,u/0.817)**2*3.72;
+         const x=d*Math.cos(-th)+0.13*Math.sin(th), y=1.5-d*Math.sin(th)+0.13*Math.cos(th);
+         blk.setAttribute('x',M.X(x)-9); blk.setAttribute('y',M.Y(y)-9);
+       }, 2200, c.instant);
+       textAt(c, 3.55,1.35, 'slider: 5.42 m/s', {fs:12, italic:true, color:BLUE});
+       textAt(c, 3.55,1.0, 'roller: 4.43 m/s', {fs:12, italic:true, color:'#8A5A24'});
+     } },
   ]
 },
 
@@ -1047,7 +1063,7 @@ const EXAMPLES = [
        tween(u=>{ b.setAttribute('cx', M.X(-3+2.9*u)); }, 900, c.instant);
        arrow(c, -2.6,1.9, -1.0,1.9, {color:GOLD, w:3.5, label:'v', vec:true, fs:15});
      } },
-   { say:"After: rod plus passenger rotate together. The rod about its centre: one twelfth M L squared — 0.125. The embedded bullet at half a metre: m ell squared — 0.0025. Total: 0.1275 kilogram metres squared. Observe the bullet's contribution: a fiftieth of the rod's inertia, from a passenger a hundred times lighter — the m ell squared rule again, quietly amplifying whatever sits far from the axis.",
+   { say:"After: rod plus passenger rotate together. The rod about its centre: one twelfth M L squared — 0.125. The embedded bullet at half a metre: m ell squared — 0.0025. Total: 0.1275 kilogram metres squared. Observe the bullet's contribution: a fiftieth of the rod's inertia, from a passenger one hundred and fifty times lighter — the m ell squared rule again, quietly amplifying whatever sits far from the axis.",
      pose:'write',
      board:['I = \\tfrac1{12}ML^2 + m\\ell^2 = 0.125 + 0.0025 = 0.1275\\ \\mathrm{kg\\cdot m^2}'] },
    { say:"Divide: omega equals L over I — 1.5 over 0.1275 — 11.8 radians per second. Nearly two revolutions per second, from a ten-gram passenger. Watch the delivery. A ten-gram bullet spinning a kilogram rod to two revolutions per second — angular momentum, like a good lever, is a wonderful multiplier of small investments placed at long arms.",
@@ -1057,7 +1073,7 @@ const EXAMPLES = [
        spinGroup(c, 0,0, (g,cx,cy)=>{
          el('line',{x1:cx,y1:cy-1.5*c.M.s,x2:cx,y2:cy+1.5*c.M.s,stroke:'#B5793B','stroke-width':8,'stroke-linecap':'round'},g);
          el('circle',{cx,cy:cy-1.5*c.M.s,r:6,fill:'#4A3826'},g);
-       }, u=>4*Math.PI*u, 2400);   /* ends at 2 full turns — aligned with the pre-impact rod */
+       }, u=>-4*Math.PI*u, 2400);   /* clockwise (bullet strikes the TOP end moving right); ends at 2 full turns */
      } },
    { say:"And the check that IS the lesson: why not conserve linear momentum? Because during impact the pivot yanked on the rod with a large external force — P changed, dramatically. But that same force, acting at our chosen axis, produced zero TORQUE. One event; one law violated, one preserved. Choosing the pivot as the axis was not convenience — it was the entire strategy. Choose your battlefield, and the war wins itself.",
      pose:'excited',

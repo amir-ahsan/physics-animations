@@ -904,10 +904,14 @@ const EXAMPLES = [
             '\\omega_0 = 120\\left(\\tfrac{2\\pi}{60}\\right) = 12.57\\ \\mathrm{rad/s}'] },
    { say:"There is our grindstone, spinning at 120 revolutions per minute — two per second — and now switched off. Watch it die gracefully, at a perfectly uniform rate. Note the phrase 'uniform rate' doing quiet work: constant angular deceleration is the rotational twin of constant braking, and every straight-line formula we loved is about to reappear wearing Greek.",
      pose:'point',
-     action(c){ spinDisk(c, 0,0, 2.2, u=>62.83*(u*(2-u))/2, 4000); } },
-   { say:"Let us take part a. Alpha equals the change in omega over time: zero minus 12.57, over 10 — minus 1.26 radians per second squared. Negative, of course: the wheel is losing enthusiasm. Negative alpha with positive omega is the rotational signature of braking — the same sign grammar as the decelerating car, transplanted onto a turntable.",
+     action(c){ spinDisk(c, 0,0, 2.2, u=>62.83*u*(2-u), 4000); } },  /* θ(u)=θ_tot·u(2−u): full 62.8 rad = 10 rev */
+   { say:"Let us take part a. Alpha equals the change in omega over time: zero minus 12.57, over 10 — minus 1.26 radians per second squared. Negative, of course: the wheel is losing enthusiasm. On the stage: omega still points counter-clockwise, but alpha curls the other way, fighting it — negative alpha with positive omega is the rotational signature of braking, the same sign grammar as the decelerating car.",
      pose:'write',
-     board:['\\alpha = \\frac{0 - \\omega_0}{t} = \\frac{-12.57}{10.0} = -1.26\\ \\mathrm{rad/s^2}'] },
+     board:['\\alpha = \\frac{0 - \\omega_0}{t} = \\frac{-12.57}{10.0} = -1.26\\ \\mathrm{rad/s^2}'],
+     action(c){
+       arc(c, 0,0, 2.65, 20, 105, {color:PURPLE, w:2.8, label:'ω', head:true, hs:10});
+       arc(c, 0,0, 2.65, 160, 75, {color:RED, w:2.8, label:'α', head:true, hs:10, lr:22});
+     } },
    { say:"On we go to part b. The angle turned: average omega times time — half of 12.57 times 10 — 62.8 radians. Divide by 2 pi to translate back into revolutions: exactly 10 turns before dignity runs out. Ten turns to a standstill — and notice we obtained it from the AVERAGE angular velocity, the same triangle-area trick as linear motion. The analogies are not decorative; they are load-bearing.",
      pose:'write',
      board:['\\theta = \\tfrac12(\\omega_0 + 0)t = \\tfrac12(12.57)(10.0) = 62.8\\ \\mathrm{rad} = 10.0\\ \\mathrm{rev}'] },
@@ -931,16 +935,17 @@ const EXAMPLES = [
      pose:'point',
      board:['\\omega = \\alpha t = (3.00)(4.00) = 12.0\\ \\mathrm{rad/s}'],
      action(c){ spinDisk(c, 0,0, 2.2, u=>24*u*u, 3500); } },
-   { say:"On we go to part b. Theta equals half alpha t squared: half of 3 times 16 — 24 radians, which is 3.82 revolutions. From rest, the angle grows as t squared — slow start, strong finish, like most good lectures. The t-squared growth means the FIRST second contributed barely half a radian while the fourth contributed nearly ten and a half — accumulation favours the patient.",
+   { say:"On we go to part b. Theta equals half alpha t squared: half of 3 times 16 — 24 radians, which is 3.82 revolutions. From rest, the angle grows as t squared — slow start, strong finish, like most good lectures. The t-squared growth means the FIRST second contributed a mere one and a half radians while the fourth contributed ten and a half — accumulation favours the patient.",
      pose:'write',
      board:['\\theta = \\tfrac12\\alpha t^2 = \\tfrac12(3.00)(16.0) = 24.0\\ \\mathrm{rad} = 3.82\\ \\mathrm{rev}'] },
    { say:"And now, part c. A point 0.2 metres out rides a circle at speed omega r. Its radial acceleration is omega squared r: 144 times 0.2 — 28.8 metres per second squared, nearly 3 g, pointed at the axis. Every point of a rigid body shares the same omega but rides its own radius — angular quantities are communal property, linear ones are strictly personal.",
      pose:'write',
      board:['a_{\\rm rad} = \\omega^2 r = (12.0)^2(0.200) = 28.8\\ \\mathrm{m/s^2} \\;(\\approx 3g)'],
      action(c){ arrow(c, 1.8,0, 0.5,0, {color:PURPLE, w:3.5, label:'a_rad', vec:true, fs:15, side:-1}); } },
-   { say:"Compare the tangential piece: r alpha is just 0.6 metres per second squared — 48 times smaller. The check and the moral together: once a wheel is spinning quickly, TURNING dominates SPEEDING UP; the radial term grows as omega squared and simply buries the tangential one. Rim points live hard lives.",
+   { say:"Compare the tangential piece: r alpha is just 0.6 metres per second squared — 48 times smaller. See the two arrows on the stage: the stubby tangential one urging the point along its circle, and the great radial one hauling it toward the axis. Once a wheel is spinning quickly, TURNING dominates SPEEDING UP; the radial term grows as omega squared and simply buries the tangential one. Rim points live hard lives.",
      pose:'think',
-     board:['a_{\\rm tan} = r\\alpha = 0.600\\ \\mathrm{m/s^2} \\ll a_{\\rm rad}\\;\\text{— the radial term dominates at speed ✓}'] },
+     board:['a_{\\rm tan} = r\\alpha = (0.200)(3.00) = 0.600\\ \\mathrm{m/s^2} \\ll a_{\\rm rad}\\;\\text{— the radial term dominates at speed ✓}'],
+     action(c){ arrow(c, 1.8,0, 1.8,0.45, {color:GREEN, w:3, label:'a_tan', vec:true, fs:13}); } },
   ]
 },
 
@@ -1010,9 +1015,13 @@ const EXAMPLES = [
        arrow(c, 1.35,-1.9, 1.35,-1.0, {color:BLUE, label:'T', vec:true, fs:15});
        arrow(c, 1.35,-2.4, 1.35,-3.2, {color:RED, label:'mg', vec:true, fs:14, side:-1});
      } },
-   { say:"The disk next. The axle force and the disk's own weight act AT the axis — zero lever arm, zero torque, zero say in the matter. Only the tension torques, at radius R: T R equals I alpha, and with I equal to half M R squared and alpha equal to a over R, the radii cancel beautifully: T equals half M a.",
+   { say:"The disk next. The axle force and the disk's own weight act AT the axis — zero lever arm, zero torque, zero say in the matter. Only the tension torques, at radius R — see it marked on the stage: T R equals I alpha, and with I equal to half M R squared and alpha equal to a over R, the radii cancel beautifully: T equals half M a.",
      pose:'write',
-     board:['TR = \\left(\\tfrac12MR^2\\right)\\frac{a}{R} \\;\\Rightarrow\\; T = \\tfrac12Ma'] },
+     board:['TR = \\left(\\tfrac12MR^2\\right)\\frac{a}{R} \\;\\Rightarrow\\; T = \\tfrac12Ma'],
+     action(c){
+       arrow(c, 0,0, 0.6,0, {color:GREEN, w:2.5, label:'R', fs:13, dash:'5,4', head:7});
+       arc(c, 0,0, 0.42, 140, 40, {color:PURPLE, w:2.4, label:'α', head:true, hs:8, lr:14});
+     } },
    { say:"Substitute: m g equals m a plus half M a. We solve: a equals g over 1 plus M over 2 m — 9.8 over 2 — 4.90 metres per second squared. Exactly half of g! And the tension: half of 2 times 4.9 — 4.90 newtons. The numbers rhyme; the examiners planned it.",
      pose:'write',
      board:['a = \\frac{g}{1 + M/2m} = \\frac{9.80}{1 + 2.00/(2\\cdot 1.00)} = \\frac{9.80}{2.00} = 4.90\\ \\mathrm{m/s^2}',
@@ -1052,15 +1061,17 @@ const EXAMPLES = [
        arrow(c, bx+0.08,by+0.13, bx+0.505,by+0.866, {color:BLUE, w:3, label:'n', vec:true, fs:14});  /* ⟂ incline: dir (sin30,cos30) */
        arrow(c, bx-0.05,by+0.35, bx-0.75,by+0.75, {color:PURPLE, w:3, label:'f_s', vec:true, fs:14});
      } },
-   { say:"Eliminate friction and behold: a equals g sine theta over 1 plus I over M R squared. Mass gone. Radius gone. Only the SHAPE FACTOR survives — two fifths for a solid sphere, a full 1 for a hoop, which keeps every gram at maximum distance like a miser hiding coins in the walls.",
+   { say:"Now the algebra. The torque equation hands us the friction: f-s equals I a over R squared. Feed that back into the translation equation and behold: a equals g sine theta over 1 plus I over M R squared. Mass gone. Radius gone. Only the SHAPE FACTOR survives — two fifths for a solid sphere, a full 1 for a hoop, which keeps every gram at maximum distance like a miser hiding coins in the walls.",
      pose:'write',
-     board:['a_{\\rm cm} = \\frac{g\\sin\\theta}{1 + I_{\\rm cm}/MR^2}',
+     board:['f_s = \\frac{I_{\\rm cm}}{R^2}a_{\\rm cm} \\;\\Rightarrow\\; Mg\\sin\\theta - \\frac{I_{\\rm cm}}{R^2}a_{\\rm cm} = Ma_{\\rm cm}',
+            'a_{\\rm cm} = \\frac{g\\sin\\theta}{1 + I_{\\rm cm}/MR^2}',
             '\\text{sphere } (I=\\tfrac25MR^2):\\ a = \\frac{g\\sin\\theta}{1+\\frac25} = \\frac{4.90}{1.40} = 3.50\\ \\mathrm{m/s^2}',
             '\\text{hoop } (I=MR^2):\\ a = \\frac{g\\sin\\theta}{1+1} = \\frac{4.90}{2.00} = 2.45\\ \\mathrm{m/s^2}'] },
    { say:"Race time, from L equals half a t squared: the sphere arrives in 1.17 seconds, the hoop in 1.40. The sphere wins by nearly a quarter second — watch it happen. The hoop, carrying ALL its mass at full radius, pays the maximum rotational tax; the sphere, with its mass huddled toward the centre, keeps more of gravity's grant as forward speed. Body plans matter — ask any sprinter.",
      pose:'point',
      board:['L = \\tfrac12at^2 \\;\\Rightarrow\\; t = \\sqrt{\\frac{2L}{a}}',
-            't_{\\rm sphere} = \\sqrt{\\tfrac{2(2.40)}{3.50}} = 1.17\\ \\mathrm{s}, \\qquad t_{\\rm hoop} = \\sqrt{\\tfrac{2(2.40)}{2.45}} = 1.40\\ \\mathrm{s}'],
+            't_{\\rm sphere} = \\sqrt{\\tfrac{2(2.40)}{3.50}} = 1.17\\ \\mathrm{s}, \\qquad t_{\\rm hoop} = \\sqrt{\\tfrac{2(2.40)}{2.45}} = 1.40\\ \\mathrm{s}',
+            '\\Delta t = 1.40 - 1.17 = 0.23\\ \\mathrm{s}\\ \\text{(sphere first)}'],
      action(c){
        const {M}=c; const th=Math.PI/6;
        const s1=el('circle',{cx:0,cy:0,r:0.16*M.s,fill:GOLD,stroke:'#8A5A24','stroke-width':2},c.svg);

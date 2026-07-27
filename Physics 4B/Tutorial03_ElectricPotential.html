@@ -912,7 +912,10 @@ const EXAMPLES = [
    { say:"Half m v squared equals 4 times ten to the minus 17 joules. Solve for v: the square root of two times the energy over the electron mass, 9.11 times ten to the minus 31 kilograms — 9.4 million metres per second. Nine million metres per second from a modest lab voltage — three percent of light speed, purchased for the price of a battery stack. Charge is astonishingly cheap to accelerate; that is both the promise of electronics and the reason your oscilloscope needs shielding.",
      pose:'write',
      board:['\\tfrac12 m_e v^2 = 4.0\\times10^{-17}\\ \\mathrm{J}',
-            'v = \\sqrt{\\frac{2(4.0\\times10^{-17})}{9.11\\times10^{-31}}} = 9.4\\times10^{6}\\ \\mathrm{m/s}'] },
+            'v = \\sqrt{\\frac{2(4.0\\times10^{-17})}{9.11\\times10^{-31}}} = 9.4\\times10^{6}\\ \\mathrm{m/s}'],
+     action(c){
+       arrow(c, 58,6, 96,6, {color:GREEN, w:3, label:'v = 9.4×10⁶ m/s', fs:12, side:-1});
+     } },
    { say:"Now comes the check: that is 3 percent of the speed of light — fast enough to impress, slow enough that Newtonian mechanics still applies and Einstein need not be disturbed. And remember the moral: positive charges fall DOWNHILL in potential, negative charges fall UPHILL. Same map, opposite readings.",
      pose:'excited',
      board:[{t:'Check: v/c ≈ 0.03 → non-relativistic treatment is fine ✓. The eV did all the bookkeeping.'}] },
@@ -953,9 +956,14 @@ const EXAMPLES = [
      pose:'write',
      board:['W_{\\rm ext} = q_3(V_M - V_\\infty) = (2.0\\times10^{-9})(-90 - 0)',
             'W_{\\rm ext} = -1.8\\times10^{-7}\\ \\mathrm{J}\\quad(\\text{the field does the work})'] },
-   { say:"The check, and a subtle one: at this very point the electric FIELDS of the two charges point the same way and ADD vigorously — yet the POTENTIALS partially cancel. Large E, modest V. They carry different information, and confusing them is the classic blunder of this chapter. V zero does not mean E zero, nor the reverse.",
+   { say:"The check, and a subtle one: at this very point the electric FIELDS of the two charges point the same way and ADD vigorously — yet the POTENTIALS partially cancel. Large E, modest V. Look at the stage: both field arrows at M point toward q-two. They carry different information, and confusing them is the classic blunder of this chapter. V zero does not mean E zero, nor the reverse.",
      pose:'excited',
-     board:[{t:'Check: at M the field contributions ADD (both point toward q₂) while the potentials partly CANCEL — V and E are independent facts.'}] },
+     board:[{t:'Check: at M the field contributions ADD (both point toward q₂) while the potentials partly CANCEL — V and E are independent facts.'}],
+     action(c){
+       /* both field contributions at M point toward q₂ (lengths ∝ 3 : 5) */
+       arrow(c, 20,4, 26,4, {color:RED, w:2.5, label:'E₁', fs:11, head:8});
+       arrow(c, 20,8, 30,8, {color:BLUE, w:2.5, label:'E₂', fs:11, head:8});
+     } },
   ]
 },
 
@@ -971,14 +979,24 @@ const EXAMPLES = [
    { say:"The ring of charge returns — you met its FIELD in Tutorial 1, where it demanded components and symmetry arguments. Now watch the potential do the same job with a fraction of the effort. Every element dq of the ring sits at exactly the SAME distance from an axial point: root of z squared plus a squared. Same distance, and V needs no direction — so the integral collapses on contact.",
      pose:'talk',
      board:[{t:'Ring: a = 10 cm, Q = +50 nC. Find V(z), then E_z = −dV/dz.'},
-            'V(z) = \\int\\frac{k\\,dq}{\\sqrt{z^2+a^2}} = \\frac{k}{\\sqrt{z^2+a^2}}\\int dq = \\frac{kQ}{\\sqrt{z^2+a^2}}'] },
-   { say:"There is the whole derivation on one line — the distance came out of the integral because it was constant, and the leftover integral of dq is just Q. Compare that with the vector gymnastics the field demanded. The potential is the lazy physicist's best friend, and lazy, in physics, is a compliment.",
-     pose:'point',
+            'V(z) = \\int\\frac{k\\,dq}{\\sqrt{z^2+a^2}} = \\frac{k}{\\sqrt{z^2+a^2}}\\int dq = \\frac{kQ}{\\sqrt{z^2+a^2}}'],
      action(c){
        const {M}=c;
-       /* schematic ring at z = 0 */
+       /* geometry sketch: ring edge-on, element dq, axial point P */
        el('ellipse',{cx:M.X(0),cy:M.Y(2250),rx:9,ry:26,fill:'none',stroke:BLUE,'stroke-width':3},c.svg);
-       textAt(c, -3.9, 2500, 'ring (edge-on)', {fs:11, italic:true, color:BLUE});
+       textAt(c, -4.2, 2650, 'ring (edge-on)', {fs:11, italic:true, color:BLUE});
+       el('circle',{cx:M.X(0),cy:M.Y(2760),r:5,fill:RED},c.svg);
+       textAt(c, -1.0, 3000, 'dq', {fs:12, italic:true, color:RED, anchor:'end'});
+       dashLine(c, 0,2250, 9,2250, {color:'#8A7D60'});
+       el('circle',{cx:M.X(9),cy:M.Y(2250),r:4,fill:'#5C4B30'},c.svg);
+       textAt(c, 9.5, 2380, 'P', {fs:13, italic:true});
+       textAt(c, 4.0, 2020, 'z', {fs:12, italic:true, anchor:'middle'});
+       dashLine(c, 0,2760, 9,2250, {color:RED, dash:'4,4'});
+       textAt(c, 4.2, 2820, '√(z²+a²)', {fs:11, italic:true, color:RED});
+     } },
+   { say:"There is the whole derivation on one line — the distance came out of the integral because it was constant, and the leftover integral of dq is just Q. Compare that with the vector gymnastics the field demanded. The potential is the lazy physicist's best friend, and lazy, in physics, is a compliment. Here is the resulting curve, plotted from the centre outward.",
+     pose:'point',
+     action(c){
        plotCurve(c, z=>[z, 449.5/Math.sqrt((z/100)*(z/100)+0.01)], 0, 26, {color:GOLD, w:3.5, dur:1600});
        textAt(c, 15, 3400, 'V(z) = kQ/√(z²+a²)', {fs:13, italic:true, color:GOLD});
      } },
@@ -997,10 +1015,15 @@ const EXAMPLES = [
      pose:'write',
      board:['E_z = -\\frac{dV}{dz} = -kQ\\cdot\\left(-\\tfrac12\\right)(z^2+a^2)^{-3/2}(2z)',
             'E_z = \\frac{kQz}{(z^2+a^2)^{3/2}}\\quad\\checkmark\\ (\\text{matches Tutorial 1, Ex. 4})'] },
-   { say:"Evaluate at 20 centimetres: 8 thousand newtons per coulomb. And the slope test confirms it on the graph — where V falls steeply, E is large; where V flattens at the centre, E dies to zero. The field is the steepness of the potential hill. Memorise the picture, not just the formula.",
+   { say:"Evaluate at 20 centimetres: 8 thousand newtons per coulomb. And the slope test confirms it on the graph — the tangent drawn at z equal 20 falls at 80 volts per centimetre, which is exactly 8 thousand volts per metre. Where V falls steeply, E is large; where V flattens at the centre, E dies to zero. The field is the steepness of the potential hill. Memorise the picture, not just the formula.",
      pose:'excited',
      board:['E_z(0.20) = \\frac{(449.5)(0.20)}{(0.05)^{3/2}} = 8.0\\times10^{3}\\ \\mathrm{N/C}',
-            {t:'Check: E = −slope of V(z) — steep curve ↔ strong field; flat top at z = 0 ↔ E = 0 ✓'}] },
+            {t:'Check: E = −slope of V(z) — steep curve ↔ strong field; flat top at z = 0 ↔ E = 0 ✓'}],
+     action(c){
+       /* tangent to V(z) at z = 20 cm: slope = −E_z = −80.4 V/cm */
+       dashLine(c, 15,2412, 25,1608, {color:GREEN, w:2.2, dash:'7,4'});
+       textAt(c, 13.2, 2750, 'slope = −E_z', {fs:11.5, italic:true, color:GREEN});
+     } },
   ]
 },
 

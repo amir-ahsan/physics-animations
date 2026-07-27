@@ -889,14 +889,29 @@ const EXAMPLES = [
    { say:"For part a, the fringe spacing, symbol first: lambda L over d — 589 nanometres times 1.8 metres, over 0.25 millimetres — four point two four millimetres between bright stripes. Visible to the naked eye: a wavelength of half a MICRON, amplified into millimetres by pure leverage of geometry.",
      pose:'write',
      board:['\\Delta y = \\frac{(589\\times10^{-9})(1.80)}{0.250\\times10^{-3}} = 4.24\\times10^{-3}\\ \\mathrm m = 4.24\\ \\mathrm{mm}',
-            {t:'The ratio L/d ≈ 7000 is the magnifying lever.'}] },
+            {t:'The ratio L/d ≈ 7000 is the magnifying lever.'}],
+     action(c){
+       arrow(c, 5.3,3.15, 6.23,3.15, {color:GREEN, w:2, head:6, label:'Δy = 4.24 mm', fs:12, side:-1});
+       dashLine(c, 5.3,3.4, 5.3,3.05, {color:GREEN});
+       dashLine(c, 6.23,3.4, 6.23,3.05, {color:GREEN});
+     } },
    { say:"Part b: the third bright fringe sits at three spacings — twelve point seven millimetres off centre. And the professional's audit of the small-angle premise: sine theta-three is 3 lambda over d, seven parts in a thousand — an angle of less than half a degree. The approximation is not merely safe; it is luxurious.",
      pose:'point',
-     board:['y_3 = 3\\,\\Delta y = 12.7\\ \\mathrm{mm}',
-            '\\text{check: } \\sin\\theta_3 = \\frac{3\\lambda}{d} = 7.1\\times10^{-3}\\ \\checkmark\\ (\\text{tiny — small angles hold})'] },
+     board:['y_3 = 3\\,\\Delta y = 3(4.24) = 12.7\\ \\mathrm{mm}',
+            '\\text{check: } \\sin\\theta_3 = \\frac{3\\lambda}{d} = 7.1\\times10^{-3}\\ \\checkmark\\ (\\text{tiny — small angles hold})'],
+     action(c){
+       dashLine(c, 5.3,2.35, 5.3,3.0, {color:PURPLE});
+       label(c, 5.3,2.1, 'm = 0', {fs:11.5, color:PURPLE, italic:true, anchor:'middle'});
+       arrow(c, 5.3,2.55, 8.1,2.55, {color:PURPLE, w:2, head:6, label:'y₃ = 12.7 mm', fs:12, side:-1});
+       dashLine(c, 8.1,3.4, 8.1,2.45, {color:PURPLE});
+     } },
    { say:"For part c, the plunge: immerse the entire apparatus in water. Inside the medium the wavelength contracts to lambda over n, and the pattern — whose every dimension is proportional to lambda — contracts with it: 4.24 over 1.33, three point one nine millimetres. Same slits, same screen, same colour of light at the source; the fringes simply huddle closer.",
      pose:'write',
-     board:['\\lambda_n = \\frac{\\lambda}{n} \\;\\Rightarrow\\; \\Delta y\\prime = \\frac{4.24}{1.33} = 3.19\\ \\mathrm{mm}'] },
+     board:['\\lambda_n = \\frac{\\lambda}{n} \\;\\Rightarrow\\; \\Delta y\' = \\frac{4.24}{1.33} = 3.19\\ \\mathrm{mm}'],
+     action(c){
+       fringes(c, 0.4, 10.2, 1.0, 2.0, 28);
+       textAt(c, 5.3,0.55, 'the same screen underwater: fringes huddle by 1/1.33', {fs:11.5, italic:true, anchor:'middle'});
+     } },
    { say:"The check is conceptual and worth keeping: the FREQUENCY never changed — the colour is untouched — yet the pattern shrank, because interference cares about path difference measured in WAVELENGTHS, and the wavelength is the medium's business. Fringes are rulers marked in lambda; change the ruler, move the marks.",
      pose:'excited',
      board:[{t:'Check: pattern scales with λ, and λ shrinks by n underwater ✓. Fringes are rulers graduated in wavelengths.'}] },
@@ -908,7 +923,7 @@ const EXAMPLES = [
   title:'How many fringes exist?', diff:'Intermediate',
   prompt:'Slits with d = 0.0400 mm are lit by a HeNe laser (λ = 632.8 nm). (a) What is the highest-order bright fringe? (b) At what angle does m = 20 appear — and does the small-angle formula still serve?',
   world:{x0:-0.4, x1:10.6, y0:-0.6, y1:4.6},
-  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'', ylab:''}); },
+  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'y (flat screen)', ylab:'I'}); },
   steps:[
    { say:"A question students rarely think to ask: does the fringe ladder climb forever? It does not — and the ceiling is built into the geometry. The bright-fringe condition demands sine theta equal to m lambda over d, and sines, whatever their ambitions, cannot exceed one.",
      pose:'talk',
@@ -921,13 +936,19 @@ const EXAMPLES = [
      pose:'point',
      board:['\\sin\\theta_{20} = \\frac{20(632.8\\times10^{-9})}{4.00\\times10^{-5}} = 0.3164 \\;\\Rightarrow\\; \\theta_{20} = 18.4^{\\circ}'],
      action(c){
-       plotCurve(c, x=>[x, 4*Math.pow(Math.cos(Math.PI*x/1.1),2)*Math.exp(-x*0.12)], 0, 10.2, {color:GOLD, w:2.5, dur:1400});
-       textAt(c, 6.8,3.6, 'fringes crowd and tilt at large θ', {fs:12, italic:true});
+       plotCurve(c, x=>[x, 4*Math.pow(Math.cos(Math.PI*(x-0.019*x*x)/1.1),2)], 0, 10.2, {color:GOLD, w:2.5, dur:1400});
+       textAt(c, 6.6,4.3, 'on a flat screen the fringes SPREAD at large θ', {fs:12, italic:true});
      } },
    { say:"And here the small-angle formula must be retired with thanks: at eighteen degrees, tangent theta is 0.334 — five per cent away from the sine. On a FLAT screen the position is L tangent theta, exactly, while the fringe CONDITION lives in sine theta; the two no longer chaperone each other, and the fringes spread unevenly toward the edges.",
      pose:'write',
      board:['\\tan18.4^{\\circ} = 0.334\\ \\text{vs}\\ \\sin18.4^{\\circ} = 0.316:\\ 5\\%\\ \\text{apart}',
-            'y = L\\tan\\theta\\ (\\text{exact}) \\ne \\frac{m\\lambda L}{d}\\ (\\text{small-angle only})'] },
+            'y = L\\tan\\theta\\ (\\text{exact}) \\ne \\frac{m\\lambda L}{d}\\ (\\text{small-angle only})'],
+     action(c){
+       dashLine(c, 8.6,0, 8.6,3.3, {color:GREEN});
+       label(c, 8.6,3.55, 'small-angle guess', {fs:11, color:GREEN, italic:true, anchor:'middle'});
+       dashLine(c, 9.05,0, 9.05,2.6, {color:RED});
+       label(c, 9.05,2.15, 'true fringe: 5% farther out', {fs:11, color:RED, italic:true, anchor:'middle'});
+     } },
    { say:"The check is the habit this example installs: every convenience formula carries a jurisdiction. Lambda L over d is a loyal servant below a few degrees and a quiet liar beyond ten. Know where your approximations live, visit the exact geometry when you leave that neighbourhood, and the double slit will never surprise you.",
      pose:'excited',
      board:[{t:'Check: m stops at d/λ ✓; small-angle drifts ~5% by 18° — switch to exact geometry there.'}] },
@@ -947,7 +968,14 @@ const EXAMPLES = [
             {t:'Fields add; intensities do not. Square at the very end.'}] },
    { say:"The sum-to-product identity does the work in one line: sine A plus sine B is twice the cosine of half the difference times the sine of the mean. Our resultant: 2 E-nought cosine phi over two, oscillating at the original frequency with a shifted phase. The AMPLITUDE — the part the eye's time-average cares about — is 2 E-nought, times the magnitude of cosine phi over two.",
      pose:'write',
-     board:['E = 2E_0\\cos\\frac{\\phi}{2}\\,\\sin\\!\\Big(\\omega t+\\frac{\\phi}{2}\\Big) \\;\\Rightarrow\\; E_R = 2E_0\\Big|\\cos\\frac{\\phi}{2}\\Big|'] },
+     board:['E = 2E_0\\cos\\frac{\\phi}{2}\\,\\sin\\!\\Big(\\omega t+\\frac{\\phi}{2}\\Big) \\;\\Rightarrow\\; E_R = 2E_0\\Big|\\cos\\frac{\\phi}{2}\\Big|'],
+     action(c){
+       arrow(c, 6.6,3.1, 8.2,3.1, {color:BLUE, w:2.5, label:'E₀', fs:12, side:-1});
+       arrow(c, 8.2,3.1, 9.5,4.05, {color:BLUE, w:2.5, label:'E₀', fs:12});
+       arrow(c, 6.6,3.1, 9.5,4.05, {color:GREEN, w:3, label:'E_R = 2E₀cos(φ/2)', fs:12});
+       arc(c, 8.2,3.1, 0.6, 0, 36, {color:'#888', label:'φ'});
+       label(c, 8.2,2.35, 'phasors: tip to tail, square at the end', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+     } },
    { say:"Square for intensity: four I-nought cosine squared phi over two, with phi equal to 2 pi d sine theta over lambda. There is the comb, derived — crests of FOUR single-slit intensities where the phases agree, zeros where they quarrel by pi. Note where the four came from: amplitudes DOUBLE where phases agree, and intensity is amplitude squared — two slits deliver four times one slit's brightness at the crests, paid for by the darkness in between. Interference redistributes; it never creates.",
      pose:'point',
      board:['I = 4I_0\\cos^2\\frac{\\phi}{2}, \\qquad \\phi = \\frac{2\\pi d\\sin\\theta}{\\lambda}'],
@@ -958,7 +986,12 @@ const EXAMPLES = [
      } },
    { say:"The half-maximum points, where I equals 2 I-nought: cosine squared must be one half, so phi is pi over two — a path difference of exactly one QUARTER wavelength. On the screen: d sine theta equals m plus-or-minus one quarter lambda. A quarter wave out of step is the exact midpoint of the intensity's journey from brilliance to black.",
      pose:'write',
-     board:['4I_0\\cos^2\\frac{\\phi}{2} = 2I_0 \\;\\Rightarrow\\; \\phi = \\frac{\\pi}{2} \\;\\Rightarrow\\; d\\sin\\theta = \\Big(m\\pm\\tfrac14\\Big)\\lambda'] },
+     board:['4I_0\\cos^2\\frac{\\phi}{2} = 2I_0 \\;\\Rightarrow\\; \\phi = \\frac{\\pi}{2} \\;\\Rightarrow\\; d\\sin\\theta = \\Big(m\\pm\\tfrac14\\Big)\\lambda'],
+     action(c){
+       const {M}=c;
+       for(const x of [0.5,1.5,2.5,3.5,4.5,5.5]) el('circle',{cx:M.X(x),cy:M.Y(2),r:5,fill:'none',stroke:RED,'stroke-width':2.2},c.svg);
+       label(c, 3.0,1.45, 'half-power points: φ = π/2, 3π/2, …', {fs:11.5, color:RED, italic:true, anchor:'middle'});
+     } },
    { say:"And the energy audit that certifies the whole theory: the average of cosine squared is one half, so the mean intensity across the pattern is 2 I-nought — precisely two slits' honest contribution. The bright fringes hold nothing but what the dark fringes surrendered; interference is a redistribution scheme with impeccable books. Nature moves the light about, but she never loses a receipt.",
      pose:'excited',
      board:['\\langle I\\rangle = 4I_0\\,\\overline{\\cos^2} = 2I_0\\ \\checkmark\\ (\\text{energy conserved — merely redistributed})'] },
@@ -997,7 +1030,12 @@ const EXAMPLES = [
      } },
    { say:"The minimum thickness takes m equal to zero: t equals lambda over four n — 550 nanometres over four times 1.38 — ninety-nine point six nanometres. The famous QUARTER-WAVE coating: the lower reflection travels down a quarter wave and back up a quarter wave, arriving exactly half a wavelength behind its rival, and the two extinguish.",
      pose:'write',
-     board:['t = \\frac{\\lambda}{4n} = \\frac{550}{4(1.38)} = 99.6\\ \\mathrm{nm}\\quad(\\text{the quarter-wave coating})'] },
+     board:['t = \\frac{\\lambda}{4n} = \\frac{550}{4(1.38)} = 99.6\\ \\mathrm{nm}\\quad(\\text{the quarter-wave coating})'],
+     action(c){
+       arrow(c, -4.4,0.8, -4.4,-0.8, {color:GREEN, w:2.2, head:7, label:'t = 99.6 nm', fs:12});
+       arrow(c, -4.4,-0.8, -4.4,0.8, {color:GREEN, w:2.2, head:7});
+       label(c, -3.1,-1.6, 'down ¼λₙ + up ¼λₙ = half a wave late', {fs:11.5, color:'#2E7D4F', italic:true});
+     } },
    { say:"Where does the murdered light go? Nowhere sinister: THROUGH the lens. Energy that cannot leave by reflection is transmitted — the coating does not destroy light, it redirects the vote. Your photographs are brighter by every photon the ghosts surrendered.",
      pose:'write',
      board:[{t:'Suppressed reflection = enhanced transmission. The energy books, as ever, balance.'}] },
@@ -1039,7 +1077,13 @@ const EXAMPLES = [
      } },
    { say:"For part b, the contact line, where the thickness is exactly zero. No path difference at all — yet ONE phase flip remains, unpartnered. The reflections meet half a wave apart and cancel: the contact fringe is DARK. Two plates touching in perfect optical contact reflect nothing along that line — darkness precisely where naive intuition promises the brightest agreement.",
      pose:'write',
-     board:['t = 0:\\ \\Delta_{\\rm path} = 0\\ \\text{but one flip} \\Rightarrow \\text{destructive: DARK at contact}'] },
+     board:['t = 0:\\ \\Delta_{\\rm path} = 0\\ \\text{but one flip} \\Rightarrow \\text{destructive: DARK at contact}'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0.05),cy:M.Y(0.55),r:6,fill:'#2B2317'},c.svg);
+       label(c, 0.4,-0.7, 'the lonely flip: dark at t = 0', {fs:11.5, color:'#7A2015', italic:true});
+       dashLine(c, 0.5,-0.5, 0.1,0.35, {color:'#7A2015'});
+     } },
    { say:"The check is a classic of the laboratory: Newton's rings — a lens resting on a flat — show the same dark CENTRE for the same reason, one lonely flip. And the working optician reads these fringes daily: a perfectly flat pair of plates draws perfectly straight, even stripes, and every wiggle in the barcode betrays a bump of a quarter wavelength. You have just built a surface gauge accurate to a ten-thousandth of a millimetre from two pieces of glass and a hair.",
      pose:'excited',
      board:[{t:'Check: dark contact fringe = Newton’s dark centre (one flip) ✓. Fringe straightness = flatness gauge to λ/4.'}] },
@@ -1069,10 +1113,20 @@ const EXAMPLES = [
      board:[{t:'Cell ℓ = 3.00 cm in one arm; λ = 589 nm; evacuating sweeps N = 29 fringes.'}] },
    { say:"The bookkeeping, and the factor everyone forgets: light traverses the cell TWICE per round trip — out to the mirror and back. Full of gas, each pass has optical length n ell; evacuated, just ell. The total change of optical path as the pump runs is therefore two ell times n minus one.",
      pose:'point',
-     board:['\\Delta(\\text{optical path}) = 2\\ell(n-1)\\quad(\\text{the arm is traversed TWICE})'] },
+     board:['\\Delta(\\text{optical path}) = 2\\ell(n-1)\\quad(\\text{the arm is traversed TWICE})'],
+     action(c){
+       arrow(c, 4.8,4.25, 11.2,4.25, {color:RED, w:2.2, dur:700});
+       arrow(c, 11.2,3.75, 4.8,3.75, {color:RED, w:2.2, dur:700});
+       label(c, 8.0,3.0, 'out and back: the cell is crossed TWICE', {fs:11.5, color:'#7A2015', italic:true, anchor:'middle'});
+     } },
    { say:"Each fringe that glides past is one wavelength of change — twenty-nine fringes, twenty-nine wavelengths. Set 2 ell n minus one equal to N lambda and solve: n equals one plus N lambda over 2 ell. Counting fringes is interferometry's entire business model: convert an invisible change — a whisker of gas, a nanometre of mirror travel — into a countable parade of bright and dark. The eye becomes a micrometer.",
      pose:'write',
-     board:['2\\ell(n-1) = N\\lambda \\;\\Rightarrow\\; n = 1 + \\frac{N\\lambda}{2\\ell}'] },
+     board:['2\\ell(n-1) = N\\lambda \\;\\Rightarrow\\; n = 1 + \\frac{N\\lambda}{2\\ell}'],
+     action(c){
+       arrow(c, 4,3.6, 4,1.4, {color:PURPLE, w:2.2, dur:500});
+       fringes(c, 2.9, 5.1, 0.1, 0.9, 9);
+       label(c, 6.6,0.5, '← N = 29 counted here', {fs:11.5, color:PURPLE, italic:true});
+     } },
    { say:"Now we put in the numbers: twenty-nine times 589 nanometres, over six centimetres — 2.85 ten-to-the-minus-4. The index: one point nought nought nought two eight five. The tabulated value for air is 1.000293 — we have measured a deviation from unity of three parts in ten thousand, on a bench, by counting stripes.",
      pose:'write',
      board:['n = 1 + \\frac{29(589\\times10^{-9})}{2(0.0300)} = 1 + 2.85\\times10^{-4} = 1.000285',

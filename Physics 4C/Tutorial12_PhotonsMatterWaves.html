@@ -896,7 +896,10 @@ const EXAMPLES = [
    { say:"For part a, in the civilised units: h c is 1240 e-V nanometres, so E equals 1240 over 532 — two point three three electron-volts, or 3.73 ten-to-the-minus-19 joules. The momentum is E over c: 1.25 ten-to-the-minus-27 kilogram metres per second. Tiny — but as Compton will show, enough to shove an electron.",
      pose:'write',
      board:['E = \\frac{1240\\ \\mathrm{eV\\,nm}}{532\\ \\mathrm{nm}} = 2.33\\ \\mathrm{eV} = 3.73\\times10^{-19}\\ \\mathrm J',
-            'p = \\frac{E}{c} = \\frac{3.73\\times10^{-19}}{3.00\\times10^{8}} = 1.25\\times10^{-27}\\ \\mathrm{kg\\,m/s}'] },
+            'p = \\frac{E}{c} = \\frac{3.73\\times10^{-19}}{3.00\\times10^{8}} = 1.25\\times10^{-27}\\ \\mathrm{kg\\,m/s}'],
+     action(c){
+       photon(c, 2.3,5.9, 5.8,5.9, {color:GREEN, n:7, amp:0.12, label:'one photon: 2.33 eV', fs:11.5});
+     } },
    { say:"Part b: the laser delivers five milliwatts — five millijoules each second — and each photon carries 3.73 ten-to-the-minus-19 joules. Divide: 1.34 ten-to-the-16 photons per second. Ten million billion grains a second — no wonder light feels continuous. The graininess surfaces only in faint light and delicate detectors; your own retina, remarkably, can register a handful.",
      pose:'point',
      board:['\\frac{P}{E} = \\frac{5.00\\times10^{-3}}{3.73\\times10^{-19}} = 1.34\\times10^{16}\\ \\text{photons/s}'],
@@ -909,7 +912,15 @@ const EXAMPLES = [
    { say:"For part c, the comparison that explains photochemistry: thermal energy k-B T at two hundred and ninety-three kelvin is about 0.025 electron-volts. Our green photon carries roughly a HUNDRED times that. This is why light can drive chemistry that heat cannot — photosynthesis runs on single-photon purchases that no amount of gentle warming could afford.",
      pose:'write',
      board:['k_BT \\approx 0.025\\ \\mathrm{eV}\\ \\ \\text{vs}\\ \\ E_{\\rm photon} = 2.33\\ \\mathrm{eV} \\approx 100\\,k_BT',
-            {t:'One photon can pay for chemistry that thermal jostling never could.'}] },
+            {t:'One photon can pay for chemistry that thermal jostling never could.'}],
+     action(c){
+       const {M}=c;                                   /* to-scale energy bars: 1 eV = 1.5 units */
+       el('line',{x1:M.X(0.6),y1:M.Y(0),x2:M.X(3.8),y2:M.Y(0),stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('rect',{x:M.X(1.0),y:M.Y(2.33*1.5),width:M.X(1.8)-M.X(1.0),height:M.Y(0)-M.Y(2.33*1.5),fill:GOLD,opacity:.75},c.svg);
+       el('rect',{x:M.X(2.6),y:M.Y(0.025*1.5),width:M.X(3.4)-M.X(2.6),height:M.Y(0)-M.Y(0.025*1.5),fill:RED},c.svg);
+       textAt(c, 1.4,3.85, 'photon: 2.33 eV', {fs:11.5, anchor:'middle'});
+       textAt(c, 2.9,0.45, 'k_BT: a sliver', {fs:11.5, anchor:'middle', color:'#8A3324'});
+     } },
    { say:"The audit: energy times rate should return the power — 3.73 ten-to-the-minus-19 times 1.34 ten-to-the-16 is 5.0 milliwatts. Check. Photons are bookkeeping you can trust. When a calculation closes its own loop — energy per photon times photons per second returning exactly the advertised power — you have not proved the theory, but you have certainly earned your lunch.",
      pose:'excited',
      board:['E \\times \\text{rate} = (3.73\\times10^{-19})(1.34\\times10^{16}) = 5.0\\ \\mathrm{mW}\\ \\checkmark'] },
@@ -941,14 +952,29 @@ const EXAMPLES = [
      } },
    { say:"For part b, the threshold: the photon that can JUST pay the fee, h f equals phi. Lambda-nought equals 1240 over 2.28 — five hundred and forty-four nanometres, green. Sodium ignores everything redder, which is precisely why darkroom safelights were red.",
      pose:'point',
-     board:['\\lambda_0 = \\frac{hc}{\\phi} = \\frac{1240}{2.28} = 544\\ \\mathrm{nm}\\ \\ (\\text{green; redder light: no electrons})'] },
+     board:['\\lambda_0 = \\frac{hc}{\\phi} = \\frac{1240}{2.28} = 544\\ \\mathrm{nm}\\ \\ (\\text{green; redder light: no electrons})'],
+     action(c){
+       photon(c, 5.4,3.0, 2.1,2.8, {color:GREEN, n:6, amp:0.12});
+       textAt(c, 5.6,3.1, '544 nm: just pays the 2.28 eV fee', {fs:11.5, italic:true, color:'#2E5C3F'});
+     } },
    { say:"Part c: triple the intensity. Classically, more intense light should make FASTER electrons. Reality: three times the photons, so three times the CURRENT — but K-max and the stopping potential do not move a millivolt. Each electron is bought by ONE photon; photons do not pool their money.",
      pose:'write',
-     board:[{t:'3× intensity → 3× photons → 3× current. K_max, V_stop: unchanged. (The anti-classical signature.)'}] },
+     board:[{t:'3× intensity → 3× photons → 3× current. K_max, V_stop: unchanged. (The anti-classical signature.)'}],
+     action(c){
+       photon(c, 5.7,6.3, 2.5,5.3, {color:PURPLE, n:7, amp:0.12});
+       photon(c, 6.2,5.5, 3.0,4.5, {color:PURPLE, n:7, amp:0.12});
+       arrow(c, 2.4,4.1, 4.9,3.1, {color:BLUE, w:2, dur:500, head:8});
+       arrow(c, 2.7,3.6, 5.2,2.6, {color:BLUE, w:2, dur:500, head:8});
+       textAt(c, 7.2,4.0, 'more electrons — each still 0.82 eV', {fs:11, italic:true, anchor:'middle'});
+     } },
    { say:"Part d: seven hundred nanometre light carries 1240 over 700 — one point seven seven e-V — less than the two point two eight fee. Result: zero electrons, at ANY intensity, forever. One photon cannot make change with another. A negative K-max is not an answer; it is the equation telling you the electron never left.",
      pose:'excited',
      board:['\\frac{1240}{700} = 1.77\\ \\mathrm{eV} < \\phi = 2.28\\ \\mathrm{eV}\\ \\Rightarrow\\ \\text{no emission, at any intensity}',
-            {t:'Below threshold, brightness buys nothing: one photon, one transaction.'}] },
+            {t:'Below threshold, brightness buys nothing: one photon, one transaction.'}],
+     action(c){
+       photon(c, 5.2,1.6, 2.1,1.4, {color:RED, n:5, amp:0.12});
+       textAt(c, 5.4,1.7, '700 nm: 1.77 eV — turned away', {fs:11.5, italic:true, color:'#C0392B'});
+     } },
   ]
 },
 
@@ -981,7 +1007,11 @@ const EXAMPLES = [
      } },
    { say:"With h c in hand, the work function returns from either point: 1380 over 300 minus one point four eight — three point one two electron-volts. The intercept of the line, wearing units. Slope and intercept, the two coefficients of a straight line, here carry two constants of nature between them — h on the slope, phi on the intercept. Rarely has y equals m x plus b held such distinguished cargo.",
      pose:'write',
-     board:['\\phi = \\frac{hc}{\\lambda_1} - eV_1 = \\frac{1380}{300} - 1.48 = 3.12\\ \\mathrm{eV}'] },
+     board:['\\phi = \\frac{hc}{\\lambda_1} - eV_1 = \\frac{1380}{300} - 1.48 = 3.12\\ \\mathrm{eV}'],
+     action(c){
+       el('circle',{cx:c.M.X(0.904),cy:c.M.Y(0),r:5.5,fill:GREEN},c.svg);
+       textAt(c, 0.88,-0.32, 'the line dies at f₀ = φ/h (λ₀ = 442 nm)', {fs:11, italic:true, anchor:'middle', color:'#2E5C3F'});
+     } },
    { say:"The history is delicious: Millikan ran precisely this analysis — more points, a decade of care, metal surfaces shaved in vacuum — hoping to REFUTE Einstein’s photon. He confirmed the slope h to better than one per cent, and the Nobel committee thanked them both. Data outvotes preference; that is rather the point of physics.",
      pose:'excited',
      board:[{t:'Millikan set out to refute the photon; his own slope said otherwise. Data outvotes preference.'}] },
@@ -1087,7 +1117,16 @@ const EXAMPLES = [
      } },
    { say:"Convert to energy currency: p c equals 5.3 ten-to-the-minus-21 times three ten-to-the-8 — 1.6 ten-to-the-minus-12 joules, which is nine point nine M-e-V. Compare the electron’s rest energy: barely half an M-e-V. The caged electron is violently relativistic, so we must use the full invariant triangle, not one half m v squared.",
      pose:'point',
-     board:['pc = (5.3\\times10^{-21})(3.0\\times10^{8}) = 1.6\\times10^{-12}\\ \\mathrm J = 9.9\\ \\mathrm{MeV} \\gg m_ec^2 = 0.511\\ \\mathrm{MeV}'] },
+     board:['pc = (5.3\\times10^{-21})(3.0\\times10^{8}) = 1.6\\times10^{-12}\\ \\mathrm J = 9.9\\ \\mathrm{MeV} \\gg m_ec^2 = 0.511\\ \\mathrm{MeV}'],
+     action(c){
+       const {M}=c;                              /* to-scale bars: 1 MeV = 0.5 units */
+       el('line',{x1:M.X(5.8),y1:M.Y(0.8),x2:M.X(9.4),y2:M.Y(0.8),stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('rect',{x:M.X(6.2),y:M.Y(0.8+9.9*0.5),width:M.X(7.0)-M.X(6.2),height:M.Y(0.8)-M.Y(0.8+9.9*0.5),fill:GOLD,opacity:.75},c.svg);
+       el('rect',{x:M.X(8.0),y:M.Y(0.8+0.511*0.5),width:M.X(8.8)-M.X(8.0),height:M.Y(0.8)-M.Y(0.8+0.511*0.5),fill:BLUE},c.svg);
+       textAt(c, 6.6,6.2, 'pc = 9.9 MeV', {fs:11.5, anchor:'middle'});
+       textAt(c, 8.4,1.75, 'mc² = 0.511', {fs:11, anchor:'middle', color:'#1D4568'});
+       textAt(c, 7.6,0.3, 'violently relativistic: use the triangle', {fs:10.5, italic:true, anchor:'middle'});
+     } },
    { say:"The triangle: E equals root of nine point nine squared plus 0.511 squared — essentially nine point nine M-e-V, nearly all of it kinetic: about nine point four M-e-V of rattling. Now the confrontation with data: beta electrons emerge with only a FEW M-e-V, and no known nuclear force could restrain a ten-M-e-V electron in the first place.",
      pose:'write',
      board:['E = \\sqrt{(9.9)^2 + (0.511)^2} \\approx 9.9\\ \\mathrm{MeV}\\ \\Rightarrow\\ K \\approx 9.4\\ \\mathrm{MeV}',
@@ -1095,7 +1134,10 @@ const EXAMPLES = [
    { say:"Verdict, historically decisive: nuclei contain NO electrons. The beta electron is CREATED at the instant of decay — a story Tutorial 14 completes. Savour the style of argument: the uncertainty principle used not as a lament about measurement, but as a VETO on a proposed model. Quantum mechanics does not merely describe nature; it legislates what nature may contain.",
      pose:'excited',
      board:[{t:'Conclusion: the electron is born in beta decay, not stored beforehand. Uncertainty as a veto.'},
-            '\\text{The estimate that emptied the nucleus of electrons}\\ \\checkmark'] },
+            '\\text{The estimate that emptied the nucleus of electrons}\\ \\checkmark'],
+     action(c){
+       arrow(c, 3.6,4.7, 6.6,6.2, {color:RED, w:2.5, label:'β: created at the instant of decay', fs:11});
+     } },
   ]
 },
 ];

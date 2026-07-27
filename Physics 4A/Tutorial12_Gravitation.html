@@ -898,9 +898,14 @@ const EXAMPLES = [
    { say:"The arithmetic runs as follows: 4.28 times ten to the thirteen, over 1.15 times ten to the thirteen — 3.73 metres per second squared. About 38 percent of Earth's. On Mars you could dunk a basketball; the basketball, alas, is 200 million kilometres away. All of Martian engineering hides in that 3.73 — lander legs, rover suspensions, the hop of future astronauts — one number, set by the planet, non-negotiable at any price.",
      pose:'write',
      board:['g_{\\rm Mars} = 3.73\\ \\mathrm{m/s^2} \\approx 0.38\\,g_{\\rm Earth}'] },
-   { say:"The check that guards the exam question: a 70-kilogram astronaut WEIGHS 261 newtons there, versus 686 here — but their MASS is 70 kilograms on both worlds and everywhere between. Mass is who you are; weight is merely your local arrangement with the nearest planet.",
+   { say:"The check that guards the exam question: a 70-kilogram astronaut WEIGHS 261 newtons there, versus 686 here — the two arrows on the stage, drawn to scale. But their MASS is 70 kilograms on both worlds and everywhere between. Mass is who you are; weight is merely your local arrangement with the nearest planet.",
      pose:'excited',
-     board:[{t:'Check: 70 kg astronaut — weight 261 N on Mars vs 686 N on Earth; mass 70 kg on both ✓'}] },
+     board:[{t:'Check: 70 kg astronaut — weight 261 N on Mars vs 686 N on Earth; mass 70 kg on both ✓'}],
+     action(c){
+       arrow(c, 2.6,-0.4, 2.6,-1.1, {color:'#C1653B', w:3, label:'261 N', fs:11, side:-1});
+       arrow(c, 3.5,-0.4, 3.5,-2.24, {color:BLUE, w:3, label:'686 N', fs:11});
+       textAt(c, -3.9,-2.6, 'same 70 kg, two different arrangements with gravity', {fs:12, italic:true});
+     } },
   ]
 },
 
@@ -925,8 +930,9 @@ const EXAMPLES = [
      } },
    { say:"The speed: root of G M over r — root of 5.89 times ten to the seventh — 7.68 kilometres per second. Twenty-two times the speed of sound, purely to stand still, gravitationally speaking. Seven point seven kilometres every second — the distance of a decent morning walk, covered between your heartbeats, forever, just to keep falling past the horizon.",
      pose:'write',
-     board:['v = \\sqrt{\\frac{3.99\\times10^{14}}{6.77\\times10^{6}}} = 7.68\\times10^{3}\\ \\mathrm{m/s} \\approx 7.7\\ \\mathrm{km/s}'] },
-   { say:"The period: circumference over speed — 5540 seconds, about 92 minutes. Sixteen sunrises a day. Sixteen sunrises a day, and every one of them earned by the same bargain: fall toward the Earth exactly as fast as the Earth curves away beneath you.",
+     board:['v = \\sqrt{\\frac{3.99\\times10^{14}}{6.77\\times10^{6}}} = 7.68\\times10^{3}\\ \\mathrm{m/s} \\approx 7.7\\ \\mathrm{km/s}'],
+     action(c){ arrow(c, -2.0,-0.2, -2.0,-1.4, {color:GREEN, w:3.5, label:'v = 7.7 km/s', vec:true, fs:12, side:-1}); } },
+   { say:"The period: circumference over speed — 5540 seconds, about 92 minutes. Sixteen sunrises a day, and every one of them earned by the same bargain: fall toward the Earth exactly as fast as the Earth curves away beneath you.",
      pose:'write',
      board:['T = \\frac{2\\pi r}{v} = \\frac{2\\pi(6.77\\times10^{6})}{7.68\\times10^{3}} = 5.54\\times10^{3}\\ \\mathrm{s} \\approx 92\\ \\mathrm{min}'] },
    { say:"The check is orbiting overhead as we speak: the International Space Station flies at almost exactly this altitude, at almost exactly this speed, once around in almost exactly 92 minutes. When your homework agrees with a 400-tonne laboratory, submit it with confidence.",
@@ -957,12 +963,17 @@ const EXAMPLES = [
        textAt(c, 1.7,2.45, 'geosynchronous (6.6 R_E)', {fs:12, italic:true});
        orbiter(c, 0,0, 2.78, 3000, {turns:1, fill:GOLD});
      } },
-   { say:"Up here the satellite completes one lap exactly as Earth completes one spin. Park it over the equator and, from the ground, it becomes a fixed star with a job — which is why your satellite dish is bolted rigidly in place and never needs to chase anything across the sky.",
+   { say:"Up here the satellite completes one lap exactly as Earth completes one spin — the two matched arcs on the stage turn together. Park it over the equator and, from the ground, it becomes a fixed star with a job — which is why your satellite dish is bolted rigidly in place and never needs to chase anything across the sky.",
      pose:'point',
-     board:[{t:'Altitude ≈ 42,300 − 6,370 = 35,900 km. Fixed over one equatorial point.'}] },
+     board:[{t:'Altitude ≈ 42,300 − 6,370 = 35,900 km. Fixed over one equatorial point.'}],
+     action(c){
+       arc(c, 0,0, 0.58, 20, 320, {color:BLUE, w:2.2, head:true, hs:8});
+       arc(c, 0,0, 3.02, 20, 130, {color:GOLD, w:2.2, head:true, hs:9});
+       textAt(c, -4.3,-2.6, 'one spin below = one lap above: the satellite hovers', {fs:12, italic:true});
+     } },
    { say:"The check, by Kepler's scaling: from low orbit at 92 minutes to one day is a factor of 15.7 in period; radius should grow as that to the two-thirds power — a factor of 6.2 — and indeed 6.6 Earth radii versus 1.06 for low orbit gives just that. Kepler grades his own homework, three centuries on.",
      pose:'excited',
-     board:[{t:'Check: (T₂/T₁)^{2/3} = (1440/92)^{2/3} ≈ 6.2 ≈ r₂/r₁ = 42,300/6,770 = 6.25 ✓'}] },
+     board:[{t:'Check: (T₂/T₁)^(2/3) = (1440/92)^(2/3) ≈ 6.2 ≈ r₂/r₁ = 42,300/6,770 = 6.25 ✓'}] },
   ]
 },
 
@@ -991,9 +1002,13 @@ const EXAMPLES = [
    { say:"Notice the projectile's mass cancelled — a pebble and a cathedral pay the same 11.2 kilometres per second per kilogram of themselves. Escape speed is a property of the PLANET, not the traveller. Gravity charges by velocity, not by luggage. Nature sets the tariff per kilogram and waives nothing — which is why rocketry is less about power than about the tyranny of carrying the fuel that carries the fuel.",
      pose:'point',
      board:[{t:'m cancels: same escape speed for a pebble or a spacecraft. It is Earth’s number, not yours.'}] },
-   { say:"The check, and a pleasing echo: escape speed is exactly root 2 times the speed of a circular orbit skimming the surface. Orbiting is halfway to leaving — energetically, the hard half is already paid. And a dark postscript: shrink R enough at fixed M and v-escape reaches the speed of light. That object has a name, and nothing that enters it contributes further examples.",
+   { say:"The check, and a pleasing echo: escape speed is exactly root 2 times the speed of a circular orbit skimming the surface — the dashed ring on the stage, 7.9 kilometres per second; root 2 times 7.9 is our 11.2. Orbiting is halfway to leaving — energetically, the hard half is already paid. And a dark postscript: shrink R enough at fixed M and v-escape reaches the speed of light. That object has a name, and nothing that enters it contributes further examples.",
      pose:'excited',
-     board:[{t:'Check: v_esc = √2 · v_circ(R) ✓. Push R small enough → v_esc → c: a black hole.'}] },
+     board:[{t:'Check: v_circ(R) = √(GM/R) = 7.9 km/s; √2 × 7.9 = 11.2 km/s ✓. Push R small enough → v_esc → c: a black hole.'}],
+     action(c){
+       orbitRing(c, -2.2,-1.4, 1.22, {color:'#888', dash:'4,4', w:1.8});
+       textAt(c, -1.15,-2.95, 'skimming orbit: v_circ = 7.9 km/s', {fs:11.5, italic:true});
+     } },
   ]
 },
 
@@ -1025,9 +1040,13 @@ const EXAMPLES = [
    { say:"Now we put in the numbers: 1.995 times ten to the seventeen, times 1.19 times ten to the minus seven — 2.37 times ten to the ten joules. Twenty-four billion joules: roughly the energy in 550 kilograms of rocket fuel's ideal output, spent lifting one tonne of electronics into the geometric aristocracy.",
      pose:'write',
      board:['\\Delta E = (1.995\\times10^{17})(1.190\\times10^{-7}) = 2.37\\times10^{10}\\ \\mathrm{J}'] },
-   { say:"Now the paradox that fails half of every orbital-mechanics class: in the HIGHER orbit the satellite moves SLOWER — its kinetic energy has dropped. Yet we ADDED energy! The resolution: potential energy rose by twice what kinetic lost. You burn fuel to end up slower and higher. In orbit, the way up is to hit the brakes' opposite and yet arrive lazier.",
+   { say:"Now the paradox that fails half of every orbital-mechanics class: in the HIGHER orbit the satellite moves SLOWER — compare the two arrows on the stage: 7.5 kilometres per second down in the low orbit, barely 3.1 up high. Yet we ADDED energy! The resolution: potential energy rose by TWICE what kinetic lost. You burn fuel to end up slower and higher — in orbit, altitude is purchased with speed, and the receipt reads backwards.",
      pose:'think',
-     board:[{t:'Paradox: v₂ < v₁ (K drops) yet ΔE > 0 — U rises by twice what K loses. Higher = slower.'}] },
+     board:[{t:'Paradox: v₁ = 7.5 km/s → v₂ = 3.1 km/s (K drops) yet ΔE > 0 — U rises by twice what K loses. Higher = slower.'}],
+     action(c){
+       arrow(c, 0.75,0.15, 0.75,1.35, {color:GREEN, w:3, label:'v₁ = 7.5 km/s', fs:11.5});
+       arrow(c, 2.9,0.15, 2.9,0.75, {color:RED, w:3, label:'v₂ = 3.1 km/s', fs:11.5, side:-1});
+     } },
    { say:"The check, from the master formula itself: E equals minus G M m over 2 r means K equals plus G M m over 2 r and U equals minus G M m over r — U is always exactly minus 2 K on a circular orbit. The virial theorem, whispering its two-to-one rule through every orbit in the sky. And with that, mechanics — all fourteen tutorials of it — rests its case.",
      pose:'excited',
      board:[{t:'Check (virial): U = −2K on any circular orbit → E = −K = −GMm/2r ✓. End of Physics 4A!'}] },

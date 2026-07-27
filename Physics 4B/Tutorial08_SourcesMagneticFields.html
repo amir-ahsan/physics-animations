@@ -896,15 +896,17 @@ const EXAMPLES = [
    { say:"Currents MAKE fields — that is this tutorial's business. A long straight wire wraps itself in circles of magnetic field: B equals mu-nought I over 2 pi r, direction by the right-hand rule — thumb along the current, fingers curl along B. Two wires, both out of the page, and we shall superpose. Vectors again; the field never stopped being one.",
      pose:'talk',
      board:[{t:'Wires 10 cm apart, I₁ = 5.0 A and I₂ = 8.0 A, both out of the page.'},
-            'B = \\frac{\\mu_0 I}{2\\pi r}, \\qquad \\frac{\\mu_0}{2\\pi} = 2\\times10^{-7}\\ \\mathrm{T\\,m/A}'] },
-   { say:"The picture, and the right-hand rule twice. At the midpoint, wire one — current out of the page, to our LEFT — wraps counterclockwise circles, so its field at M points UP. Wire two, to our RIGHT, also counterclockwise — but M now sits on its left side, where those circles point DOWN. Opposition between like currents: remember it.",
-     pose:'point',
-     board:['\\text{At } M:\\ \\vec B_1 \\uparrow\\ (\\text{from } I_1), \\quad \\vec B_2 \\downarrow\\ (\\text{from } I_2)'],
+            'B = \\frac{\\mu_0 I}{2\\pi r}, \\qquad \\frac{\\mu_0}{2\\pi} = 2\\times10^{-7}\\ \\mathrm{T\\,m/A}'],
      action(c){
        wireEnd(c, 0,0, true, 'I₁ = 5.0 A');
        wireEnd(c, 10,0, true, 'I₂ = 8.0 A');
        el('circle',{cx:c.M.X(5),cy:c.M.Y(0),r:4,fill:'#5C4B30'},c.svg);
        textAt(c, 4.65,0.8, 'M', {fs:14, italic:true});
+     } },
+   { say:"The picture, and the right-hand rule twice. At the midpoint, wire one — current out of the page, to our LEFT — wraps counterclockwise circles, so its field at M points UP. Wire two, to our RIGHT, also counterclockwise — but M now sits on its left side, where those circles point DOWN. Opposition between like currents: remember it.",
+     pose:'point',
+     board:['\\text{At } M:\\ \\vec B_1 \\uparrow\\ (\\text{from } I_1), \\quad \\vec B_2 \\downarrow\\ (\\text{from } I_2)'],
+     action(c){
        /* to scale: 1 world unit per 1e-5 T */
        arrow(c, 5,0.6, 5,2.6, {color:GOLD, w:3.5, label:'B₁', vec:true, fs:14});
        arrow(c, 5,-0.6, 5,-3.8, {color:BLUE, w:3.5, label:'B₂', vec:true, fs:14, side:-1});
@@ -978,7 +980,15 @@ const EXAMPLES = [
    { say:"The Biot–Savart law — the law that builds fields element by element: each scrap of current contributes d-B proportional to I d-ell cross r-hat, over r squared. Usually an integral with opinions. But certain geometries surrender instantly, and the circular arc is the most cooperative of all. Watch for the freebie: the radial legs.",
      pose:'talk',
      board:[{t:'Three-quarter circle, R = 6.0 cm, I = 4.0 A, closed by two radial legs. Find B at centre C.'},
-            'd\\vec B = \\frac{\\mu_0}{4\\pi}\\,\\frac{I\\,d\\vec\\ell\\times\\hat r}{r^2}'] },
+            'd\\vec B = \\frac{\\mu_0}{4\\pi}\\,\\frac{I\\,d\\vec\\ell\\times\\hat r}{r^2}'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(6)-M.X(0)),fill:'none',stroke:'#B0A488','stroke-width':1.5,'stroke-dasharray':'6,5'},c.svg);
+       el('circle',{cx:M.X(0),cy:M.Y(0),r:3,fill:'#8A7D60'},c.svg);
+       textAt(c, 0.5,0.7, 'C', {fs:15, italic:true});
+       dashLine(c, 0,0, 4.24,4.24, {color:'#B0A488'});
+       textAt(c, 1.5,3.4, 'R = 6.0 cm', {fs:12, italic:true});
+     } },
    { say:"First, the freebie. Along each straight RADIAL leg, d-ell points along the very line to the centre — d-ell parallel to r-hat — and the cross product of parallel vectors is ZERO. The legs contribute nothing at C. Radial segments are always silent at the centre; recognising them is free marks.",
      pose:'point',
      board:['\\text{Radial legs: } d\\vec\\ell \\parallel \\hat r \\Rightarrow d\\vec\\ell\\times\\hat r = 0\\ \\text{(no contribution at } C)'],
@@ -987,8 +997,6 @@ const EXAMPLES = [
        plotCurve(c, t=>[6*Math.cos(t), 6*Math.sin(t)], -Math.PI/2, Math.PI, {color:'#5C4B30', w:4, dur:1400});
        el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(0),y2:M.Y(-6),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},c.svg);
        el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(-6),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},c.svg);
-       el('circle',{cx:M.X(0),cy:M.Y(0),r:4,fill:'#5C4B30'},c.svg);
-       textAt(c, 0.5,0.7, 'C', {fs:15, italic:true});
        arrow(c, 6.3,-0.5, 6.3,1.8, {color:RED, w:2.5, dur:600});
        textAt(c, 6.9,0.3, 'I', {fs:14, italic:true, color:RED});
        textAt(c, -5.6,-1.5, 'radial legs: silent', {fs:12, italic:true, color:PURPLE});
@@ -1072,7 +1080,25 @@ const EXAMPLES = [
    { say:"The grand finale: the coaxial cable, mapped completely. Cylindrical symmetry means B circles the axis everywhere, so Ampère with a circular loop reads B times 2 pi r equals mu-nought I-enclosed — in EVERY region. The whole problem is bookkeeping: how much current does a loop of radius r actually catch? Four regions, four ledgers.",
      pose:'talk',
      board:[{t:'Inner: a = 1 mm, I = 10 A out (uniform). Shell: b = 3 → c = 4 mm, 10 A back. Find B(r).'},
-            'B(2\\pi r) = \\mu_0 I_{\\rm enc}\\quad\\text{— everything is } I_{\\rm enc}(r)'] },
+            'B(2\\pi r) = \\mu_0 I_{\\rm enc}\\quad\\text{— everything is } I_{\\rm enc}(r)'],
+     action(c){
+       const s=c.svg;
+       /* region boundaries on the graph */
+       dashLine(c, 1,0, 1,2.05e-3, {color:'#D9CDB4'});
+       dashLine(c, 3,0, 3,0.72e-3, {color:'#D9CDB4'});
+       dashLine(c, 4,0, 4,0.55e-3, {color:'#D9CDB4'});
+       textAt(c, 1,-2.6e-4, 'a', {fs:13, italic:true, anchor:'middle'});
+       textAt(c, 3,-2.6e-4, 'b', {fs:13, italic:true, anchor:'middle'});
+       textAt(c, 4,-2.6e-4, 'c', {fs:13, italic:true, anchor:'middle'});
+       /* cross-section inset (screen coords): inner conductor + return shell */
+       el('circle',{cx:470,cy:96,r:35,fill:'none',stroke:'#C98F52','stroke-width':10,opacity:.8},s);
+       el('circle',{cx:470,cy:96,r:10,fill:GOLD},s);
+       el('circle',{cx:470,cy:96,r:22,fill:'none',stroke:PURPLE,'stroke-width':1.8,'stroke-dasharray':'5,4'},s);
+       const cap=el('text',{x:470,y:152,fill:'#8A7D60','font-size':11.5,'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},s);
+       cap.textContent='cross-section: I out at centre, back in shell';
+       const cap2=el('text',{x:470,y:166,fill:PURPLE,'font-size':11,'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},s);
+       cap2.textContent='dashed: an Amperian circle of radius r';
+     } },
    { say:"Region one, INSIDE the inner conductor. Uniform current density means the enclosed share grows with AREA: I times r squared over a squared. So B is mu-nought I r over 2 pi a squared — LINEAR in r, starting from zero at the axis. At half a millimetre: 1 millitesla.",
      pose:'write',
      board:['r<a:\\ I_{\\rm enc} = I\\frac{r^2}{a^2} \\Rightarrow B = \\frac{\\mu_0 I r}{2\\pi a^2}',

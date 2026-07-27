@@ -893,7 +893,12 @@ const EXAMPLES = [
    { say:"Faraday's law — the crown jewel of this course, and the reason your lights are on. A changing magnetic FLUX through a loop induces an emf: minus N times d-phi by d-t. Flux is B times A times cosine theta, so nature offers three knobs to twiddle — B, A, or the angle. Today, knob one: B grows, everything else holds still.",
      pose:'talk',
      board:[{t:'N = 200, A = 15 cm², B: 0.10 → 0.50 T in 0.25 s, plane ⊥ B.'},
-            '\\varepsilon = -N\\frac{d\\Phi_B}{dt}, \\qquad \\Phi_B = BA\\cos\\theta'] },
+            '\\varepsilon = -N\\frac{d\\Phi_B}{dt}, \\qquad \\Phi_B = BA\\cos\\theta'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(6)-M.X(0)),fill:'none',stroke:'#5C4B30','stroke-width':4},c.svg);
+       textAt(c, -10.8,7.6, 'the coil: N = 200 turns', {fs:12.5, italic:true, color:'#5C4B30'});
+     } },
    { say:"The rate: delta B over delta t — 0.4 tesla in a quarter second — 1.6 tesla per second. The emf: N times A times that — 200 turns, times 15 ten-to-the-minus-4 square metres, times 1.6 — 0.48 volts. Two hundred turns means the same changing flux is counted two hundred times; turns are the honest multiplier of induction.",
      pose:'write',
      board:['|\\varepsilon| = NA\\frac{\\Delta B}{\\Delta t} = (200)(15\\times10^{-4})\\frac{0.50-0.10}{0.25} = 0.48\\ \\mathrm V'] },
@@ -901,8 +906,6 @@ const EXAMPLES = [
      pose:'point',
      board:[{t:'Lenz’s law: flux into page ↑ → induced current makes flux out of page → counterclockwise.'}],
      action(c){
-       const {M}=c;
-       el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(6)-M.X(0)),fill:'none',stroke:'#5C4B30','stroke-width':4},c.svg);
        circArrows(c, 0,0, 7.3, true, GREEN);
        textAt(c, -3.4,-8.1, 'induced I: counterclockwise', {fs:13, italic:true, color:GREEN});
      } },
@@ -941,16 +944,23 @@ const EXAMPLES = [
        const g=el('g',{},c.svg);
        el('rect',{x:M.X(-14),y:M.Y(7.5),width:M.X(8)-M.X(-14),height:M.Y(-7.5)-M.Y(7.5),
          fill:'none',stroke:'#5C4B30','stroke-width':4},g);
-       tween(u=>{ g.setAttribute('transform','translate('+((M.X(12)-M.X(-14))*u*0.55)+',0)'); }, 2600, c.instant);
+       /* clockwise circulation drawn INSIDE the group, so it rides along with the loop */
+       el('line',{x1:M.X(-8),y1:M.Y(8.6),x2:M.X(-2),y2:M.Y(8.6),stroke:GREEN,'stroke-width':2.5,'stroke-linecap':'round'},g);
+       el('polygon',{fill:GREEN,points:headPts(M.X(-2),M.Y(8.6),0,10)},g);
+       el('line',{x1:M.X(-2),y1:M.Y(-8.6),x2:M.X(-8),y2:M.Y(-8.6),stroke:GREEN,'stroke-width':2.5,'stroke-linecap':'round'},g);
+       el('polygon',{fill:GREEN,points:headPts(M.X(-8),M.Y(-8.6),Math.PI,10)},g);
+       const tl=el('text',{x:M.X(-6),y:M.Y(5.6),fill:GREEN,'font-size':14.5,'font-style':'italic','font-family':'Georgia,serif'},g);
+       tl.textContent='I clockwise';
+       tween(u=>{ g.setAttribute('transform','translate('+((M.X(12)-M.X(-14))*u*0.35)+',0)'); }, 2600, c.instant);
        arrow(c, 12,10.5, 21,10.5, {color:GOLD, w:3.5, label:'v', vec:true, fs:15});
-       /* clockwise circulation on the loop */
-       arrow(c, -8,8.6, -2,8.6, {color:GREEN, w:2.5, dur:900});
-       arrow(c, -2,-8.6, -8,-8.6, {color:GREEN, w:2.5, dur:900});
-       textAt(c, -6,5.6, 'I clockwise', {fs:12.5, italic:true, color:GREEN});
      } },
    { say:"On we go to part b. The field grips only the left, in-field side of the loop, with force B I L: 0.8 times 0.48 times 0.15 — 0.058 newtons — pointing LEFT, against the pull. Of course it does: Lenz's law again, now in mechanical dress. Induction always drags its feet. To keep constant speed, your hand supplies 0.058 newtons rightward.",
      pose:'write',
-     board:['F = BIL = (0.80)(0.48)(0.15) = 5.8\\times10^{-2}\\ \\mathrm N\\ (\\text{leftward — opposing the pull})'] },
+     board:['F = BIL = (0.80)(0.48)(0.15) = 5.8\\times10^{-2}\\ \\mathrm N\\ (\\text{leftward — opposing the pull})'],
+     action(c){
+       arrow(c, -4.9,0, -11.5,0, {color:RED, w:3.5, label:'F = BIL', fs:13});
+       textAt(c, -26,-12.6, 'the field tugs back on the in-field side only', {fs:12, italic:true, color:RED});
+     } },
    { say:"For part c, the audit. Mechanical power in: force times velocity — 0.0576 times 2 — 0.12 watts. Electrical power out: I squared R — 0.48 squared times 0.5 — 0.12 watts. Exact match. Your muscles are, quite literally, heating the resistor — induction is the honest broker converting the one into the other, keeping nothing for itself.",
      pose:'write',
      board:['P_{\\rm mech} = Fv = (0.0576)(2.0) = 0.12\\ \\mathrm W',
@@ -971,7 +981,7 @@ const EXAMPLES = [
    { say:"Knob three: the ANGLE — and this knob powers civilisation. Spin a coil in a steady field and the flux swings as cosine omega t; Faraday differentiates it into an emf swinging as SINE omega t. Alternating voltage, from pure rotation. The generator is Faraday's law with a crank handle.",
      pose:'talk',
      board:[{t:'N = 150, A = 20 cm², f = 60 rev/s, B = 0.40 T.'},
-            '\\Phi = NBA\\cos\\omega t \\;\\Rightarrow\\; \\varepsilon = NBA\\,\\omega\\sin\\omega t'] },
+            '\\Phi_B = BA\\cos\\omega t \\;\\Rightarrow\\; \\varepsilon = -N\\frac{d\\Phi_B}{dt} = NBA\\,\\omega\\sin\\omega t'] },
    { say:"Let us take part a. Omega: 2 pi times 60 — 377 radians per second. The peak: N B A omega — 150, times 0.4, times 20 ten-to-the-minus-4, times 377 — 45 volts. Note where the muscle is: omega multiplies everything. Spin faster, harvest more — the derivative pays by the radian.",
      pose:'write',
      board:['\\omega = 2\\pi f = 2\\pi(60) = 377\\ \\mathrm{rad/s}',
@@ -986,11 +996,19 @@ const EXAMPLES = [
      } },
    { say:"On we go to part b. The root-mean-square — the honest average that power calculations demand: peak over root 2 — 32 volts. When the wall socket says 120 volts, it is quoting rms; the peak is quietly 170. Sockets are modest. Root-mean-square is the average that survives squaring — the DC value that would deliver the same heating — and it is the only honest way to put one number on a quantity that spends half its life negative.",
      pose:'write',
-     board:['\\varepsilon_{\\rm rms} = \\frac{\\varepsilon_0}{\\sqrt2} = \\frac{45}{\\sqrt2} = 32\\ \\mathrm V'] },
+     board:['\\varepsilon_{\\rm rms} = \\frac{\\varepsilon_0}{\\sqrt2} = \\frac{45}{\\sqrt2} = 32\\ \\mathrm V'],
+     action(c){
+       dashLine(c, 0,31.8, 0.035,31.8, {color:BLUE, dash:'7,5'});
+       textAt(c, 0.0025,36, 'ε rms = 32 V', {fs:12.5, color:BLUE, italic:true});
+     } },
    { say:"For part c, the lovely subtlety. The emf peaks when sine is 1 — which is when the COSINE, the flux, is ZERO: the coil's plane lying PARALLEL to the field. Maximum emf at minimum flux! No paradox: the emf is the RATE of change, and the flux changes fastest precisely as it sweeps through zero — just as a pendulum moves fastest through the bottom. Flux and emf run a quarter-cycle out of step, forever. Confuse the value with its rate and this chapter will bite; keep them separate and it purrs.",
      pose:'excited',
      board:[{t:'ε peaks when Φ = 0 (plane ∥ B): the flux is changing fastest as it crosses zero.'},
-            {t:'Check: Φ max ↔ ε = 0; Φ = 0 ↔ ε max — a quarter cycle apart, like x and v in SHM ✓'}] },
+            {t:'Check: Φ max ↔ ε = 0; Φ = 0 ↔ ε max — a quarter cycle apart, like x and v in SHM ✓'}],
+     action(c){
+       el('circle',{cx:c.M.X(0.004167),cy:c.M.Y(45),r:5,fill:GREEN},c.svg);
+       textAt(c, 0.0058,42, 'ε max here — where Φ crosses zero', {fs:12, italic:true, color:GREEN});
+     } },
   ]
 },
 
@@ -1013,7 +1031,7 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'Solenoid: R = 3.0 cm, dB/dt = 0.25 T/s inside, zero outside. Find E(r).'},
             '\\oint\\vec E\\cdot d\\vec\\ell = -\\frac{d\\Phi_B}{dt}'] },
-   { say:"Symmetry does the heavy lifting, exactly as in Ampère's law: the induced E must circle the axis with constant magnitude on any centred circle. So the circulation is simply E times 2 pi r, and the whole problem — like the coax last week — is bookkeeping the enclosed CHANGING flux.",
+   { say:"Symmetry does the heavy lifting, exactly as in Ampère's law: the induced E must circle the axis with constant magnitude on any centred circle. So the circulation is simply E times 2 pi r, and the whole problem — like the coax last week — is bookkeeping the enclosed CHANGING flux. And Lenz's law fixes the sense: out-of-page flux growing, so E circulates CLOCKWISE, ready to drive an opposing current in any loop you might offer it.",
      pose:'point',
      board:['E\\,(2\\pi r) = \\Big|\\frac{d\\Phi_B}{dt}\\Big|_{\\rm enclosed}'],
      action(c){

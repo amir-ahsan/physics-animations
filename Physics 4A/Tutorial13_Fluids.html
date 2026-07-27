@@ -883,9 +883,14 @@ const EXAMPLES = [
    { say:"Fluids — matter that takes orders from pressure alone. Pascal's principle: squeeze a confined fluid anywhere, and the pressure rises by the same amount EVERYWHERE. The hydraulic lift turns that principle into a force multiplier: same pressure, bigger area, bigger force. Let us lift a car with one hand.",
      pose:'talk',
      board:[{t:'F₁ = 100 N on A₁ = 5.00 cm²; large piston A₂ = 500 cm².'},
-            '\\frac{F_1}{A_1} = \\frac{F_2}{A_2} \\quad \\text{(Pascal’s principle)}'] },
+            '\\frac{F_1}{A_1} = \\frac{F_2}{A_2} \\quad \\text{(Pascal’s principle)}'],
+     action(c){
+       textAt(c, -4.3,3.0, 'A₁ = 5.00 cm²', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, 2.2,-0.35, 'A₂ = 500 cm²', {fs:12, italic:true, color:'#8A5A24', anchor:'middle'});
+     } },
    { say:"The mechanic pushes the small piston with 100 newtons on 5 square centimetres. That pressure — 20 newtons per square centimetre — is announced, undiminished, to every corner of the fluid, including the underside of the large piston. Pascal's principle is the only telegraph that transmits force without wires: press here, and the announcement arrives everywhere the fluid touches, undiminished and without delay worth mentioning.",
      pose:'point',
+     board:['p = \\frac{F_1}{A_1} = \\frac{100\\ \\mathrm{N}}{5.00\\ \\mathrm{cm^2}} = 20.0\\ \\mathrm{N/cm^2}\\ \\text{— the same everywhere in the fluid}'],
      action(c){
        const p1=boxAt(c, -2.8,2.2, 1.1,0.25, {fill:'#6E5A3A', stroke:'#4A3826'});
        arrow(c, -2.8,3.6, -2.8,2.7, {color:RED, w:3.5, label:'100 N', fs:14});
@@ -894,12 +899,20 @@ const EXAMPLES = [
        tween(u=>{ p1.setAttribute('y', c.M.Y(2.2+0.25-0.5*u));
                   p2.setAttribute('y', c.M.Y(2.2+0.3+0.05*u)); }, 1800, c.instant);
      } },
-   { say:"The large piston has one hundred times the area, so it pushes with one hundred times the force: ten thousand newtons — a tonne of lift from a firm handshake. Only the area RATIO matters; the centimetres cancel without ever meeting a conversion factor.",
+   { say:"The large piston has one hundred times the area, so it pushes with one hundred times the force: ten thousand newtons — a tonne of lift from a firm handshake. There it is on the stage, the fluid pressing up on the wide piston. Only the area RATIO matters; the centimetres cancel without ever meeting a conversion factor.",
      pose:'write',
-     board:['F_2 = F_1\\,\\frac{A_2}{A_1} = (100)\\frac{500}{5.00} = 1.00\\times10^{4}\\ \\mathrm{N}'] },
+     board:['F_2 = F_1\\,\\frac{A_2}{A_1} = (100)\\frac{500}{5.00} = 1.00\\times10^{4}\\ \\mathrm{N}'],
+     action(c){
+       arrow(c, 2.2,1.0, 2.2,2.0, {color:GREEN, w:5, label:'F₂ = 10⁴ N', fs:13});
+       [1.4,3.0].forEach(x=>arrow(c, x,0.7, x,1.3, {color:BLUE, w:2, head:7}));
+     } },
    { say:"And the check that keeps thermodynamics happy: no free lunch. To raise the car ONE centimetre, the mechanic's piston must travel a full METRE — the fluid is incompressible, and volume swept must match volume delivered. Force is multiplied by a hundred; distance is divided by a hundred; WORK passes through untouched. Pascal multiplies convenience, never energy.",
      pose:'excited',
-     board:[{t:'Check: A₁d₁ = A₂d₂ → push 1 m to lift 1 cm. F×100, d÷100 — work conserved ✓'}] },
+     board:[{t:'Check: A₁d₁ = A₂d₂ → push 1 m to lift 1 cm. F×100, d÷100 — work conserved ✓'}],
+     action(c){
+       arrow(c, -3.7,3.4, -3.7,2.4, {color:RED, w:2.5, label:'d₁ big', fs:11.5, side:-1});
+       arrow(c, 3.8,2.35, 3.8,2.85, {color:GREEN, w:2.5, label:'d₂ tiny', fs:11.5});
+     } },
   ]
 },
 
@@ -907,7 +920,7 @@ const EXAMPLES = [
 {
   title:'Pressure on an aquarium window.', diff:'Basic',
   prompt:'An aquarium window’s center is 10.0 m below the water surface. (a) Find the absolute and gauge pressures there. (b) Find the net outward force on a circular window of area 0.500 m² (air at 1 atm inside).',
-  world:{x0:-1.2, x1:6.2, y0:-0.8, y1:11.5},
+  world:{x0:-2.8, x1:6.2, y0:-0.8, y1:11.5},
   setup(ctx,w){
     const {svg,M}=ctx;
     water(ctx, 0,0, 6.2,10.5);
@@ -926,10 +939,13 @@ const EXAMPLES = [
      board:['p_{\\rm gauge} = \\rho gh = (1.00\\times10^{3})(9.80)(10.0) = 9.80\\times10^{4}\\ \\mathrm{Pa}',
             'p_{\\rm abs} = 1.013\\times10^{5} + 0.980\\times10^{5} = 1.99\\times10^{5}\\ \\mathrm{Pa}'],
      action(c){ dashLine(c, 3.1,0.5, 3.1,10.5, {}); textAt(c, 3.3,5.3, 'h = 10.0 m', {fs:14, italic:true}); } },
-   { say:"Part b — the force on the glass. The inside air pushes OUT with one atmosphere, cancelling the atmospheric share of the water's push. Only the GAUGE pressure produces net force: 98 thousand pascals on half a square metre — 49 thousand newtons.",
+   { say:"Part b — the force on the glass. The inside air pushes OUT with one atmosphere, cancelling the atmospheric share of the water's push. Only the GAUGE pressure produces net force: 98 thousand pascals on half a square metre — 49 thousand newtons, pushing the glass OUT toward the viewers, as the arrow shows.",
      pose:'write',
      board:['F = p_{\\rm gauge}A = (9.80\\times10^{4})(0.500) = 4.90\\times10^{4}\\ \\mathrm{N}'],
-     action(c){ arrow(c, 0.65,0.5, 2.2,0.5, {color:PURPLE, w:4, label:'F', vec:true, fs:16}); } },
+     action(c){
+       [0.2,0.5,0.8].forEach(y=>arrow(c, 1.15,y, 0.35,y, {color:BLUE, w:2, head:7}));
+       arrow(c, -0.3,0.5, -2.4,0.5, {color:PURPLE, w:4, label:'F = 4.9×10⁴ N', fs:13});
+     } },
    { say:"Forty-nine thousand newtons — the weight of a loaded lorry, leaning patiently on a porthole. Now comes the check: had we sloppily used ABSOLUTE pressure, we would have doubled the force and specified glass twice as thick as needed — an error the accountants catch even when the physicists do not. Gauge pressure for net forces; absolute for the fluid's own biography.",
      pose:'excited',
      board:[{t:'Check: inside air cancels p_atm → gauge only. (Using absolute would double-count: 99,500 N ✗)'}] },
@@ -967,7 +983,10 @@ const EXAMPLES = [
      pose:'write',
      board:['V = \\frac{B}{\\rho_{\\rm w}g} = \\frac{19.0}{(1000)(9.80)} = 1.94\\times10^{-3}\\ \\mathrm{m^3}',
             'm = \\frac{w}{g} = \\frac{49.0}{9.80} = 5.00\\ \\mathrm{kg}',
-            '\\rho = \\frac{m}{V} = \\frac{5.00}{1.94\\times10^{-3}} = 2.58\\times10^{3}\\ \\mathrm{kg/m^3}'] },
+            '\\rho = \\frac{m}{V} = \\frac{5.00}{1.94\\times10^{-3}} = 2.58\\times10^{3}\\ \\mathrm{kg/m^3}'],
+     action(c){
+       textAt(c, 1.15,0.3, 'B = 19.0 N → V = 1.94 L', {fs:12, italic:true, color:'#1D4568'});
+     } },
    { say:"The verdict: specific gravity 2.6 — granite, concrete, aluminium's neighbourhood. Decidedly NOT gold, which tips the scale at 19.3. If this was sold to you as a crown, summon the guards. Now comes the check: Archimedes ran precisely this test for King Hiero, and the goldsmith's fate suggests the method's error bars were adequate.",
      pose:'excited',
      board:[{t:'Specific gravity 2.6 ≈ granite/concrete. Gold is 19.3 — the crown is a fake ✓ (history concurs).'}] },
@@ -1008,9 +1027,18 @@ const EXAMPLES = [
          }, 3200, c.instant);
        }
      } },
-   { say:"Part b — Bernoulli's equation, horizontal so the height terms cancel: the pressure DIFFERENCE is half rho times v-two squared minus v-one squared — half of a thousand times 60 — 30 kilopascals. And here is the celebrated surprise: the FAST section has the LOWER pressure.",
+   { say:"Part b — Bernoulli's equation, horizontal so the height terms cancel: the pressure DIFFERENCE is half rho times v-two squared minus v-one squared — half of a thousand times 60 — 30 kilopascals. And here is the celebrated surprise: the FAST section has the LOWER pressure. The two standpipes on the stage are the proof an engineer would trust — water climbs higher where the pressure is higher, and the wide, SLOW section wins.",
      pose:'write',
-     board:['p_1 - p_2 = \\tfrac12\\rho(v_2^2 - v_1^2) = \\tfrac12(1000)(64.0-4.00) = 3.00\\times10^{4}\\ \\mathrm{Pa}'] },
+     board:['p_1 - p_2 = \\tfrac12\\rho(v_2^2 - v_1^2) = \\tfrac12(1000)(64.0-4.00) = 3.00\\times10^{4}\\ \\mathrm{Pa}'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(1.8),y:M.Y(5.4),width:M.X(2.3)-M.X(1.8),height:M.Y(4.4)-M.Y(5.4),fill:'none',stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('rect',{x:M.X(1.8),y:M.Y(5.25),width:M.X(2.3)-M.X(1.8),height:M.Y(4.4)-M.Y(5.25),fill:'rgba(91,130,166,.45)',stroke:'none'},c.svg);
+       el('rect',{x:M.X(7.7),y:M.Y(5.4),width:M.X(8.2)-M.X(7.7),height:M.Y(3.4)-M.Y(5.4),fill:'none',stroke:'#8A7D60','stroke-width':2},c.svg);
+       el('rect',{x:M.X(7.7),y:M.Y(3.95),width:M.X(8.2)-M.X(7.7),height:M.Y(3.4)-M.Y(3.95),fill:'rgba(91,130,166,.45)',stroke:'none'},c.svg);
+       textAt(c, 2.05,5.55, 'p₁ high', {fs:11.5, italic:true, anchor:'middle', color:'#1D4568'});
+       textAt(c, 7.95,5.55, 'p₂ low', {fs:11.5, italic:true, anchor:'middle', color:'#C0392B'});
+     } },
    { say:"Counterintuitive, yet mandatory: something must ACCELERATE the water into the throat, and that something is precisely this pressure drop — high pressure behind, low pressure ahead, shove. Now comes the check: run the logic backwards and a pressure RISE in the narrow section would decelerate the entering water and violate continuity within the second. This drop is the working soul of the Venturi meter, the carburettor, and the perfume atomiser. Physics, moonlighting in retail.",
      pose:'excited',
      board:[{t:'Check: the drop p₁ > p₂ is what accelerates water into the throat — required by continuity ✓ (Venturi principle).'}] },
@@ -1052,10 +1080,14 @@ const EXAMPLES = [
        dashLine(c, 2.2,-0.35, 6.28,-0.35, {color:GREEN});
        textAt(c, 3.9,-0.28, 'x = 4.00 m', {fs:13, italic:true, color:'#2E7D4F'});
      } },
-   { say:"And now the jewel — the check that is also a theorem. In general the range is 2 root h d: perfectly SYMMETRIC in depth-below-surface and height-above-floor. Swap them — a hole 1 metre down and 4 metres up — and the jet lands on the SAME spot. Two different holes, one puddle. When a formula displays symmetry that nothing in the problem demanded, physics is showing you its jewellery. Do admire it. And with that — fluids, concluded.",
+   { say:"And now the jewel — the check that is also a theorem. In general the range is 2 root h d: perfectly SYMMETRIC in depth-below-surface and height-above-floor. Swap them — a hole 1 metre down and 4 metres up — and the jet lands on the SAME spot; there is its dashed twin arc on the stage, slower on exit but with longer to fall. Two different holes, one puddle. When a formula displays symmetry that nothing in the problem demanded, physics is showing you its jewellery. Do admire it. And with that — fluids, concluded.",
      pose:'excited',
      board:['x = 2\\sqrt{hd} \\;\\text{— symmetric in } h \\text{ and } d',
-            {t:'Check: (h,d) = (4,1) and (1,4) land at the same x = 4.00 m. Two holes, one puddle ✓'}] },
+            {t:'Check: (h,d) = (4,1) and (1,4) land at the same x = 4.00 m. Two holes, one puddle ✓'}],
+     action(c){
+       plotCurve(c, t=>[2.28+4.43*t, 4.0-4.9*t*t], 0, 0.903, {color:PURPLE, w:2.5, dash:'6,4', dur:1400});
+       textAt(c, 3.3,4.35, 'mirror hole: h = 1 m, d = 4 m', {fs:11.5, italic:true, color:'#7B4FA0'});
+     } },
   ]
 },
 ];

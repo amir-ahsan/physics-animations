@@ -910,8 +910,17 @@ const EXAMPLES = [
   prompt:'(a) A freezer holds −18.0 °C in a 26.0 °C kitchen: find the largest possible COP and the minimum work to freeze 0.600 kg of water at 0 °C. (b) A heat pump holds 21.0 °C using 2.0 °C outdoor air: find its Carnot COP and the minimum work per joule of delivered heat.',
   world:{x0:-1, x1:11, y0:-0.8, y1:9.8},
   setup(ctx,w){
-    engineSketch({svg:ctx.svg, M:ctx.M, instant:true},
-      {hot:'kitchen, 299 K', cold:'freezer box, 255 K', qh:'Q_H out', qc:'Q_C in', w:'W in'});
+    /* reversed engine: heat flows UP the sketch, work enters from the side */
+    const c={svg:ctx.svg, M:ctx.M, instant:true};
+    const {M}=ctx;
+    el('rect',{x:M.X(1),y:M.Y(9),width:M.X(9)-M.X(1),height:M.Y(7.4)-M.Y(9),fill:'#E8B4A0',stroke:'#A8705A','stroke-width':2,rx:4},ctx.svg);
+    el('rect',{x:M.X(1),y:M.Y(1.6),width:M.X(9)-M.X(1),height:M.Y(0)-M.Y(1.6),fill:'#B8D4E8',stroke:'#5A88A8','stroke-width':2,rx:4},ctx.svg);
+    el('circle',{cx:M.X(5),cy:M.Y(4.5),r:26,fill:'#D9C6A5',stroke:'#8A5A24','stroke-width':2.5},ctx.svg);
+    textAt(c, 5,8.05, 'kitchen, 299 K', {fs:12.5, anchor:'middle', color:'#7A3A28'});
+    textAt(c, 5,0.55, 'freezer box, 255 K', {fs:12.5, anchor:'middle', color:'#2E5A78'});
+    arrow(c, 5,1.85, 5,3.6, {color:BLUE, w:4, label:'Q_C in', fs:12.5});
+    arrow(c, 5,5.4, 5,7.2, {color:RED, w:4, label:'Q_H out', fs:12.5});
+    arrow(c, 8.3,4.5, 5.85,4.5, {color:GREEN, w:4, label:'W in', fs:12.5});
   },
   steps:[
    { say:"Now the engine runs in reverse: work in, heat dragged uphill. Note the stage — the arrows have turned around, and the work now enters from the side, paid for at the meter. Two appliances, one question each: what is the least work the second law will accept?",
@@ -940,7 +949,7 @@ const EXAMPLES = [
 {
   title:'Entropy of mixing hot and cold water (integration).', diff:'Intermediate',
   prompt:'In an insulated vessel, 1.00 kg of water at 90.0 °C is mixed with 1.00 kg at 10.0 °C. Find the entropy change of each portion and of the universe.',
-  world:{x0:-4, x1:44, y0:-90, y1:640, aniso:true},
+  world:{x0:-4, x1:44, y0:-560, y1:640, aniso:true},
   setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'', ylab:'ΔS (J/K)'}); },
   steps:[
    { say:"Mix hot and cold water and the outcome is banal — lukewarm. The INTERESTING question is the one the second law asks: what happened to the entropy? The mixing itself is hopelessly irreversible, but entropy is a state function, so we may carry each kilogram along a polite, reversible path of gradual temperature change and integrate d-Q over T along THAT.",
@@ -954,7 +963,7 @@ const EXAMPLES = [
        const {M}=c;
        const r=el('rect',{x:M.X(6)-20,y:M.Y(0),width:40,height:0,fill:RED,opacity:.75},c.svg);
        tween(u=>{ r.setAttribute('height',(M.Y(0)-M.Y(488))*u); r.setAttribute('y',M.Y(0)); }, 800, c.instant);
-       textAt(c, 6,-70, 'hot: −488', {fs:12, anchor:'middle', color:RED});
+       textAt(c, 6,-535, 'hot: −488', {fs:12, anchor:'middle', color:RED});
      } },
    { say:"The cold kilogram warms from 283.15 to 323.15: 4186 times log of 323 over 283 — plus 0.1322 — PLUS five hundred and fifty-three joules per kelvin. Larger in magnitude than the hot water's loss, and the whole second law hides in that asymmetry.",
      pose:'write',
@@ -974,9 +983,9 @@ const EXAMPLES = [
             {t:'Q/T with fixed T would be WRONG — the log handles the drifting temperature.'}],
      action(c){
        const {M}=c;
-       const r=el('rect',{x:M.X(30)-20,y:M.Y(67),width:40,height:M.Y(0)-M.Y(67),fill:GREEN,opacity:0},c.svg);
+       const r=el('rect',{x:M.X(30)-20,y:M.Y(65),width:40,height:M.Y(0)-M.Y(65),fill:GREEN,opacity:0},c.svg);
        tween(u=>r.setAttribute('opacity',.85*u), 800, c.instant);
-       textAt(c, 30,110, 'universe: +67', {fs:12, anchor:'middle', color:GREEN});
+       textAt(c, 30,130, 'universe: +65', {fs:12, anchor:'middle', color:GREEN});
      } },
   ]
 },
@@ -1000,21 +1009,42 @@ const EXAMPLES = [
   steps:[
    { say:"The most consequential loop ever drawn: Carnot's cycle — two isotherms joined by two adiabats, on the stage in red, blue, and dashed purple. Heat enters ONLY at T-H, leaves ONLY at T-C, and the adiabats are silent connectors. We shall derive its efficiency with nothing but last tutorial's integrals.",
      pose:'talk',
-     board:[{t:'1→2: isothermal at T_H. 2→3: adiabatic. 3→4: isothermal at T_C. 4→1: adiabatic.'}] },
+     board:[{t:'1→2: isothermal at T_H. 2→3: adiabatic. 3→4: isothermal at T_C. 4→1: adiabatic.'}],
+     action(c){
+       const P=[[1,380,'1'],[2,190,'2'],[3.6,71.2,'3'],[1.8,142.4,'4']];
+       for(const [v,p,n] of P){
+         el('circle',{cx:c.M.X(v),cy:c.M.Y(p),r:5,fill:'#5C4B30'},c.svg);
+         textAt(c, v+0.12, p+22, n, {fs:13, italic:true, color:'#5C4B30'});
+       }
+     } },
    { say:"The isotherms first. Along one-to-two the temperature is pinned, so delta E-int is zero and the heat absorbed equals the work — the logarithmic integral: Q-H equals n R T-H log V-two over V-one. Likewise the heat REJECTED along three-to-four has magnitude n R T-C log V-three over V-four. Two heats, two logarithms — and an apparent dependence on four volumes.",
      pose:'write',
-     board:['Q_H = nRT_H\\ln\\frac{V_2}{V_1}, \\qquad Q_C = nRT_C\\ln\\frac{V_3}{V_4}'] },
+     board:['Q_H = nRT_H\\ln\\frac{V_2}{V_1}, \\qquad Q_C = nRT_C\\ln\\frac{V_3}{V_4}'],
+     action(c){
+       arrow(c, 0.35,315, 1.15,290, {color:RED, w:3, label:'Q_H in', fs:12});
+       arrow(c, 2.95,80, 3.7,32, {color:BLUE, w:3, label:'Q_C out', fs:12, side:-1});
+     } },
    { say:"Now the adiabats, carrying T V to the gamma-minus-one as their passport: T-H V-two to the gamma-minus-one equals T-C V-three to the same power, and identically for the other connector with V-one and V-four. Two equations, and one delicious division.",
      pose:'point',
      board:['T_HV_2^{\\gamma-1} = T_CV_3^{\\gamma-1}, \\qquad T_HV_1^{\\gamma-1} = T_CV_4^{\\gamma-1}'] },
    { say:"Divide the first by the second — the temperatures cancel wholesale — leaving V-two over V-one equals V-three over V-four. The two logarithms in our heats are therefore EQUAL, and in the ratio Q-C over Q-H they cancel completely, bequeathing the purest result in thermodynamics: Q-C over Q-H equals T-C over T-H.",
      pose:'write',
      board:['\\Big(\\frac{V_2}{V_1}\\Big)^{\\gamma-1} = \\Big(\\frac{V_3}{V_4}\\Big)^{\\gamma-1} \\;\\Rightarrow\\; \\frac{V_2}{V_1} = \\frac{V_3}{V_4}',
-            '\\frac{Q_C}{Q_H} = \\frac{T_C\\ln(V_3/V_4)}{T_H\\ln(V_2/V_1)} = \\frac{T_C}{T_H} \\;\\Rightarrow\\; e = 1 - \\frac{T_C}{T_H}'] },
+            '\\frac{Q_C}{Q_H} = \\frac{T_C\\ln(V_3/V_4)}{T_H\\ln(V_2/V_1)} = \\frac{T_C}{T_H} \\;\\Rightarrow\\; e = 1 - \\frac{T_C}{T_H}'],
+     action(c){
+       for(const [v,n] of [[1,'V₁'],[2,'V₂'],[3.6,'V₃'],[1.8,'V₄']]){
+         dashLine(c, v,0, v,{1:380,2:190,3.6:71.2,1.8:142.4}[v], {});
+         textAt(c, v, -28, n, {fs:12, italic:true, anchor:'middle', color:'#7A5A28'});
+       }
+       textAt(c, 4.2, 165, 'V₂/V₁ = V₃/V₄ = 2', {fs:12.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"Savour what made it work: heat crossed the boundary only at the two FIXED temperatures, with the adiabats as heat-tight corridors. And notice the corollary hiding in plain sight — Q-H over T-H equals Q-C over T-C: the engine absorbs exactly as much ENTROPY as it rejects, passing it through untouched, like a perfect customs office. That balance is why the Carnot engine is reversible, and why nothing beats it. Sadi Carnot wrote this before anyone knew what heat was; genius keeps its own schedule.",
      pose:'excited',
      board:['\\frac{Q_H}{T_H} = \\frac{Q_C}{T_C}\\ \\ (\\text{entropy in = entropy out — reversibility itself})',
-            {t:'Heat only at two fixed T’s + silent adiabats → the temperature-only efficiency.'}] },
+            {t:'Heat only at two fixed T’s + silent adiabats → the temperature-only efficiency.'}],
+     action(c){
+       textAt(c, 2.3, 395, 'entropy in = entropy out: nothing created, nothing lost', {fs:12, italic:true, color:'#8A5A24'});
+     } },
   ]
 },
 
@@ -1047,11 +1077,24 @@ const EXAMPLES = [
    { say:"For part b, the puzzle. Rupture the partition: the gas rushes into vacuum. No piston, so no work; insulated, so no heat; the first law then insists the internal energy — and hence the temperature — is unchanged. The temperature logarithm dies, and only the volume term speaks: n R log 2 — plus five point seven six joules per kelvin.",
      pose:'write',
      board:['Q = 0,\\ W = 0 \\Rightarrow \\Delta E_{\\rm int} = 0 \\Rightarrow T_f = T_i',
-            '\\Delta S_{\\rm gas} = nR\\ln 2 = (1.00)(8.314)(0.6931) = +5.76\\ \\mathrm{J/K}'] },
+            '\\Delta S_{\\rm gas} = nR\\ln 2 = (1.00)(8.314)(0.6931) = +5.76\\ \\mathrm{J/K}'],
+     action(c){
+       const {M}=c;
+       /* the partition ruptures: molecules flood the right half */
+       el('line',{x1:M.X(4.55),y1:M.Y(4.1),x2:M.X(5.45),y2:M.Y(2.9),stroke:RED,'stroke-width':4},c.svg);
+       el('line',{x1:M.X(4.55),y1:M.Y(2.9),x2:M.X(5.45),y2:M.Y(4.1),stroke:RED,'stroke-width':4},c.svg);
+       for(let i=0;i<12;i++){
+         el('circle',{cx:M.X(5.4+3.7*((i*0.53)%1)),cy:M.Y(0.9+5.2*((i*0.71)%1)),r:4,fill:'#9FBEDB'},c.svg);
+       }
+       arrow(c, 4.1,1.1, 6.4,1.1, {color:GOLD, w:3, label:'V → 2V, T unchanged', fs:12});
+     } },
    { say:"And here is the resolution of the paradox, worth the whole tutorial. Along the ACTUAL path, the integral of d-Q over T is zero — yet delta S is positive, because d-Q over T equals d-S only for REVERSIBLE paths; we computed along an isothermal surrogate, as the state function permits. The surroundings never noticed, so the universe gained the full 5.76 — irreversibility without a trace of heat. Boltzmann seconds the verdict from the other side of physics: doubling the volume doubles every molecule's options, so delta S equals k-B log 2 to the N-A — which is R log 2, to the digit. Thermodynamics and statistics, closing the same case. The second law rests.",
      pose:'excited',
      board:['\\Delta S_{\\rm univ} = +5.76\\ \\mathrm{J/K} > 0\\ \\ (\\text{irreversible, though } \\textstyle\\int dQ/T = 0 \\text{ on the real path})',
-            '\\text{Boltzmann: } \\Delta S = k_B\\ln 2^{N_A} = N_Ak_B\\ln 2 = R\\ln 2\\ \\checkmark'] },
+            '\\text{Boltzmann: } \\Delta S = k_B\\ln 2^{N_A} = N_Ak_B\\ln 2 = R\\ln 2\\ \\checkmark'],
+     action(c){
+       textAt(c, 5, -0.6, 'ΔS_univ = +5.76 J/K — created, not transferred', {fs:12.5, italic:true, anchor:'middle', color:'#2E7D4F'});
+     } },
   ]
 },
 
@@ -1065,7 +1108,7 @@ const EXAMPLES = [
     const c={svg:ctx.svg,M:ctx.M,instant:true};
     plotCurve(c, v=>[v, 60*Math.pow(5.7/v,1.033)], 1.2, 5.7, {color:PURPLE, w:2.5, dash:'6,4'});
     plotCurve(c, v=>[v, 110*Math.pow(5.7/v,1.088)], 1.2, 5.7, {color:GOLD, w:3});
-    el('line',{x1:c.M.X(1.2),y1:c.M.Y(317),x2:c.M.X(1.2),y2:c.M.Y(600),stroke:RED,'stroke-width':3.5},c.svg);
+    el('line',{x1:c.M.X(1.2),y1:c.M.Y(300),x2:c.M.X(1.2),y2:c.M.Y(600),stroke:RED,'stroke-width':3.5},c.svg);
     el('line',{x1:c.M.X(5.7),y1:c.M.Y(60),x2:c.M.X(5.7),y2:c.M.Y(110),stroke:BLUE,'stroke-width':3.5},c.svg);
     textAt(c, 1.55,500, 'ignition (V fixed)', {fs:12, color:RED});
     textAt(c, 3.6,260, 'power stroke', {fs:12, color:'#8A5A24'});
@@ -1074,14 +1117,26 @@ const EXAMPLES = [
    { say:"The finale: the OTTO CYCLE, the idealised heart of every petrol engine. Four strokes on the stage: adiabatic compression, a constant-volume spike of ignition, the adiabatic power stroke, and a constant-volume exhaust. Heat flows only on the two vertical legs — where no work is done — and that bookkeeping convenience makes the efficiency derivable in four lines.",
      pose:'talk',
      board:[{t:'1→2 adiabatic (r = V₁/V₂); 2→3 isochoric ignition; 3→4 adiabatic power; 4→1 isochoric exhaust.'},
-            'Q_H = nC_V(T_3 - T_2), \\qquad Q_C = nC_V(T_4 - T_1)'] },
+            'Q_H = nC_V(T_3 - T_2), \\qquad Q_C = nC_V(T_4 - T_1)'],
+     action(c){
+       const P=[[5.7,60,'1'],[1.2,300,'2'],[1.2,600,'3'],[5.7,110,'4']];
+       for(const [v,p,n] of P){
+         el('circle',{cx:c.M.X(v),cy:c.M.Y(p),r:5,fill:'#5C4B30'},c.svg);
+         textAt(c, v+0.12, p+30, n, {fs:13, italic:true, color:'#5C4B30'});
+       }
+     } },
    { say:"The efficiency is one minus Q-C over Q-H — one minus the ratio of the temperature gaps: T-four minus T-one, over T-three minus T-two. Four temperatures; too many. The adiabats will now execute their signature cancellation. When a derivation threatens you with four unknowns, look for the constraint you have not yet spent — here the adiabats, which tie the temperature ratios together and collapse the expression into the elegant result Otto promised.",
      pose:'write',
      board:['e = 1 - \\frac{Q_C}{Q_H} = 1 - \\frac{T_4 - T_1}{T_3 - T_2}'] },
    { say:"Both adiabats span the SAME volume ratio r, so T V to the gamma-minus-one constant gives T-two equals T-one times r to the gamma-minus-one, and T-three equals T-four times the same factor. Substitute: the whole bracket T-four minus T-one factors out of the denominator, cancels against the numerator, and the efficiency depends on r ALONE: e equals one minus r to the one-minus-gamma.",
      pose:'point',
      board:['T_2 = T_1r^{\\gamma-1}, \\qquad T_3 = T_4r^{\\gamma-1}',
-            'e = 1 - \\frac{T_4-T_1}{r^{\\gamma-1}(T_4-T_1)} = 1 - r^{1-\\gamma}'] },
+            'e = 1 - \\frac{T_4-T_1}{r^{\\gamma-1}(T_4-T_1)} = 1 - r^{1-\\gamma}'],
+     action(c){
+       dashLine(c, 1.2,0, 1.2,300, {}); dashLine(c, 5.7,0, 5.7,60, {});
+       textAt(c, 1.2, -42, 'V₂', {fs:12, italic:true, anchor:'middle', color:'#7A5A28'});
+       textAt(c, 5.7, -42, 'V₁ = rV₂', {fs:12, italic:true, anchor:'middle', color:'#7A5A28'});
+     } },
    { say:"For part b, the numbers. Compression ratio nine and a half, gamma one point four: e equals one minus 9.5 to the minus 0.4 — one minus 0.406 — fifty-nine per cent, ideally. Your actual car delivers twenty-five to thirty, the difference devoured by friction, heat loss, incomplete combustion, and strokes taken at speed rather than quasi-statically. The formula is the engine's ambition; the dashboard is its confession.",
      pose:'write',
      board:['e = 1 - (9.5)^{-0.40} = 1 - 0.406 = 0.594 \\approx 59\\%\\ \\text{(ideal)}',
@@ -1089,7 +1144,11 @@ const EXAMPLES = [
    { say:"And the deepest check: compare with Carnot spanning the same extremes. From three hundred kelvin, compression alone reaches seven hundred and thirty-eight; if ignition triples the pressure, the peak nears twenty-two hundred, and Carnot would permit eighty-six per cent. The Otto cycle falls short EVEN IN THE IDEAL LIMIT — because its heat enters along the whole ignition isochore, over a RANGE of temperatures, rather than all at the single hottest one. Carnot's theorem, demonstrated under your bonnet at every traffic light. And with that, thermodynamics closes its books — in credit, as the second law insists.",
      pose:'excited',
      board:['T_2 = 300(9.5)^{0.4} = 738\\ \\mathrm K;\\ \\ T_3 \\approx 2215\\ \\mathrm K \\Rightarrow e_C = 1-\\frac{300}{2215} = 86\\%',
-            {t:'Otto < Carnot even when ideal: heat enters over a T range, not at one T — Carnot’s theorem in action.'}] },
+            {t:'Otto < Carnot even when ideal: heat enters over a T range, not at one T — Carnot’s theorem in action.'}],
+     action(c){
+       arrow(c, 0.75,320, 0.75,580, {color:RED, w:2.5, label:'738 → 2215 K', fs:11.5, side:-1});
+       textAt(c, 0.5, 640, 'heat enters over a whole range of T', {fs:11.5, italic:true, color:RED});
+     } },
   ]
 },
 ];

@@ -896,7 +896,12 @@ const EXAMPLES = [
      action(c){ dashLine(c, 0,29.4, 44.1,29.4, {}); markPoint(c, 44.1, 29.4, 'H = 29.4 m', {color:GREEN, dy:-12}); } },
    { say:"On we go to part b. Time to the top: 24 over 9.8 — 2.45 seconds. By symmetry the descent takes exactly as long. Total: 4.90 seconds. Symmetry is the laziest and most reliable shortcut in physics. Whenever a problem possesses symmetry, spend it immediately; it is the only currency that halves your work without ever devaluing.",
      pose:'write',
-     board:['t_{\\rm top} = \\frac{v_{0y}}{g} = \\frac{24.0}{9.80} = 2.45\\ \\mathrm{s} \\;\\Rightarrow\\; t = 2\\,t_{\\rm top} = 2(2.45) = 4.90\\ \\mathrm{s}'] },
+     board:['t_{\\rm top} = \\frac{v_{0y}}{g} = \\frac{24.0}{9.80} = 2.45\\ \\mathrm{s} \\;\\Rightarrow\\; t = 2\\,t_{\\rm top} = 2(2.45) = 4.90\\ \\mathrm{s}'],
+     action(c){
+       dashLine(c, 44.1,0, 44.1,29.4, {});
+       textAt(c, 20,13.5, '2.45 s up', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
+       textAt(c, 68,13.5, '2.45 s down', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
+     } },
    { say:"And now, part c. The range is the horizontal velocity times the flight time — 18 times 4.9 — 88.2 metres. The horizontal motion did nothing clever; it just kept walking while gravity did the drama. I find this division of labour delightful: the vertical component lives a tragedy — rise, despair, fall — while the horizontal component simply goes for a walk. Same ball, two temperaments.",
      pose:'excited',
      board:['R = v_{0x}\\,t = (18.0)(4.90) = 88.2\\ \\mathrm{m}'],
@@ -996,11 +1001,12 @@ const EXAMPLES = [
      pose:'write',
      board:['\\sin\\theta = \\frac{v_{W/E}}{v_{B/W}} = \\frac{2.00}{4.00} = 0.500 \\;\\Rightarrow\\; \\theta = 30.0^{\\circ}\\ \\text{west of north}'],
      action(c){
-       /* velocity triangle drawn LARGE (2× scale) beside the crossing */
-       const S=3.2, ax=72, ay=6;
-       arrow(c, ax,ay, ax-S*8.66, ay+S*17.32, {color:GOLD, w:4, label:'v_B/W', vec:true, fs:16, side:-1});
-       arrow(c, ax-S*8.66, ay+S*17.32, ax, ay+S*17.32, {color:BLUE, w:4, label:'v_W/E', vec:true, fs:16});
-       arrow(c, ax,ay, ax, ay+S*17.32, {color:GREEN, dash:'7,5', w:3, label:'v_B/E', vec:true, fs:16});
+       /* velocity triangle drawn LARGE beside the crossing — true 30° shape:
+          hypotenuse v_B/W = 4, legs v_W/E = 2 (east) and v_B/E = 2√3 ≈ 3.46 (north) */
+       const S=16, ax=72, ay=6;
+       arrow(c, ax,ay, ax-2*S, ay+3.464*S, {color:GOLD, w:4, label:'v_B/W', vec:true, fs:16, side:-1});
+       arrow(c, ax-2*S, ay+3.464*S, ax, ay+3.464*S, {color:BLUE, w:4, label:'v_W/E', vec:true, fs:16});
+       arrow(c, ax,ay, ax, ay+3.464*S, {color:GREEN, dash:'7,5', w:3, label:'v_B/E', vec:true, fs:16});
        arc(c, ax,ay, 15, 90, 120, {color:'#888', label:'θ'});
      } },
    { say:"Your ground speed is now root of 16 minus 4 — 3.46 metres per second. The crossing takes 120 over 3.46 — 34.6 seconds. Slower than before! Fighting the river costs time; geometry sends the invoice. You may point the boat wherever you like; the velocity TRIANGLE decides where you actually go. Geometry, as usual, has the final signature.",
@@ -1008,8 +1014,9 @@ const EXAMPLES = [
      board:['v_{B/E} = \\sqrt{v_{B/W}^2 - v_{W/E}^2} = \\sqrt{4.00^2 - 2.00^2} = 3.46\\ \\mathrm{m/s}',
             't = \\frac{\\text{width}}{v_{B/E}} = \\frac{120\\ \\mathrm{m}}{3.46\\ \\mathrm{m/s}} = 34.6\\ \\mathrm{s}'],
      action(c){
-       const b = ball(c, 20,20, 8, GREEN);
-       moveAlong(c, b, t=>[20, 20+3.46*t*(100/120)], 0, 34.6, {dur:1800});
+       dashLine(c, 10,0, 10,120, {color:GREEN, dash:'4,4'});
+       const b = ball(c, 10,0, 8, GREEN);
+       moveAlong(c, b, t=>[10, 3.464*t], 0, 34.64, {dur:2200});
      } },
    { say:"Now comes the check: aiming upstream must give a LONGER crossing than aiming straight — 34.6 versus 30 seconds. Confirmed. If your 'corrected' route had come out faster, the correction needed correcting. When two different arguments about the same trip disagree, at most one of them is physics; the other is wishful thinking with notation.",
      pose:'think',
@@ -1106,7 +1113,11 @@ const EXAMPLES = [
    { say:"On we go to part b. When do the two components tie? Set v squared over R equal to a-tan: v is root of 300 — 17.3 metres per second — so t is 17.32 over 1.5: 11.5 seconds. A photo finish, eleven and a half seconds in. After that instant, the turning increasingly dominates the speeding — a fact every racing driver feels in the seat of the car and we have just computed from the comfort of a chalkboard.",
      pose:'write',
      board:['\\frac{v^2}{R} = a_{\\rm tan} \\Rightarrow v = \\sqrt{a_{\\rm tan}R} = \\sqrt{300} = 17.3\\ \\mathrm{m/s}',
-            't = \\frac{v}{a_{\\rm tan}} = \\frac{17.32}{1.50} = 11.5\\ \\mathrm{s}'] },
+            't = \\frac{v}{a_{\\rm tan}} = \\frac{17.32}{1.50} = 11.5\\ \\mathrm{s}'],
+     action(c){
+       /* car's position at t = 11.55 s: θ = ½·a_tan·t²/R ≈ 0.500 rad ≈ 28.7° */
+       markPoint(c, 175.5, 95.9, 'a_rad = a_tan here', {color:GOLD, dx:-150, dy:-14});
+     } },
    { say:"And after that? The radial component grows as t squared while the tangential sits constant — turning becomes the dominant effort. Now comes the check: at t equals 11.5, both components are 1.5. Equal, as demanded. Past the finish line, the circle wins every time.",
      pose:'excited',
      board:[{t:'Check: at t = 11.5 s, a_rad = (17.32)²/200 = 1.50 m/s² = a_tan ✓. Beyond: a_rad ∝ t² dominates.'}] },

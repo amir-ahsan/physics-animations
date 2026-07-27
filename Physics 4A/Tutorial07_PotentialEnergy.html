@@ -927,7 +927,8 @@ const EXAMPLES = [
      } },
    { say:"We solve: v equals root of 2 g h. The mass cancels — a bowling ball and a marble hit together, as Galileo allegedly demonstrated and gift shops have commemorated ever since. The cancellation of mass is the whole splendour of energy methods: the equation quietly announces that free fall is a property of the FIELD, and every object is merely along for the ride.",
      pose:'write',
-     board:['v = \\sqrt{2gh} = \\sqrt{2(9.80)(10.0)} = 14.0\\ \\mathrm{m/s}'] },
+     board:['v = \\sqrt{2gh} = \\sqrt{2(9.80)(10.0)} = 14.0\\ \\mathrm{m/s}'],
+     action(c){ arrow(c, 1.0,1.9, 1.0,0.4, {color:GREEN, w:3, label:'v = 14.0 m/s', fs:13}); } },
    { say:"Now comes the check: free-fall kinematics — v squared equals 2 a h — gives precisely the same 14. Energy methods and Newton's laws are two dialects of the same language; where both speak, they must agree. If they ever disagree in your homework, one of them is being misquoted.",
      pose:'excited',
      board:[{t:'Check: kinematics v² = 2gh → v = 14.0 m/s ✓. Two methods, one answer.'}] },
@@ -960,7 +961,8 @@ const EXAMPLES = [
    { say:"Solve for h: k x squared over 2 m g — 450 times 0.0225, over 9.8 — 1.03 metres. The spring's 5.06 joules, deposited in full with gravity. Not a joule lost in transit; frictionless problems have excellent couriers. Follow the joule on its journey: from your hand, into coiled steel, through a flash of speed, and finally into altitude — four addresses in half a second, the total never once miscounted.",
      pose:'write',
      board:['h = \\frac{kx^2}{2mg} = \\frac{(450)(0.0225)}{2(0.500)(9.80)} = \\frac{10.125}{9.80} = 1.03\\ \\mathrm{m}',
-            'U_{\\rm el} = \\tfrac12(450)(0.150)^2 = 5.06\\ \\mathrm{J}'] },
+            'U_{\\rm el} = \\tfrac12(450)(0.150)^2 = 5.06\\ \\mathrm{J}'],
+     action(c){ textAt(c, -1.1,1.38, '1.03 m', {fs:13, color:GREEN, italic:true}); } },
    { say:"Now comes the check: units first — k x squared over m g is newtons-per-metre times metres-squared, over newtons: metres. Good. And the scaling: double the compression, QUADRUPLE the height — x is squared in the ledger. A spring compressed twice as far is four times as ambitious.",
      pose:'excited',
      board:[{t:'Checks: dimensions → metres ✓; h ∝ x² (double the squeeze, 4× the height).'}] },
@@ -1001,7 +1003,8 @@ const EXAMPLES = [
      } },
    { say:"We solve: v equals root of 2 times 925 over 25 — root 74 — 8.60 metres per second. From a five-metre hill, that is respectable speed — about the pace of a decent sprinter, achieved by simply agreeing to descend.",
      pose:'write',
-     board:['v = \\sqrt{\\frac{2K_2}{m}} = \\sqrt{\\frac{2(925)}{25.0}} = \\sqrt{74.0} = 8.60\\ \\mathrm{m/s}'] },
+     board:['v = \\sqrt{\\frac{2K_2}{m}} = \\sqrt{\\frac{2(925)}{25.0}} = \\sqrt{74.0} = 8.60\\ \\mathrm{m/s}'],
+     action(c){ arrow(c, 9.3,0.8, 10.7,0.8, {color:GREEN, w:3, label:'v = 8.60 m/s', fs:12}); } },
    { say:"Notice what we never asked: the slope's shape, its length, its bumps, its scenery. Energy accounting needs only the HEIGHT and the total friction bill. The mountain's biography is irrelevant; only its altitude appears on the invoice. This is the deep economy of conservative forces: gravity's work depends on the endpoints alone, so every path between them — scenic, direct, or absurd — pays identically. Only friction charges by the metre.",
      pose:'think',
      board:[{t:'Remarkable: the path’s shape never entered — only h and the 300 J loss.'}] },
@@ -1032,7 +1035,11 @@ const EXAMPLES = [
      } },
    { say:"Let us take part a. Differentiate and flip the sign: F equals 3 x squared minus 6 x. Where the landscape climbs, the force points back down; the minus sign is the particle's homing instinct. The particle, wherever it stands, consults only the slope beneath its feet — steepness sets the force's size, downhill sets its direction. Local information, global consequences.",
      pose:'write',
-     board:['F_x = -(6.00\\,x - 3.00\\,x^2) = 3.00\\,x^2 - 6.00\\,x'] },
+     board:['F_x = -(6.00\\,x - 3.00\\,x^2) = 3.00\\,x^2 - 6.00\\,x'],
+     action(c){
+       arrow(c, 1.05,2.75, 0.5,2.75, {color:GREEN, w:2.5, label:'F', fs:12, side:-1});
+       arrow(c, 2.65,3.3, 3.2,3.3, {color:GREEN, w:2.5, label:'F', fs:12});
+     } },
    { say:"On we go to part b. Equilibrium wherever the force vanishes — the flat spots. Factor: 3 x times x minus 2. Two candidates: x equals 0, the valley floor, and x equals 2, the summit. Both are genuine equilibria — the force vanishes at each — but as with people, the interesting question is not where they stand but how they respond to being pushed.",
      pose:'write',
      board:['F_x = 3.00\\,x(x - 2.00) = 0 \\;\\Rightarrow\\; x = 0 \\;\\text{and}\\; x = 2.00\\ \\mathrm{m}'],
@@ -1075,6 +1082,7 @@ const EXAMPLES = [
      board:['\\text{At top}:\\; n + mg = \\frac{mv_{\\rm top}^2}{R}, \\quad \\text{minimum} \\Rightarrow n = 0'],
      action(c){
        arrow(c, 2,4, 2,3.1, {color:RED, label:'mg', vec:true, fs:13});
+       arrow(c, 1.55,4, 1.55,3.5, {color:BLUE, w:2.5, label:'n → 0', fs:12, side:-1});
      } },
    { say:"Set n to zero: v-top equals root g R — root of 9.8 times 2 — 4.43 metres per second. Slower than this at the summit, and cart and track file for separation midway up. The condition is wonderfully austere: at minimum speed the track contributes NOTHING, and gravity alone plays centripetal. Any slower, and the cart requires a force the track is incapable of providing — tracks push, they do not pull.",
      pose:'write',
@@ -1094,10 +1102,12 @@ const EXAMPLES = [
                 x=2+2*Math.cos(th); y=2+2*Math.sin(th); }
          b.setAttribute('cx', c.M.X(x)); b.setAttribute('cy', c.M.Y(y+0.15));
        }, 3200, c.instant);
+       textAt(c, -6.75,5.35, 'h = 5.00 m', {fs:13, color:GREEN, italic:true});
      } },
    { say:"Part c is already paid for: released from exactly 5 metres, the cart crests the loop at exactly root g R — 4.43 metres per second — with the track touching it as lightly as a chaperone at arm's length. Everything connects: the release height was set by energy, the survival speed by forces, and the two meet at the top of the loop to the millimetre. When separate chapters of physics agree so precisely, one begins to suspect a conspiracy — and the conspiracy is called mechanics.",
      pose:'write',
-     board:['v_{\\rm top} = \\sqrt{gR} = 4.43\\ \\mathrm{m/s} \\quad (\\text{by construction})'] },
+     board:['v_{\\rm top} = \\sqrt{gR} = 4.43\\ \\mathrm{m/s} \\quad (\\text{by construction})'],
+     action(c){ arrow(c, 2.7,4.55, 1.3,4.55, {color:GREEN, w:3, label:'v_top = 4.43 m/s', fs:12}); } },
    { say:"And the classic error, preserved under glass: demanding merely that v-top exceed zero gives h equals 2R and a cart that abandons the track partway up, becoming briefly — and against regulations — a projectile. The real requirement is CONTACT: n at least zero. That extra half-R of height is the price of staying on speaking terms with the track.",
      pose:'excited',
      board:[{t:'Trap: h = 2R (v_top = 0) fails — the cart leaves the track early. Contact (n ≥ 0) costs the extra R/2.'}] },

@@ -805,8 +805,8 @@ const EXAMPLES = [
      pose:'point',
      board:['\\sin\\theta_c = \\frac{n_2}{n_1}\\quad(n_1 > n_2\\ \\text{only})'],
      action(c){
-       arrow(c, -4.6,-3.6, -2.9,0, {color:RED, w:2.5, dur:600});
-       arrow(c, -2.9,0, -1.2,-3.6, {color:RED, w:2.5, dur:600});
+       arrow(c, -5.4,-2.1, -2.9,0, {color:RED, w:2.5, dur:600});
+       arrow(c, -2.9,0, -0.4,-2.1, {color:RED, w:2.5, dur:600});
        textAt(c, -3.0,0.9, 'θ > θc: total internal reflection', {fs:11.5, italic:true, anchor:'middle', color:'#8A3324'});
      } },
    { say:"Light's fields oscillate ACROSS the travel direction, and that transverse character is POLARIZATION. A polarizer passes only the component along its axis: unpolarized light loses half its intensity; already-polarized light obeys MALUS'S LAW, I equals I-nought cosine squared theta, with theta between the light's polarization and the filter's axis. Each filter does not merely block — it RE-PROJECTS.",
@@ -895,8 +895,16 @@ const EXAMPLES = [
    { say:"For part c, invert the intensity formula for the electric amplitude: root of 2 I over epsilon-nought c — root of 1132 over 2.655 ten-to-the-minus-3 — six hundred and fifty-three volts per metre. The magnetic partner follows at E-nought over c: 2.18 microtesla.",
      pose:'write',
      board:['E_0 = \\sqrt{\\frac{2I}{\\varepsilon_0c}} = \\sqrt{\\frac{2(566)}{(8.85\\times10^{-12})(3.00\\times10^{8})}} = 653\\ \\mathrm{V/m}',
-            'B_0 = \\frac{E_0}{c} = 2.18\\times10^{-6}\\ \\mathrm T'] },
-   { say:"The check hides a beautiful deception: in SI numbers the magnetic field looks a hundred thousand times punier than the electric — yet it carries EXACTLY half the beam's energy, as it always does. The units flatter E and slander B; the physics treats them as equal partners. Never judge a field by its numeral.",
+            'B_0 = \\frac{E_0}{c} = \\frac{653}{3.00\\times10^{8}} = 2.18\\times10^{-6}\\ \\mathrm T'],
+     action(c){
+       const {M}=c;
+       arrow(c, 60,28, 60,44, {color:GREEN, w:3, label:'E₀', fs:13});
+       el('circle',{cx:M.X(74),cy:M.Y(28),r:9,fill:'none',stroke:BLUE,'stroke-width':2.5},c.svg);
+       el('circle',{cx:M.X(74),cy:M.Y(28),r:2.4,fill:BLUE},c.svg);
+       label(c, 74,17, 'B₀ (out of page)', {fs:11.5, color:BLUE, italic:true, anchor:'middle'});
+       arrow(c, 84,44, 98,44, {color:'#8A5A24', w:2.5, label:'c', fs:13});
+     } },
+   { say:"The check hides a beautiful deception: in SI numbers the magnetic field looks three hundred MILLION times punier than the electric — the ratio is exactly c — yet it carries EXACTLY half the beam's energy, as it always does. The units flatter E and slander B; the physics treats them as equal partners. Never judge a field by its numeral.",
      pose:'excited',
      board:[{t:'Check: u_E = u_B despite E₀/B₀ = c — the SI numbers mislead; the energy split is 50:50, always.'}] },
   ]
@@ -936,7 +944,17 @@ const EXAMPLES = [
    { say:"For part b, life inside the water. The speed drops to c over n — 2.26 ten-to-the-8 metres per second — and the wavelength compresses to 589 over 1.33: four hundred and forty-three nanometres. But the COLOUR is unchanged, because frequency is fixed at the source and your eye is a frequency detector. The wave takes shorter steps at the same cadence.",
      pose:'write',
      board:['v = \\frac{c}{n} = \\frac{3.00\\times10^{8}}{1.33} = 2.26\\times10^{8}\\ \\mathrm{m/s}, \\qquad \\lambda_n = \\frac{589}{1.33} = 443\\ \\mathrm{nm}',
-            {t:'f unchanged → colour unchanged. The eye reads frequency, not wavelength.'}] },
+            {t:'f unchanged → colour unchanged. The eye reads frequency, not wavelength.'}],
+     action(c){
+       const {M}=c;
+       const tick=(x,y,px,py)=>el('line',{x1:M.X(x-px),y1:M.Y(y-py),x2:M.X(x+px),y2:M.Y(y+py),stroke:'#8A5A24','stroke-width':2,opacity:.8},c.svg);
+       for(let k=1;k<=4;k++){ const t=0.18+k*0.17;      /* incident wavefronts: wide spacing */
+         tick(-3.2+3.2*t, 4.57-4.57*t, 0.37,0.26); }
+       for(let k=1;k<=4;k++){ const t=0.14+k*0.19;      /* in water: spacing shrunk by 1/1.33 */
+         tick(1.62*t, -3.4*t, 0.36,0.17); }
+       label(c, -4.6,2.0, 'λ = 589 nm', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -2.6,-2.2, 'λₙ = 443 nm', {fs:11.5, color:'#8A5A24', italic:true});
+     } },
    { say:"For part c, into the glass — and here is the professional's shortcut. Through PARALLEL layers, n sine theta is a conserved passport: air's contribution, one times sine thirty-five, must equal the glass's 1.52 sine theta-three. Sine theta-three is 0.3774; theta-three is twenty-two point two degrees — and we never needed the water's angle at all. The middle layer is a courier, not a customs office.",
      pose:'write',
      board:['n_{\\rm air}\\sin35.0^{\\circ} = n_w\\sin\\theta_2 = n_g\\sin\\theta_3',
@@ -977,16 +995,21 @@ const EXAMPLES = [
      pose:'point',
      board:['\\sin\\theta_c = \\frac{1}{1.33} \\;\\Rightarrow\\; \\theta_c = 48.8^{\\circ}\\quad(\\text{the whole sky inside this cone})'],
      action(c){
-       arrow(c, -4.6,2.9, -2.28,0, {color:GOLD, w:2.5});
-       arrow(c, -2.28,0, 0,-3.6, {color:GOLD, w:2.5});
-       arrow(c, 4.6,2.9, 2.28,0, {color:GOLD, w:2.5});
-       arrow(c, 2.28,0, 0,-3.6, {color:GOLD, w:2.5});
+       arrow(c, -5.8,0.35, -4.10,0, {color:GOLD, w:2.5, dur:500});
+       arrow(c, -4.10,0, 0,-3.6, {color:GOLD, w:2.5});
+       arrow(c, 5.8,0.35, 4.10,0, {color:GOLD, w:2.5, dur:500});
+       arrow(c, 4.10,0, 0,-3.6, {color:GOLD, w:2.5});
        dashLine(c, 0,-3.6, 0,0.4, {color:'#B0A488', dash:'5,4'});
        arc(c, 0,-3.6, 1.6, 90, 138.8, {color:'#888', label:'θ_c'});
+       label(c, -5.5,1.1, 'grazing sky rays', {fs:11, color:'#8A5A24', italic:true});
      } },
-   { say:"The circle's radius, from the right triangle on the stage: the fish sits two metres down, and the cone meets the surface at r equals d tangent theta-c — two, times tangent of forty-eight point eight, which is 1.140 — two point two eight metres. Snell's WINDOW: a disc of daylight, four and a half metres across, floating above the fish.",
+   { say:"The circle's radius, from the right triangle now marked on the stage: the fish sits two metres down, and the cone meets the surface at r equals d tangent theta-c — two, times tangent of forty-eight point eight, which is 1.140 — two point two eight metres. Snell's WINDOW: a disc of daylight, four and a half metres across, floating above the fish.",
      pose:'write',
-     board:['r = d\\tan\\theta_c = (2.00)\\tan48.8^{\\circ} = (2.00)(1.140) = 2.28\\ \\mathrm m'] },
+     board:['r = d\\tan\\theta_c = (2.00)\\tan48.8^{\\circ} = (2.00)(1.140) = 2.28\\ \\mathrm m'],
+     action(c){
+       arrow(c, 0,0.02, 4.10,0.02, {color:GREEN, w:3, label:'r = 2.28 m', fs:13, side:-1});
+       label(c, 0.2,-1.7, 'd = 2.00 m', {fs:12, color:'#666', italic:true});
+     } },
    { say:"The check is the view itself: outside that circle, rays from the fish exceed the critical angle, so the surface turns MIRROR — the fish sees the bottom reflected where sky ought to be. Divers know the window well, and so does every heron: approach a trout from outside its cone, and you are, optically speaking, not there. Geometry as camouflage.",
      pose:'excited',
      board:[{t:'Inside r: the compressed sky. Outside r: a mirrored ceiling. Herons exploit the blind zone ✓'}] },
@@ -1003,7 +1026,7 @@ const EXAMPLES = [
    { say:"A quantum riddle wearing classical clothes. Three polarizers — vertical, diagonal, horizontal — and a beam of unpolarized light. Common sense says the vertical and horizontal filters alone should kill everything, so surely ADDING a filter in between changes nothing. Common sense is about to lose money.",
      pose:'talk',
      board:[{t:'I₀ = 100 W/m² unpolarized → 0° → 45° → 90°.'},
-            'I_{\\rm unpol} \\to \\tfrac12I_0, \\qquad I = I\\cos^2\\theta\\ (\\text{between successive axes})'] },
+            'I_{\\rm unpol} \\to \\tfrac12I_0, \\qquad I_{k+1} = I_k\\cos^2\\theta\\ (\\theta\\ \\text{between successive axes})'] },
    { say:"Walk the stack, always using the angle between SUCCESSIVE axes. The first polarizer halves the unpolarized beam: fifty. The second sits at forty-five to the first: cosine squared forty-five is one half — twenty-five. The third sits at forty-five to the SECOND — not ninety to the first, that is the trap — another half: twelve and a half watts per square metre emerge.",
      pose:'write',
      board:['I_1 = \\tfrac12(100) = 50.0 \\;\\xrightarrow{45^{\\circ}}\\; I_2 = 50.0\\cos^245^{\\circ} = 25.0 \\;\\xrightarrow{45^{\\circ}}\\; I_3 = 25.0\\cos^245^{\\circ} = 12.5\\ \\mathrm{W/m^2}'],
@@ -1015,9 +1038,16 @@ const EXAMPLES = [
          textAt(c, x, h+5, lb, {fs:12, anchor:'middle', color:'#8A5A24'});
        }
      } },
-   { say:"Part b: pluck out the middle filter. Now the light meets zero degrees, then ninety — cosine squared of ninety is ZERO. Total darkness. Read that again: we REMOVED an absorbing element, and the transmitted light fell from twelve and a half to nothing. Removing an obstacle extinguished the beam.",
+   { say:"Part b: pluck out the middle filter. Now the light meets zero degrees, then ninety — cosine squared of ninety is ZERO. Total darkness — watch the last bar vanish on the stage. Read that again: we REMOVED an absorbing element, and the transmitted light fell from twelve and a half to nothing. Removing an obstacle extinguished the beam.",
      pose:'point',
-     board:['\\text{Without the middle: } I = \\tfrac12I_0\\cos^290^{\\circ} = 0\\ \\ (!)'] },
+     board:['\\text{Without the middle: } I = \\tfrac12I_0\\cos^290^{\\circ} = 0\\ \\ (!)'],
+     action(c){
+       const {M}=c;
+       for(const [x1,y1,x2,y2] of [[-10,15,10,-15],[-10,-15,10,15]])
+         el('line',{x1:M.X(65)+x1,y1:M.Y(12.5)+y1,x2:M.X(65)+x2,y2:M.Y(12.5)+y2,stroke:RED,'stroke-width':3.5,'stroke-linecap':'round'},c.svg);
+       label(c, 65,-8, 'removed', {fs:11.5, color:RED, italic:true, anchor:'middle'});
+       label(c, 90,-8, '→ 0 !', {fs:13, color:RED, italic:true, anchor:'middle'});
+     } },
    { say:"The resolution: a polarizer is not a sieve but a PROJECTOR. Each filter re-projects the field onto its own axis — the diagonal one takes vertical light and manufactures a component the horizontal filter can pass. The middle filter does not merely permit light; it ROTATES the question being asked of it.",
      pose:'write',
      board:[{t:'A polarizer PROJECTS the field onto its axis — it changes the state, not just the amount.'}] },
@@ -1047,12 +1077,14 @@ const EXAMPLES = [
      pose:'point',
      board:[{t:'Dipoles radiate ⊥ to their axis, never along it → in-plane polarization dies when refl ⊥ refr.'}],
      action(c){
-       arrow(c, -3.5,4.2, 0,0, {color:GOLD, w:3.5});
-       arrow(c, 0,0, 3.5,4.2, {color:PURPLE, w:3, dash:'6,4'});
-       arrow(c, 0,0, 2.7,-3.55, {color:GOLD, w:3.5});
-       arc(c, 0,0, 1.7, 90, 129.8, {color:'#888', label:'θ_B'});
-       arc(c, 0,0, 1.7, 270, 307.2, {color:'#888', label:'θ₂'});
-       arc(c, 0,0, 0.95, 50.2, -52.8, {color:RED, label:'90°', lr:16});
+       /* true glass geometry: θ_B = 56.7°, θ₂ = 33.3°, reflected ⊥ refracted */
+       arrow(c, -4.57,3.0, 0,0, {color:GOLD, w:3.5});
+       arrow(c, 0,0, 4.57,3.0, {color:PURPLE, w:3, dash:'6,4'});
+       arrow(c, 0,0, 2.36,-3.6, {color:GOLD, w:3.5});
+       arc(c, 0,0, 1.7, 90, 146.7, {color:'#888', label:'θ_B'});
+       arc(c, 0,0, 1.7, 270, 303.3, {color:'#888', label:'θ₂'});
+       arc(c, 0,0, 0.95, 33.3, -56.7, {color:RED, label:'90°', lr:16});
+       label(c, 3.3,1.4, 'reflected: this polarization dies', {fs:11, color:PURPLE, italic:true, anchor:'middle'});
      } },
    { say:"Turn that picture into algebra. Reflected ray at theta-B above the surface's normal, refracted at theta-two below; perpendicularity means theta-B plus ninety plus theta-two equals one hundred and eighty — so theta-two is the COMPLEMENT of theta-B.",
      pose:'write',
@@ -1096,7 +1128,10 @@ const EXAMPLES = [
      board:['a = \\frac{F}{m} = \\frac{3.27}{950} = 3.44\\times10^{-3}\\ \\mathrm{m/s^2}'] },
    { say:"Part b: thirty days of that, uninterrupted — a times t, with t equal to thirty times 86,400 seconds — nearly NINE kilometres per second of velocity change. That is a chemical rocket's entire mission budget, purchased with zero propellant and a large roll of aluminised film. Feeble but tireless beats mighty but brief; the tortoise, vindicated at last, in vacuum.",
      pose:'write',
-     board:['\\Delta v = at = (3.44\\times10^{-3})(30\\times86{,}400) = 8.9\\times10^{3}\\ \\mathrm{m/s} \\approx 9\\ \\mathrm{km/s}'] },
+     board:['\\Delta v = at = (3.44\\times10^{-3})(30\\times86{,}400\\ \\mathrm s) = 8.9\\times10^{3}\\ \\mathrm{m/s} \\approx 9\\ \\mathrm{km/s}'],
+     action(c){
+       arrow(c, 6,-15, 27,-15, {color:PURPLE, w:3.5, label:'Δv ≈ 9 km/s in 30 days', fs:12, dur:1400});
+     } },
    { say:"Part c: why mirror-bright? Absorption banks only the light's own momentum, U over c; reflection returns the light whence it came and pockets DOUBLE. A black sail gets half the push and a fever besides. And the closing check: the radiation pressure here is two I over c — nine micropascals, ten billion times below the atmosphere's — which is precisely why sunlight has never once knocked you over, and why, in the silence beyond the atmosphere, it can nonetheless carry a ship between planets. On to geometric optics.",
      pose:'excited',
      board:['P_{\\rm rad} = \\frac{2I}{c} \\approx 9\\ \\mu\\mathrm{Pa}\\ \\ (\\sim10^{10}\\times\\ \\text{below atmospheric})',

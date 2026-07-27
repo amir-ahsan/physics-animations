@@ -911,6 +911,10 @@ const EXAMPLES = [
        el('line',{x1:c.M.X(10)-5,y1:c.M.Y(28)-5,x2:c.M.X(10)+5,y2:c.M.Y(28)+5,stroke:PURPLE,'stroke-width':2.5},c.svg);
        el('line',{x1:c.M.X(10)-5,y1:c.M.Y(28)+5,x2:c.M.X(10)+5,y2:c.M.Y(28)-5,stroke:PURPLE,'stroke-width':2.5},c.svg);
        textAt(c, 13,29.5, 'F (into the page)', {fs:13, italic:true, color:PURPLE});
+       /* decompose v: only v·sinθ crosses the field */
+       dashLine(c, 30.3,21.5, 30.3,4, {color:'#B0A488'});
+       textAt(c, 31.6,12.5, 'v sinθ — the part that matters', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, 12,1.2, 'v cosθ — invisible to B', {fs:12, italic:true, color:'#8A5A24'});
      } },
    { say:"The magnitude: charge times speed times field times sine 30 — e times 3 million times a half tesla times one half — 1.2 times ten to the minus 13 newtons. A femto-scale shove. Femto-scale, yes — but applied to a mass of ten-to-the-minus-30 kilograms, so the resulting acceleration is astronomical. Small forces on smaller inertias produce the liveliest physics.",
      pose:'write',
@@ -1051,7 +1055,11 @@ const EXAMPLES = [
    { say:"For part c, the energy. The dipole's potential energy is minus mu B cosine theta — lowest when aligned. The work to drag it from alignment out to 25 degrees is the difference: mu B times 1 minus cosine 25 — 1.4 times ten to the minus 2 joules. POSITIVE, as the check demands: the torque wants alignment, so moving AWAY from alignment must cost. You pay to annoy a compass.",
      pose:'excited',
      board:['W = \\Delta U = -\\mu B\\cos 25^{\\circ} - (-\\mu B\\cos 0^{\\circ}) = \\mu B(1-\\cos 25^{\\circ})',
-            'W = (0.503)(0.30)(0.0937) = 1.4\\times10^{-2}\\ \\mathrm J\\quad(>0\\ \\checkmark)'] },
+            'W = (0.503)(0.30)(0.0937) = 1.4\\times10^{-2}\\ \\mathrm J\\quad(>0\\ \\checkmark)'],
+     action(c){
+       arc(c, 0,0, 5.2, 2, 23, {color:GREEN, w:3, label:'W', lr:22});
+       textAt(c, 0.8,-3.6, 'you pay μB(1−cos 25°) to rotate μ away from B', {fs:12.5, italic:true, color:GREEN});
+     } },
   ]
 },
 

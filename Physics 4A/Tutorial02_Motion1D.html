@@ -920,7 +920,11 @@ const EXAMPLES = [
      } },
    { say:"The check — always the check! Stopping distance grows as the square of the speed. Double your speed and you need four times the road. Physics does not negotiate; it simply files the paperwork. This single quadratic fact — squared, not linear — is why motorway speed limits exist, why tailgating is arithmetic negligence, and why your driving instructor was, however annoyingly, quite right.",
      pose:'excited',
-     board:[{t:'Check: Δx ∝ v₀². Double the speed → quadruple the stopping distance. Tell your friends.'}] },
+     board:[{t:'Check: Δx ∝ v₀². Double the speed → quadruple the stopping distance. Tell your friends.'}],
+     action(c){
+       arrow(c, 0,27, 22.5,27, {color:BLUE, dash:'7,5', w:2, label:'at 15 m/s: 22.5 m', fs:12});
+       textAt(c, 46,27.6, '× 4 the road for × 2 the speed', {fs:12, italic:true, color:'#8A5A24'});
+     } },
   ]
 },
 
@@ -1000,10 +1004,18 @@ const EXAMPLES = [
        markPoint(c, 1, 5, 't = 1 s', {color:PURPLE, dy:-12});
        markPoint(c, 2, 4, 't = 2 s', {color:PURPLE, dy:16});
      } },
-   { say:"On we go to part b. Differentiate again: a of t is 12 t minus 18. At t equals 1: minus 6. At t equals 2: plus 6. At each instant the particle is at rest yet accelerating — paused at the top of its swing, already changing its mind. If that sounds paradoxical, think of the instant you toss your keys upward: at the very top they are motionless AND falling. Rest and change can share an instant; they merely cannot share an interval.",
+   { say:"On we go to part b. Differentiate again: a of t is 12 t minus 18. At t equals 1: minus 6. At t equals 2: plus 6. At each instant the particle is at rest yet accelerating — paused at the top of its swing, already changing its mind. If that sounds paradoxical, think of the instant you toss your keys upward: at the very top they are motionless AND falling. Rest and change can share an instant; they merely cannot share an interval. On the graph: flat tangents at both marks, but the curve bends DOWN at the first and UP at the second — that bending is the acceleration.",
      pose:'write',
      board:['a(t) = 12.0t - 18.0',
-            'a(1.00) = -6.00\\ \\mathrm{m/s^2}, \\qquad a(2.00) = +6.00\\ \\mathrm{m/s^2}'] },
+            'a(1.00) = -6.00\\ \\mathrm{m/s^2}, \\qquad a(2.00) = +6.00\\ \\mathrm{m/s^2}'],
+     action(c){
+       dashLine(c, 0.6,5, 1.4,5, {color:PURPLE});
+       dashLine(c, 1.6,4, 2.4,4, {color:PURPLE});
+       arrow(c, 1.35,5.95, 1.35,5.1, {color:PURPLE, w:2.2, head:7});
+       label(c, 1.45,5.75, 'a = −6', {color:PURPLE, fs:12, italic:true});
+       arrow(c, 2.35,3.1, 2.35,3.95, {color:PURPLE, w:2.2, head:7});
+       label(c, 2.45,3.35, 'a = +6', {color:PURPLE, fs:12, italic:true});
+     } },
    { say:"And now, part c. Where is the first stop? Substitute t equals 1 into the ORIGINAL x of t — not the derivative; the derivative has told us all it knows. Two minus nine plus twelve: 5 metres. A common tragedy: students solve the derivative for t, then substitute back into the derivative. The velocity knows WHEN; only the position knows WHERE. Ask each function what it actually knows.",
      pose:'write',
      board:['x(1.00) = 2.00(1.00)^3 - 9.00(1.00)^2 + 12.0(1.00) = 5.00\\ \\mathrm{m}'],
@@ -1045,6 +1057,7 @@ const EXAMPLES = [
        plotCurve(c, t=>f(t), 0, 4.066, {color:'#D8B48A', w:2, dash:'4,4', dur:800, N:60});
        const b = ball(c, 0.001, 0, 8, RED);
        moveAlong(c, b, t=>0.9, f, 0, 4.066, {dur:2600});
+       markPoint(c, 1.53, 11.48, 'top: v = 0, y = +11.5 m', {color:PURPLE, dx:-60, dy:-12});
      } },
    { say:"Let us take part a. Position equation: minus 20 equals 15 t minus 4.9 t squared. Rearrange into a proper quadratic. Yes — a quadratic. Do not flinch; you have survived worse. The mathematics of the seventeenth century is entirely adequate to the plumbing of the twenty-first: a ball, a roof, and a quadratic — the same equation your ancestors feared in algebra class, now gainfully employed.",
      pose:'write',
@@ -1094,7 +1107,7 @@ const EXAMPLES = [
      pose:'write',
      board:['v = 0: \\; t^2 - 6.00t - 2.00 = 0 \\Rightarrow t = 3.00+\\sqrt{11.0} = 6.32\\ \\mathrm{s}'],
      action(c){ markPoint(c, 6.32, 0, 't = 6.32 s', {color:RED, dy:-14, dx:-30}); } },
-   { say:"Position at that moment: 12.6 plus 120 minus 84.3 — 48.3 metres. And the moral, in capital letters: check whether a depends on time BEFORE reaching for the old formulas. They are lovely formulas. They are also wrong here. The formulas are innocent; the misapplication is ours. A tool used outside its warranty voids the answer, not the tool.",
+   { say:"Position at that moment: 12.6 plus 119.7 minus 84.0 — 48.3 metres. And the moral, in capital letters: check whether a depends on time BEFORE reaching for the old formulas. They are lovely formulas. They are also wrong here. The formulas are innocent; the misapplication is ours. A tool used outside its warranty voids the answer, not the tool.",
      pose:'excited',
      board:['x(6.32) = 2.00(6.32) + 3.00(6.32)^2 - \\tfrac13(6.32)^3 = 48.3\\ \\mathrm{m}',
             {t:'Moral: constant-acceleration formulas require constant acceleration. Read the fine print.'}] },

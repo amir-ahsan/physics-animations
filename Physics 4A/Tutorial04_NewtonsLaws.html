@@ -874,7 +874,8 @@ const EXAMPLES = [
      board:['a = \\sqrt{a_x^2 + a_y^2} = \\sqrt{9.00 + 16.0} = 5.00\\ \\mathrm{m/s^2}',
             '\\theta = \\tan^{-1}\\!\\left(\\tfrac{a_y}{a_x}\\right) = \\tan^{-1}\\!\\left(\\tfrac{4.00}{3.00}\\right) = 53.1^{\\circ}\\ \\text{N of E}',
             'F_{\\rm net} = ma = (10.0)(5.00) = 50.0\\ \\mathrm{N}'],
-     action(c){ arrow(c, 0,0, 15,20, {color:PURPLE, w:3, dash:'6,4', label:'a', vec:true, fs:16}); } },
+     action(c){ arrow(c, 0,0, 15,20, {color:PURPLE, w:3, dash:'6,4', label:'a', vec:true, fs:16});
+                arc(c, 0,0, 9, 0, 53.1, {color:PURPLE, label:'53.1°', lr:22}); } },
    { say:"The check — and the classic error to avoid: 30 plus 40 is NOT 70 newtons, except for crates pulled in one straight line by very cooperative people. Vectors first. Always vectors first. The Pythagorean result — 50 for a 30 and a 40 — is nature winking at you through a 3-4-5 triangle, the oldest reliable machine in mathematics.",
      pose:'excited',
      board:[{t:'Check: F_net = 50 N ≠ 30 + 40 = 70 N. Forces add as vectors, not as receipts.'}] },
@@ -1011,13 +1012,18 @@ const EXAMPLES = [
    { say:"Case a: accelerating upward at 2. The floor must both hold you AND shove you upward: n equals 70 times 11.8 — 826 newtons. True weight: 686. You feel heavier; the croissant at breakfast is briefly blameless. The scale, poor thing, has never measured your weight in its life — it measures how hard the floor pushes back, which is a different and far more negotiable quantity.",
      pose:'write',
      board:['(a)\\; n = m(g + a_y) = 70.0(9.80 + 2.00) = 826\\ \\mathrm{N} \\quad (> mg = 686\\ \\mathrm{N})'],
-     action(c){ arrow(c, -3.6,3, -3.6,5.4, {color:GREEN, label:'a', vec:true, fs:15}); } },
+     action(c){ arrow(c, -3.6,3, -3.6,5.4, {color:GREEN, label:'a', vec:true, fs:15});
+                textAt(c, -4.9,1.8, '(a) scale: 826 N', {fs:12, color:GREEN}); } },
    { say:"Case b: accelerating downward at 2. Now the floor eases off: 70 times 7.8 — 546 newtons. You feel lighter. Elevators going down are the cheapest diet available, and the least permanent. You have not lost a gram, of course — only the floor's enthusiasm has changed. Bathroom scales, like flattery, report the interaction and not the truth.",
      pose:'write',
-     board:['(b)\\; n = m(g + a_y) = 70.0(9.80 + (-2.00)) = 546\\ \\mathrm{N} \\quad (< mg)'] },
+     board:['(b)\\; n = m(g + a_y) = 70.0(9.80 + (-2.00)) = 546\\ \\mathrm{N} \\quad (< mg)'],
+     action(c){ arrow(c, 4.2,5.4, 4.2,3.0, {color:PURPLE, label:'a', vec:true, fs:15});
+                textAt(c, 3.4,1.8, '(b) scale: 546 N', {fs:12, color:PURPLE}); } },
    { say:"Case c: moving up at a steady 4 metres per second. Constant velocity — acceleration ZERO. The scale reads exactly 686 newtons, the honest weight. The scale cannot distinguish steady motion from standing still. Neither could Galileo, and it made him famous.",
      pose:'write',
-     board:['(c)\\; a_y = 0: \\; n = mg = (70.0)(9.80) = 686\\ \\mathrm{N}'] },
+     board:['(c)\\; a_y = 0: \\; n = mg = (70.0)(9.80) = 686\\ \\mathrm{N}'],
+     action(c){ arrow(c, 6.6,6.4, 6.6,8.2, {color:GREEN, dash:'5,4', w:2.5, label:'v const', fs:12});
+                textAt(c, 5.6,5.4, '(c) a = 0: 686 N', {fs:12, color:'#5C4B30'}); } },
    { say:"Now comes the check: only ACCELERATION changes the reading — not velocity, not direction of travel, not floor number. And the grim extreme confirms it: cut the cable, a equals minus g, and n reads zero. Weightless, briefly and unforgettably. Astronauts float for precisely this reason — not beyond gravity's reach but wholly surrendered to it, the floor of the station falling exactly as fast as they are. Weightlessness is teamwork.",
      pose:'think',
      board:[{t:'Check: reading depends only on a. Free fall (a = −g) → n = 0: weightlessness.'}] },
@@ -1054,9 +1060,10 @@ const EXAMPLES = [
      board:['x:\\; T_2\\cos 45.0^{\\circ} - T_1\\cos 30.0^{\\circ} = 0',
             'y:\\; T_1\\sin 30.0^{\\circ} + T_2\\sin 45.0^{\\circ} - 147 = 0'],
      action(c){
-       arrow(c, 0,0, -4.24,2.45, {color:BLUE, w:4, label:'T₁', vec:true, fs:17});
-       arrow(c, 0,0, 3.22,3.22, {color:GREEN, w:4, label:'T₂', vec:true, fs:17});
-       arrow(c, 0,-2.25, 0,-3.9, {color:RED, w:4, label:'w = 147 N', fs:15});
+       /* arrows drawn to a common scale (0.027 unit/N): T₁ = 108 N, T₂ = 132 N, w = 147 N */
+       arrow(c, 0,0, -2.53,1.46, {color:BLUE, w:4, label:'T₁', vec:true, fs:17});
+       arrow(c, 0,0, 2.52,2.52, {color:GREEN, w:4, label:'T₂', vec:true, fs:17});
+       arrow(c, 0,-2.25, 0,-6.2, {color:RED, w:4, label:'w = 147 N', fs:15});
      } },
    { say:"From the x-equation: T-two equals T-one times cosine 30 over cosine 45 — 1.225 T-one. Substitute into the y-equation: 1.366 T-one equals 147. So T-one is 108 newtons, and T-two is 132. The steeper cable earns the larger tension — geometry allocating the work with the cold fairness of a well-written will.",
      pose:'write',

@@ -886,15 +886,25 @@ const EXAMPLES = [
             'v = \\sqrt{\\frac{\\gamma RT}{M}}'] },
    { say:"At twenty celsius — 293.15 kelvin: 1.4 times 8.314 times 293.15, over 0.02897 — the root of 1.178 ten-to-the-fifth — three hundred and forty-three metres per second. The number every physicist carries as pocket change. Three hundred and forty-three metres per second — commit it to memory alongside your own birthday; between thunderstorms, echoes, and concert halls, you will consult it more often.",
      pose:'write',
-     board:['v_{293} = \\sqrt{\\frac{(1.40)(8.314)(293.15)}{0.02897}} = \\sqrt{1.178\\times10^{5}} = 343\\ \\mathrm{m/s}'] },
+     board:['v_{293} = \\sqrt{\\frac{(1.40)(8.314)(293.15)}{0.02897}} = \\sqrt{1.178\\times10^{5}} = 343\\ \\mathrm{m/s}'],
+     action(c){
+       arrow(c, 0.5,2.6, 6.41,2.6, {color:GOLD, w:3, label:'343 m/s at 293 K', fs:12});
+     } },
    { say:"At thirty-five degrees, deploy the professional's shortcut: the speed scales as ROOT T, so simply multiply by root of 308 over 293 — three hundred and fifty-two metres per second. No constants revisited; ratios spare you the arithmetic and its opportunities for error. Sound runs faster on hot days, which is why distant motorways murmur differently in summer.",
      pose:'point',
-     board:['v_{308} = 343\\sqrt{\\frac{308.15}{293.15}} = 352\\ \\mathrm{m/s}\\quad(\\text{the } \\sqrt{T}\\ \\text{shortcut})'] },
+     board:['v_{308} = 343\\sqrt{\\frac{308.15}{293.15}} = 352\\ \\mathrm{m/s}\\quad(\\text{the } \\sqrt{T}\\ \\text{shortcut})'],
+     action(c){
+       arrow(c, 0.5,1.5, 6.57,1.5, {color:RED, w:3, label:'352 m/s at 308 K', fs:12, side:-1});
+       textAt(c, 7.1,1.35, '√T: a 5% warm-up buys 2.5% of speed', {fs:11.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"For part b, the storm. Light crosses the distance essentially instantly; the sound trudges behind at 343. Four seconds of gap means d equals v t — one point four kilometres. Watch the wavefronts crawl. The flash-to-thunder count is genuine field physics: three seconds per kilometre, five per mile — a measuring instrument distributed free with every storm.",
      pose:'write',
      board:['d = vt = (343)(4.0) = 1.4\\times10^{3}\\ \\mathrm m = 1.4\\ \\mathrm{km}'],
      action(c){
        wavefronts(c, 1.2, 0, 0, 4, 2800);
+       el('circle',{cx:c.M.X(1.2),cy:c.M.Y(0),r:6,fill:'#5C4B30'},c.svg);
+       el('circle',{cx:c.M.X(9.6),cy:c.M.Y(0),r:6,fill:GREEN},c.svg);
+       textAt(c, 9.6,-0.9, 'you, 1.4 km away', {fs:11.5, italic:true, anchor:'middle', color:'#2E7D4F'});
        textAt(c, 8.4,-3.2, 'flash… one, two, three, four… boom', {fs:12, italic:true, anchor:'middle'});
      } },
    { say:"The check is folklore made quantitative: three seconds per kilometre, five per mile — the counting rule every scout learns is just v equals 343 wearing hiking boots. When the count shrinks between flashes, the storm is closing; physics as weather advice.",
@@ -931,7 +941,13 @@ const EXAMPLES = [
      } },
    { say:"For part c, the universal rule. Double any distance: intensity quarters, and ten log of one quarter is MINUS six decibels — always, from any starting point. Decibel arithmetic cares only about ratios, which is precisely why engineers adore it: the same minus six applies at three metres or three hundred.",
      pose:'write',
-     board:['r \\to 2r:\\ I \\to \\frac{I}{4}, \\qquad \\Delta\\beta = 10\\log\\frac14 = -6.0\\ \\mathrm{dB}\\ (\\text{always})'] },
+     board:['r \\to 2r:\\ I \\to \\frac{I}{4}, \\qquad \\Delta\\beta = 10\\log\\frac14 = -6.0\\ \\mathrm{dB}\\ (\\text{always})'],
+     action(c){
+       el('circle',{cx:c.M.X(50),cy:c.M.Y(72.0),r:4.5,fill:PURPLE},c.svg);
+       el('circle',{cx:c.M.X(100),cy:c.M.Y(66.0),r:4.5,fill:PURPLE},c.svg);
+       dashLine(c, 50,72.0, 100,72.0, {color:PURPLE}); dashLine(c, 100,72.0, 100,66.0, {color:PURPLE});
+       textAt(c, 108,74, '×2 the distance: −6 dB, always', {fs:12, italic:true, color:PURPLE});
+     } },
    { say:"The check, and a health warning wrapped in a logarithm: ninety-six decibels at three metres but sixty at two hundred means the inverse square law is your hearing's best friend — distance is free attenuation. Every plus-ten decibels is a factor of TEN in intensity; the scale hides violence behind small numbers. Respect the exponent, and stand back from the speakers.",
      pose:'excited',
      board:[{t:'Check: (199/3)² ≈ 4400 ≈ 10^3.65 → 36.5 dB drop: 96.5 − 36.5 = 60 ✓'}] },
@@ -972,7 +988,11 @@ const EXAMPLES = [
      } },
    { say:"And the spectrum thins: the node-antinode pairing only accommodates ODD quarter-wave counts, so the overtones are three and five times the fundamental — 415 and 691 hertz — with the even harmonics simply forbidden. Half the family, exiled by a boundary condition.",
      pose:'write',
-     board:['f_3 = 3f_1 = 415\\ \\mathrm{Hz}, \\qquad f_5 = 5f_1 = 691\\ \\mathrm{Hz}\\quad(\\text{odd only!})'] },
+     board:['f_3 = 3f_1 = 415\\ \\mathrm{Hz}, \\qquad f_5 = 5f_1 = 691\\ \\mathrm{Hz}\\quad(\\text{odd only!})'],
+     action(c){
+       plotCurve(c, x=>[x, -1.15+0.5*Math.sin(3*Math.PI*x/(2*0.62))], 0, 0.62, {color:PURPLE, w:2.5, dash:'6,4', dur:900});
+       textAt(c, 0.44,-0.35, 'f₃ = 415 Hz: three quarter-waves', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
+     } },
    { say:"The check is in the orchestra. A clarinet's reed end behaves closed; a flute is open at both ends — and that is why a clarinet plays nearly an octave deeper than a flute of similar length, and why its tone is hollower: the missing even harmonics are audible as timbre. You have just derived woodwind personality from a boundary condition. Music is applied eigenvalue theory, and nobody tells the musicians.",
      pose:'excited',
      board:[{t:'Check: closing one end halves f₁ (277 → 138 Hz) and deletes even harmonics — the clarinet/flute contrast ✓'}] },
@@ -1005,10 +1025,18 @@ const EXAMPLES = [
    { say:"Part b: the ambulance passes and recedes; the wavefronts behind are STRETCHED, so the denominator grows: 343 plus 33. Eight hundred and fifty times 343 over 376 — seven hundred and seventy-five hertz. The famous drive-by swoop, 940 down to 775 — a factor 0.825, roughly three semitones of pure kinematics: the eee-yow of every action film.",
      pose:'write',
      board:['f_o = 850\\,\\frac{343}{343 + 33.0} = 850\\,\\frac{343}{376.0} = 775\\ \\mathrm{Hz}',
-            {t:'The drive-by: 940 → 775 Hz, ≈ 3 semitones.'}] },
+            {t:'The drive-by: 940 → 775 Hz, ≈ 3 semitones.'}],
+     action(c){
+       arrow(c, 1.0,-1.6, -0.6,-1.6, {color:BLUE, w:2.5, label:'behind: stretched → 775 Hz', fs:11.5});
+     } },
    { say:"Part c: now the listener pedals TOWARD the approaching siren at six metres per second. Two motions, two questions, both answering 'together': boost the numerator with plus v-observer AND shrink the denominator with minus v-source. 850 times 349 over 310 — nine hundred and fifty-seven hertz.",
      pose:'write',
-     board:['f_o = 850\\,\\frac{343 + 6.0}{343 - 33.0} = 850\\,\\frac{349}{310} = 957\\ \\mathrm{Hz}'] },
+     board:['f_o = 850\\,\\frac{343 + 6.0}{343 - 33.0} = 850\\,\\frac{349}{310} = 957\\ \\mathrm{Hz}'],
+     action(c){
+       el('circle',{cx:c.M.X(6.6),cy:c.M.Y(1.6),r:6,fill:GREEN},c.svg);
+       arrow(c, 6.3,1.6, 5.3,1.6, {color:GREEN, w:2.5, label:'cyclist, 6 m/s', fs:11.5});
+       textAt(c, 6.9,1.45, 'both motions say “together” → 957 Hz', {fs:11.5, italic:true, color:'#2E7D4F'});
+     } },
    { say:"Now comes the check: every answer landed on the correct side of 850 — approaching cases above, receding below — which is the first thing to verify in ANY Doppler problem before trusting the arithmetic. Sign by physics, number by algebra, sanity by comparison. In that order, always.",
      pose:'excited',
      board:[{t:'Check: 940, 957 > 850 (approach) ✓; 775 < 850 (recede) ✓. Choose signs by physics, then compute.'}] },
@@ -1038,7 +1066,12 @@ const EXAMPLES = [
    { say:"The MOVING OBSERVER meets an entirely ordinary wave — lambda equals v over f-s, unmolested — but running toward the source, she harvests crests at the enhanced closing speed v plus v-o. Her frequency: v plus v-o over lambda — f-s times v plus v-o over v. No wavelength changed hands; only the RATE of collection. Compose the two effects and the general formula assembles itself.",
      pose:'write',
      board:['f_o = \\frac{v + v_o}{\\lambda} = f_s\\,\\frac{v + v_o}{v}',
-            'f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}\\ \\ (\\text{both effects composed})'] },
+            'f_o = f_s\\,\\frac{v \\pm v_o}{v \\mp v_s}\\ \\ (\\text{both effects composed})'],
+     action(c){
+       el('circle',{cx:c.M.X(9.0),cy:c.M.Y(0),r:6,fill:GREEN},c.svg);
+       arrow(c, 8.7,0, 7.6,0, {color:GREEN, w:2.5, label:'v_o', fs:12});
+       textAt(c, 6.7,-1.5, 'ordinary λ, harvested faster', {fs:11.5, italic:true, color:'#2E7D4F'});
+     } },
    { say:"And now the deep check — WHY are the two cases different, when only relative motion seems to matter? Because sound propagates through a MEDIUM, and the air keeps score: a source at thirty metres per second reshapes the wave pattern; an observer at thirty merely samples it differently. The asymmetry is the medium's fingerprint. For light in vacuum there is no medium, only relative velocity survives — and resolving THAT tension is special relativity, waiting for us in Tutorial 11. Consider the fuse lit.",
      pose:'excited',
      board:[{t:'Source motion alters λ in the air; observer motion alters the sampling rate — the medium distinguishes them.'},
@@ -1065,15 +1098,23 @@ const EXAMPLES = [
      board:['f_{\\rm wall} = f_s\\,\\frac{v}{v - v_b} = 52.0\\,\\frac{343}{334}\\ \\mathrm{kHz}'],
      action(c){
        wavefronts(c, 2.0, 0, 1.0, 4, 2600);
+       el('circle',{cx:c.M.X(2.0),cy:c.M.Y(0),r:6,fill:'#5C4B30'},c.svg);
        arrow(c, 2.0,-2.8, 4.0,-2.8, {color:RED, w:3, label:'bat, 9 m/s', fs:12});
      } },
    { say:"Step two: the wall RE-EMITS the echo as a stationary source, and now the BAT is a moving observer, closing at nine metres per second — boost the numerator: f-echo equals f-wall times 343 plus 9, over 343. Multiply the two stages and watch the 343 cancel between them, leaving the elegant closed form: f-s times v plus v-b over v minus v-b.",
      pose:'write',
      board:['f_{\\rm echo} = f_{\\rm wall}\\,\\frac{v + v_b}{v} = 52.0\\,\\frac{343}{334}\\cdot\\frac{352}{343} = 52.0\\,\\frac{352}{334}',
-            'f_{\\rm echo} = f_s\\,\\frac{v + v_b}{v - v_b} = 54.8\\ \\mathrm{kHz}'] },
+            'f_{\\rm echo} = f_s\\,\\frac{v + v_b}{v - v_b} = 54.8\\ \\mathrm{kHz}'],
+     action(c){
+       for(const r of [0.7,1.6,2.5]) arc(c, 10,0, r, 120, 240, {color:BLUE, w:2});
+       arrow(c, 8.6,2.6, 6.6,2.6, {color:BLUE, w:2.5, label:'echo returns', fs:12});
+     } },
    { say:"Fifty-four point eight kilohertz: a shift of two point eight upward, and that number IS the bat's speedometer — its auditory cortex converts echo shift to closing speed as reflexively as your eye converts colour. The same double-shift arithmetic runs police radar, with light, and medical Doppler ultrasound, with sound in tissue reading blood flow. One bat trick, three industries.",
      pose:'write',
-     board:[{t:'Δf = 2.8 kHz → closing speed. Same principle: police radar (light), Doppler ultrasound (blood flow).'}] },
+     board:[{t:'Δf = 2.8 kHz → closing speed. Same principle: police radar (light), Doppler ultrasound (blood flow).'}],
+     action(c){
+       textAt(c, 3.6,3.6, '52.0 kHz out → 54.8 kHz back: Δf is the speedometer', {fs:12, italic:true, anchor:'middle', color:'#8A5A24'});
+     } },
    { say:"The check, by the low-speed approximation: for v-b much less than v, the double shift is approximately 2 f-s v-b over v — two, times 52, times 9, over 343 — two point seven three kilohertz, in tidy agreement with the exact 2.8. The factor of TWO is the fingerprint of any echo measurement: the motion is counted once out and once home. And with that, sound rests its case — next stop, the nature of light.",
      pose:'excited',
      board:['\\text{Check: } \\Delta f \\approx \\frac{2f_sv_b}{v} = \\frac{2(52.0)(9.00)}{343} = 2.73\\ \\mathrm{kHz} \\approx 2.8\\ \\checkmark',

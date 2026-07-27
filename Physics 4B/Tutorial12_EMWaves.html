@@ -875,22 +875,29 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'FM: f = 98.1 MHz, E₀ = 0.12 V/m at the antenna.'},
             'c = \\lambda f = 3.00\\times10^{8}\\ \\mathrm{m/s}, \\qquad E_0 = cB_0'] },
-   { say:"For part a, the wavelength: c over f — 3 ten-to-the-8 over 98.1 million — 3.06 metres. And there is the engineering hiding in the arithmetic: FM antennas are metre-scale BECAUSE the waves are — an antenna is happiest at a neat fraction of the wavelength it must catch.",
+   { say:"For part a, the wavelength: c over f — 3 ten-to-the-8 over 98.1 million — 3.06 metres. Watch the electric field ripple onto the stage, with one full wavelength bracketed crest to crest. And there is the engineering hiding in the arithmetic: FM antennas are metre-scale BECAUSE the waves are — an antenna is happiest at a neat fraction of the wavelength it must catch.",
      pose:'write',
      board:['\\lambda = \\frac{c}{f} = \\frac{3.00\\times10^{8}}{98.1\\times10^{6}} = 3.06\\ \\mathrm m',
-            {t:'Metre waves → metre antennas. Your car aerial is doing wavelength arithmetic.'}] },
-   { say:"For part b, the magnetic partner: B-nought is E-nought over c — 0.12 over 3 ten-to-the-8 — 4 ten-to-the-minus-10 tesla. Ten thousand times feebler than Earth's field — yet, and remember this, the wave's magnetic ENERGY is exactly EQUAL to its electric energy. The c in the denominator of B is repaid, squared, in the energy formula.",
+            {t:'Metre waves → metre antennas. Your car aerial is doing wavelength arithmetic.'}],
+     action(c){
+       plotCurve(c, x=>[x, 1.8*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:GOLD, w:3.5, dur:1800});
+       textAt(c, 0.55,2.25, 'E (in-page, vertical)', {fs:12.5, italic:true, color:GOLD});
+       dashLine(c, 0.765,1.8, 0.765,-2.3, {color:'#B0A488'});
+       dashLine(c, 3.825,1.8, 3.825,-2.3, {color:'#B0A488'});
+       arrow(c, 0.765,-2.15, 3.825,-2.15, {color:'#8A7D60', w:2, head:8});
+       arrow(c, 3.825,-2.15, 0.765,-2.15, {color:'#8A7D60', w:2, head:8});
+       textAt(c, 2.3,-1.85, 'λ = 3.06 m', {fs:12.5, italic:true, anchor:'middle'});
+     } },
+   { say:"For part b, the magnetic partner: B-nought is E-nought over c — 0.12 over 3 ten-to-the-8 — 4 ten-to-the-minus-10 tesla. A hundred thousand times feebler than Earth's fifty-microtesla field — yet, and remember this, the wave's magnetic ENERGY is exactly EQUAL to its electric energy. The c in the denominator of B is repaid, squared, in the energy formula.",
      pose:'write',
      board:['B_0 = \\frac{E_0}{c} = \\frac{0.12}{3.00\\times10^{8}} = 4.0\\times10^{-10}\\ \\mathrm T',
             'u_E = \\tfrac12\\varepsilon_0E^2 = \\frac{B^2}{2\\mu_0} = u_B\\ \\text{(equal shares, always)}'] },
-   { say:"For part c, the geometry — watch the wave assemble. E oscillates vertically; B horizontally, in and out of the page, drawn to its own scale; both perpendicular to the travel direction and to each other, in perfect phase — crests together, zeros together. And the cross product E cross B points exactly along the propagation: the wave carries its own signpost.",
+   { say:"For part c, the geometry — watch the wave complete itself. B joins in dashed blue, horizontal, in and out of the page, drawn to its own scale; both fields perpendicular to the travel direction and to each other, in perfect phase — crests together, zeros together. And the cross product E cross B points exactly along the propagation: the wave carries its own signpost.",
      pose:'point',
      board:['\\vec E \\perp \\vec B \\perp \\hat k, \\qquad \\vec E\\times\\vec B \\parallel \\hat k\\ \\text{(propagation)}'],
      action(c){
-       plotCurve(c, x=>[x, 1.8*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:GOLD, w:3.5, dur:1800});
        plotCurve(c, x=>[x, 0.9*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:BLUE, w:2.5, dash:'6,5', dur:1800});
-       textAt(c, 0.55,2.1, 'E (in-page, vertical)', {fs:12.5, italic:true, color:GOLD});
-       textAt(c, 2.2,-1.75, 'B (⊥ page, drawn to own scale)', {fs:12, italic:true, color:BLUE});
+       textAt(c, 4.6,-1.35, 'B (⊥ page, drawn to own scale)', {fs:12, italic:true, color:BLUE});
        arrow(c, 5.6,2.0, 7.1,2.0, {color:GREEN, w:3.5, label:'c', vec:true, fs:14});
      } },
    { say:"The check is the phase: many students draw E and B a quarter-cycle apart, by false analogy with the capacitor and inductor of last week. In a travelling wave they rise and fall TOGETHER — equal energy at every instant, both vanishing at the same nodes. In phase, perpendicular, self-propelled: that is the complete anatomy.",
@@ -922,7 +929,13 @@ const EXAMPLES = [
    { say:"Let us take part a. Between the plates, E is sigma over epsilon-nought, so the flux is E times the plate area — Q over epsilon-nought, precisely. Differentiate: epsilon-nought d-phi d-t equals d-Q d-t — which IS the wire current. Half an ampere of displacement current flows through the gap, continuing the wire's half ampere without a coulomb actually crossing. The circuit is seamless; Ampère's law is rescued.",
      pose:'write',
      board:['\\Phi_E = EA = \\frac{\\sigma}{\\varepsilon_0}A = \\frac{Q}{\\varepsilon_0}',
-            'I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt} = \\frac{dQ}{dt} = I = 0.50\\ \\mathrm A'] },
+            'I_d = \\varepsilon_0\\frac{d\\Phi_E}{dt} = \\frac{dQ}{dt} = I = 0.50\\ \\mathrm A'],
+     action(c){
+       arrow(c, -9,0.9, -4,0.9, {color:GOLD, w:2.5, head:9, dur:900});
+       textAt(c, -2.6,4.2, '+Q growing', {fs:12, italic:true, color:RED});
+       textAt(c, 1.8,4.2, '−Q growing', {fs:12, italic:true, color:BLUE});
+       textAt(c, 2.8,-7.6, 'I_d = 0.50 A “flows” across the gap', {fs:12, italic:true, color:GREEN});
+     } },
    { say:"On we go to part b. Now use it. An Amperian circle of radius 2 centimetres between the plates, centred on the axis. The growing E is uniform across the gap, so our circle catches only the FRACTION r-squared over R-squared of the flux — four ninths of the displacement current. B times 2 pi r equals mu-nought times that.",
      pose:'point',
      board:['B(2\\pi r) = \\mu_0 I_d\\frac{r^2}{R^2} \\;\\Rightarrow\\; B = \\frac{\\mu_0 I_d\\,r}{2\\pi R^2}'],
@@ -936,7 +949,10 @@ const EXAMPLES = [
      } },
    { say:"Now we put in the numbers: 2 ten-to-the-minus-7, times a half ampere, times 2 centimetres, over 3 centimetres squared — 2.2 microtesla, circling the axis inside the gap. A magnetic field, in a region containing NO moving charge whatsoever — manufactured entirely by the changing E.",
      pose:'write',
-     board:['B(0.020) = \\frac{(2\\times10^{-7})(0.50)(0.020)}{(0.030)^2} = 2.2\\times10^{-6}\\ \\mathrm T'] },
+     board:['B(0.020) = \\frac{(2\\times10^{-7})(0.50)(0.020)}{(0.030)^2} = 2.2\\times10^{-6}\\ \\mathrm T'],
+     action(c){
+       textAt(c, 3.2,-6.2, 'B = 2.2 μT on this circle', {fs:12, italic:true, color:RED});
+     } },
    { say:"For part c, the boundary: at r equals R the circle catches ALL the displacement current, and B is mu-nought I-d over 2 pi R — 3.3 microtesla — EXACTLY the field the same distance from the feeding wire. The check is that seamlessness: field lines circle wire, then gap, with identical strength, and no instrument at the rim could tell you where the conduction ended and the displacement began. Changing E makes B precisely as current does — and THAT symmetry, E begetting B as B begets E, is what lets light exist. Maxwell added a term; the universe added illumination.",
      pose:'excited',
      board:['B(R) = \\frac{\\mu_0 I_d}{2\\pi R} = \\frac{(2\\times10^{-7})(0.50)}{0.030} = 3.3\\times10^{-6}\\ \\mathrm T\\ \\text{— same as beside the wire}\\ \\checkmark',
@@ -969,7 +985,11 @@ const EXAMPLES = [
    { say:"For part b, invert for the fields. E-nought is the root of 2 I over epsilon-nought c: root of 2 times 1592, over 8.85 ten-to-the-minus-12 times 3 ten-to-the-8 — 1.1 KILOVOLTS per metre, oscillating in that little red thread. And B-nought, dutifully, E over c: 3.7 microtesla.",
      pose:'write',
      board:['E_0 = \\sqrt{\\frac{2I}{\\varepsilon_0 c}} = \\sqrt{\\frac{2(1592)}{(8.85\\times10^{-12})(3.00\\times10^{8})}} = 1.1\\times10^{3}\\ \\mathrm{V/m}',
-            'B_0 = \\frac{E_0}{c} = 3.7\\times10^{-6}\\ \\mathrm T'] },
+            'B_0 = \\frac{E_0}{c} = 3.7\\times10^{-6}\\ \\mathrm T'],
+     action(c){
+       for(const x of [30,44,58]) arrow(c, x,19.5, x,28.5, {color:RED, w:2, head:7, dur:700});
+       textAt(c, 64,35.5, 'E₀ ≈ 1.1 kV/m oscillating in the thread', {fs:12, italic:true, color:RED});
+     } },
    { say:"For part c, the ambush: 1600 watts per square metre — MORE than bright noon sunlight's 1400. Your five-milliwatt pointer outshines the Sun, per square metre. No contradiction: the Sun delivers its kilowatt spread over every metre of beach, while the pointer crams its five milliwatts into three square millimetres. Watch the comparison.",
      pose:'point',
      board:['I_{\\rm laser} \\approx 1600\\ \\mathrm{W/m^2} \\; > \\; I_{\\rm sun} \\approx 1400\\ \\mathrm{W/m^2}'],
@@ -1043,7 +1063,7 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'Reflecting sail 100×100 m, I = 1.36 kW/m², m = 50 kg.'},
             'P_{\\rm abs} = \\frac{I}{c}, \\qquad P_{\\rm refl} = \\frac{2I}{c}'] },
-   { say:"Let us take part a. Reflecting: 2 times 1360 over 3 ten-to-the-8 — 9.1 MICROPASCALS. Over the full hectare of sail — ten thousand square metres — the force is 0.091 newtons. A tenth of a newton: the weight of a strawberry, pressing on a sail the size of two football pitches.",
+   { say:"Let us take part a. Reflecting: 2 times 1360 over 3 ten-to-the-8 — 9.1 MICROPASCALS. Over the full hectare of sail — ten thousand square metres — the force is 0.091 newtons. A tenth of a newton: the weight of a strawberry, pressing on a sail with half again the area of a football pitch.",
      pose:'write',
      board:['P_{\\rm rad} = \\frac{2(1360)}{3.00\\times10^{8}} = 9.1\\times10^{-6}\\ \\mathrm{Pa}',
             'F = P_{\\rm rad}A = (9.07\\times10^{-6})(10^{4}) = 9.1\\times10^{-2}\\ \\mathrm N'],
@@ -1056,7 +1076,11 @@ const EXAMPLES = [
    { say:"Part b: divide by 50 kilograms — 1.8 millimetres per second, per second. Pathetic? Watch the arithmetic of patience: that acceleration never stops, burns nothing, and after a single day has quietly banked 157 metres per second of velocity change. After a month, five kilometres per second. Chemical rockets shout for minutes; sunlight whispers forever — and forever wins.",
      pose:'write',
      board:['a = \\frac{F}{m} = \\frac{0.0907}{50} = 1.8\\times10^{-3}\\ \\mathrm{m/s^2}',
-            '\\Delta v = at = (1.8\\times10^{-3})(86\\,400) \\approx 157\\ \\mathrm{m/s\\ per\\ day,\\ no\\ propellant}'] },
+            '\\Delta v = at = (1.8\\times10^{-3})(86\\,400) \\approx 157\\ \\mathrm{m/s\\ per\\ day,\\ no\\ propellant}'],
+     action(c){
+       arrow(c, 6,-8, 26,-8, {color:PURPLE, w:2.5, head:9, dur:1400});
+       textAt(c, 7,-11.5, '+157 m/s every day, propellant-free', {fs:12, italic:true, color:PURPLE});
+     } },
    { say:"For part c, the black sail: absorption transfers only the light's own momentum, not the rebound — half the pressure, half the force: 0.045 newtons, 0.9 millimetres per second squared. Hence every real sail is mirrored: the shinier the sail, the harder the light shoves. A tilted sail, mind, catches less area AND redirects the rebound — the geometry is the sailor's rigging.",
      pose:'write',
      board:['\\text{Absorbing: } F = \\frac{IA}{c} = 4.5\\times10^{-2}\\ \\mathrm N, \\quad a = 9.1\\times10^{-4}\\ \\mathrm{m/s^2}\\ (\\text{half})',

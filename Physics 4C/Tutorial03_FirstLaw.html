@@ -839,7 +839,7 @@ const EXAMPLES = [
      } },
    { say:"The first law is the universe’s only unbreakable contract: energy changes hands — heat in, work out — but the total is untouchable. Perpetual-motion inventors file appeals to this court every year; the docket is long, and the verdict has been identical since 1850. It is the one law with no recorded exceptions and no lobbyists.",
      pose:'think', solo:true,
-     board:[{t:'ΔU = Q − W has never lost a case. Patent offices cite it more than lawyers cite precedent.'}],
+     board:[{t:'ΔE_int = Q − W has never lost a case. Patent offices cite it more than lawyers cite precedent.'}],
      action(c){
        const {M}=c;
        el('circle',{cx:M.X(2.6), cy:M.Y(190), r:60, fill:'none', stroke:'#8A7D60','stroke-width':4},c.svg);
@@ -882,6 +882,9 @@ const EXAMPLES = [
      action(c){
        plotCurve(c, v=>[v, 1.5e5], 0.02, 0.035, {color:GOLD, w:4, dur:900});
        shadeUnder(c, v=>1.5e5, 0.02, 0.035, {color:GOLD});
+       dashLine(c, 0.02,0, 0.02,1.5e5, {}); dashLine(c, 0.035,0, 0.035,1.5e5, {});
+       textAt(c, 0.02, -0.15e5, 'V_i', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 0.035, -0.15e5, 'V_f', {fs:12, italic:true, anchor:'middle'});
        textAt(c, 0.0275, 0.7e5, 'W = area', {fs:13, italic:true, color:'#8A5A24', anchor:'middle'});
      } },
    { say:"Internal energy next — and here is the professional shortcut. It wants n C-V delta T, but notice that n R delta T is exactly p delta V for an isobaric step, courtesy of the gas law. So delta E-int is three halves p delta V — three halves of 2250 — three thousand three hundred and seventy-five joules, and we never once needed the temperatures themselves.",
@@ -891,7 +894,14 @@ const EXAMPLES = [
    { say:"Now the first law closes the triangle: the heat in must cover BOTH accounts — Q equals delta E-int plus W — 3375 plus 2250 — five thousand six hundred and twenty-five joules. Equivalently five halves p delta V, which is n C-p delta T: the constant-pressure heat capacity, appearing exactly on schedule.",
      pose:'write',
      board:['Q = \\Delta E_{\\rm int} + W = 3375 + 2250 = 5625\\ \\mathrm J',
-            'Q = \\tfrac52\\,p\\,\\Delta V = nC_p\\Delta T\\ \\checkmark'] },
+            'Q = \\tfrac52\\,p\\,\\Delta V = nC_p\\Delta T\\ \\checkmark'],
+     action(c){
+       const {M}=c;
+       el('rect',{x:M.X(0.016),y:M.Y(2.15e5),width:M.X(0.028)-M.X(0.016),height:M.Y(1.72e5)-M.Y(2.15e5),rx:8,fill:'rgba(201,143,82,.25)',stroke:'#8A5A24','stroke-width':2},c.svg);
+       textAt(c, 0.022, 1.92e5, 'ΔE = +3375 J', {fs:11.5, italic:true, color:'#5C3A16', anchor:'middle'});
+       arrow(c, 0.003,1.93e5, 0.015,1.93e5, {color:RED, w:3, label:'Q = 5625 J', fs:11.5});
+       arrow(c, 0.029,1.93e5, 0.0415,1.93e5, {color:GREEN, w:3, label:'W = 2250 J', fs:11.5});
+     } },
    { say:"The check is the moral itself: the heat split precisely three to two — three parts raising the internal energy, two parts exported as work — and THAT ratio is the entire content of C-p equals C-V plus R for a monatomic gas. Warming at constant pressure always costs extra, because the gas insists on spending some of the allowance on expansion. Gases are teenagers with a boundary.",
      pose:'excited',
      board:[{t:'Check: Q splits 3375 : 2250 = 3 : 2 = C_V : R — the anatomy of C_p = C_V + R ✓'}] },
@@ -915,6 +925,9 @@ const EXAMPLES = [
      action(c){
        plotCurve(c, v=>[v, 350/v], 1, 4.9, {color:GOLD, w:3.5, dur:1200});
        shadeUnder(c, v=>350/v, 2, 4, {color:GOLD});
+       dashLine(c, 2,0, 2,175, {}); dashLine(c, 4,0, 4,87.5, {});
+       textAt(c, 2, -30, 'V_i', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 4, -30, '2V_i', {fs:12, italic:true, anchor:'middle'});
        textAt(c, 2.9, 60, 'W = ∫p dV', {fs:13, italic:true, color:'#8A5A24', anchor:'middle'});
      } },
    { say:"Now we put in the numbers: three moles, times 8.314, times 350 kelvin, times 0.6931 — six thousand and fifty joules of work delivered to the surroundings. Six kilojoules from three moles and a doubling of volume — and note the logarithm's restraint: doubling the volume again would buy only the SAME work again. Isothermal expansion pays in equal instalments per doubling, like a cautious pension.",
@@ -923,7 +936,10 @@ const EXAMPLES = [
    { say:"Internal energy: the temperature never moved, and for an ideal gas E-int depends on temperature ALONE — so delta E-int is exactly zero. The first law then forces the ledger: Q equals W. Every single joule of heat absorbed from the reservoir was exported, without loss, as work.",
      pose:'point',
      board:['\\Delta E_{\\rm int} = nC_V\\Delta T = 0\\quad(T\\ \\text{constant})',
-            'Q = \\Delta E_{\\rm int} + W = 0 + 6.05\\times10^{3} = 6.05\\times10^{3}\\ \\mathrm J'] },
+            'Q = \\Delta E_{\\rm int} + W = 0 + 6.05\\times10^{3} = 6.05\\times10^{3}\\ \\mathrm J'],
+     action(c){
+       textAt(c, 3.3, 200, 'T = 350 K all along the curve ⇒ ΔE_int = 0', {fs:12, italic:true, color:'#8A5A24'});
+     } },
    { say:"The check invites a dangerous thought: heat converted to work at one hundred per cent efficiency — a perfect engine? Look again: to keep producing work the gas must keep expanding, forever, toward infinite volume. A one-shot marvel, not a machine. The impossibility of doing this in a CYCLE is precisely the second law of thermodynamics — which is, conveniently, the next tutorial. Consider this a cliffhanger.",
      pose:'excited',
      board:[{t:'Check: Q = W, 100% conversion — but only ONCE; a cycle cannot do it. Enter the second law (Tutorial 4).'}] },
@@ -966,11 +982,20 @@ const EXAMPLES = [
    { say:"Now total the columns. The internal-energy column sums to ZERO — as it must, for E-int is a state function and we have returned to the starting state; this is the built-in audit of every cycle. The work column: twelve hundred minus four hundred — plus eight hundred joules — which is exactly the AREA enclosed by the rectangle: two hundred kilopascals tall by four litres wide.",
      pose:'point',
      board:['\\sum\\Delta E_{\\rm int} = 1800-1800-600+600 = 0\\ \\checkmark\\ (\\text{state function})',
-            'W_{\\rm net} = Q_{\\rm net} = +800\\ \\mathrm J = (200\\ \\mathrm{kPa})(4.00\\ \\mathrm L)\\ (\\text{enclosed area})'] },
+            'W_{\\rm net} = Q_{\\rm net} = +800\\ \\mathrm J = (200\\ \\mathrm{kPa})(4.00\\ \\mathrm L)\\ (\\text{enclosed area})'],
+     action(c){
+       label(c, 4,200, 'W_net = +800 J', {fs:14, color:'#2E7D4F', italic:true, anchor:'middle'});
+     } },
    { say:"And the closing perspective: as an engine, this loop swallows thirty-six hundred joules of heat on its intake legs and delivers eight hundred as work — an efficiency of twenty-two per cent, with the rest dumped on the exhaust legs. Why can it not keep everything? Hold that indignation; it has a name, and the next tutorial is devoted to it.",
      pose:'excited',
      board:['Q_{\\rm in} = 3000+600 = 3600\\ \\mathrm J, \\qquad e = \\frac{W_{\\rm net}}{Q_{\\rm in}} = \\frac{800}{3600} = 22\\%',
-            {t:'Clockwise loop = engine; enclosed area = net work. The missing 78% is the second law’s opening argument.'}] },
+            {t:'Clockwise loop = engine; enclosed area = net work. The missing 78% is the second law’s opening argument.'}],
+     action(c){
+       arrow(c, 4,365, 4,315, {color:RED, w:2.5, label:'+3000 J', fs:11.5});
+       arrow(c, 0.6,200, 1.7,200, {color:GREEN, w:2.5, label:'+600 J', fs:11.5});
+       arrow(c, 6.3,200, 7.3,200, {color:BLUE, w:2.5, label:'−1800 J', fs:11.5});
+       arrow(c, 4,85, 4,30, {color:PURPLE, w:2.5, label:'−1000 J', fs:11.5});
+     } },
   ]
 },
 
@@ -1002,7 +1027,14 @@ const EXAMPLES = [
    { say:"For part b, the diesel. Compress air fifteen-fold: T-f equals 300 times fifteen to the power 0.40 — fifteen to the 0.4 is 2.954 — eight hundred and eighty-six kelvin, some six hundred and thirteen celsius. Diesel fuel self-ignites near two hundred and ten. The compression stroke IS the spark plug; Rudolf Diesel's entire patent is the exponent gamma minus one.",
      pose:'point',
      board:['T_f = T_i\\Big(\\frac{V_i}{V_f}\\Big)^{\\gamma-1} = 300\\,(15)^{0.40} = 300\\,(2.954) = 886\\ \\mathrm K \\approx 613^{\\circ}\\mathrm C',
-            {t:'Diesel autoignition ≈ 210 °C — no spark plug required.'}] },
+            {t:'Diesel autoignition ≈ 210 °C — no spark plug required.'}],
+     action(c){
+       el('circle',{cx:c.M.X(4.6),cy:c.M.Y(380/Math.pow(4.6,1.4)),r:5,fill:'#5C4B30'},c.svg);
+       el('circle',{cx:c.M.X(1.05),cy:c.M.Y(380/Math.pow(1.05,1.4)),r:5,fill:RED},c.svg);
+       textAt(c, 4.15, 95, 'T_i = 300 K', {fs:12, italic:true});
+       textAt(c, 1.25, 395, 'T_f = 886 K', {fs:12, italic:true, color:RED});
+       arrow(c, 3.6,120, 1.8,255, {color:RED, w:2.5, dash:'6,4', label:'compress ×15', fs:11.5});
+     } },
    { say:"The work, from the first law with Q dead: W equals minus delta E-int — minus n C-V delta T. Air is diatomic, C-V five halves R; per mole, minus five halves times 8.314 times the 586-kelvin climb: minus twelve point two kilojoules. Negative, as compression must be — the piston does twelve kilojoules of work ON each mole, every joule of it banked as the heat of ignition. Now comes the check: T rose as V fell with Q strictly zero — the signature of an adiabat, and the whole point of the diesel.",
      pose:'excited',
      board:['W = -\\Delta E_{\\rm int} = -nC_V\\Delta T = -(1.00)\\big(\\tfrac52\\times8.314\\big)(886-300) = -1.22\\times10^{4}\\ \\mathrm J',
@@ -1041,7 +1073,16 @@ const EXAMPLES = [
    { say:"For part c, the family reunion. n equals zero: p constant — the isobar, and the formula gives p delta V exactly. n equal to gamma: the adiabat, with W equal to minus delta E-int, as the diesel taught us. n to infinity: the isochore — V pinned, no work. And n equals one, the case our formula politely excludes? The ISOTHERM, whose one-over-V integral produces the logarithm instead — the removable singularity where the power law hands over to the log. One parameter, four personalities: the first law's entire repertory company on a single dial. And with it, the first law stands complete.",
      pose:'excited',
      board:['n=0:\\ \\text{isobaric}\\quad n=1:\\ \\text{isothermal (log!)}\\quad n=\\gamma:\\ \\text{adiabatic}\\quad n\\to\\infty:\\ \\text{isochoric}',
-            {t:'Check: n = 0 in the formula → W = p ΔV ✓; n → 1 limit → nRT ln(V_f/V_i) (L’Hôpital agrees).'}] },
+            {t:'Check: n = 0 in the formula → W = p ΔV ✓; n → 1 limit → nRT ln(V_f/V_i) (L’Hôpital agrees).'}],
+     action(c){
+       dashLine(c, 0.05,100, 1.30,100, {color:GREEN, w:2});
+       textAt(c, 0.06, 135, 'n = 0', {fs:11.5, italic:true, color:GREEN});
+       plotCurve(c, v=>[v, 100/v], 0.25, 1.30, {color:'#B0A488', w:2, dash:'5,4', dur:900});
+       textAt(c, 0.55, 230, 'n = 1', {fs:11.5, italic:true, color:'#8A7D60'});
+       dashLine(c, 1.00,0, 1.00,620, {color:BLUE, w:2});
+       textAt(c, 1.03, 560, 'n → ∞', {fs:11.5, italic:true, color:BLUE});
+       textAt(c, 0.36, 420, 'n = 1.25', {fs:11.5, italic:true, color:'#8A5A24'});
+     } },
   ]
 },
 ];

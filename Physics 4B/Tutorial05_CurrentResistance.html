@@ -894,7 +894,10 @@ const EXAMPLES = [
      } },
    { say:"Part a: charge is current times time — 2.5 amperes times 60 seconds — 150 coulombs. A minute of modest current moves a spectacular amount of charge. One hundred and fifty coulombs is a ferocious quantity of raw charge — enough, unseparated, to tear the room apart electrostatically — yet it slides through the wire in polite neutrality, positive lattice and negative traffic in exact balance.",
      pose:'write',
-     board:['\\Delta Q = I\\,\\Delta t = (2.5)(60) = 1.5\\times10^{2}\\ \\mathrm C'] },
+     board:['\\Delta Q = I\\,\\Delta t = (2.5)(60) = 1.5\\times10^{2}\\ \\mathrm C'],
+     action(c){
+       textAt(c, 26,-12.5, 'tally: 2.5 C/s × 60 s = 150 C', {fs:12.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"Part b: divide the current by the charge per electron — 2.5 over 1.6 times ten to the minus 19 — 1.6 times ten to the NINETEENTH electrons every second. Sixteen quintillion, per second, through an ordinary wire. Numbers like sixteen quintillion per second are why electrical engineering works statistically: no one audits individual electrons, any more than a census counts heartbeats.",
      pose:'write',
      board:['\\frac{I}{e} = \\frac{2.5}{1.60\\times10^{-19}} = 1.6\\times10^{19}\\ \\text{electrons/s}'] },
@@ -918,7 +921,16 @@ const EXAMPLES = [
    { say:"Let us take part a. The cross-section: pi times the radius squared, radius 1.025 millimetres — 3.3 times ten to the minus 6 square metres. Then J: 15 amperes over that — 4.5 MILLION amperes per square metre. Sounds heroic. Wait for part b. Current density is the honest measure of how hard a wire is working — total current flatters thick wires, but J tells you what each square metre of copper actually endures.",
      pose:'write',
      board:['A = \\pi\\left(\\tfrac{d}{2}\\right)^2 = \\pi(1.025\\times10^{-3})^2 = 3.30\\times10^{-6}\\ \\mathrm{m^2}',
-            'J = \\frac{I}{A} = \\frac{15}{3.30\\times10^{-6}} = 4.5\\times10^{6}\\ \\mathrm{A/m^2}'] },
+            'J = \\frac{I}{A} = \\frac{15}{3.30\\times10^{-6}} = 4.5\\times10^{6}\\ \\mathrm{A/m^2}'],
+     action(c){
+       const {M}=c;
+       /* the wire and the cross-section disk that J divides by */
+       el('line',{x1:M.X(0),y1:M.Y(-4),x2:M.X(50),y2:M.Y(-4),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('line',{x1:M.X(0),y1:M.Y(10),x2:M.X(50),y2:M.Y(10),stroke:'#8A7D60','stroke-width':3},c.svg);
+       el('ellipse',{cx:M.X(25),cy:M.Y(3),rx:7,ry:Math.abs(M.Y(10)-M.Y(3)),
+         fill:'rgba(46,109,164,.25)',stroke:BLUE,'stroke-width':2},c.svg);
+       textAt(c, 27,11.5, 'cross-section A = 3.30×10⁻⁶ m²', {fs:12, italic:true, color:'#1D4568'});
+     } },
    { say:"On we go to part b. Divide J by n e: 4.55 million, over 8.5 times ten to the 28 times the electron charge. The drift speed: 0.33 MILLIMETRES per second. Watch the stage — that is the actual pace. An electron needs nearly an HOUR to drift one metre. Your lamp lights instantly because the FIELD travels near light speed and sets the whole crowd shuffling at once — the marching order arrives instantly; the marchers barely move.",
      pose:'point',
      board:['v_d = \\frac{J}{ne} = \\frac{4.55\\times10^{6}}{(8.5\\times10^{28})(1.60\\times10^{-19})} = 3.3\\times10^{-4}\\ \\mathrm{m/s}'],
@@ -958,10 +970,14 @@ const EXAMPLES = [
        el('circle',{cx:c.M.X(20),cy:c.M.Y(1.1),r:5,fill:BLUE},c.svg);
        textAt(c, 100,2.3, '1.1 Ω cold', {fs:13, color:BLUE});
      } },
-   { say:"Part b — the inrush. At the instant of switch-on the filament is COLD: 120 volts across 1.1 ohms — 110 amperes, momentarily. Once hot: 120 over 14 — about 8.7 amperes. A spike thirteen times the running current, every single time you flick the switch.",
+   { say:"Part b — the inrush. At the instant of switch-on the filament is COLD: 120 volts across 1.1 ohms — 110 amperes, momentarily. Once hot: 120 over 14 — about 8.7 amperes. A spike thirteen times the running current, every single time you flick the switch. The two labelled points on the curve are the whole story: same 120 volts, two very different resistances.",
      pose:'write',
      board:['I_{\\rm cold} = \\frac{120}{1.1} \\approx 110\\ \\mathrm A \\qquad\\text{vs}\\qquad I_{\\rm hot} = \\frac{120}{13.9} \\approx 8.7\\ \\mathrm A',
-            {t:'Inrush ≈ 13× the operating current — a brief but violent welcome.'}] },
+            {t:'Inrush ≈ 13× the operating current — a brief but violent welcome.'}],
+     action(c){
+       textAt(c, 180,4.6, 'switch-on: 120 V/1.1 Ω ≈ 110 A !', {fs:12.5, color:RED, italic:true});
+       textAt(c, 1450,12.2, 'running: 120 V/13.9 Ω ≈ 8.7 A', {fs:12.5, color:GREEN, italic:true});
+     } },
    { say:"And that spike is precisely why bulbs die at the flick of the switch rather than mid-evening: the cold surge stresses the filament's thinnest spot, which fails, theatrically, at breakfast. The physics of the dramatic pop. There is a small elegy in every blown bulb: it survived a thousand steady evenings and died of a single morning's inrush. Transients, not loads, are what kill hardware.",
      pose:'think',
      board:[{t:'The thin spot of the filament takes 13× current while cold → burnout happens at switch-on.'}] },
@@ -1013,7 +1029,13 @@ const EXAMPLES = [
             'R = \\frac{(3.5\\times10^{-5})(0.020)}{\\pi(1.0\\times10^{-3})(3.0\\times10^{-3})} = 7.4\\times10^{-2}\\ \\Omega'] },
    { say:"Two checks. Set b equal to a: rho L over pi a squared — the uniform cylinder, recovered. And notice WHERE the resistance lives: rho L over pi a b is the cylinder formula built on the GEOMETRIC mean root a b, not the average radius — the narrow end dominates the total, exactly as the thinnest lane dominates traffic. The formula knows where the bottleneck is.",
      pose:'excited',
-     board:['b\\to a:\\ R \\to \\frac{\\rho L}{\\pi a^2}\\ \\checkmark\\qquad R = \\frac{\\rho L}{\\pi(\\sqrt{ab})^2}:\\ \\text{geometric mean — the narrow end rules}'] },
+     board:['b\\to a:\\ R \\to \\frac{\\rho L}{\\pi a^2}\\ \\checkmark\\qquad R = \\frac{\\rho L}{\\pi(\\sqrt{ab})^2}:\\ \\text{geometric mean — the narrow end rules}'],
+     action(c){
+       const {M}=c;
+       el('polygon',{points:`${M.X(0)},${M.Y(2)} ${M.X(5)},${M.Y(3)} ${M.X(5)},${M.Y(-3)} ${M.X(0)},${M.Y(-2)}`,
+         fill:RED, opacity:.28},c.svg);
+       textAt(c, 0,-7.3, 'the bottleneck: the narrow end contributes most of R', {fs:12, italic:true, color:RED});
+     } },
   ]
 },
 
@@ -1055,13 +1077,20 @@ const EXAMPLES = [
          tween(u=>{ b.setAttribute('cy',M.Y(6+24*u)); b.setAttribute('opacity',(1-u)*.9); }, 1800+i*300, c.instant);
        }
      } },
-   { say:"For part c, the invoice. One and a half kilowatts for one hour daily, thirty days: 45 kilowatt-hours. At 30 cents each: 14 dollars a month. The kilowatt-hour, note, is an ENERGY unit — power times time — and the only one the electric company has ever heard of.",
+   { say:"For part c, the invoice. One and a half kilowatts for one hour daily, thirty days: 45 kilowatt-hours. At 30 cents each: 13 dollars 50 a month — call it 14. The kilowatt-hour, note, is an ENERGY unit — power times time — and the only one the electric company has ever heard of.",
      pose:'write',
-     board:['E = (1.5\\ \\mathrm{kW})(1\\ \\mathrm h)(30) = 45\\ \\mathrm{kWh} \\;\\Rightarrow\\; \\$0.30 \\times 45 = \\$14/\\text{month}'] },
+     board:['E = (1.5\\ \\mathrm{kW})(1\\ \\mathrm h)(30) = 45\\ \\mathrm{kWh} \\;\\Rightarrow\\; \\$0.30 \\times 45 = \\$13.50 \\approx \\$14/\\text{month}'] },
    { say:"Part d, the cautionary tale. Plug this 120-volt kettle into a 240-volt outlet: the RESISTANCE stays 9.6 ohms — the element neither knows nor cares about your travel plans — so P equals V squared over R gives SIX thousand watts. Double the voltage, QUADRUPLE the power; V enters squared. The element glows, the cord cooks, and breakfast becomes an incident report. Now comes the check: 6000 is exactly 4 times 1500 ✓ — arithmetic confirming the danger. Respect the label on the box.",
      pose:'excited',
      board:['P_{240} = \\frac{V^2}{R} = \\frac{240^2}{9.6} = 6.0\\times10^{3}\\ \\mathrm W = 4P_{\\rm rated}',
-            {t:'Doubling V quadruples P (V enters squared) — this is why voltage ratings matter ✓'}] },
+            {t:'Doubling V quadruples P (V enters squared) — this is why voltage ratings matter ✓'}],
+     action(c){
+       const {M}=c;
+       const gl=el('rect',{x:M.X(22.5),y:M.Y(8),width:M.X(57.5)-M.X(22.5),height:M.Y(2)-M.Y(8),
+         fill:RED,opacity:0},c.svg);
+       tween(u=>gl.setAttribute('opacity',.45*u), 1200, c.instant);
+       textAt(c, 40,45, '240 V → 6.0 kW: 4× the design heat', {fs:12.5, color:RED, italic:true, anchor:'middle'});
+     } },
   ]
 },
 ];

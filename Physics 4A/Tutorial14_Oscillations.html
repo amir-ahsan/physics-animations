@@ -881,7 +881,7 @@ const EXAMPLES = [
      } },
    { say:"Add a drag force minus b v, and the oscillation lives inside a dying exponential envelope, at a frequency slightly flattened — the stage shows the portrait. Critical damping returns to rest fastest with no overshoot; your car's shock absorbers aspire to it. And DRIVE the system near its natural frequency and the amplitude erupts: RESONANCE — shattered goblets, swaying bridges, and every radio dial. Lighter damping, taller and narrower peak. To the examples.",
      pose:'excited',
-     board:['x = A_0e^{-bt/2m}\\cos(\\omega\\prime t+\\phi), \\qquad \\omega\\prime = \\sqrt{\\omega_0^2 - \\big(\\tfrac{b}{2m}\\big)^2}',
+     board:['x = A_0e^{-bt/2m}\\cos(\\omega^{\\prime} t+\\phi), \\qquad \\omega^{\\prime} = \\sqrt{\\omega_0^2 - \\big(\\tfrac{b}{2m}\\big)^2}',
             {t:'Resonance: drive near ω₀ → amplitude peaks; damping sets the height of the peak.'}],
      action(c){
        const {M}=c;
@@ -920,7 +920,11 @@ const EXAMPLES = [
      } },
    { say:"Ninety-nine point three centimetres — one metre, to within the width of a thumb. This is a historical near-miss: the 'seconds pendulum' was an early candidate for DEFINING the metre, before the French committee chose a sliver of the Earth's meridian instead. Your metre stick is almost a clock.",
      pose:'write',
-     board:[{t:'≈ 1 m — the “seconds pendulum,” once proposed as the definition of the metre.'}] },
+     board:[{t:'≈ 1 m — the “seconds pendulum,” once proposed as the definition of the metre.'}],
+     action(c){
+       dashLine(c, -0.85,1.6, -0.85,-1.0, {color:'#B5793B'});
+       textAt(c, -2.45,0.25, 'L = 0.993 m', {fs:12.5, italic:true, color:'#8A5A24'});
+     } },
    { say:"Now comes the check: the mass never appeared — hang a walnut or an anvil, the tick is identical, which is why pendulum clocks never ask their bobs to diet. But mind the fine print: this independence holds for SMALL swings. Launch it at ninety degrees and the period stretches; the clock lies; the formula, like all of us, has its comfort zone.",
      pose:'excited',
      board:[{t:'Check: m absent → any bob keeps the same time ✓ (valid for small amplitudes only).'}] },
@@ -946,10 +950,17 @@ const EXAMPLES = [
      board:['\\omega = \\sqrt{\\frac{k}{m}} = \\sqrt{\\frac{200}{0.500}} = 20.0\\ \\mathrm{rad/s}',
             'T = \\frac{2\\pi}{\\omega} = \\frac{2\\pi}{20.0} = 0.314\\ \\mathrm{s}'],
      action(c){ plotCurve(c, t=>[t, 0.05*Math.cos(20*t)], 0, 0.345, {color:BLUE, w:3.5, dur:1600}); } },
-   { say:"Released from REST at 5 centimetres, so the amplitude is exactly 5 centimetres — the release point is the turning point. Top speed, at the centre: omega A — exactly 1 metre per second. Top acceleration, at the extremes: omega squared A — 20 metres per second squared. Twice gravity, delivered by a spring you could compress with one finger.",
+   { say:"Released from REST at 5 centimetres, so the amplitude is exactly 5 centimetres — the release point is the turning point. Top speed, at the centre: omega A — exactly 1 metre per second; the green dot marks the zero crossing where it happens. Top acceleration, at the extremes: omega squared A — 20 metres per second squared, at the purple turning point. Twice gravity, delivered by a spring you could compress with one finger.",
      pose:'write',
      board:['v_{\\max} = \\omega A = (20.0)(0.0500) = 1.00\\ \\mathrm{m/s}',
-            'a_{\\max} = \\omega^2A = (20.0)^2(0.0500) = 20.0\\ \\mathrm{m/s^2}'] },
+            'a_{\\max} = \\omega^2A = (20.0)^2(0.0500) = 20.0\\ \\mathrm{m/s^2}'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0.0785),cy:M.Y(0),r:5,fill:GREEN},c.svg);
+       textAt(c, 0.088,-0.03, 'v_max at x = 0', {fs:11.5, italic:true, color:'#2E7D4F'});
+       el('circle',{cx:M.X(0.157),cy:M.Y(-0.05),r:5,fill:PURPLE},c.svg);
+       textAt(c, 0.168,-0.06, 'a_max at x = ±A', {fs:11.5, italic:true, color:'#7B4FA0'});
+     } },
    { say:"The energy: half k A squared — a quarter of a joule, fixed at the moment of release and thereafter merely SLOSHING between kinetic and potential, twice per cycle, forever, friction permitting. A quarter of a joule with a lifetime appointment: at every extreme it is all spring, at every crossing all speed, and at every instant in between the two columns sum — to the last decimal — to the same quarter joule.",
      pose:'write',
      board:['E = K + U = \\tfrac12mv^2 + \\tfrac12kx^2\\ \\text{(the same at every instant)}',
@@ -975,7 +986,14 @@ const EXAMPLES = [
    { say:"The amplitude combines both clues in quadrature: root of x-nought squared plus v-nought over omega, squared — root of 9 plus 4, in ten-thousandths — 3.61 centimetres. LARGER than the starting displacement: the initial kinetic energy carries the glider beyond its launch point before turning. Motion is credit toward amplitude.",
      pose:'write',
      board:['\\frac{v_0}{\\omega} = \\frac{0.400}{20.0} = 0.0200\\ \\mathrm{m}',
-            'A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}} = \\sqrt{(0.0300)^2 + (0.0200)^2} = 0.0361\\ \\mathrm{m}'] },
+            'A = \\sqrt{x_0^2 + \\frac{v_0^2}{\\omega^2}} = \\sqrt{(0.0300)^2 + (0.0200)^2} = 0.0361\\ \\mathrm{m}'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(0),cy:M.Y(0.03),r:5,fill:RED},c.svg);
+       dashLine(c, 0,0.03, 0.3,0.03, {color:'#B0A488'});
+       textAt(c, 0.305,0.031, 'x₀', {fs:12, italic:true});
+       arrow(c, 0.004,0.0285, 0.032,0.0173, {color:RED, w:2, head:7, label:'v₀', fs:12});
+     } },
    { say:"The phase: tangent phi equals minus v-nought over omega x-nought — plus two thirds — giving 0.588 radians. But the arctangent is a double agent — it offers two quadrants. Check BOTH conditions: cosine phi positive matches x-nought positive; sine phi positive makes v-nought negative. Quadrant one, confirmed on both counts. Never let the calculator choose your quadrant unsupervised.",
      pose:'write',
      board:['\\tan\\phi = -\\frac{v_0}{\\omega x_0} = -\\frac{(-0.400)}{(20.0)(0.0300)} = +0.667 \\;\\Rightarrow\\; \\phi = 0.588\\ \\mathrm{rad}\\;(33.7^{\\circ})',
@@ -1015,14 +1033,18 @@ const EXAMPLES = [
      pose:'point',
      board:['T_{\\rm rod} = 1.64\\ \\mathrm{s} \\quad \\text{vs} \\quad T_{\\rm simple} = 2\\pi\\sqrt{L/g} = 2.01\\ \\mathrm{s}'],
      action(c){
-       pendulum(c, -1.1,1.6, 2.9, u=>0.38*Math.cos(u*2*Math.PI/0.547*1), 4000, {fill:GOLD});
-       pendulum(c, 1.1,1.6, 2.9, u=>0.38*Math.cos(u*2*Math.PI/0.671*1), 4000, {fill:BLUE, rw:7, bob:5});
+       pendulum(c, -1.1,1.6, 2.9, u=>0.38*Math.cos(u*2*Math.PI/0.671*1), 4000, {fill:GOLD});
+       pendulum(c, 1.1,1.6, 2.9, u=>0.38*Math.cos(u*2*Math.PI/0.547*1), 4000, {fill:BLUE, rw:7, bob:5});
        textAt(c, -2.2,-1.65, 'simple (2.01 s)', {fs:12, italic:true});
        textAt(c, 0.75,-1.65, 'rod (1.64 s)', {fs:12, italic:true});
      } },
-   { say:"Why faster? The rod's mass is not all exiled to the far end — much of it lives close to the pivot, where the journey per swing is short. The check makes it precise: our rod keeps time with a SIMPLE pendulum of length two thirds L — 66.7 centimetres. Every physical pendulum has such an 'equivalent length'; the rod simply wears its centre of percussion at the two-thirds mark. Ask any cricket bat.",
+   { say:"Why faster? The rod's mass is not all exiled to the far end — much of it lives close to the pivot, where the journey per swing is short. The check makes it precise: our rod keeps time with a SIMPLE pendulum of length two thirds L — 66.7 centimetres. Every physical pendulum has such an 'equivalent length'; the rod simply wears its centre of percussion at the two-thirds mark — the dashed line on the stage. Ask any cricket bat.",
      pose:'excited',
-     board:[{t:'Check: equivalent simple length = 2L/3 = 0.667 m → T = 2π√(0.667/9.8) = 1.64 s ✓'}] },
+     board:[{t:'Check: equivalent simple length = 2L/3 = 0.667 m → T = 2π√(0.667/9.8) = 1.64 s ✓'}],
+     action(c){
+       dashLine(c, 0.45,-0.333, 1.75,-0.333, {color:'#7B4FA0'});
+       textAt(c, 1.85,-0.45, '2L/3 — centre of oscillation', {fs:11.5, italic:true, color:'#7B4FA0'});
+     } },
   ]
 },
 
@@ -1052,7 +1074,12 @@ const EXAMPLES = [
      } },
    { say:"And now, part c. The damped period is 0.316 seconds, so the halving time holds roughly 1.1 oscillations. The amplitude halves nearly every single cycle — this oscillator is fighting hard and losing steadily. An oscillator losing half its amplitude per cycle is heavily damped indeed — a door-closer rather than a church bell. Where you want ringing, keep b small; where you want silence, spend generously on it.",
      pose:'write',
-     board:['T^{\\prime} = \\frac{2\\pi}{\\omega^{\\prime}} = \\frac{2\\pi}{19.9} = 0.316\\ \\mathrm{s} \\;\\Rightarrow\\; \\frac{t_{1/2}}{T^{\\prime}} = \\frac{0.347}{0.316} \\approx 1.1\\ \\text{oscillations}'] },
+     board:['T^{\\prime} = \\frac{2\\pi}{\\omega^{\\prime}} = \\frac{2\\pi}{19.9} = 0.316\\ \\mathrm{s} \\;\\Rightarrow\\; \\frac{t_{1/2}}{T^{\\prime}} = \\frac{0.347}{0.316} \\approx 1.1\\ \\text{oscillations}'],
+     action(c){
+       dashLine(c, 0,0.052, 0.316,0.052, {color:'#2E7D4F'});
+       dashLine(c, 0.316,-0.02, 0.316,0.052, {color:'#2E7D4F'});
+       textAt(c, 0.08,0.057, 'one period T′ = 0.316 s', {fs:11.5, italic:true, color:'#2E7D4F'});
+     } },
    { say:"The final check of the final tutorial: energy rides the SQUARE of amplitude, so each halving of amplitude surrenders three-QUARTERS of the remaining energy. Halve, and halve, and halve — and the motion fades to stillness. Which is, I suppose, how every course must end. Fourteen tutorials, seventy examples, and one rule above all the others: the check — ALWAYS the check. It has been the greatest of pleasures. Class dismissed.",
      pose:'excited',
      board:[{t:'Check: E ∝ A² → each amplitude halving removes ¾ of the energy. And that concludes Physics 4A — the check, always the check!'}] },

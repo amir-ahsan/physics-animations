@@ -900,9 +900,9 @@ const EXAMPLES = [
      action(c){
        const {M}=c;
        for(let y=-2.6;y<=1.4;y+=1.0) arrow(c, -6,y, -2.8,y, {color:GOLD, w:2.5, head:9});
-       el('line',{x1:M.X(-4.1),y1:M.Y(-3.0),x2:M.X(-2.9),y2:M.Y(1.8),stroke:'#5C4B30','stroke-width':4},c.svg);
-       arrow(c, -3.5,-0.6, -1.8,-1.05, {color:PURPLE, w:2.5, label:'n̂', fs:13, side:-1});
-       arc(c, -3.5,-0.6, 1.05, -15, 15, {color:'#888', label:'30°'});
+       el('line',{x1:M.X(-4.6),y1:M.Y(-2.5),x2:M.X(-2.4),y2:M.Y(1.3),stroke:'#5C4B30','stroke-width':4},c.svg);
+       arrow(c, -3.5,-0.6, -2.03,-1.45, {color:PURPLE, w:2.5, label:'n̂', fs:13, side:-1});
+       arc(c, -3.5,-0.6, 1.05, -30, 0, {color:'#888', label:'30°'});
      } },
    { say:"Part b — and here the sky opens. Gauss's law: the TOTAL flux out of ANY closed surface equals the enclosed charge over epsilon-nought. Any closed surface — cube, sphere, or a lumpy potato. Shape is irrelevant; only the imprisoned charge matters. Four nanocoulombs over epsilon-nought: 450 newton-metre-squared per coulomb.",
      pose:'point',
@@ -916,10 +916,15 @@ const EXAMPLES = [
        el('circle',{cx:M.X(3.2),cy:M.Y(0.6),r:9,fill:'#C0392B',stroke:'#7A2015','stroke-width':2},c.svg);
        radialArrows(c, 3.2,0.6, 0.55,1.65, 8);
      } },
-   { say:"And the flux through ONE face? Symmetry: the centred charge cannot prefer any of the six identical faces, so each carries exactly one sixth — 75 units. Notice what we did NOT do: integrate E, which varies wildly across each face, point by point. Symmetry signed the cheque; integration never left its chair. THAT is Gauss's law's entire business model.",
+   { say:"And the flux through ONE face — say, the highlighted one? Symmetry: the centred charge cannot prefer any of the six identical faces, so each carries exactly one sixth — 75 units. Notice what we did NOT do: integrate E, which varies wildly across each face, point by point. Symmetry signed the cheque; integration never left its chair. THAT is Gauss's law's entire business model.",
      pose:'excited',
      board:['\\Phi_{\\rm face} = \\frac{\\Phi}{6} = 75\\ \\mathrm{N\\,m^2/C}',
-            {t:'No integration performed — symmetry shares the flux six ways. That is the whole point of Gauss.'}] },
+            {t:'No integration performed — symmetry shares the flux six ways. That is the whole point of Gauss.'}],
+     action(c){
+       const {M}=c;
+       el('line',{x1:M.X(5.2),y1:M.Y(2.6),x2:M.X(5.2),y2:M.Y(-1.4),stroke:GREEN,'stroke-width':5},c.svg);
+       textAt(c, 5.45,0.4, 'Φ/6 = 75 N·m²/C', {fs:11.5, italic:true, color:'#2E7D4F'});
+     } },
   ]
 },
 
@@ -992,7 +997,7 @@ const EXAMPLES = [
        radialArrows(c, 0,0, 8.1,9.2, 8, {color:GREEN});
        textAt(c, 5.4,-8.6, 'Gaussian r > R', {fs:12, italic:true, color:'#2E7D4F'});
      } },
-   { say:"The same number twice?! A splendid trap: 8 happens to equal R squared over 2 — this problem's radii were chosen so the inside and outside values coincide. A coincidence worth noticing, never a rule. Now comes the check: from outside, the cylinder impersonates a LINE charge with lambda equals rho pi R squared — a hundredth of a microcoulomb per metre — and the line-charge formula reproduces part b exactly. Outside observers see only totals; the interior keeps its secrets.",
+   { say:"The same number twice?! A splendid trap: in centimetres, 8 is exactly R squared over r-a — sixteen over two — so these radii were deliberately chosen to make the inside and outside values coincide. A coincidence worth noticing, never a rule. Now comes the check: from outside, the cylinder impersonates a LINE charge with lambda equals rho pi R squared — a hundredth of a microcoulomb per metre — and the line-charge formula reproduces part b exactly. Outside observers see only totals; the interior keeps its secrets.",
      pose:'excited',
      board:[{t:'Coincidence: r_b = R²/r_a here — not a law! Check: λ = ρπR² = 1.0×10⁻⁸ C/m, and λ/2πε₀r = 2.3×10³ N/C ✓'}] },
   ]
@@ -1033,10 +1038,16 @@ const EXAMPLES = [
          textAt(c, 6.55*Math.cos(a)-0.3, 6.55*Math.sin(a)-0.35, '+', {fs:15, color:'#C0392B'}); }
        textAt(c, 5.6,-7.9, 'outer: +4.0 nC', {fs:13, color:'#C0392B'});
      } },
-   { say:"On we go to part b. At 5 centimetres — inside the metal — E is zero, by decree. At 10 centimetres, a Gaussian sphere encloses everything: plus 6 minus 2, net plus 4. E equals k times 4 nanocoulombs over 0.1 squared — 3.6 times ten to the third, radially outward.",
+   { say:"On we go to part b. At 5 centimetres — inside the metal — E is zero, by decree. At 10 centimetres, the green Gaussian sphere encloses everything: the central plus 6 and the shell's net minus 2 — plus 4 nanocoulombs in all. E equals k times 4 nanocoulombs over 0.1 squared — 3.6 times ten to the third, radially outward.",
      pose:'write',
      board:['E(5\\ \\mathrm{cm}) = 0 \\;\\text{(in metal)}',
-            'E(10\\ \\mathrm{cm}) = \\frac{k(4.0\\times10^{-9})}{(0.10)^2} = 3.6\\times10^{3}\\ \\mathrm{N/C}\\ \\text{outward}'] },
+            'E(10\\ \\mathrm{cm}) = \\frac{k(4.0\\times10^{-9})}{(0.10)^2} = 3.6\\times10^{3}\\ \\mathrm{N/C}\\ \\text{outward}'],
+     action(c){
+       circleW(c, 0,0, 10, {stroke:'#2E7D4F', dash:'6,5', w:2.5});
+       radialArrows(c, 0,0, 10.1,11.6, 8, {color:GREEN});
+       textAt(c, 6.6,-10.7, 'r = 10 cm: q_enc = +4.0 nC', {fs:12, italic:true, color:'#2E7D4F'});
+       textAt(c, -3.4,4.35, 'E = 0 in metal', {fs:11.5, italic:true, color:'#7B4FA0'});
+     } },
    { say:"For part c, the densities: minus 6 nanocoulombs spread over the inner sphere's area gives minus 3.0 times ten to the minus seven coulombs per square metre; plus 4 over the larger outer sphere gives plus 8.8 times ten to the minus eight. And the closing check: from outside, the entire contraption — point charge, cavity, metal, and all its internal drama — is indistinguishable from a bare plus-4-nanocoulomb point charge. The outside world reads only the bottom line. Conductors keep excellent secrets; Gauss reads the ledger anyway.",
      pose:'excited',
      board:['\\sigma_{\\rm in} = \\frac{-6.0\\times10^{-9}}{4\\pi(0.040)^2} = -3.0\\times10^{-7}\\ \\mathrm{C/m^2}, \\quad \\sigma_{\\rm out} = \\frac{+4.0\\times10^{-9}}{4\\pi(0.060)^2} = +8.8\\times10^{-8}\\ \\mathrm{C/m^2}',
@@ -1073,10 +1084,14 @@ const EXAMPLES = [
        circleW(c, 0,0, 4, {stroke:'#7B4FA0', dash:'6,5', w:2.5});
        radialArrows(c, 0,0, 4.1,5.4, 8, {color:GOLD});
      } },
-   { say:"Part c — numbers. At r equals R over 2: rho-nought times R over 16 epsilon-nought — 3.5 times ten to the third newtons per coulomb. At the surface: four times that — 1.4 times ten to the fourth. Quadratic growth: half the radius, one quarter the field.",
+   { say:"Part c — numbers. At r equals R over 2: rho-nought times R over 16 epsilon-nought — 3.5 times ten to the third newtons per coulomb. At the surface: four times that — 1.4 times ten to the fourth, the green arrows on the rim. Quadratic growth: half the radius, one quarter the field.",
      pose:'write',
      board:['E(R/2) = \\frac{(5.0\\times10^{-6})(0.050)^2}{4(8.85\\times10^{-12})(0.10)} = 3.5\\times10^{3}\\ \\mathrm{N/C}',
-            'E(R) = \\frac{(5.0\\times10^{-6})(0.10)^2}{4(8.85\\times10^{-12})(0.10)} = 1.4\\times10^{4}\\ \\mathrm{N/C}'] },
+            'E(R) = \\frac{(5.0\\times10^{-6})(0.10)^2}{4(8.85\\times10^{-12})(0.10)} = 1.4\\times10^{4}\\ \\mathrm{N/C}'],
+     action(c){
+       radialArrows(c, 0,0, 8.15,9.3, 8, {color:GREEN});
+       textAt(c, -12.6,-8.8, 'at the surface: E = 1.4×10⁴ N/C = 4 × E(R/2)', {fs:12, italic:true, color:'#2E7D4F'});
+     } },
    { say:"The check that closes the week: at the surface, the inside formula must hand over smoothly to k Q over R squared with our Q from part a — and indeed k times 1.6 ten-to-the-minus-eight over 0.01 is the same 1.4 times ten to the fourth. Interior integral and exterior point-charge law, meeting at the border without a passport check. Gauss's law: never wrong, merely waiting for symmetry. Next week: potential — the same physics, without the arrows.",
      pose:'excited',
      board:[{t:'Check: kQ/R² = (8.99×10⁹)(1.6×10⁻⁸)/(0.10)² = 1.4×10⁴ N/C — matches E(R) from inside ✓'}] },

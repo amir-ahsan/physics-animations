@@ -882,7 +882,14 @@ const EXAMPLES = [
   steps:[
    { say:"We begin by taking the nucleus’s measurements. The rule is one line long: R equals R-nought times A to the one-third, with R-nought equal to one point two femtometres — femto being ten-to-the-minus-15, a hundred thousand times smaller than the atom that contains it.",
      pose:'talk',
-     board:['R = R_0A^{1/3}, \\qquad R_0 = 1.2\\ \\mathrm{fm} = 1.2\\times10^{-15}\\ \\mathrm m'] },
+     board:['R = R_0A^{1/3}, \\qquad R_0 = 1.2\\ \\mathrm{fm} = 1.2\\times10^{-15}\\ \\mathrm m'],
+     action(c){
+       const {M}=c;
+       el('circle',{cx:M.X(3.2),cy:M.Y(3.4),r:2.6*M.s,fill:'none',stroke:'#8A7D60','stroke-width':2,'stroke-dasharray':'6,5'},c.svg);
+       el('circle',{cx:M.X(3.2),cy:M.Y(3.4),r:3,fill:RED},c.svg);
+       textAt(c, 3.2,6.5, 'the atom: its electron cloud', {fs:11.5, anchor:'middle', italic:true});
+       textAt(c, 6.3,3.3, '← the nucleus, ×100,000 smaller (not to scale)', {fs:11, italic:true});
+     } },
    { say:"Let us take part a. Oxygen-16: cube root of sixteen is two point five two, so R is three point nought femtometres. Uranium-238: cube root of 238 is six point two nought, giving seven point four femtometres. Savour the arithmetic: FIFTEEN times the nucleons, only two and a half times the radius — because volume, not radius, tracks A.",
      pose:'write',
      board:['R_{\\rm O} = 1.2(16)^{1/3} = 1.2(2.52) = 3.0\\ \\mathrm{fm}',
@@ -916,7 +923,17 @@ const EXAMPLES = [
    { say:"The mass-defect drill, performed on the most bound nucleus of consequence: iron-56. The plan: weigh the PARTS — twenty-six hydrogen atoms and thirty neutrons — subtract the WHOLE, and convert the missing mass to energy at nine hundred and thirty-one and a half M-e-V per atomic unit. Using ATOMIC masses throughout lets the twenty-six electrons cancel silently.",
      pose:'talk',
      board:[{t:'⁵⁶Fe: Z = 26, N = 30, m = 55.934936 u.'},
-            'E_B = [26\\,m(^1\\mathrm H) + 30\\,m_n - m(^{56}\\mathrm{Fe})]c^2'] },
+            'E_B = [26\\,m(^1\\mathrm H) + 30\\,m_n - m(^{56}\\mathrm{Fe})]c^2'],
+     action(c){
+       const {M}=c; let seed=3;
+       const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+       for(let k=0;k<56;k++){
+         const a=2*Math.PI*rnd(), r=1.1*Math.sqrt(rnd());
+         el('circle',{cx:M.X(2.6+r*Math.cos(a)),cy:M.Y(4.4+r*Math.sin(a)),r:5,fill:k<26?RED:BLUE,opacity:.85},c.svg);
+       }
+       textAt(c, 2.6,6.3, '26 p (red) + 30 n (blue)', {fs:11.5, anchor:'middle'});
+       textAt(c, 2.6,2.5, '⁵⁶Fe: weigh the parts, then the whole', {fs:11.5, anchor:'middle', italic:true});
+     } },
    { say:"Weigh the parts, carrying SIX decimals — the defect is a one-per-cent difference between fifty-six-unit numbers, and sloppy rounding devours it. Twenty-six times 1.007825 is 26.203450. Thirty times 1.008665 is 30.259950. The parts total 56.463400 atomic units.",
      pose:'write',
      board:['26(1.007825) = 26.203450\\ \\mathrm u, \\qquad 30(1.008665) = 30.259950\\ \\mathrm u',
@@ -977,7 +994,13 @@ const EXAMPLES = [
    { say:"For part c, the artifact. Living wood holds a steady carbon-14 level, replenished by cosmic rays; dead wood only spends. Activity at twenty-three and a half per cent means lambda t equals log of one over 0.235 — one point four four eight. Time: T-half times 1.448 over 0.693 — twelve THOUSAND years. End of the last ice age, read from a stick by a logarithm. The exponential is nature’s clock; the log is how we ask it the time.",
      pose:'excited',
      board:['t = T_{1/2}\\frac{\\ln(1/0.235)}{\\ln 2} = 5730\\times\\frac{1.4479}{0.6931} = 1.20\\times10^4\\ \\mathrm y\\ \\checkmark',
-            {t:'Carbon dating: a ratio in, an age out. Logs convert percentages to millennia.'}] },
+            {t:'Carbon dating: a ratio in, an age out. Logs convert percentages to millennia.'}],
+     action(c){
+       dashLine(c, 0,0.235, 2.089,0.235, {color:GREEN});
+       dashLine(c, 2.089,0, 2.089,0.235, {color:GREEN});
+       el('circle',{cx:c.M.X(2.089),cy:c.M.Y(0.235),r:5,fill:GREEN},c.svg);
+       textAt(c, 3.5,0.42, '¹⁴C at 23.5% → 2.09 T½ ≈ 12,000 y', {fs:11.5, italic:true, color:'#2E5C3F'});
+     } },
   ]
 },
 
@@ -1088,11 +1111,14 @@ const EXAMPLES = [
      } },
    { say:"Now the Sun, whose NET reaction chains four protons into one helium-4, two positrons, and two neutrinos: Q equals twenty-six point seven M-e-V — four point two eight ten-to-the-minus-12 joules — per four protons consumed. Positrons and neutrinos in the exhaust — the Sun's furnace is not merely hot but WEAK-interaction slow, which is precisely why it burns for gigayears instead of detonating like a bomb with better publicity.",
      pose:'point',
-     board:['4\\,^1\\mathrm H \\to {}^4\\mathrm{He} + 2e^+ + 2\\nu, \\qquad Q = 26.7\\ \\mathrm{MeV} = 4.28\\times10^{-12}\\ \\mathrm J'] },
+     board:['4\\,{}^1\\mathrm H \\to {}^4\\mathrm{He} + 2e^+ + 2\\nu, \\qquad Q = 26.7\\ \\mathrm{MeV} = 4.28\\times10^{-12}\\ \\mathrm J'] },
    { say:"The luminosity sets the burn rate: 3.85 ten-to-the-26 watts over 4.28 ten-to-the-minus-12 joules — nine ten-to-the-37 cycles per second — each consuming four protons of combined mass six point seven ten-to-the-minus-27 kilograms. Multiply: six hundred MILLION TONNES of hydrogen per second. The Sun is the least frugal object you will ever depend upon.",
      pose:'write',
      board:['\\text{rate} = \\frac{3.85\\times10^{26}}{4.28\\times10^{-12}} = 9.0\\times10^{37}\\ \\mathrm{s^{-1}}',
-            '\\dot m_{\\rm H} = (9.0\\times10^{37})(6.69\\times10^{-27}) \\approx 6.0\\times10^{11}\\ \\mathrm{kg/s}'] },
+            '\\dot m_{\\rm H} = (9.0\\times10^{37})(6.69\\times10^{-27}) \\approx 6.0\\times10^{11}\\ \\mathrm{kg/s}'],
+     action(c){
+       arrow(c, 4.4,4.6, 6.9,4.6, {color:RED, w:3, label:'6×10¹¹ kg of H, every second', fs:11});
+     } },
    { say:"Yet the tank is deep. With a tenth of the solar mass available for core fusion: 0.10 times two ten-to-the-30, over six ten-to-the-11 — three point three ten-to-the-17 seconds. TEN BILLION YEARS, matching stellar-evolution models; we are comfortably at half-time. And so the course closes where it began — with energy conservation, now written as E equals delta-m c squared, pricing in a single formula a tokamak shot, a power grid, and the lifetime of the star that pays for all of it. It has been a privilege. Now go and do the problem sets.",
      pose:'excited',
      board:['t \\sim \\frac{0.10(1.99\\times10^{30})}{6.0\\times10^{11}} = 3.3\\times10^{17}\\ \\mathrm s \\approx 10^{10}\\ \\mathrm y\\ \\checkmark',

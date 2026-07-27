@@ -877,13 +877,22 @@ const EXAMPLES = [
      } },
    { say:"On we go to part b. Each side fringe runs between successive minima, and the minima sit at multiples of L lambda over a — so every side fringe is exactly ONE unit wide: three point six four centimetres, half the central crown. The central maximum standing double-width above its neighbours is the single-slit signature — spot it in any pattern and you know at once a lone slit, not a pair, is responsible.",
      pose:'point',
-     board:['w_{\\rm side} = y_2 - y_1 = L\\frac{2\\lambda}{a} - L\\frac{\\lambda}{a} = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}'] },
+     board:['w_{\\rm side} = y_2 - y_1 = L\\frac{2\\lambda}{a} - L\\frac{\\lambda}{a} = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}'],
+     action(c){
+       dashLine(c, 7.28,0, 7.28,0.35, {color:'#8A7D60'});
+       arrow(c, 3.64,0.28, 7.28,0.28, {color:GREEN, w:2, head:6, label:'side: 3.64 cm', fs:11.5});
+       arrow(c, -3.64,0.5, 3.64,0.5, {color:PURPLE, w:2, head:6, label:'central: 7.28 cm', fs:11.5});
+     } },
    { say:"Mark the contrast with the double slit while it is fresh: THERE, d sine theta equals m lambda located the BRIGHT fringes; HERE, the same-shaped formula locates the DARK. Same algebra, opposite verdicts — the single most reliable mix-up in the optics exam, now permanently labelled.",
      pose:'write',
      board:[{t:'Double slit: d sinθ = mλ → BRIGHT. Single slit: a sinθ = mλ → DARK. Label them and live.'}] },
    { say:"The check is the profile's signature: the central fringe always DOUBLE the width of its neighbours — if your pattern's crown is not the wide one, you have mislabelled something. And the inverse law delights: narrow the slit and the pattern broadens in protest. Light does not like being cornered; remember that temperament when quantum mechanics gives it a name.",
      pose:'excited',
-     board:[{t:'Check: central = 2× side width ✓; narrower a → wider pattern (a preview of uncertainty).'}] },
+     board:[{t:'Check: central = 2× side width ✓; narrower a → wider pattern (a preview of uncertainty).'}],
+     action(c){
+       plotCurve(c, y=>[y, sinc2(Math.PI*y/5.8)], -10.2, 10.2, {color:BLUE, w:2, dash:'7,5', dur:1200});
+       textAt(c, -7.2,0.88, 'slit narrowed → crown widens', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
+     } },
   ]
 },
 
@@ -935,8 +944,8 @@ const EXAMPLES = [
      pose:'point',
      board:['\\sin\\theta_v = \\frac{400}{1667} = 0.240 \\Rightarrow 13.9^{\\circ}, \\qquad \\sin\\theta_r = \\frac{700}{1667} = 0.420 \\Rightarrow 24.8^{\\circ}'],
      action(c){
-       arrow(c, 0,4, 56,17.8, {color:PURPLE, w:2.5, dur:700});
-       arrow(c, 0,4, 56,4+56*0.464, {color:RED, w:2.5, dur:700});
+       arrow(c, 0,4, 56,17.8, {color:PURPLE, w:2.5, dur:700, label:'violet 400', fs:11.5, lt:0.8});
+       arrow(c, 0,4, 50,4+50*0.464, {color:RED, w:2.5, dur:700, label:'red 700', fs:11.5, lt:0.55, side:-1});
        arrow(c, 0,4, 58,4, {color:'#B0A488', w:1.5, dash:'6,5', dur:400});
        arc(c, 0,4, 9, 0, 13.9, {color:PURPLE, label:'13.9°'});
        arc(c, 0,4, 14, 0, 24.8, {color:RED, label:'24.8°'});
@@ -946,7 +955,13 @@ const EXAMPLES = [
      board:['m \\le \\frac{d}{\\lambda_{\\rm red}} = \\frac{1667}{700} = 2.38 \\;\\Rightarrow\\; \\text{orders 1, 2 complete; order 3 partial}'] },
    { say:"For part c, the interleaving scandal: third-order violet sits at sine theta equal to three times 400 over 1667 — 0.720 — while SECOND-order red reaches 0.840. The third rainbow's violet edge falls INSIDE the second rainbow's red: the orders overlap, and beyond the first order the spectrum becomes a palimpsest.",
      pose:'write',
-     board:['\\sin\\theta_{3,\\rm violet} = \\frac{3(400)}{1667} = 0.720 < \\sin\\theta_{2,\\rm red} = \\frac{2(700)}{1667} = 0.840\\ \\ (\\text{overlap!})'] },
+     board:['\\sin\\theta_{3,\\rm violet} = \\frac{3(400)}{1667} = 0.720 < \\sin\\theta_{2,\\rm red} = \\frac{2(700)}{1667} = 0.840\\ \\ (\\text{overlap!})'],
+     action(c){
+       arrow(c, 0,4, 12,22.6, {color:RED, w:2, dash:'6,4', dur:600});
+       label(c, 13,22.0, '2nd-order red: 57.1°', {fs:11, color:RED, italic:true});
+       arrow(c, 0,4, 16,20.6, {color:PURPLE, w:2, dash:'6,4', dur:600});
+       label(c, 17,19.6, '3rd-order violet: 46.1° — inside it!', {fs:11, color:PURPLE, italic:true});
+     } },
    { say:"The check is the spectroscopist's daily bread: order overlap is why real instruments carry filters or cross-dispersers to sort the palimpsest into legible pages. And the design tension is now yours to appreciate — higher orders spread the colours wider and resolve finer, but tangle with their neighbours. Every spectrograph is a negotiated settlement with this example.",
      pose:'excited',
      board:[{t:'Check: gratings bend red MOST (opposite to prisms) ✓; order sorting is the price of dispersion.'}] },
@@ -973,7 +988,11 @@ const EXAMPLES = [
      } },
    { say:"On we go to part b. For a grating, R equals m N — order times illuminated lines, nothing else. First order: about nine hundred and ninety-eight lines. Second order: half that, four hundred and ninety-nine — the higher order does double duty because each line contributes twice the path difference.",
      pose:'point',
-     board:['R = mN \\;\\Rightarrow\\; N_1 = \\frac{998}{1} = 998, \\qquad N_2 = \\frac{998}{2} = 499'] },
+     board:['R = mN \\;\\Rightarrow\\; N_1 = \\frac{998}{1} = 998, \\qquad N_2 = \\frac{998}{2} = 499'],
+     action(c){
+       plotCurve(c, x=>[x, 0.62*(Math.exp(-Math.pow((x-4.4)/1.3,2)) + Math.exp(-Math.pow((x-6.2)/1.3,2)))], 1, 11, {color:RED, w:2, dash:'7,5', dur:1200});
+       textAt(c, 8.6,0.62, 'too few lines: one yellow smudge', {fs:11.5, color:'#7A2015', italic:true, anchor:'middle'});
+     } },
    { say:"For part c, the practical astonishment: at six hundred lines per millimetre, nine hundred and ninety-eight lines occupy 998 over 600 millimetres — one point six six millimetres. A beam THINNER THAN A MATCHSTICK on a pocket grating cleanly divides what the naked eye has never once suspected of being two.",
      pose:'write',
      board:['\\text{width} = \\frac{N}{600\\ \\mathrm{lines/mm}} = \\frac{998}{600} = 1.66\\ \\mathrm{mm}'] },
@@ -1007,7 +1026,7 @@ const EXAMPLES = [
      action(c){
        arrow(c, 2,4, 55,6.3, {color:'#B0A488', w:1.5, dur:600});
        arrow(c, 2,4, 55,1.7, {color:'#B0A488', w:1.5, dur:600});
-       arc(c, 2,4, 10, -4.6, 4.6, {color:'#888', label:'θ_min'});
+       arc(c, 2,4, 10, -2.5, 2.5, {color:'#888', label:'θ_min'});
      } },
    { say:"In honesty, the atmosphere's shimmer and the retina's pixel mosaic intervene before ten kilometres — Rayleigh sets the CEILING, and biology rents below it. But the diffraction limit is the one no optometrist can prescribe away. Engineering can polish mirrors, cool sensors, and bribe the atmosphere with adaptive optics — but the aperture's diffraction limit is constitutional law, amendable only by building bigger.",
      pose:'point',
@@ -1053,10 +1072,19 @@ const EXAMPLES = [
      } },
    { say:"For part a, invert for the spacing: d equals lambda over twice sine twenty-one point two — 0.154 over two times 0.3616 — 0.213 nanometres. We have just measured the distance between planes of ATOMS, with a protractor. A protractor and a wavelength, measuring atomic architecture — before Bragg, atomic spacing was inference; after him, it was surveying.",
      pose:'write',
-     board:['d = \\frac{\\lambda}{2\\sin21.2^{\\circ}} = \\frac{0.154}{2(0.3616)} = 0.213\\ \\mathrm{nm}'] },
+     board:['d = \\frac{\\lambda}{2\\sin21.2^{\\circ}} = \\frac{0.154}{2(0.3616)} = 0.213\\ \\mathrm{nm}'],
+     action(c){
+       arrow(c, 4.0,0.6, 4.0,-0.8, {color:GREEN, w:2.2, head:7, label:'d = 0.213 nm', fs:12});
+       arrow(c, 4.0,-0.8, 4.0,0.6, {color:GREEN, w:2.2, head:7});
+     } },
    { say:"For part b, second order — and a trap with teeth: sine theta-two equals two lambda over two d, which is 0.723, so theta-two is forty-six point three degrees. NOT double the twenty-one; the SINE doubles, and the angle follows the arcsine's crooked path. Angles never scale; sines do.",
      pose:'write',
-     board:['\\sin\\theta_2 = \\frac{2\\lambda}{2d} = 0.723 \\;\\Rightarrow\\; \\theta_2 = 46.3^{\\circ}\\ \\ (\\ne 2\\times21.2^{\\circ}!)'] },
+     board:['\\sin\\theta_2 = \\frac{2\\lambda}{2d} = 0.723 \\;\\Rightarrow\\; \\theta_2 = 46.3^{\\circ}\\ \\ (\\ne 2\\times21.2^{\\circ}!)'],
+     action(c){
+       arrow(c, -3.57,3.4, -0.9,0.6, {color:RED, w:2.2, dur:600});
+       arrow(c, -0.9,0.6, 1.77,3.4, {color:RED, w:2.2, dur:600});
+       label(c, 1.0,2.2, '2nd order: steeper, 46.3°', {fs:11.5, color:RED, italic:true});
+     } },
    { say:"For part c, why X-rays: Bragg demands sine theta no greater than one, so lambda can be at most 2 d — about 0.43 nanometres here. Visible light, at five hundred nanometres, is a THOUSAND times too coarse a ruler; asking it to read atomic planes is measuring a coin with a motorway. Matching the wavelength to the spacing is the whole art — and it is precisely how X-ray crystallography read the structure of DNA from Rosalind Franklin's Photo 51. Diffraction, which began this chapter blurring your shadows, ends it having read the book of life. On to relativity.",
      pose:'excited',
      board:['\\lambda \\le 2d \\approx 0.43\\ \\mathrm{nm} \\;\\Rightarrow\\; \\text{visible light (about 500 nm) is 1000 times too coarse}',

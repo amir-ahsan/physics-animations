@@ -951,7 +951,10 @@ const EXAMPLES = [
    { say:"On we go to part b. The terminal voltage, a to b: the promise minus the internal toll — 12 minus 2 times 0.5 — 11 volts. Cross-examine it from the other side: the load sees I R, 2 times 5.5 — also 11 volts. The same number by two roads. Batteries under load always deliver LESS than the label; the heavier the current, the deeper the discount.",
      pose:'write',
      board:['V_{ab} = \\varepsilon - Ir = 12.0 - (2.0)(0.50) = 11\\ \\mathrm V',
-            '\\text{(check: } V_{ab} = IR = (2.0)(5.5) = 11\\ \\mathrm V\\ \\checkmark)'] },
+            '\\text{(check: } V_{ab} = IR = (2.0)(5.5) = 11\\ \\mathrm V\\ \\checkmark)'],
+     action(c){
+       arrow(c, -2.1,0.35, -2.1,3.05, {color:GREEN, w:2.2, dash:'5,4', label:'V_ab = 11 V', fs:12, head:8});
+     } },
    { say:"For part c, the audit. The source generates epsilon I: 24 watts. The load consumes I squared R: 22 watts. The internal resistance quietly pockets I squared r: 2 watts, warming the battery. 22 plus 2 is 24 — every watt accounted for. The two watts warming the battery are why devices grow hot in use and why real sources sag under load — internal resistance is the tax office inside every EMF.",
      pose:'write',
      board:['P_\\varepsilon = \\varepsilon I = 24\\ \\mathrm W',
@@ -1038,7 +1041,11 @@ const EXAMPLES = [
    { say:"Step two, the loops — sign discipline is everything. Left loop, walked clockwise from B: through battery one from minus to plus, a RISE, plus 12. Through R-one WITH the current: a DROP, minus 1.5 I-one. Down through R-three with I-three: minus 6 I-three. Sum to zero. The right loop, walked counterclockwise, reads the same way: plus 8, minus 2 I-two, minus 6 I-three.",
      pose:'write',
      board:['\\text{(L1)}\\quad 12.0 - 1.5\\,I_1 - 6.0\\,I_3 = 0',
-            '\\text{(L2)}\\quad 8.0 - 2.0\\,I_2 - 6.0\\,I_3 = 0'] },
+            '\\text{(L2)}\\quad 8.0 - 2.0\\,I_2 - 6.0\\,I_3 = 0'],
+     action(c){
+       arc(c, 1.7,1.8, 0.85, -50, 230, {color:GREEN, w:2.5, label:'L1 ↻'});
+       arc(c, 5.1,1.8, 0.85, -50, 230, {color:PURPLE, w:2.5, label:'L2 ↺'});
+     } },
    { say:"Step three, solve — by substitution, every step shown. L-one gives I-one equals 8 minus 4 I-three. L-two gives I-two equals 4 minus 3 I-three. Feed both into the junction rule: 8 minus 4 I-three, plus 4 minus 3 I-three, equals I-three — 12 equals 8 I-three — I-three is 1.5 amperes. Back-substitute: I-one is 2 amperes... and I-two is MINUS one half.",
      pose:'write',
      board:['I_1 = 8.0 - 4.0I_3, \\qquad I_2 = 4.0 - 3.0I_3',
@@ -1048,7 +1055,13 @@ const EXAMPLES = [
      pose:'excited',
      board:['P_{\\rm in} = \\varepsilon_1 I_1 = 24.0\\ \\mathrm W',
             'I_1^2R_1 + I_2^2R_2 + I_3^2R_3 = 6.0+0.50+13.5 = 20.0\\ \\mathrm W;\\ \\ \\varepsilon_2|I_2| = 4.0\\ \\mathrm W\\ \\text{(charges }\\varepsilon_2)',
-            {t:'24.0 = 20.0 + 4.0 ✓ — battery 2 is being charged; the minus sign was the whole story.'}] },
+            {t:'24.0 = 20.0 + 4.0 ✓ — battery 2 is being charged; the minus sign was the whole story.'}],
+     action(c){
+       /* the truth: I₂ really flows downward, into battery 2 */
+       arrow(c, 8.6,2.4, 8.6,1.2, {color:PURPLE, w:2.5, dash:'6,4', label:'I₂ real: 0.50 A', fs:11, head:8});
+       textAt(c, -2.9,2.9, 'I₁ = 2.0 A', {fs:11.5, color:RED});
+       textAt(c, 1.05,0.6, 'I₃ = 1.5 A', {fs:11.5, color:BLUE});
+     } },
   ]
 },
 
@@ -1078,10 +1091,16 @@ const EXAMPLES = [
        el('circle',{cx:c.M.X(3),cy:c.M.Y(113.5),r:5,fill:GOLD},c.svg);
        textAt(c, 3.3,95, '63% at t = τ', {fs:12.5, color:GOLD});
      } },
-   { say:"For part b, the current. At the first instant the capacitor, being empty, acts as a plain WIRE: i equals epsilon over R — 60 microamperes. One tau later it has decayed by the factor e: 22 microamperes. The current starts loud and dies exponentially; the charge does the mirror opposite.",
+   { say:"For part b, the current. At the first instant the capacitor, being empty, acts as a plain WIRE: i equals epsilon over R — 60 microamperes. One tau later it has decayed by the factor e: 22 microamperes. Watch the dashed curve on the stage: the current starts loud and dies exponentially — the exact mirror of the charge creeping up.",
      pose:'write',
      board:['i(0) = \\frac{\\varepsilon}{R} = \\frac{9.0}{150\\times10^{3}} = 60\\ \\mu\\mathrm A',
-            'i(\\tau) = 60\\,e^{-1} = 22\\ \\mu\\mathrm A'] },
+            'i(\\tau) = 60\\,e^{-1} = 22\\ \\mu\\mathrm A'],
+     action(c){
+       /* i(t) on its own μA scale, dashed to distinguish it from q(t) */
+       plotCurve(c, t=>[t, 60*Math.exp(-t/3)], 0, 13, {color:RED, w:2.5, dash:'6,4', dur:1800});
+       el('circle',{cx:c.M.X(3),cy:c.M.Y(22),r:4.5,fill:RED},c.svg);
+       textAt(c, 4.4,42, 'i(t): 60 → 22 μA at τ (μA scale)', {fs:12, color:RED, italic:true});
+     } },
    { say:"Part c — solve for time, with the logarithm doing the honours. Set q equal to 90 percent of Q-f: 0.9 equals 1 minus e to the minus t over tau. So e to the minus t over tau equals 0.1; take the log of both sides: t equals tau log 10 — 3 times 2.303 — 6.9 seconds. Now comes the check: that is a bit past two tau, where the charge sits at 86 percent — perfectly consistent. Exponentials never rush; they negotiate.",
      pose:'excited',
      board:['0.90 = 1 - e^{-t/\\tau} \\Rightarrow e^{-t/\\tau} = 0.10 \\Rightarrow t = \\tau\\ln 10 = (3.0)(2.303) = 6.9\\ \\mathrm s',
@@ -1141,7 +1160,12 @@ const EXAMPLES = [
    { say:"Last of all, part d. Reopen the switch: battery and R-one exit the stage, and the capacitor — sitting at 8 volts — must drain through R-two alone. Initial discharge current: 8 over 6 k — 1.3 milliamperes. Discharge tau: 6 k times 5 micro — 30 milliseconds. The check is in the comparison: discharge is SLOWER than charge, 30 against 10, because with the battery gone the capacitor faces 6 kiloohms instead of the friendlier 2 k parallel pair. Same capacitor, different neighbourhood, different patience. That asymmetry is the exam question, and now it is yours.",
      pose:'excited',
      board:['I_{\\rm dis}(0^+) = \\frac{V_C}{R_2} = \\frac{8.0}{6.0\\times10^{3}} = 1.3\\ \\mathrm{mA}, \\qquad \\tau_{\\rm dis} = R_2C = 30\\ \\mathrm{ms}',
-            {t:'Check: discharge slower than charge (30 vs 10 ms) — the capacitor sees 6 kΩ alone vs 2 kΩ parallel ✓'}] },
+            {t:'Check: discharge slower than charge (30 vs 10 ms) — the capacitor sees 6 kΩ alone vs 2 kΩ parallel ✓'}],
+     action(c){
+       /* switch open again: the little discharge loop, battery excluded */
+       currentDots(c, [[8.2,3.6],[5.8,3.6],[5.8,0],[8.2,0],[8.2,3.6]], 5, 3600, GREEN);
+       textAt(c, 6.0,4.3, 'discharge: C → R₂ alone', {fs:11.5, color:GREEN, italic:true});
+     } },
   ]
 },
 ];

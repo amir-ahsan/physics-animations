@@ -893,7 +893,11 @@ const EXAMPLES = [
      } },
    { say:"Now the delicious asymmetry: the momenta are equal and opposite — 3 kilogram-metres per second each way — but the ENERGIES are not remotely equal. The bullet carries 450 joules; the rifle, barely more than one. Momentum splits evenly; energy elopes with the lighter partner. This is why the bullet is dangerous and the recoil merely rude.",
      pose:'excited',
-     board:['K_b = \\tfrac12(0.0100)(300)^2 = 450\\ \\mathrm{J} \\quad \\text{vs} \\quad K_r = \\tfrac12(4.00)(0.750)^2 = 1.13\\ \\mathrm{J}'] },
+     board:['K_b = \\tfrac12(0.0100)(300)^2 = 450\\ \\mathrm{J} \\quad \\text{vs} \\quad K_r = \\tfrac12(4.00)(0.750)^2 = 1.13\\ \\mathrm{J}'],
+     action(c){
+       textAt(c, 4.2,3.5, 'K = 450 J', {fs:13, color:GREEN, italic:true});
+       textAt(c, -6.6,3.5, 'K = 1.13 J', {fs:13, color:PURPLE, italic:true});
+     } },
    { say:"Now comes the check: total momentum after — 0.01 times 300, minus 4 times 0.75 — is 3 minus 3: zero, exactly as before. The books balance to the last decimal. Momentum is the most incorruptible accountant in physics. You may lose track of the bullet, mislay the block, and forget the afternoon entirely — the momentum ledger will still read the same number it read before you arrived. That permanence is why we trust it with collisions too fast to watch.",
      pose:'think',
      board:[{t:'Check: P_after = (0.0100)(300) + (4.00)(−0.750) = 3.00 − 3.00 = 0 = P_before ✓'}] },
@@ -929,10 +933,12 @@ const EXAMPLES = [
      pose:'write',
      board:['\\vec J = \\int\\vec F\\,dt = \\Delta\\vec p = m\\vec v_2 - m\\vec v_1\\quad(\\text{impulse-momentum theorem})',
             '\\text{state 1: arriving } (v_1 = -40.0); \\quad \\text{state 2: leaving } (v_2 = +30.0)',
-            'J = m(v_2 - v_1) = 0.145\\,(30.0-(-40.0)) = 10.2\\ \\mathrm{kg\\!\\cdot\\! m/s}'] },
+            'J = m(v_2 - v_1) = 0.145\\,(30.0-(-40.0)) = 10.2\\ \\mathrm{kg\\!\\cdot\\! m/s}'],
+     action(c){ arrow(c, 1.0,6.3, -3.5,6.3, {color:PURPLE, w:3.5, label:'J = 10.2 kg·m/s', vec:true, fs:13}); } },
    { say:"Now divide by the acquaintance time, 1.5 milliseconds: 6,770 newtons of average force. Nearly seven kilonewtons — the weight of a small car, applied by a wooden stick to a leather ball, briefly. The lesson hiding in the division: brief contact times manufacture enormous forces from modest momentum changes. It is why airbags lengthen collisions, why boxers roll with punches, and why one bends one's knees on landing — all of them negotiations for more milliseconds.",
      pose:'write',
-     board:['F_{\\rm avg} = \\frac{J}{\\Delta t} = \\frac{10.15}{1.50\\times10^{-3}} = 6.77\\times10^{3}\\ \\mathrm{N}'] },
+     board:['F_{\\rm avg} = \\frac{J}{\\Delta t} = \\frac{10.15}{1.50\\times10^{-3}} = 6.77\\times10^{3}\\ \\mathrm{N}'],
+     action(c){ textAt(c, 1.3,1.9, 'F_avg ≈ 6.77 kN', {fs:13, color:RED, italic:true}); } },
    { say:"Now comes the check: compare to the ball's weight, 1.4 newtons. The bat's force is over four THOUSAND times larger — which is precisely why we ignored gravity during contact without a flicker of guilt. During a collision, the collision is the only conversation in the room.",
      pose:'excited',
      board:[{t:'Check: F_avg ≈ 4700 × mg — gravity during contact is a rounding error. Ignore with confidence.'}] },
@@ -965,6 +971,7 @@ const EXAMPLES = [
        boxAt(c, 0,1.2, 2.6,1.4, {});
        const b = ballAt(c, -5.6, 1.9, 5, '#4A3826');
        tween(u=>{ b.setAttribute('cx', c.M.X(-5.6+5*u)); }, 800, c.instant);
+       arrow(c, 1.5,1.9, 3.3,1.9, {color:GREEN, w:3, label:'V = 1.99 m/s', fs:12});
      } },
    { say:"Act two — the swing. Now the motion is smooth and the cords do no work; mechanical energy is safe. Half of 2.01 times 1.99 squared converts to 2.01 g h. The masses cancel — h equals V squared over 2 g: 0.202 metres. About the width of your hand, from a bullet that could cross the campus in a second.",
      pose:'write',
@@ -1016,6 +1023,8 @@ const EXAMPLES = [
          else { x1=-1.3-2*(t-1)*0.95; x2=1+4*(t-1)*0.95; } /* recoil −2, forward +4 */
          g1.setAttribute('x', c.M.X(x1-1.1)); g2.setAttribute('x', c.M.X(x2-1.5));
        }, 2600, c.instant);
+       arrow(c, -3.2,3.1, -5.2,3.1, {color:RED, w:3, label:"v₁′ = −2.00 m/s", fs:12, side:-1});
+       arrow(c, 4.8,3.1, 8.8,3.1, {color:GREEN, w:3, label:"v₂′ = +4.00 m/s", fs:12});
      } },
    { say:"Part b — the centre of mass, the system's stately average. Before: 2 times 6 plus nothing, over 6 — 2 metres per second. After: 2 times minus 2, plus 4 times 4 — minus 4 plus 16 — 12 over 6 — 2 metres per second. Identical. The collision was loud, dramatic, and utterly invisible to the centre of mass, which glided on like a monarch through a market squabble.",
      pose:'write',
@@ -1068,7 +1077,11 @@ const EXAMPLES = [
      pose:'write',
      board:['y:\\; 0.250\\,v_1 = 0.2121\\,v_2 \\Rightarrow v_1 = 0.8485\\,v_2',
             'x:\\; 2.00 = \\big[0.500(0.8485)(0.866) + 0.300(0.707)\\big]v_2 = (0.3674+0.2121)\\,v_2 = 0.5796\\,v_2',
-            'v_2 = 3.45\\ \\mathrm{m/s}, \\qquad v_1 = 2.93\\ \\mathrm{m/s}'] },
+            'v_2 = 3.45\\ \\mathrm{m/s}, \\qquad v_1 = 2.93\\ \\mathrm{m/s}'],
+     action(c){
+       textAt(c, 3.9,3.1, 'v₁ = 2.93 m/s', {fs:13, color:GOLD, italic:true});
+       textAt(c, 3.0,-3.7, 'v₂ = 3.45 m/s', {fs:13, color:BLUE, italic:true});
+     } },
    { say:"Elastic? Audit the energy. Before: half of 0.5 times 16 — 4 joules. After: 2.14 plus 1.79 — 3.93. A shortfall of seven hundredths of a joule: mildly, forgivably inelastic — the pucks kept a little for the scratch and the click. Note carefully: momentum alone fixed both speeds. The energy comparison is a diagnostic, never an extra given.",
      pose:'excited',
      board:['K_{\\rm before} = \\tfrac12(0.500)(4.00)^2 = 4.00\\ \\mathrm{J}',

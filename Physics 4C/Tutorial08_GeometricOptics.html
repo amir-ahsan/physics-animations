@@ -775,11 +775,11 @@ const EXAMPLES = [
     dashLine(c, -15,0, 15,0, {color:'#B0A488', dash:'6,5'});
     lensSym(c, 0, 4.5, true, '');
     objArrow(c, -9, 2.6, GOLD, '');
-    arrow(c, -9,2.6, 9,-5.2, {color:'#B0A488', w:1.5, dur:0});
+    arrow(c, -9,2.6, 9,-2.6, {color:'#B0A488', w:1.5, dur:0});
     arrow(c, -9,2.6, 0,2.6, {color:'#B0A488', w:1.5, dur:0});
-    arrow(c, 0,2.6, 9,-5.2, {color:'#B0A488', w:1.5, dur:0});
-    objArrow(c, 9, -5.2, RED, '');
-    textAt(c, 9,-6.4, 'image: real, inverted', {fs:12, italic:true, anchor:'middle'});
+    arrow(c, 0,2.6, 9,-2.6, {color:'#B0A488', w:1.5, dur:0});
+    objArrow(c, 9, -2.6, RED, '');
+    textAt(c, 9,-4.0, 'image: real, inverted', {fs:12, italic:true, anchor:'middle'});
     el('circle',{cx:ctx.M.X(4.5),cy:ctx.M.Y(0),r:4,fill:'#5C4B30'},ctx.svg);
     textAt(c, 4.5,0.9, 'F', {fs:13, italic:true, anchor:'middle'});
   },
@@ -903,6 +903,10 @@ const EXAMPLES = [
             'm = -\\frac{d_i}{d_o} = -\\frac{30.0}{60.0} = -0.500\\ \\ (\\text{real, inverted, half-size})'],
      action(c){
        objArrow(c, -60, 12, GOLD, 'object');
+       arrow(c, -60,12, 6,12, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, 6,12, -30,-6, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, -60,12, 8,0, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, 8,0, -30,-6, {color:'#B0A488', w:1.5, dur:500});
        objArrow(c, -30, -6, RED, 'image');
      } },
    { say:"For part b, slide the object INSIDE the focus, to ten centimetres. Now one over d-i is one twentieth minus one tenth — MINUS one twentieth: d-i is minus twenty. Negative: the image is VIRTUAL, living behind the mirror where no light goes. Magnification: minus, of minus twenty over ten — PLUS two. Upright, and doubled.",
@@ -911,6 +915,12 @@ const EXAMPLES = [
             'm = -\\frac{(-20.0)}{10.0} = +2.00\\ \\ (\\text{virtual, upright, doubled})'],
      action(c){
        objArrow(c, -10, 8, GOLD, 'object');
+       arrow(c, -10,8, 6,8, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, 6,8, -22,-8, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, -10,8, 6.5,14, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, 6.5,14, -30,8.6, {color:'#B0A488', w:1.5, dur:500});
+       dashLine(c, 6,8, 20,16, {color:'#B0A488'});
+       dashLine(c, 6.5,14, 20,16, {color:'#B0A488'});
        objArrow(c, 20, 16, PURPLE, 'virtual image');
      } },
    { say:"You have met configuration b this very morning: it is the makeup mirror, the shaving mirror — a concave mirror used INSIDE its focal point, where it flatters by magnifying. Lean back past twenty centimetres and the world flips upside down; every bathroom conceals a demonstration.",
@@ -954,7 +964,16 @@ const EXAMPLES = [
    { say:"For part b, inside the focus at fifteen centimetres. One twenty-fourth minus one fifteenth — five minus eight over one twenty — MINUS one fortieth: d-i is minus forty. Virtual, and on the OBJECT'S side of the lens. Magnification: plus forty over fifteen — plus two point six seven. Upright, enlarged: the magnifying glass, born from nothing but a sign change.",
      pose:'write',
      board:['\\frac{1}{d_i} = \\frac{1}{24.0} - \\frac{1}{15.0} = \\frac{5-8}{120} = -\\frac{1}{40.0} \\Rightarrow d_i = -40.0\\ \\mathrm{cm}',
-            'm = +\\frac{40.0}{15.0} = +2.67\\ \\ (\\text{virtual, upright, enlarged — the magnifier})'] },
+            'm = +\\frac{40.0}{15.0} = +2.67\\ \\ (\\text{virtual, upright, enlarged — the magnifier})'],
+     action(c){
+       objArrow(c, -15, 6, GOLD, 'object');
+       arrow(c, -15,6, 0,6, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, 0,6, 45,-5.25, {color:'#B0A488', w:1.5, dur:500});
+       arrow(c, -15,6, 30,-12, {color:'#B0A488', w:1.5, dur:500});
+       dashLine(c, 0,6, -40,16, {color:'#B0A488'});
+       dashLine(c, 0,0, -40,16, {color:'#B0A488'});
+       objArrow(c, -40, 16, PURPLE, 'virtual image');
+     } },
    { say:"Pause on the geography of part b: the image stands on the SAME side as the object, farther back and taller — you look THROUGH the lens and see the enlarged ghost floating behind the stamp. No screen can catch it, yet your eye images it happily, because the eye only asks the rays where they seem to come from, never whether they are telling the truth.",
      pose:'point',
      board:[{t:'Virtual image: same side, upright, uncatchable — but perfectly visible. The eye believes the extensions.'}] },
@@ -980,17 +999,39 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'Biconvex: |R₁| = 20.0, |R₂| = 28.0 cm, n = 1.52.'},
             '\\frac{1}{f} = (n-1)\\Big(\\frac{1}{R_1} - \\frac{1}{R_2}\\Big)'] },
-   { say:"Signs first, as always: the first surface bulges toward the object with its centre of curvature on the far side — R-one is PLUS twenty. The second surface's centre lies on the incoming side — R-two is MINUS twenty-eight. For a biconvex lens the two curvatures thus ADD their converging efforts.",
+   { say:"Signs first, as always: the first surface bulges toward the object with its centre of curvature on the far side — R-one is PLUS twenty. The second surface's centre lies on the incoming side — R-two is MINUS twenty-eight. For a biconvex lens the two curvatures thus ADD their converging efforts — watch the two centres appear on opposite sides of the glass.",
      pose:'point',
-     board:['R_1 = +20.0\\ \\mathrm{cm}, \\qquad R_2 = -28.0\\ \\mathrm{cm}\\ \\ (\\text{centres on opposite sides})'] },
+     board:['R_1 = +20.0\\ \\mathrm{cm}, \\qquad R_2 = -28.0\\ \\mathrm{cm}\\ \\ (\\text{centres on opposite sides})'],
+     action(c){
+       const {M}=c;
+       dashLine(c, -7,0, 13,0, {color:'#B0A488'});
+       el('circle',{cx:M.X(13),cy:M.Y(0),r:4,fill:'#5A88A8'},c.svg);
+       label(c, 13,-2.2, 'C₁ (R₁ = +20)', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
+       el('circle',{cx:M.X(-13),cy:M.Y(0),r:4,fill:PURPLE},c.svg);
+       label(c, -13,-2.2, 'C₂ (R₂ = −28)', {fs:11.5, color:PURPLE, italic:true, anchor:'middle'});
+     } },
    { say:"For part a, in air: 0.52, times one twentieth plus one twenty-eighth — 0.0500 plus 0.0357, which is 0.0857 — giving one over f equal to 0.0446 per centimetre. The focal length: plus twenty-two point four centimetres; the optometrist would call it four and a half dioptres.",
      pose:'write',
      board:['\\frac{1}{f} = (1.52-1)\\Big(\\frac{1}{20.0} - \\frac{1}{-28.0}\\Big) = (0.520)(0.0857) = 0.0446\\ \\mathrm{cm^{-1}}',
-            'f = +22.4\\ \\mathrm{cm}\\ \\ (P = +4.5\\ \\mathrm D)'] },
+            'f = +22.4\\ \\mathrm{cm}\\ \\ (P = +4.5\\ \\mathrm D)'],
+     action(c){
+       const {M}=c;
+       arrow(c, -27,7, 0,7, {color:GOLD, w:2, dur:500});
+       arrow(c, 0,7, 22.4,0, {color:GOLD, w:2, dur:500});
+       arrow(c, -27,-7, 0,-7, {color:GOLD, w:2, dur:500});
+       arrow(c, 0,-7, 22.4,0, {color:GOLD, w:2, dur:500});
+       el('circle',{cx:M.X(22.4),cy:M.Y(0),r:4,fill:GOLD},c.svg);
+       label(c, 22.4,-2.4, 'f = 22.4 cm (air)', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+     } },
    { say:"For part b, underwater — and only the PREFACTOR changes: the contrast is now n over n-medium, minus one — 1.52 over 1.33, minus one — a mere 0.143, down from 0.520. The focal length stretches by that ratio: twenty-two point four times three point six four — nearly eighty-two centimetres. The same lens, almost four times weaker, merely by changing its neighbourhood.",
      pose:'write',
      board:['\\Big(\\frac{n}{n_m}-1\\Big) = \\frac{1.52}{1.33} - 1 = 0.143',
-            'f_{\\rm water} = 22.4\\times\\frac{0.520}{0.143} = 22.4\\,(3.64) = 81.6\\ \\mathrm{cm}'] },
+            'f_{\\rm water} = 22.4\\times\\frac{0.520}{0.143} = 22.4\\,(3.64) = 81.6\\ \\mathrm{cm}'],
+     action(c){
+       arrow(c, 0,4.5, 28,2.96, {color:BLUE, w:2, dur:700});
+       arrow(c, 0,-4.5, 28,-2.96, {color:BLUE, w:2, dur:700});
+       label(c, 15,5.9, 'in water: f → 81.6 cm, far off-stage', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
+     } },
    { say:"The check swims in your own skull: your cornea is a lens tuned to the contrast between tissue and AIR. Open your eyes underwater and that contrast collapses — your strongest optical surface resigns, and the world blurs hopelessly. Goggles fix nothing about your eye; they simply restore the air gap. Refraction is a relationship, never a possession.",
      pose:'excited',
      board:[{t:'Check: contrast ↓ → power ↓ ✓. Underwater blur = your cornea losing its air interface; goggles restore it.'}] },
@@ -1019,11 +1060,12 @@ const EXAMPLES = [
      board:['x = d_o\\tan\\theta_1 = d_i\\tan\\theta_2, \\qquad n\\sin\\theta_1 = \\sin\\theta_2'],
      action(c){
        arrow(c, 0,-3.9, 1.1,0, {color:GOLD, w:3});
-       arrow(c, 1.1,0, 2.9,3.2, {color:GOLD, w:3});
+       arrow(c, 1.1,0, 2.45,3.2, {color:GOLD, w:3});
        dashLine(c, 1.1,0, 0,-2.6, {color:PURPLE, dash:'5,4'});
        dashLine(c, 1.1,-0.2, 1.1,1.6, {color:'#B0A488', dash:'4,4'});
        arc(c, 1.1,0, 1.15, 270, 285.5, {color:'#888', label:'θ₁'});
-       arc(c, 1.1,0, 1.15, 90, 60, {color:'#888', label:'θ₂'});
+       arc(c, 1.1,0, 1.15, 90, 67, {color:'#888', label:'θ₂'});
+       arrow(c, 0,0.55, 1.1,0.55, {color:GREEN, w:1.8, head:6, label:'x', fs:12, dur:500});
        el('circle',{cx:c.M.X(0),cy:c.M.Y(-2.6),r:4,fill:PURPLE},c.svg);
        textAt(c, -1.9,-2.4, 'apparent coin', {fs:11.5, italic:true, color:PURPLE});
      } },
@@ -1068,7 +1110,12 @@ const EXAMPLES = [
    { say:"Now the geography. That image sits twenty-four centimetres past lens one — but lens two stands only thirty away, so the image forms six centimetres IN FRONT of lens two: a perfectly ordinary real object with d-o-two equal to plus six. Had the separation been shorter than twenty-four, the rays would reach lens two still converging toward an unformed image BEYOND it — a VIRTUAL OBJECT, d-o-two negative, and the same equation swallows that too, signs and all.",
      pose:'point',
      board:['d_{o2} = 30.0 - 24.0 = +6.0\\ \\mathrm{cm}\\ \\ (\\text{real object for lens 2})',
-            {t:'If separation < d_i1: virtual object, d_o2 < 0 — same equation, honest signs.'}] },
+            {t:'If separation < d_i1: virtual object, d_o2 < 0 — same equation, honest signs.'}],
+     action(c){
+       arrow(c, 9,-11, 15,-11, {color:GREEN, w:2.5, head:8, label:'d_o2 = 6 cm', fs:12, side:-1});
+       dashLine(c, 9,-6, 9,-11.5, {color:'#B0A488'});
+       dashLine(c, 15,-9, 15,-11.5, {color:'#B0A488'});
+     } },
    { say:"Lens two, the diverger: minus one twentieth, minus one sixth — minus thirteen over sixty — d-i-two equals minus four point six two centimetres: virtual, on the incoming side. Its own magnification: plus 0.769 — mildly shrinking, but upright with respect to ITS object.",
      pose:'write',
      board:['\\frac{1}{d_{i2}} = \\frac{1}{-20.0} - \\frac{1}{6.0} = -\\frac{13}{60.0} \\Rightarrow d_{i2} = -4.62\\ \\mathrm{cm}',
@@ -1093,8 +1140,8 @@ const EXAMPLES = [
     dashLine(c, -53,0, 53,0, {color:'#B0A488', dash:'6,5'});
     lensSym(c, -35, 13, true, 'objective');
     lensSym(c, 39, 8, true, 'eyepiece');
-    el('circle',{cx:ctx.M.X(11),cy:ctx.M.Y(0),r:3.5,fill:'#5C4B30'},ctx.svg);
-    textAt(c, 11,1.8, 'shared focus', {fs:11.5, italic:true, anchor:'middle'});
+    el('circle',{cx:ctx.M.X(33),cy:ctx.M.Y(0),r:3.5,fill:'#5C4B30'},ctx.svg);
+    textAt(c, 30,-2.6, 'shared focus', {fs:11.5, italic:true, anchor:'middle'});
   },
   steps:[
    { say:"The grand finale spends its physics at the optician's and in the back garden. Spectacles are single lenses solving one equation with a medical boundary condition; the telescope is the two-lens relay of Example 5 with the handoff placed EXACTLY at a shared focus. Same tools, loftier purposes.",
@@ -1110,7 +1157,20 @@ const EXAMPLES = [
    { say:"For part c, the telescope on the stage. The objective catches a distant object and forms a real image at its own focus, ninety centimetres in. The eyepiece is stationed so its focus lands on the SAME spot, and serves as a magnifier examining that little image. The angular magnification is the ratio of focal lengths: minus ninety over two — forty-five times, inverted — and the tube is simply the two focal lengths laid end to end: ninety-two centimetres.",
      pose:'point',
      board:['M = -\\frac{f_{\\rm obj}}{f_{\\rm eye}} = -\\frac{90.0}{2.00} = -45.0\\ \\ (\\text{inverted, } 45\\times)',
-            'L \\approx f_{\\rm obj} + f_{\\rm eye} = 92.0\\ \\mathrm{cm}'] },
+            'L \\approx f_{\\rm obj} + f_{\\rm eye} = 90.0 + 2.00 = 92.0\\ \\mathrm{cm}'],
+     action(c){
+       arrow(c, -52,10, -35,10, {color:GOLD, w:2, dur:500});
+       arrow(c, -52,-10, -35,-10, {color:GOLD, w:2, dur:500});
+       arrow(c, -35,10, 33,0, {color:GOLD, w:2, dur:900});
+       arrow(c, -35,-10, 33,0, {color:GOLD, w:2, dur:900});
+       arrow(c, 33,0, 39,-0.88, {color:GOLD, w:2, head:0.1, dur:400});
+       arrow(c, 33,0, 39,0.88, {color:GOLD, w:2, head:0.1, dur:400});
+       arrow(c, 39,-0.88, 51,-6.6, {color:GOLD, w:2, dur:500});
+       arrow(c, 39,0.88, 51,-4.85, {color:GOLD, w:2, dur:500});
+       label(c, 45,-9.5, 'steep exit: 45× the angle', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+       arrow(c, -35,-16, 33,-16, {color:GREEN, w:2, head:7, label:'f_obj = 90 cm', fs:12, side:-1});
+       label(c, 38,-14.2, 'f_eye', {fs:11, color:GREEN, italic:true});
+     } },
    { say:"And the closing check, for the whole chapter: every instrument we have named — magnifier, camera, spectacles, microscope, telescope, the eye itself — is the SAME two moves: a single-lens solve, and the image-to-object handoff, with focal points placed by intent. Learn two equations and one sign convention, and you own every optical device between your face and the Moon. Geometric optics rests; the wave returns next, with interference.",
      pose:'excited',
      board:[{t:'Check: inverted stars trouble no one; add an erecting prism for birdwatching. One toolkit, every instrument ✓'}] },

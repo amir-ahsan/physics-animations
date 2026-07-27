@@ -871,9 +871,14 @@ const EXAMPLES = [
        textAt(c, 0.0335,135, 'V_rms = 120 V', {fs:12.5, color:GREEN});
        textAt(c, 0.034,185, 'peak 170 V', {fs:12, color:'#8A7D60'});
      } },
-   { say:"On we go to part b. A heater is a pure resistor, and for resistors the rms values obey Ohm exactly as DC would: 120 over 45 — 2.7 amperes rms. Resistors are the one element that never learned about phase — for them, AC is merely DC that keeps changing its mind, and Ohm's law follows along obligingly.",
+   { say:"On we go to part b. A heater is a pure resistor, and for resistors the rms values obey Ohm exactly as DC would: 120 over 45 — 2.7 amperes rms. Resistors are the one element that never learned about phase — watch the current wave slide onto the stage exactly on top of the voltage's rhythm, cresting and diving in the same instant. For them, AC is merely DC that keeps changing its mind, and Ohm's law follows along obligingly.",
      pose:'write',
-     board:['I_{\\rm rms} = \\frac{V_{\\rm rms}}{R} = \\frac{120}{45} = 2.7\\ \\mathrm A'] },
+     board:['I_{\\rm rms} = \\frac{V_{\\rm rms}}{R} = \\frac{120}{45} = 2.7\\ \\mathrm A'],
+     action(c){
+       /* current in phase with v — drawn to its own scale so it is visible on the volt axis */
+       plotCurve(c, t=>[t, 60*Math.sin(377*t)], 0, 0.04, {color:BLUE, w:2.5, dash:'7,5', dur:1800});
+       textAt(c, 0.0065,-80, 'i(t) — in phase with v (own scale)', {fs:12, color:BLUE, italic:true});
+     } },
    { say:"And now, part c. Average power: V-rms times I-rms — 320 watts. That is the entire point of rms: it makes AC power arithmetic look like DC. No phase factor needed here, because in a resistor voltage and current rise and fall in perfect step. Perfect step means every volt delivered does honest work every instant — resistors are the only members of the AC orchestra who never play out of time.",
      pose:'write',
      board:['P = V_{\\rm rms}I_{\\rm rms} = I_{\\rm rms}^2R = (2.67)^2(45) = 3.2\\times10^{2}\\ \\mathrm W'] },
@@ -894,20 +899,22 @@ const EXAMPLES = [
      pose:'talk',
      board:[{t:'f = 60 Hz (ω = 377), V_rms = 120 V. (a) C = 15 μF alone; (b) L = 0.25 H alone.'},
             'X_C = \\frac{1}{\\omega C}, \\qquad X_L = \\omega L\\quad(\\text{both in ohms})'] },
-   { say:"For part a, the capacitor: one over 377 times 15 micro — 177 ohms. Current: 120 over that — 0.68 amperes rms. And the phase: the current LEADS the voltage by 90 degrees — the mnemonic is ICE: I before E, in a C. Charge must flow IN before the voltage can build; the current is always one step ahead of the argument.",
+   { say:"For part a, the capacitor: one over 377 times 15 micro — 177 ohms. Current: 120 over that — 0.68 amperes rms. And the phase: the current LEADS the voltage by 90 degrees — the mnemonic is ICE: I before E, in a C. Watch the stage: the blue current crests a quarter cycle before the dashed voltage does. Charge must flow IN before the voltage can build; the current is always one step ahead of the argument.",
      pose:'write',
      board:['X_C = \\frac{1}{(377)(15\\times10^{-6})} = 1.8\\times10^{2}\\ \\Omega, \\qquad I = \\frac{120}{176.8} = 0.68\\ \\mathrm A',
-            {t:'Current LEADS by 90° — “ICE”.'}] },
+            {t:'Current LEADS by 90° — “ICE”.'}],
+     action(c){
+       plotCurve(c, t=>[t, 1.6*Math.sin(377*t)], 0, 0.04, {color:'#8A7D60', w:2.5, dash:'6,5', dur:1800});
+       plotCurve(c, t=>[t, 1.0*Math.sin(377*t+Math.PI/2)], 0, 0.04, {color:BLUE, w:3, dur:1800});
+       textAt(c, 0.0335,1.85, 'v(t)', {fs:12.5, italic:true, color:'#8A7D60'});
+       textAt(c, 0.0005,1.35, 'I_C leads', {fs:12.5, italic:true, color:BLUE});
+     } },
    { say:"For part b, the inductor: 377 times 0.25 — 94 ohms. Current: 1.3 amperes rms — but now LAGGING the voltage by 90 degrees: ELI, E before I, in an L. The back-emf resists every change, so the current arrives fashionably late. Watch both waves against the voltage: one ahead, one behind, perfectly symmetric sins.",
      pose:'point',
      board:['X_L = (377)(0.25) = 94\\ \\Omega, \\qquad I = \\frac{120}{94.2} = 1.3\\ \\mathrm A',
             {t:'Current LAGS by 90° — “ELI”.'}],
      action(c){
-       plotCurve(c, t=>[t, 1.6*Math.sin(377*t)], 0, 0.04, {color:'#8A7D60', w:2.5, dash:'6,5', dur:1800});
-       plotCurve(c, t=>[t, 1.0*Math.sin(377*t+Math.PI/2)], 0, 0.04, {color:BLUE, w:3, dur:1800});
        plotCurve(c, t=>[t, 1.0*Math.sin(377*t-Math.PI/2)], 0, 0.04, {color:PURPLE, w:3, dur:1800});
-       textAt(c, 0.0335,1.85, 'v(t)', {fs:12.5, italic:true, color:'#8A7D60'});
-       textAt(c, 0.0005,1.35, 'I_C leads', {fs:12.5, italic:true, color:BLUE});
        textAt(c, 0.0075,-1.75, 'I_L lags', {fs:12.5, italic:true, color:PURPLE});
      } },
    { say:"For part c, the frequency knob. DOUBLE f: X-C halves, so the capacitor's current DOUBLES — high frequencies slip through capacitors like gossip. X-L doubles, so the inductor's current HALVES — inductors smother the fast stuff. Opposite slopes; that opposition is the entire art of filter design, from tone knobs to tower transmitters.",
@@ -990,10 +997,17 @@ const EXAMPLES = [
      pose:'write',
      board:['\\omega_0 = 645\\ \\mathrm{rad/s}, \\quad X_L = X_C = 194\\ \\Omega',
             'V_L = V_C = (2.0)(193.6) = 3.9\\times10^{2}\\ \\mathrm V\\ \\text{each — opposite phases, cancelling}\\ \\checkmark'] },
-   { say:"Part d, the quality factor: omega-nought L over R — 645 times 0.3 over 60 — 3.2. Q measures how sharp the resonant peak is, and how much the internal voltages exceed the source. Ours is a modest hill; a radio tuner wants Q near a hundred, a needle sharp enough to pick one station from the crowded dial. Now comes the check: V-L over V-source — 390 over 120 — is 3.2. Q, measured two ways, agreeing: the resonance is certified.",
+   { say:"Part d, the quality factor: omega-nought L over R — 645 times 0.3 over 60 — 3.2. Q measures how sharp the resonant peak is: the half-power width is f-nought over Q, about 32 hertz — I have marked it on the curve at the level where the current falls to 1.4 amperes. Ours is a modest hill; a radio tuner wants Q near a hundred, a needle sharp enough to pick one station from the crowded dial. Now comes the check: V-L over V-source — 390 over 120 — is 3.2. Q, measured two ways, agreeing: the resonance is certified.",
      pose:'excited',
-     board:['Q = \\frac{\\omega_0 L}{R} = \\frac{(645)(0.30)}{60} = 3.2',
-            {t:'Check: V_L/V = 390/120 = 3.2 = Q ✓. Radio tuners: Q ~ 100.'}] },
+     board:['Q = \\frac{\\omega_0 L}{R} = \\frac{(645)(0.30)}{60} = 3.2, \\qquad \\Delta f = \\frac{f_0}{Q} \\approx 32\\ \\mathrm{Hz}',
+            {t:'Check: V_L/V = 390/120 = 3.2 = Q ✓. Radio tuners: Q ~ 100.'}],
+     action(c){
+       /* half-power bandwidth: I = I_max/√2 = 1.41 A between f ≈ 88 and 120 Hz */
+       dashLine(c, 25,1.414, 300,1.414, {color:'#B0A488', dash:'3,5'});
+       arrow(c, 88,1.414, 119.8,1.414, {color:PURPLE, w:2.5, head:8});
+       arrow(c, 119.8,1.414, 88,1.414, {color:PURPLE, w:2.5, head:8});
+       textAt(c, 150,1.5, 'Δf = f₀/Q ≈ 32 Hz (half-power width)', {fs:12, color:PURPLE, italic:true});
+     } },
   ]
 },
 
@@ -1045,7 +1059,17 @@ const EXAMPLES = [
    { say:"For part c, the machinery. The transformer's turns ratio equals its voltage ratio: 12 thousand over 120 — one hundred to one, step-up at the plant, and its mirror image steps back down at the town. Ideally it trades voltage for current at constant power: I-s V-s equals I-p V-p. Nothing is free; the 4.2 amperes at 12 kV were bought by surrendering the 417 at 120.",
      pose:'write',
      board:['\\frac{N_s}{N_p} = \\frac{V_s}{V_p} = \\frac{12\\,000}{120} = 100\\quad(\\text{and } 100:1 \\text{ down at the town})',
-            'I_sV_s = I_pV_p\\ \\text{(ideal transformer: constant power, traded terms)}'] },
+            'I_sV_s = I_pV_p\\ \\text{(ideal transformer: constant power, traded terms)}'],
+     action(c){
+       const {M}=c;
+       /* transformer coils at each end of the line */
+       [[17,'1:100 step-up'],[83,'100:1 step-down']].forEach(([x,lbl])=>{
+         for(let k=0;k<4;k++)
+           el('circle',{cx:M.X(x)+(k-1.5)*7, cy:M.Y(21), r:5, fill:'none', stroke:PURPLE,'stroke-width':2.2},c.svg);
+         textAt(c, x, 34, lbl, {fs:11.5, color:PURPLE, anchor:'middle', italic:true});
+       });
+       textAt(c, 50, 12, '4.2 A at 12 kV on the line', {fs:12, color:GREEN, anchor:'middle', italic:true});
+     } },
    { say:"And the final check is history itself. Transformers run on CHANGING flux — Faraday's law — so this entire scheme demands AC. That single physical fact decided the War of the Currents: Edison's DC could not be stepped up, Westinghouse and Tesla's AC could, and the continental grid hums at 60 hertz to this day. One law of induction; one civilisation's wiring diagram. End of tutorial — and of the magnetic term's grand argument.",
      pose:'excited',
      board:[{t:'Transformers need dΦ/dt → AC only. Hence: the grid is AC, at hundreds of kV between cities. Faraday won the War of the Currents.'}] },

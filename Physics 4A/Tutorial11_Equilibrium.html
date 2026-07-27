@@ -881,9 +881,13 @@ const EXAMPLES = [
        textAt(c, 1.5,1.8, '40 kg', {anchor:'middle', fs:13});
        dashLine(c, 0,0.4, 1.5,0.4, {}); textAt(c, 0.45,0.16, '1.50 m', {fs:12, italic:true});
      } },
-   { say:"Now comes the check: torques in weight-times-distance — 60 kilogram-metres against 60 kilogram-metres. Balanced to the gram-metre. And the lesson wearing the disguise: torque is a PRODUCT. A small mass far out equals a large mass close in. Archimedes offered to move the Earth on this principle; he was only short a lever and somewhere to stand.",
+   { say:"Now comes the check: torques in weight-times-distance — 60 kilogram-metres against 60 kilogram-metres, the two curved arrows on the stage pulling in opposite senses and cancelling exactly. And the lesson wearing the disguise: torque is a PRODUCT. A small mass far out equals a large mass close in. Archimedes offered to move the Earth on this principle; he was only short a lever and somewhere to stand.",
      pose:'excited',
-     board:[{t:'Check: 30×2.00 = 60 = 40×1.50 ✓. Torque = weight × lever arm; distance trades against mass.'}] },
+     board:[{t:'Check: 30×2.00 = 60 = 40×1.50 ✓. Torque = weight × lever arm; distance trades against mass.'}],
+     action(c){
+       arc(c, -1.0,0.85, 0.55, -140, -40, {color:PURPLE, w:2.6, head:true, hs:9, label:'60 kg·m ↺', lr:24});
+       arc(c, 1.0,0.85, 0.55, 320, 220, {color:GREEN, w:2.6, head:true, hs:9, label:'60 kg·m ↻', lr:24});
+     } },
   ]
 },
 
@@ -914,10 +918,15 @@ const EXAMPLES = [
        arrow(c, 3,0.6, 3,-0.85, {color:PURPLE, w:3.5, label:'600 N', fs:13, side:-1});
        boxAt(c, 3,0.72, 0.4,0.85, {fill:'#C98F52'});
      } },
-   { say:"Torques about A — chosen precisely so N-A, whatever it is, contributes nothing. N-B lifts at 4 metres; the beam drags at 2; the person at 3. We solve: N-B is 2200 over 4 — 550 newtons. Choosing the pivot at A was not luck but strategy — place your pivot atop the force you know least, and that force is silenced for the whole calculation. Statics rewards a well-chosen ignorance.",
+   { say:"Torques about A — chosen precisely so N-A, whatever it is, contributes nothing. The lever arms are marked on the stage: N-B lifts at 4 metres; the beam drags at 2; the person at 3. We solve: N-B is 2200 over 4 — 550 newtons. Choosing the pivot at A was not luck but strategy — place your pivot atop the force you know least, and that force is silenced for the whole calculation. Statics rewards a well-chosen ignorance.",
      pose:'write',
      board:['N_B(4.00) - (200)(2.00) - (600)(3.00) = 0',
-            'N_B = \\frac{(200)(2.00)+(600)(3.00)}{4.00} = \\frac{2200}{4.00} = 550\\ \\mathrm{N}'] },
+            'N_B = \\frac{(200)(2.00)+(600)(3.00)}{4.00} = \\frac{2200}{4.00} = 550\\ \\mathrm{N}'],
+     action(c){
+       dashLine(c, 0,2.62, 2,2.62, {color:RED}); textAt(c, 1.0,2.78, '2.00 m', {fs:11.5, italic:true, color:RED, anchor:'middle'});
+       dashLine(c, 0,2.95, 3,2.95, {color:PURPLE}); textAt(c, 1.5,3.12, '3.00 m', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
+       dashLine(c, 0,-0.85, 4,-0.85, {color:GREEN}); textAt(c, 2.0,-1.0, '4.00 m (to N_B)', {fs:11.5, italic:true, color:GREEN, anchor:'middle'});
+     } },
    { say:"Then vertical force balance mops up: N-A equals 800 minus 550 — 250 newtons. B carries more, as it should — the person stands nearer to B, and proximity, in statics as in life, is responsibility. Two supports, one load, and an allocation rule as old as carpentry: whoever stands nearest the burden carries the most of it.",
      pose:'write',
      board:['\\sum F_y = 0:\\; N_A = w_{\\rm beam} + w_{\\rm person} - N_B = 200 + 600 - 550 = 250\\ \\mathrm{N}'] },
@@ -954,9 +963,13 @@ const EXAMPLES = [
    { say:"Force balance is quick: vertically, the floor carries everything — n-f is 98 newtons. Horizontally, friction must exactly match the wall's push: f equals n-w. But n-w is still unknown, and forces alone cannot find it. We need torque. Force balance alone leaving unknowns unsettled is statics' polite hint: some information in a rigid body lives in the TORQUES, and no amount of force bookkeeping will ever surface it.",
      pose:'write',
      board:['n_f = mg = 98.0\\ \\mathrm{N}, \\qquad f_s = n_w'] },
-   { say:"Torques about the FOOT — dismissing both floor forces in one stroke. The wall pushes with lever arm L sine theta; gravity drags at half L cosine theta. We solve: n-w equals m g over 2 tangent theta — 98 over 2.67 — 36.8 newtons. Note the geometry's verdict: steeper ladders demand less friction, shallower ones more — which is why sensible painters set ladders steep and nervous physicists check the tangent before climbing.",
+   { say:"Torques about the FOOT — dismissing both floor forces in one stroke. Look at the two dashed lever arms on the stage: the wall pushes with lever arm L sine theta, the full 4-metre height; gravity drags at half L cosine theta, just 1.5 metres of base. We solve: n-w equals m g over 2 tangent theta — 98 over 2.67 — 36.8 newtons. The torque equation is really a contest between those two distances, and the height is winning handsomely.",
      pose:'write',
-     board:['n_w(L\\sin\\theta) = mg\\left(\\tfrac{L}{2}\\cos\\theta\\right) \\;\\Rightarrow\\; n_w = \\frac{mg}{2\\tan\\theta} = \\frac{98.0}{2(1.333)} = \\frac{98.0}{2.666} = 36.8\\ \\mathrm{N}'] },
+     board:['n_w(L\\sin\\theta) = mg\\left(\\tfrac{L}{2}\\cos\\theta\\right) \\;\\Rightarrow\\; n_w = \\frac{mg}{2\\tan\\theta} = \\frac{98.0}{2(1.333)} = \\frac{98.0}{2.666} = 36.8\\ \\mathrm{N}'],
+     action(c){
+       dashLine(c, 3,0.05, 3,4.0, {color:GOLD}); textAt(c, 3.12,3.4, 'L sinθ = 4.00 m', {fs:11.5, italic:true, color:'#8A5A24'});
+       dashLine(c, 1.5,0.12, 3,0.12, {color:RED}); textAt(c, 1.55,0.45, '(L/2)cosθ = 1.50 m', {fs:11.5, italic:true, color:RED});
+     } },
    { say:"No slipping requires f, which is 36.8, to stay within mu times n-f, which is mu times 98. So mu must be at least 0.375. The check, from the formula's shape: a STEEPER ladder needs less friction — tangent theta grows, the demand shrinks — precisely why sensible people stand ladders up steep and why the horizontal ladder is a stunt performed once.",
      pose:'excited',
      board:['\\mu_s \\ge \\frac{n_w}{n_f} = \\frac{36.8}{98.0} = 0.375',
@@ -1026,9 +1039,13 @@ const EXAMPLES = [
        arrow(c, 0,0.15, 0.9,0.15, {color:BLUE, w:3, label:'H_x', fs:13});
        arrow(c, 0.15,0.3, 0.15,1.1, {color:GREEN, w:3, label:'H_y', fs:13});
      } },
-   { say:"Part a — torques about the HINGE, evicting both hinge components at once. The cable's lever arm is L sine 30; the weights drag at L over 2 and at L. The L's cancel — they nearly always do — leaving T equal to 490 over 0.5: 980 newtons. Nine hundred and eighty newtons in the cable to hold a 490-newton ensemble — shallow cable angles are extortionate, a fact known to every sign-hanger and ignored by every architect exactly once.",
+   { say:"Part a — torques about the HINGE, evicting both hinge components at once. The cable's lever arm is L sine 30 — the dashed perpendicular from hinge to cable on the stage; the weights drag at L over 2 and at L. The L's cancel — they nearly always do — leaving T equal to 490 over 0.5: 980 newtons. Nine hundred and eighty newtons in the cable to hold a 490-newton ensemble — shallow cable angles are extortionate, a fact known to every sign-hanger and ignored by every architect exactly once.",
      pose:'write',
-     board:['T(L\\sin 30^{\\circ}) = 196\\,\\tfrac{L}{2} + 392\\,L \\;\\Rightarrow\\; T = \\frac{98.0+392}{0.500} = 980\\ \\mathrm{N}'] },
+     board:['T(L\\sin 30^{\\circ}) = 196\\,\\tfrac{L}{2} + 392\\,L \\;\\Rightarrow\\; T = \\frac{98.0+392}{0.500} = 980\\ \\mathrm{N}'],
+     action(c){
+       dashLine(c, 0,0, 1.0,1.73, {color:GOLD});
+       textAt(c, 0.35,1.55, 'ℓ_T = L sin30°', {fs:12, italic:true, color:'#8A5A24'});
+     } },
    { say:"Part b — force balance. Horizontally, the hinge must oppose the cable's pull toward the wall: H-x equals T cosine 30 — 849 newtons, pushing outward. Vertically: the weights total 588; the cable lifts T sine 30, which is 490; the hinge supplies the remaining 98 newtons.",
      pose:'write',
      board:['H_x = T\\cos 30^{\\circ} = (980)(0.866) = 849\\ \\mathrm{N}',
