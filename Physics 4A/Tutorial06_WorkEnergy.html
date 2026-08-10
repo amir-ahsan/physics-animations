@@ -807,15 +807,16 @@ const EXAMPLES = [
        label(c, 7.6,5.8, 'φ = 90°: W = 0', {fs:13, color:'#8A7D60'});
        label(c, 7.6,5.0, 'φ > 90°: W < 0', {fs:13, color:RED});
      } },
-   { say:"When the force varies, work becomes the integral of F-x d-x — the AREA under the force-position curve, as the stage shows. The star example is the spring: Hooke's law F equals minus k x, so stretching from x-one to x-two costs one half k x-two squared minus one half k x-one squared. The quadratic is the area of that triangle.",
+   { say:"When the force varies, work becomes the integral of F-x d-x — the AREA under the force-position curve, as the stage shows. The star example is the spring, and it demands a distinction worth underlining twice. The SPRING's own force is minus k x, so the work done BY THE SPRING from x-one to x-two is one half k x-ONE squared minus one half k x-TWO squared — NEGATIVE when you stretch it, for the spring pulls backward the whole way. The work done by YOU, the external force stretching it, is exactly the opposite: one half k x-two squared minus one half k x-one squared. Same journey, two ledgers, opposite signs — always say WHOSE work you mean.",
      pose:'write',
      board:['W = \\int_{x_1}^{x_2}F_x\\,dx',
-            'F_{\\rm spring} = -kx \\;\\Rightarrow\\; W = \\tfrac12kx_2^2 - \\tfrac12kx_1^2'],
+            'F_{\\rm spring} = -kx \\;\\Rightarrow\\; W_{\\rm by\\ spring} = \\tfrac12kx_1^2 - \\tfrac12kx_2^2\\ (<0\\ \\text{when stretching})',
+            'W_{\\rm by\\ applied\\ force} = -W_{\\rm by\\ spring} = \\tfrac12kx_2^2 - \\tfrac12kx_1^2'],
      action(c){
        dashLine(c, 2.4,0, 2.4,2.07, {}); dashLine(c, 6.6,0, 6.6,5.0, {});
        label(c, 2.4,-0.45, 'x₁', {fs:14, color:'#8A5A24', anchor:'middle', italic:true});
        label(c, 6.6,-0.45, 'x₂', {fs:14, color:'#8A5A24', anchor:'middle', italic:true});
-       label(c, 6.9,6.9, 'F = kx: the area is a trapezoid', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 6.9,6.9, 'applied force kx: this area = YOUR work', {fs:12, color:'#8A5A24', italic:true});
      } },
    { say:"The centrepiece: the WORK–ENERGY theorem. Define kinetic energy one half m v squared; then the TOTAL work by ALL forces equals the change in kinetic energy. Derived straight from Newton's second law, valid for varying forces, and blissfully indifferent to time — it compares two snapshots and asks nothing about the journey.",
      solo:true, pose:'point',
@@ -1000,7 +1001,7 @@ const EXAMPLES = [
 /* ---------- Example 4: Spring work and power [Intermediate] ---------- */
 {
   title:'Stretching a spring; power at constant speed.', diff:'Intermediate',
-  prompt:'(a) How much work stretches a spring (k = 200 N/m) from x₁ = 0.100 m to x₂ = 0.200 m beyond natural length? (b) A motor pulls a sled at constant 4.00 m/s against a 150 N resistive force. What power must it deliver?',
+  prompt:'(a) How much work must YOU (the applied force) do to stretch a spring (k = 200 N/m) from x₁ = 0.100 m to x₂ = 0.200 m beyond natural length — and how much work does the SPRING do? (b) A motor pulls a sled at constant 4.00 m/s against a 150 N resistive force. What power must it deliver?',
   world:{x0:-0.03, x1:0.27, y0:-5, y1:47, aniso:true},
   setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'x (m)', ylab:'F (N)'});
     const {svg,M}=ctx;
@@ -1011,18 +1012,19 @@ const EXAMPLES = [
    { say:"Two quick studies in energy economics. First, a spring — whose force grows with stretch, F equals k x, so each successive centimetre costs MORE than the last. Second, a motor — whose bill is measured not in joules but in joules per second: power.",
      pose:'talk',
      board:[{t:'(a) k = 200 N/m, stretch from 0.100 m to 0.200 m. (b) Sled at constant 4.00 m/s against 150 N.'}] },
-   { say:"The spring's force line: F equals 200 x. The work from 0.1 to 0.2 metres is the shaded trapezoid under the line — NOT a rectangle, because the force refuses to hold still. The spring is charging you an ever-steeper price for each centimetre — the first is nearly free, the last is a negotiation — and the trapezoid is simply that rising tariff, drawn honestly.",
+   { say:"The line on the stage is YOUR applied force, F equals 200 x — what you must supply to stretch quasi-statically. Your work from 0.1 to 0.2 metres is the shaded trapezoid under it — NOT a rectangle, because the force refuses to hold still. The spring, meanwhile, pulls against you the entire way, so ITS work is the same magnitude with the opposite sign: x-one squared minus x-two squared in the bracket. The spring is charging you an ever-steeper price for each centimetre, and the trapezoid is that rising tariff, drawn honestly.",
      pose:'point',
-     board:['W = \\tfrac12kx_2^2 - \\tfrac12kx_1^2'],
+     board:['W_{\\rm by\\ you} = \\tfrac12kx_2^2 - \\tfrac12kx_1^2, \\qquad W_{\\rm by\\ spring} = \\tfrac12kx_1^2 - \\tfrac12kx_2^2'],
      action(c){
        plotCurve(c, t=>[t, 200*t], 0, 0.24, {color:BLUE, w:3.5, dur:1000});
        shadeUnder(c, x=>200*x, 0.1, 0.2, {color:'rgba(46,125,79,.25)'});
        dashLine(c, 0.1,0, 0.1,20, {}); dashLine(c, 0.2,0, 0.2,40, {});
      } },
-   { say:"Half k x-two squared minus half k x-one squared: 100 times, bracket, 0.04 minus 0.01, bracket — 3 joules exactly. Note the moral inside the subtraction: the SECOND centimetre of stretch costs three times the first. Springs, like tailors, charge quadratically for alterations.",
+   { say:"Your work: half k x-two squared minus half k x-one squared — 100 times, bracket, 0.04 minus 0.01, bracket — PLUS 3 joules. The spring's work: the same bracket reversed — MINUS 3 joules; it fought you for every millimetre, and the 3 joules you paid over its objection now sit banked in the coils as elastic potential energy. Note also the moral inside the subtraction: the SECOND centimetre of stretch costs three times the first. Springs, like tailors, charge quadratically for alterations.",
      pose:'write',
-     board:['W = \\tfrac12(200)\\big[(0.200)^2 - (0.100)^2\\big] = 100(0.0300) = 3.00\\ \\mathrm{J}'],
-     action(c){ textAt(c, 0.15,8, 'W = 3.00 J', {fs:13, color:GREEN, italic:true, anchor:'middle'}); } },
+     board:['W_{\\rm by\\ you} = \\tfrac12(200)\\big[(0.200)^2 - (0.100)^2\\big] = 100(0.0300) = +3.00\\ \\mathrm{J}',
+            'W_{\\rm by\\ spring} = \\tfrac12(200)\\big[(0.100)^2 - (0.200)^2\\big] = -3.00\\ \\mathrm{J}\\ \\text{(banked as elastic PE)}'],
+     action(c){ textAt(c, 0.15,8, 'W_you = +3.00 J', {fs:13, color:GREEN, italic:true, anchor:'middle'}); } },
    { say:"Now the trap, marked with flags: this is NOT half k times the CHANGE in x, squared — that gives 1 joule and a red mark on the exam. The second stretch is dearer than the first because the spring fights harder as it goes. Springs, like people, resist change in proportion to how far you have already pushed them.",
      pose:'think',
      board:[{t:'Trap: ½k(x₂−x₁)² = 1.00 J ≠ 3.00 J. Energies subtract; displacements do not square nicely.'}] },
