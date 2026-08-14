@@ -82,7 +82,7 @@
 (function(){
   var calc = SimCore.makeCalc('calc','time t','flux Φ / emf ε');
   calc.setExpressions([
-    {id:'sp',latex:'s_p=1.5'}, {id:'st',latex:'m_s=3'}, {id:'dr',latex:'d_r=1'},
+    {id:'speed',latex:'s_p=1.5'}, {id:'str',latex:'m_s=3'}, {id:'dir',latex:'d_r=1'},
     // flux modeled as magnet moving: Phi(t) = str / (1 + (x0 - dir*speed*t)^2), approaching increases
     {id:'Ph',latex:'\\Phi(t)=\\frac{m_s}{1+(3-d_r s_p t)^2}', hidden:true, secret:true},
     {id:'cP',latex:'y=\\Phi(x)\\left\\{0\\le x\\le4\\right\\}', color:'#2e8b57', lineWidth:2.5},

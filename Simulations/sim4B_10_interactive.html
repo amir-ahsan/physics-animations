@@ -28,14 +28,33 @@
           <svg class="scene" width="320" height="200" viewBox="0 0 320 200">
             <rect x="30" y="40" width="120" height="120" fill="none" stroke="var(--ink)" stroke-width="2"/>
             <rect x="150" y="40" width="140" height="120" fill="none" stroke="var(--ink)" stroke-width="2"/>
-            <line x1="18" y1="90" x2="42" y2="90" stroke="var(--red)" stroke-width="2"/><text x="8" y="86" font-size="11" fill="var(--red)">ε₁</text>
-            <line x1="278" y1="90" x2="302" y2="90" stroke="var(--red)" stroke-width="2"/><text x="292" y="86" font-size="11" fill="var(--red)">ε₂</text>
+            <!-- battery ε₁ on the left wire: long line = + (higher potential), short thick line = − -->
+            <rect x="26" y="82" width="8" height="16" fill="#fffdf6"/>
+            <line x1="16" y1="84" x2="44" y2="84" stroke="var(--red)" stroke-width="2"/>
+            <line x1="23" y1="94" x2="37" y2="94" stroke="var(--red)" stroke-width="4"/>
+            <text x="8" y="80" font-size="10" fill="var(--red)">+</text><text x="10" y="106" font-size="11" fill="var(--red)">−</text>
+            <text x="4" y="93" font-size="11" fill="var(--red)">ε₁</text>
+            <!-- battery ε₂ on the right wire -->
+            <rect x="286" y="82" width="8" height="16" fill="#fffdf6"/>
+            <line x1="276" y1="84" x2="304" y2="84" stroke="var(--red)" stroke-width="2"/>
+            <line x1="283" y1="94" x2="297" y2="94" stroke="var(--red)" stroke-width="4"/>
+            <text x="306" y="80" font-size="10" fill="var(--red)">+</text><text x="306" y="106" font-size="11" fill="var(--red)">−</text>
+            <text x="303" y="93" font-size="11" fill="var(--red)">ε₂</text>
             <rect x="72" y="32" width="30" height="14" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="78" y="43" font-size="9">R₁</text>
             <rect x="200" y="32" width="30" height="14" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="206" y="43" font-size="9">R₂</text>
-            <rect x="143" y="88" width="14" height="30" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="158" y="106" font-size="9">R₃</text>
-            <text id="a1_38" x="60" y="175" font-size="11" fill="var(--blue)">I₁</text>
-            <text id="a3_38" x="160" y="140" font-size="11" fill="var(--purple)">I₃</text>
-            <text id="a2_38" x="230" y="175" font-size="11" fill="var(--green)">I₂</text>
+            <rect x="143" y="88" width="14" height="30" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="160" y="106" font-size="9">R₃</text>
+            <!-- current directions: out of each + terminal, toward the middle branch, down through R₃ -->
+            <line x1="108" y1="40" x2="134" y2="40" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#i38)"/>
+            <text id="a1_38" x="110" y="58" font-size="11" fill="var(--blue)">I₁</text>
+            <line x1="192" y1="40" x2="166" y2="40" stroke="var(--green)" stroke-width="2.5" marker-end="url(#g38)"/>
+            <text id="a2_38" x="180" y="58" font-size="11" fill="var(--green)">I₂</text>
+            <line x1="150" y1="124" x2="150" y2="148" stroke="var(--purple)" stroke-width="2.5" marker-end="url(#p38)"/>
+            <text id="a3_38" x="158" y="140" font-size="11" fill="var(--purple)">I₃</text>
+            <defs>
+              <marker id="i38" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker>
+              <marker id="g38" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--green)"/></marker>
+              <marker id="p38" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--purple)"/></marker>
+            </defs>
           </svg>
           <div class="readouts">
             <div class="r c-blue"><span class="k">I₁ (left loop)</span> = <span class="vb" id="rI1_38">–</span> A</div>
@@ -43,7 +62,7 @@
             <div class="r c-purple"><span class="k">I₃ = I₁+I₂ (middle)</span> = <span class="vb" id="rI3_38">–</span> A</div>
           </div>
         </div>
-        <div class="cap">Both batteries push current toward the central R₃ branch; the junction rule ties the three currents together.</div>
+        <div class="cap">Battery symbols follow convention: the long line is the + terminal (higher potential), the short thick line is −. Conventional current leaves each + terminal (arrows): I₁ and I₂ flow toward the central junction and combine into I₃ down through R₃.</div>
       </div>
       <div class="panel">
         <h3>Middle-branch current vs. ε&#8322;</h3>

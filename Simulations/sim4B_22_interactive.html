@@ -27,7 +27,15 @@
         <div class="schematic">
           <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
             <rect x="40" y="40" width="220" height="100" fill="none" stroke="var(--ink)" stroke-width="2"/>
-            <line x1="28" y1="80" x2="52" y2="80" stroke="var(--red)" stroke-width="2"/><text x="14" y="76" font-size="11" fill="var(--red)">V</text>
+            <!-- battery: long line = + (higher potential), short thick line = − -->
+            <rect x="36" y="78" width="8" height="14" fill="#fffdf6"/>
+            <line x1="26" y1="80" x2="54" y2="80" stroke="var(--red)" stroke-width="2"/>
+            <line x1="33" y1="90" x2="47" y2="90" stroke="var(--red)" stroke-width="4"/>
+            <text x="18" y="76" font-size="10" fill="var(--red)">+</text><text x="20" y="102" font-size="11" fill="var(--red)">−</text>
+            <text x="8" y="89" font-size="11" fill="var(--red)">V</text>
+            <line x1="66" y1="28" x2="92" y2="28" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#i48m)"/>
+            <text x="70" y="22" font-size="10" fill="var(--blue)">I</text>
+            <defs><marker id="i48m" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--blue)"/></marker></defs>
             <rect x="120" y="32" width="34" height="16" fill="var(--paper)" stroke="var(--accent-dk)" stroke-width="2"/><text x="128" y="44" font-size="10">R</text>
             <path d="M200,32 q6,-8 12,0 q6,-8 12,0 q6,-8 12,0" fill="none" stroke="var(--purple)" stroke-width="2.5"/><text x="222" y="24" font-size="10" fill="var(--purple)">L</text>
             <rect id="bar48" x="60" y="132" width="10" height="80" fill="var(--blue)" opacity="0.5"/>

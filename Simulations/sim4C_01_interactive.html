@@ -76,7 +76,7 @@
 (function(){
   var calc = SimCore.makeCalc('calc','temperature change ΔT (°C)','length change ΔL (mm)');
   calc.setExpressions([
-    {id:'L0',latex:'L_0=2'}, {id:'al',latex:'a_l=12'},
+    {id:'L0',latex:'L_0=2'}, {id:'alpha',latex:'a_l=12'},
     // ΔL in mm = α(1e-6)*L0*ΔT*1000 = α*L0*ΔT*1e-3
     {id:'cL',latex:'y=a_l L_0 x\\cdot0.001\\left\\{-50\\le x\\le200\\right\\}', color:'#B5793B', lineWidth:2.5},
     {id:'dT',latex:'d_T=100'},
