@@ -59,6 +59,8 @@
   #board .katex{font-size:1em}
   #board .line.show{opacity:1;transform:none}
   #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
+  .vsym{display:inline-block;position:relative;font-style:italic}
+  .vsym::after{content:"\2192";position:absolute;left:50%;transform:translateX(-50%);top:-0.62em;font-size:0.6em;line-height:1}
   #board .katex{color:var(--chalk)}
   /* ---- controls: pinned to the bottom of the window, always visible ---- */
   .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
@@ -389,10 +391,11 @@ function axes3D(svg, M, ext, opt={}){
 
 /* --- KaTeX board --- */
 const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
+const deco = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/(\S)\u20D7/g, '<span class="vsym">$1</span>');
 function addBoardLine(item, animate){
   const div = document.createElement('div');
   div.className = 'line' + (item.t !== undefined ? ' note' : '');
-  if (item.t !== undefined) div.textContent = item.t;
+  if (item.t !== undefined) div.innerHTML = deco(item.t);
   else if (window.katex){
     try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
     catch(e){ div.textContent = item; }
@@ -666,7 +669,7 @@ function loadExample(i, autoplay){
   const ex = EXAMPLES[i];
   const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
   $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
-     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
+     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${deco(ex.prompt)}`;
   document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
   setPlaying(!!autoplay);
   renderStep(true);
