@@ -978,10 +978,11 @@ const EXAMPLES = [
    { say:"A car on a flat curve, seen from above — a hawk's view of Friday traffic. To travel in a circle the car needs a centripetal force, pointing at the centre. On a flat road there is exactly one candidate: static friction from the tyres. Static — because rolling tyres grip; skidding tyres slide.",
      pose:'talk',
      board:[{t:'R = 40.0 m, μs = 0.500, flat road. Friction alone must supply mv²/R.'}] },
-   { say:"The force inventory: vertically, n balances m g — the road is flat, nothing exciting. Radially: friction f-s equals m v squared over R. Friction is the only thing standing between the car and the shrubbery. Friction turning the car may offend intuition — we defame it as the enemy of motion — but with no rail, no rope, and no rocket, the humble grip of rubber is the only centripetal candidate who showed up to the interview.",
+   { say:"The force inventory: vertically, n balances m g — the road is flat, so those two cancel completely. Which leaves the radial direction, where the NET force on the car is the static friction alone — nothing else points at the centre. So Newton's second law reads: f-s, all by itself, equals m v squared over R. Friction is the only thing standing between the car and the shrubbery. It may offend intuition — we defame friction as the enemy of motion — but with no rail, no rope, and no rocket, the humble grip of rubber is the only centripetal candidate who showed up to the interview.",
      pose:'write',
      board:['\\vec n + m\\vec g + \\vec f_s = m\\vec a_{\\rm rad}',
-            '\\text{vertical}:\\; n = mg \\qquad \\text{radial}:\\; f_s = \\frac{mv^2}{R}'],
+            '\\text{vertical}:\\; n - mg = 0 \\;\\Rightarrow\\; \\vec n\\ \\text{and}\\ m\\vec g\\ \\text{cancel}',
+            '\\text{radial: the net force is static friction alone}\\;\\Rightarrow\\; \\Sigma F_{\\rm rad} = f_s = \\frac{mv^2}{R}'],
      action(c){
        const b = el('circle',{cx:c.M.X(40),cy:c.M.Y(0),r:9,fill:RED,stroke:'#7A2015','stroke-width':1.5},c.svg);
        tween(u=>{ const th=u*1.6*Math.PI;
