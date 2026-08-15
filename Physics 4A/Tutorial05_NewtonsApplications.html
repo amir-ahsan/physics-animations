@@ -978,11 +978,11 @@ const EXAMPLES = [
    { say:"A car on a flat curve, seen from above — a hawk's view of Friday traffic. To travel in a circle the car needs a centripetal force, pointing at the centre. On a flat road there is exactly one candidate: static friction from the tyres. Static — because rolling tyres grip; skidding tyres slide.",
      pose:'talk',
      board:[{t:'R = 40.0 m, μs = 0.500, flat road. Friction alone must supply mv²/R.'}] },
-   { say:"The force inventory: vertically, n balances m g — the road is flat, so those two cancel completely. Which leaves the radial direction, where the NET force on the car is the static friction alone — nothing else points at the centre. So Newton's second law reads: f-s, all by itself, equals m v squared over R. Friction is the only thing standing between the car and the shrubbery. It may offend intuition — we defame friction as the enemy of motion — but with no rail, no rope, and no rocket, the humble grip of rubber is the only centripetal candidate who showed up to the interview.",
+   { say:"The force inventory, and Newton's second law written honestly: n plus m g plus f-s equals m times the TOTAL acceleration — every force, every component, nothing presumed. Now we simplify. The car neither leaps nor burrows, so the vertical acceleration is zero — n and m g cancel completely. Only the radial acceleration, v squared over R, survives. Which leaves the net force equal to the static friction alone: f-s, all by itself, equals m v squared over R. Friction is the only thing standing between the car and the shrubbery. It may offend intuition — we defame friction as the enemy of motion — but with no rail, no rope, and no rocket, the humble grip of rubber is the only centripetal candidate who showed up to the interview.",
      pose:'write',
-     board:['\\vec n + m\\vec g + \\vec f_s = m\\vec a_{\\rm rad}',
-            '\\text{vertical}:\\; n - mg = 0 \\;\\Rightarrow\\; \\vec n\\ \\text{and}\\ m\\vec g\\ \\text{cancel}',
-            '\\text{radial: the net force is static friction alone}\\;\\Rightarrow\\; \\Sigma F_{\\rm rad} = f_s = \\frac{mv^2}{R}'],
+     board:['\\vec n + m\\vec g + \\vec f_s = m\\vec a \\quad \\text{(total acceleration)}',
+            '\\text{vertical}:\\; a_y = 0 \\;\\Rightarrow\\; n - mg = 0 \\;\\Rightarrow\\; \\vec n\\ \\text{and}\\ m\\vec g\\ \\text{cancel}',
+            '\\text{radial: only}\\ a_{\\rm rad} = \\tfrac{v^2}{R}\\ \\text{survives}\\;\\Rightarrow\\; \\Sigma F_{\\rm rad} = f_s = \\frac{mv^2}{R}'],
      action(c){
        const b = el('circle',{cx:c.M.X(40),cy:c.M.Y(0),r:9,fill:RED,stroke:'#7A2015','stroke-width':1.5},c.svg);
        tween(u=>{ const th=u*1.6*Math.PI;
