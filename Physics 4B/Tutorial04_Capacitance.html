@@ -489,7 +489,40 @@ function speak(text, animate){
       .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
       .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
     /* split into sentences: one utterance each, with a breath between them */
-    sentQueue = spoken.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken];
+    /* --- pronunciation fixes (TTS only; the bubble shows the original text) --- */
+    const spoken2 = spoken
+      .replace(/\blive hard lives\b/g,'lead a hard existence')
+      .replace(/\blives\b/g,'livz')                             /* verb: rhymes with gives */
+      .replace(/\blived\b/g,'livd')
+      .replace(/\blive\b/g,'liv')                               /* verb: as in life, not broadcast */
+      .replace(/\bdrawn bow\b/g,'drawn beau')
+      .replace(/\btear\b/g,'tare')
+      .replace(/\bexam wound\b/g,'exam woond')
+      .replace(/\b(that|having|it|crystallography) read\b/g,'$1 red')   /* past tense */
+      .replace(/\bbe read\b/g,'be red')
+      .replace(/read from a stick/g,'red from a stick')
+      .replace(/read in volts/g,'red in volts')
+      .replace(/\ba squared\b/g,'ay squared')                   /* the variable a, not the article */
+      .replace(/\ba cubed\b/g,'ay cubed')
+      .replace(/\ba equals\b/g,'ay equals')
+      .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus| squared| cubed)/g,'equals ay')
+      .replace(/\bequal a plus\b/g,'equal ay plus')
+      .replace(/\bover a\b(?=[,.]| is| minus| and| grows)/g,'over ay')
+      .replace(/\bb minus a\b/g,'b minus ay')
+      .replace(/\bminus a v-squared\b/g,'minus ay v-squared')
+      .replace(/\ba plus b\b/g,'ay plus b')
+      .replace(/\ba b\b/g,'ay b')
+      .replace(/\btimes a\b(?=[,.])/g,'times ay')
+      .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
+      .replace(/\bm a\b/g,'m ay')
+      .replace(/\bM a\b(?=[,.])/g,'M ay')
+      .replace(/\bfrom a to b\b/g,'from ay to b')
+      .replace(/\btends to a\b(?=[,.])/g,'tends to ay')
+      .replace(/\ba of (t|zero)\b/g,'ay of $1')
+      .replace(/\ba crosses\b/g,'ay crosses')
+      .replace(/\ba becomes\b/g,'ay becomes')
+      .replace(/\ba is\b(?= \d)/g,'ay is');
+    sentQueue = spoken2.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken2];
     sentIdx = 0;
     /* small delay after cancel() — Chrome otherwise falls back to default voice */
     const gen = speakGen;
