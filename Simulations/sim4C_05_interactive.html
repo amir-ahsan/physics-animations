@@ -17,26 +17,43 @@
   <div class="phys">
     <h2>What you are looking at</h2>
     <p>An isothermal process holds temperature constant, so the gas moves along one hyperbola <span class="eq">PV = nRT</span>. Because the internal
-    energy of an ideal gas depends only on T, <span class="eq">&Delta;U = 0</span>, and every joule of heat added becomes work done by the gas:
-    <span class="eq">Q = W = nRT&thinsp;ln(V_f/V_i)</span>. The shaded area under the curve is that work.</p>
+    energy of an ideal gas depends only on T, <span class="eq">&Delta;U = 0</span>, so <span class="eq">Q = W = nRT&thinsp;ln(V_f/V_i)</span>.
+    When the gas <b>expands</b> (V_f &gt; V_i) it does work on the piston, and an equal amount of heat must flow <b>in</b> from the reservoir.
+    When the gas is <b>compressed</b> (V_f &lt; V_i), work is done <em>on</em> the gas and the same amount of heat flows <b>out</b> to the reservoir.
+    The shaded area under the curve is that work.</p>
   </div>
   <div class="grid">
     <div class="left">
       <div class="panel">
-        <h3>Expanding at constant T</h3>
+        <h3>Expansion &amp; compression at constant T</h3>
         <div class="schematic">
-          <svg class="scene" width="300" height="180" viewBox="0 0 300 180">
-            <rect id="cyl52" x="60" y="40" width="120" height="110" fill="#eef2ee" stroke="var(--ink)" stroke-width="2"/>
-            <rect id="pis52" x="60" y="36" width="120" height="8" fill="var(--accent-dk)"/>
-            <line x1="200" y1="95" x2="240" y2="95" stroke="var(--red)" stroke-width="2" marker-end="url(#q52)"/><text x="205" y="86" font-size="10" fill="var(--red)">heat in</text>
-            <defs><marker id="q52" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+          <svg class="scene" width="300" height="195" viewBox="0 0 300 195">
+            <!-- cylinder: closed at the left, open to the right; the piston is the movable right wall -->
+            <path d="M266,45 L42,45 L42,145 L266,145" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+            <rect id="gas52" x="43" y="47" width="106" height="96" fill="#dff0e2"/>
+            <line id="vim52" x1="110" y1="47" x2="110" y2="143" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <text id="vil52" x="100" y="40" font-size="9" fill="var(--ink)">V_i</text>
+            <rect id="pis52" x="149" y="46" width="9" height="98" fill="var(--accent-dk)"/>
+            <line id="rod52" x1="158" y1="95" x2="288" y2="95" stroke="var(--accent-dk)" stroke-width="4"/>
+            <line x1="288" y1="80" x2="288" y2="110" stroke="var(--accent-dk)" stroke-width="5"/>
+            <!-- thermal reservoir + heat exchange arrow -->
+            <rect x="42" y="172" width="224" height="11" fill="var(--red)" opacity="0.45"/>
+            <text x="70" y="181" font-size="9" fill="var(--ink)">thermal reservoir (holds T constant)</text>
+            <line id="qin52" x1="150" y1="170" x2="150" y2="150" stroke="var(--red)" stroke-width="3" marker-end="url(#qup52)"/>
+            <line id="qout52" x1="150" y1="148" x2="150" y2="168" stroke="var(--blue)" stroke-width="3" marker-end="url(#qdn52)"/>
+            <text id="ql52" x="158" y="163" font-size="10" fill="var(--red)">heat in</text>
+            <defs>
+              <marker id="qup52" markerWidth="8" markerHeight="8" refX="3" refY="5" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--red)"/></marker>
+              <marker id="qdn52" markerWidth="8" markerHeight="8" refX="3" refY="5" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="var(--blue)"/></marker>
+            </defs>
           </svg>
           <div class="readouts">
             <div class="r c-accent"><span class="k">work W = nRT ln(V_f/V_i)</span> = <span class="vb" id="rW52">–</span></div>
             <div class="r c-red"><span class="k">heat Q = W (ΔU = 0)</span> = <span class="vb" id="rQ52">–</span></div>
+            <div class="r vb" id="rdir52" style="opacity:.9">–</div>
           </div>
         </div>
-        <div class="cap">Heat flows in exactly as fast as the gas does work, keeping temperature — and internal energy — unchanged.</div>
+        <div class="cap">The piston is the movable right wall; the dashed line marks the initial volume V_i. Expansion (V_f &gt; V_i): the gas does work and heat flows <b>in</b> from the reservoir. Compression (V_f &lt; V_i): work is done on the gas and heat flows <b>out</b>.</div>
       </div>
       <div class="panel">
         <h3>P–V diagram (work = shaded area)</h3>
@@ -51,7 +68,7 @@
         <h3>Play with the parameters</h3>
         <div class="controls" id="controls">
           <div class="ctl" data-var="Vi" data-min="1" data-max="5" data-step="0.5" data-fixed="1"><div class="row"><label>Initial volume V_i</label><span class="val"></span></div><input type="range"></div>
-          <div class="ctl" data-var="Vf" data-min="2" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Final volume V_f</label><span class="val"></span></div><input type="range"></div>
+          <div class="ctl" data-var="Vf" data-min="1" data-max="10" data-step="0.5" data-fixed="1"><div class="row"><label>Final volume V_f</label><span class="val"></span></div><input type="range"></div>
           <div class="ctl" data-var="T" data-min="1" data-max="6" data-step="0.5" data-fixed="1"><div class="row"><label>Temperature T</label><span class="val"></span></div><input type="range"></div>
           <div class="ctl" data-var="n" data-min="0.5" data-max="3" data-step="0.5" data-fixed="1"><div class="row"><label>Moles n</label><span class="val"></span></div><input type="range"></div>
         </div>
@@ -83,13 +100,31 @@
   ]);
   var S={Vi:2,Vf:4,T:3,n:1};
   function update(){
-    if(S.Vf<S.Vi){ /* keep sensible */ }
     var W=S.n*R*S.T*Math.log(S.Vf/S.Vi);
     document.getElementById('rW52').textContent=W.toFixed(2);
     document.getElementById('rQ52').textContent=W.toFixed(2);
     calc.setMathBounds({left:0,right:10,bottom:0,top:Math.max(4,S.n*S.T/0.5*0.6)});
-    var w=Math.min(150,40+S.Vf*14); var cyl=document.getElementById('cyl52');
-    cyl.setAttribute('width',w); document.getElementById('pis52').setAttribute('width',w);
+    // piston = movable right wall; gas fills from the closed left end to the piston
+    function xpos(V){ return 43 + Math.min(212, 26 + V*19); }
+    var xf=xpos(S.Vf), xi=xpos(S.Vi);
+    document.getElementById('gas52').setAttribute('width',(xf-43).toFixed(1));
+    document.getElementById('pis52').setAttribute('x',xf.toFixed(1));
+    document.getElementById('rod52').setAttribute('x1',(xf+9).toFixed(1));
+    document.getElementById('vim52').setAttribute('x1',xi.toFixed(1)); document.getElementById('vim52').setAttribute('x2',xi.toFixed(1));
+    document.getElementById('vil52').setAttribute('x',(xi-10).toFixed(1));
+    // heat direction: expansion -> heat in (up arrow, red); compression -> heat out (down arrow, blue)
+    var qin=document.getElementById('qin52'), qout=document.getElementById('qout52'), ql=document.getElementById('ql52'), rd=document.getElementById('rdir52');
+    var eps=1e-9;
+    if(S.Vf>S.Vi+eps){ qin.setAttribute('opacity',1); qout.setAttribute('opacity',0);
+      ql.textContent='heat in'; ql.setAttribute('fill','var(--red)');
+      rd.textContent='EXPANSION — gas does work; heat flows IN (Q = W > 0)'; rd.style.color='var(--red)';
+    } else if(S.Vf<S.Vi-eps){ qin.setAttribute('opacity',0); qout.setAttribute('opacity',1);
+      ql.textContent='heat out'; ql.setAttribute('fill','var(--blue)');
+      rd.textContent='COMPRESSION — work done on gas; heat flows OUT (Q = W < 0)'; rd.style.color='var(--blue)';
+    } else { qin.setAttribute('opacity',0); qout.setAttribute('opacity',0);
+      ql.textContent='no heat flow'; ql.setAttribute('fill','var(--ink)');
+      rd.textContent='V_f = V_i — no net work, no net heat'; rd.style.color='var(--ink)';
+    }
   }
   SimCore.wireSliders(calc,S,{Vi:'V_i',Vf:'V_f',T:'T_g',n:'n_m'},function(v){ update(); });
   update();
