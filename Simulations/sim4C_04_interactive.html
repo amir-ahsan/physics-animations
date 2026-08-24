@@ -34,7 +34,7 @@
             <div class="r c-blue"><span class="k">rms speed v_rms</span> = <span class="vb" id="rvr57">–</span></div>
           </div>
         </div>
-        <div class="cap">Molecules bounce with an average speed set by T and m — the box is a cartoon, not a per-molecule speed map. The spread of speeds is the curve on the right.</div>
+        <div class="cap">Molecules bounce off the walls and collide elastically with one another, with an average speed set by T and m. It is exactly these molecule–molecule collisions that shuffle energy around and produce the spread of speeds shown by the curve on the right.</div>
       </div>
       <div class="panel">
         <h3>Speed distribution f(v)</h3>
@@ -92,9 +92,35 @@
   SimCore.wireSliders(calc,S,{T:'T_g',m:'m_g'},function(v){ update(); });
   build();
   SimCore.loop(function(){ var sp=Math.sqrt(S.T/S.m);   /* rAF: pauses in hidden tabs */
+    // wall collisions
     mols.forEach(function(m){ m.x+=m.vx*sp*0.012; m.y+=m.vy*sp*0.02;
       if(m.x<0||m.x>1){m.vx*=-1;m.x=Math.max(0,Math.min(1,m.x));}
-      if(m.y<0||m.y>1){m.vy*=-1;m.y=Math.max(0,Math.min(1,m.y));} }); draw(); },50);
+      if(m.y<0||m.y>1){m.vy*=-1;m.y=Math.max(0,Math.min(1,m.y));} });
+    // molecule–molecule elastic collisions (equal masses: exchange the velocity
+    // components along the line of centers; done in pixel space because the box
+    // is not square). These collisions are what thermalize the speeds into the
+    // Maxwell–Boltzmann distribution.
+    var sx=248, sy=98, minD=5.6, minD2=minD*minD;
+    for(var i=0;i<mols.length;i++){
+      for(var j=i+1;j<mols.length;j++){
+        var a=mols[i], b=mols[j];
+        var dx=(b.x-a.x)*sx, dy=(b.y-a.y)*sy, d2=dx*dx+dy*dy;
+        if(d2<minD2 && d2>1e-9){
+          var d=Math.sqrt(d2), nx=dx/d, ny=dy/d;
+          var avx=a.vx*sx, avy=a.vy*sy, bvx=b.vx*sx, bvy=b.vy*sy;
+          var rel=(avx-bvx)*nx+(avy-bvy)*ny;      // closing speed along the normal
+          if(rel>0){                               // only if approaching
+            avx-=rel*nx; avy-=rel*ny; bvx+=rel*nx; bvy+=rel*ny;
+            a.vx=avx/sx; a.vy=avy/sy; b.vx=bvx/sx; b.vy=bvy/sy;
+          }
+          var push=(minD-d)/2;                     // separate overlapping pairs
+          a.x-=push*nx/sx; a.y-=push*ny/sy; b.x+=push*nx/sx; b.y+=push*ny/sy;
+          a.x=Math.max(0,Math.min(1,a.x)); a.y=Math.max(0,Math.min(1,a.y));
+          b.x=Math.max(0,Math.min(1,b.x)); b.y=Math.max(0,Math.min(1,b.y));
+        }
+      }
+    }
+    draw(); },50);
   update();
 })();
 </script>
