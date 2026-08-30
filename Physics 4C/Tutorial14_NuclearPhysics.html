@@ -1,808 +1,684 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics 4C · Tutorial 14: Nuclear Physics — Animated Worked Examples</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<style>
-  :root{
-    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
-    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
-  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
-  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
-  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
-  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
-  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
-    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
-  nav button:hover{background:#3a5245}
-  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
-  /* ---- professor column ---- */
-  .prof-col{display:flex;flex-direction:column;gap:10px}
-  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
-    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
-  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
-    border-top-color:var(--accent-dk)}
-  /* highlighted link to the next example, shown when an example finishes */
-  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
-    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
-    animation:pulseLink 1.6s ease-in-out infinite}
-  .next-link:hover{background:var(--accent-dk)}
-  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
-    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
-  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
-  /* ---- stage & board ---- */
-  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
-  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
-    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
-  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
-    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
-  .prompt .simlink:hover{background:#1D4568}
-  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
-    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
-  .diff.review{background:#7B4FA0}
-  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
-  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
-  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
-    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
-  #stage{width:100%;height:auto;display:block}
-  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
-    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
-  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
-    transition:opacity .5s,transform .5s}
-  #board .katex{font-size:1em}
-  #board .line.show{opacity:1;transform:none}
-  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
-  #board .katex{color:var(--chalk)}
-  /* ---- controls: pinned to the bottom of the window, always visible ---- */
-  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
-    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
-    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
-  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
-  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
-    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
-  .controls button:hover{background:#F3E7D2}
-  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
-  .controls button.primary:hover{background:var(--accent-dk)}
-  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
-  .controls .voice.on{background:var(--board);color:var(--chalk)}
-  /* ---- professor animation ---- */
-  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
-  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
-  .pose-point #armR{transform:rotate(-118deg)}
-  .pose-write #armR{transform:rotate(-62deg)}
-  .pose-think #armR{transform:rotate(-152deg)}
-  .pose-excited #armR{transform:rotate(-146deg)}
-  .pose-excited #armL{transform:rotate(146deg)}
-  #brows{transition:transform .3s}
-  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
-  #mouth{transform-box:fill-box;transform-origin:center}
-  .talking #mouth{animation:talk .28s infinite alternate}
-  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
-  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
-  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
-  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
-  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
-  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
-    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
-    border:8px solid transparent;border-right-color:var(--accent-dk)}
-    .stage-row{flex-direction:column}#stagebox{flex:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Physics 4C · Nuclear Physics — reasoning-first worked examples with Professor Ahsan.">
+  <title>Physics 4C · Tutorial 14: Nuclear Physics — Reasoning-First Lectures</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+    :root{
+      --night:#101813;
+      --board:#203c31;
+      --board-deep:#152b23;
+      --chalk:#f5f0dc;
+      --chalk-dim:#b8c9bc;
+      --amber:#e8ac56;
+      --amber-dark:#9c6528;
+      --cyan:#76d4da;
+      --green:#8ed29b;
+      --coral:#ef806f;
+      --paper:#f0eadc;
+      --ink:#221e17;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 50% 0%,rgba(244,231,199,.82),transparent 48%),
+        linear-gradient(145deg,#d8cfbe,#b9ad98 68%,#9e927d);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    button{font:inherit}
+    .page{width:min(1500px,100%);margin:0 auto;padding:clamp(10px,2vw,28px)}
+    .masthead{
+      display:flex;align-items:end;justify-content:space-between;gap:24px;
+      margin:0 2px 10px;color:#2a251d;
+    }
+    .masthead p{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#6e573b}
+    .masthead h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(1.25rem,2.15vw,2rem)}
+    .lecture-note{font-size:.8rem;color:#6a5f50;text-align:right;line-height:1.45}
+    .lecture-note a{color:#7a5218;font-weight:700;text-decoration:none;border-bottom:1px dotted #9c6528}
+    .lecture-note a:hover{color:#4c3410}
+    /* ---- example tabs ---- */
+    .example-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 2px 12px}
+    .example-tabs button{
+      padding:7px 13px;
+      border:1px solid rgba(60,48,30,.35);
+      border-radius:999px;
+      color:#4b3d28;
+      background:rgba(255,252,242,.6);
+      cursor:pointer;font-size:.78rem;font-weight:750;
+      transition:.18s ease;
+    }
+    .example-tabs button:hover{border-color:var(--amber-dark);background:#fff6e2}
+    .example-tabs button.active{border-color:var(--amber-dark);background:var(--amber);color:#241a0c;box-shadow:0 2px 8px rgba(156,101,40,.3)}
+    .example-tabs button .diffdot{display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;vertical-align:1px}
+    .diff-review .diffdot{background:#8e6bb5}.diff-basic .diffdot{background:#5f9e63}
+    .diff-intermediate .diffdot{background:#c9922e}.diff-challenging .diffdot{background:#bf5540}
+    .player-shell{
+      overflow:hidden;
+      border:1px solid rgba(47,39,26,.4);
+      border-radius:20px;
+      background:#121914;
+      box-shadow:0 25px 70px rgba(45,34,18,.3),0 3px 0 rgba(255,255,255,.5) inset;
+    }
+    .lecture-stage{
+      position:relative;
+      aspect-ratio:16/7.6;
+      min-height:400px;
+      overflow:hidden;
+      isolation:isolate;
+      background:
+        linear-gradient(90deg,transparent 0 82%,rgba(8,17,13,.38) 82%),
+        radial-gradient(circle at 53% 32%,rgba(93,135,107,.2),transparent 42%),
+        #27352c;
+    }
+    .topline{
+      position:absolute;z-index:6;top:2.6%;left:3%;right:3%;
+      display:flex;align-items:center;justify-content:space-between;
+      color:#e7e0ce;font-size:clamp(.52rem,.78vw,.72rem);font-weight:800;
+      letter-spacing:.15em;text-transform:uppercase;
+    }
+    .series-lockup{display:flex;align-items:center;gap:10px}
+    .series-lockup::before{content:"";width:25px;height:2px;background:var(--amber)}
+    .format-badge{border:1px solid rgba(240,234,216,.3);border-radius:999px;padding:5px 9px;letter-spacing:.1em}
+    .board{
+      position:absolute;z-index:1;left:3.6%;top:7.6%;
+      width:79%;height:85.5%;
+      border:clamp(6px,1vw,13px) solid #735336;
+      border-radius:7px;
+      background:
+        radial-gradient(circle at 23% 30%,rgba(255,255,255,.035),transparent 22%),
+        radial-gradient(circle at 74% 67%,rgba(255,255,255,.025),transparent 28%),
+        repeating-linear-gradient(175deg,transparent 0 34px,rgba(234,244,226,.012) 35px 36px),
+        var(--board);
+      box-shadow:0 0 0 3px #392c21,0 18px 38px rgba(0,0,0,.38),inset 0 0 70px rgba(0,0,0,.28);
+    }
+    .board::after{
+      content:"";position:absolute;left:-2%;right:-2%;bottom:-18px;height:16px;border-radius:2px;
+      background:linear-gradient(#8d6845,#563d29);
+      box-shadow:0 4px 7px rgba(0,0,0,.4);
+    }
+    .board-content{
+      position:absolute;z-index:3;left:5.4%;top:10.4%;
+      width:75.5%;height:79%;
+      color:var(--chalk);
+      display:grid;grid-template-rows:auto auto 1fr;
+      gap:clamp(5px,.75vw,11px);
+    }
+    .problem-band{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(7px,1vw,16px);min-width:0;
+      padding-bottom:clamp(5px,.6vw,9px);
+      border-bottom:1px solid rgba(245,240,220,.18);
+    }
+    .example-tag{color:var(--amber);font-size:clamp(.56rem,.78vw,.78rem);font-weight:900;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+    .problem-copy{
+      min-width:0;color:#fffbed;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(.66rem,1.02vw,1rem);line-height:1.28;
+    }
+    .band-chips{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+    .goal-chip{
+      display:flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--green);
+      border:1px solid rgba(142,210,155,.46);border-radius:999px;background:rgba(142,210,155,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+    }
+    .sim-chip{
+      display:inline-flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--cyan);
+      border:1px solid rgba(118,212,218,.5);border-radius:999px;background:rgba(118,212,218,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+      text-decoration:none;pointer-events:auto;cursor:pointer;
+    }
+    .sim-chip:hover{background:rgba(118,212,218,.2)}
+    .sim-chip[hidden]{display:none}
+    .reasoning-map{display:grid;gap:clamp(3px,.48vw,7px);pointer-events:auto}
+    .reason-step{
+      position:relative;min-width:0;
+      padding:clamp(5px,.62vw,9px) 4px;overflow:hidden;
+      border:1px solid rgba(245,240,220,.12);border-radius:5px;
+      color:#93a99b;background:rgba(7,20,14,.15);
+      font-size:clamp(.48rem,.68vw,.7rem);font-weight:850;letter-spacing:.07em;
+      text-align:center;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap;
+      transition:.35s ease;
+    }
+    .reason-step.done{color:#b8d6c0;border-color:rgba(142,210,155,.28);background:rgba(142,210,155,.06)}
+    .reason-step.active{color:#17241d;border-color:var(--amber);background:var(--amber);box-shadow:0 0 22px rgba(232,172,86,.2)}
+    .work-area{display:grid;grid-template-columns:37% 63%;min-height:0}
+    .model-zone{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;padding-right:2.5%}
+    #sketch{flex:1;min-height:0;width:100%}
+    .model-note{
+      margin-top:4px;padding:5px 8px;
+      border-left:2px solid var(--cyan);
+      color:#cfe6d7;background:rgba(7,20,14,.42);
+      font-size:clamp(.55rem,.76vw,.78rem);line-height:1.35;
+      min-height:1.4em;
+    }
+    .model-note strong{color:var(--cyan);letter-spacing:.08em;text-transform:uppercase;font-size:.92em;margin-right:6px}
+    .chalk-work{
+      min-width:0;min-height:0;
+      padding:clamp(3px,.4vw,7px) 1% 0 4.5%;
+      border-left:1px dashed rgba(245,240,220,.18);
+      overflow:hidden;display:flex;flex-direction:column;
+    }
+    .chapter-line{display:flex;align-items:baseline;gap:10px;margin-bottom:clamp(3px,.5vw,8px)}
+    .chapter-number{color:var(--amber);font-size:clamp(.55rem,.82vw,.8rem);font-weight:900;letter-spacing:.12em}
+    #chapterTitle{margin:0;color:#fffbed;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1rem,1.75vw,1.65rem);font-weight:500}
+    #thinkingPrompt{
+      margin:0 0 clamp(4px,.7vw,10px);
+      color:var(--green);
+      font-size:clamp(.6rem,.88vw,.88rem);font-weight:700;line-height:1.35;
+    }
+    .equation-stack{display:flex;flex-direction:column;gap:clamp(3px,.5vw,8px);min-height:0;overflow:hidden}
+    .equation-line{
+      position:relative;opacity:0;transform:translateY(7px);
+      padding:clamp(3px,.42vw,6px) clamp(5px,.7vw,10px);
+      border-left:2px solid transparent;
+      color:#dce6db;
+      font-size:clamp(.72rem,1.18vw,1.16rem);
+      line-height:1.3;
+      transition:opacity .45s ease,transform .45s ease,background .45s ease;
+    }
+    .equation-line .katex{font-size:1em}
+    .equation-line.show{opacity:1;transform:none}
+    .equation-line small{
+      display:block;margin-bottom:1px;
+      color:#91aa9b;font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.56em;font-weight:850;letter-spacing:.13em;text-transform:uppercase;
+    }
+    .equation-line.key{border-color:var(--amber);background:linear-gradient(90deg,rgba(232,172,86,.13),transparent 85%);color:#fff8df}
+    .equation-line.answer{border:1px solid rgba(142,210,155,.55);border-radius:5px;background:rgba(142,210,155,.1);color:#dcffe4}
+    .equation-line.warn{border-color:var(--coral);background:linear-gradient(90deg,rgba(239,128,111,.12),transparent);color:#ffe3dd}
+    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:clamp(.66rem,1vw,.98rem)}
+    .key-move{
+      display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;
+      background:var(--amber);color:#17241d;
+      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.5em;font-weight:900;letter-spacing:.08em;text-transform:uppercase;vertical-align:.25em;
+    }
+    /* ---- professor ---- */
+    .professor-2d{
+      position:absolute;z-index:4;right:5.4%;bottom:2.5%;
+      width:21%;height:76%;
+      display:flex;align-items:flex-end;justify-content:center;
+      pointer-events:none;
+      filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
+    }
+    .professor-2d svg{display:block;width:100%;height:100%;overflow:visible}
+    .professor-2d #armL,.professor-2d #armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+    .professor-2d #armL{transform-origin:74px 200px}
+    .professor-2d #armR{transform-origin:146px 200px}
+    .professor-2d.pose-point #armR{transform:rotate(-118deg)}
+    .professor-2d.pose-write #armR{transform:rotate(-62deg)}
+    .professor-2d.pose-think #armR{transform:rotate(-152deg)}
+    .professor-2d.pose-excited #armR{transform:rotate(-146deg)}
+    .professor-2d.pose-excited #armL{transform:rotate(146deg)}
+    .professor-2d #brows{transition:transform .3s}
+    .professor-2d.pose-excited #brows,.professor-2d.pose-think #brows{transform:translateY(-4px)}
+    .professor-2d #mouth{transform-box:fill-box;transform-origin:center}
+    .professor-2d.talking #mouth{animation:prof-talk .28s infinite alternate}
+    @keyframes prof-talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+    .professor-2d #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:prof-blink 4.2s infinite}
+    @keyframes prof-blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+    .professor-2d #hairG{animation:prof-sway 5s ease-in-out infinite;transform-origin:110px 70px}
+    @keyframes prof-sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+    .professor-id{
+      position:absolute;z-index:5;right:.8%;top:12%;width:16%;
+      color:#eee5d4;text-align:center;text-shadow:0 2px 8px #000;pointer-events:none;
+    }
+    .professor-id strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(.68rem,1.05vw,1rem);font-weight:500}
+    .professor-id span{font-size:clamp(.43rem,.58vw,.58rem);font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#c6a777}
+    .subtitle-box{
+      position:relative;z-index:2;
+      display:grid;grid-template-columns:auto 1fr;align-items:start;gap:14px;
+      min-height:76px;
+      padding:13px clamp(14px,2vw,28px);
+      border-top:1px solid rgba(255,255,255,.07);
+      background:#0b110d;color:#f8f4e8;
+      font-size:clamp(.75rem,1vw,.95rem);font-weight:560;line-height:1.5;text-align:left;
+    }
+    .caption-speaker{
+      margin-top:2px;padding:4px 8px;border-radius:999px;
+      background:var(--amber);color:#1b241d;
+      font-size:.66rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+    }
+    #subtitle{margin:0}
+    .controls{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(10px,1.6vw,24px);
+      padding:13px clamp(12px,2vw,28px) 15px;
+      color:#e7e1d2;
+      background:linear-gradient(180deg,#18231c,#101713);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .transport{display:flex;gap:7px}
+    .control-button{
+      min-width:42px;height:38px;
+      border:1px solid rgba(231,225,210,.22);border-radius:9px;
+      color:#e9e1d0;background:#253329;cursor:pointer;transition:.18s ease;
+    }
+    .control-button:hover{border-color:rgba(232,172,86,.72);background:#2f4034;transform:translateY(-1px)}
+    .control-button:focus-visible{outline:3px solid rgba(118,212,218,.55);outline-offset:2px}
+    .control-button.primary{min-width:92px;border-color:var(--amber-dark);background:var(--amber);color:#1e241d;font-weight:900}
+    .control-button.primary:hover{background:#f1bd70}
+    .control-button.voice{min-width:132px;padding:0 12px;font-size:.76rem;font-weight:750}
+    .timeline-wrap{min-width:0}
+    .timeline-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;color:#9eab9f;font-size:.68rem}
+    .timeline-head strong{color:#eee6d6;font-weight:750}
+    .timeline{display:grid;gap:5px}
+    .timeline button{
+      position:relative;height:7px;padding:0;
+      border:0;border-radius:999px;background:#34443a;cursor:pointer;overflow:hidden
+    }
+    .timeline button::after{content:"";position:absolute;inset:0;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+    .timeline button.done::after,.timeline button.active::after{transform:scaleX(1)}
+    .timeline button.active{box-shadow:0 0 0 2px rgba(232,172,86,.25)}
+    .timeline button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .transcript-panel{
+      margin-top:16px;overflow:hidden;
+      border:1px solid rgba(67,53,34,.28);border-radius:15px;
+      background:rgba(250,247,239,.82);
+      box-shadow:0 10px 30px rgba(65,48,23,.12);
+    }
+    .transcript-header{
+      display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+      padding:16px 18px 12px;border-bottom:1px solid rgba(67,53,34,.16);
+    }
+    .transcript-header h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:1.22rem;font-weight:500;color:#2a4637}
+    .transcript-header p{margin:0;color:#6b6257;font-size:.76rem}
+    .transcript-list{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;
+      margin:0;padding:14px;list-style:none;
+    }
+    .transcript-entry{
+      padding:12px 13px;
+      border:1px solid rgba(73,61,43,.16);border-radius:10px;background:#fffdf8;
+      transition:border-color .2s,background .2s,box-shadow .2s;
+    }
+    .transcript-entry.active{border-color:#a66c2f;background:#fff8e9;box-shadow:0 0 0 2px rgba(232,172,86,.16)}
+    .transcript-entry button{width:100%;padding:0;border:0;background:transparent;color:#2f5542;cursor:pointer;font-weight:850;text-align:left}
+    .transcript-entry button:focus-visible{outline:3px solid rgba(46,109,164,.38);outline-offset:4px}
+    .transcript-entry p{margin:7px 0 0;color:#403b34;font-family:Georgia,"Times New Roman",serif;font-size:.88rem;line-height:1.48}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+    @media (max-width:900px){
+      .page{padding:8px}
+      .masthead{align-items:start;flex-direction:column;gap:5px}
+      .lecture-note{text-align:left}
+      .lecture-stage{min-height:340px}
+      .board{left:2%;width:84%}
+      .board-content{left:4%;width:80%}
+      .work-area{grid-template-columns:33% 67%}
+      .professor-id{display:none}
+      .professor-2d{right:2.5%;width:22%;height:70%;bottom:2.5%}
+      .subtitle-box{grid-template-columns:1fr;gap:7px}
+      .controls{grid-template-columns:1fr auto}
+      .timeline-wrap{grid-column:1/-1;grid-row:1}
+      .transport{grid-row:2}
+    }
+    @media (max-width:620px){
+      .lecture-stage{min-height:300px}
+      .problem-copy{line-height:1.15}
+      .problem-band{grid-template-columns:auto 1fr}.band-chips{display:none}
+      .model-note{display:none}
+      .reason-step{letter-spacing:0}
+      .control-button.voice{min-width:45px;width:45px;font-size:0}.control-button.voice::after{content:"Voice";font-size:.62rem}
+    }
+  </style>
 </head>
 <body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <p>Physics 4C · Tutorial 14</p>
+        <h1>Nuclear Physics</h1>
+      </div>
+      <div class="lecture-note">
+        Binding energy · the decay law · fission and fusion<br>
+        <a href="../index.html">↩ Course Hub</a>
+      </div>
+    </header>
 
-<header>
-  <h1>Physics 4C &middot; Tutorial 14: Nuclear Physics</h1>
-  <div class="sub">Animated worked examples &mdash; with Professor Ahsan &middot; <a href="../index.html" style="color:#D8C9A3">Course Hub</a></div>
-</header>
+    <nav class="example-tabs" id="exampleTabs" aria-label="Choose a lesson"></nav>
 
-<nav id="tabs"></nav>
+    <section class="player-shell" aria-label="Worked-example lecture player">
+      <div class="lecture-stage" id="lectureStage">
+        <div class="topline">
+          <div class="series-lockup">Physics with Professor Ahsan</div>
+          <div class="format-badge" id="formatBadge">Worked example</div>
+        </div>
 
-<div class="wrap">
-  <div class="prof-col">
-    <div class="bubble" id="bubble"></div>
-    <div class="prof-box">
-      <!-- ============ PROFESSOR AHSAN ============ -->
-      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
-        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
-        <g id="slim" transform="translate(22 0) scale(0.8 1)">
-        <!-- head group: shifted down to halve the visible neck -->
-        <g id="headG" transform="translate(0 16)">
-        <!-- wild cloud-like hair (the original) -->
-        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
-          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
-          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
-          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
-          <circle cx="168" cy="98" r="20"/>
-        </g>
-        <!-- ears -->
-        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <!-- face -->
-        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
-        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <!-- brows -->
-        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
-          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
-        </g>
-        <!-- eyes -->
-        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
-        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
-        <g id="lids" fill="#B5793B">
-          <rect x="83" y="94" width="18" height="14" rx="6"/>
-          <rect x="119" y="94" width="18" height="14" rx="6"/>
-        </g>
-        <!-- round glasses: bold black frames.
-             Each lens carries a 1.25× x counter-scale about its own centre, so after the
-             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
-             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
-        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
-          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
-          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
-          <path d="M108,100 q2,-3 4,0" fill="none"/>
-          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
-        </g>
-        <!-- nose -->
-        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
-        <!-- mustache: two combed lobes with a center part -->
-        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
-          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
-          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
-        </g>
-        <!-- lip area: philtrum shadow, mouth, lower lip -->
-        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
-        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
-        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
-        </g><!-- /headG -->
-        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
-        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
-        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
-        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
-        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
-        <!-- torso: tweed jacket (collar raised to meet the neck) -->
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
-        <!-- vest + shirt -->
-        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
-        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
-        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
-        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
-        <!-- lapels -->
-        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
-        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
-        <!-- left arm (screen left) -->
-        <g id="armL">
-          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
-        </g>
-        <!-- right arm (screen right) — the pointing arm -->
-        <g id="armR">
-          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
-          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
-        </g>
-        </g><!-- /bodyG -->
-        </g><!-- /slim -->
-      </svg>
-    </div>
-  </div>
+        <div class="board" aria-hidden="true"></div>
 
-  <div class="main-col">
-    <div class="prompt" id="prompt"></div>
-    <div class="stage-row">
-      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
-      <div id="boardwrap"><div id="board"></div></div>
-    </div>
-  </div>
-</div>
+        <section class="board-content" aria-label="Chalkboard derivation">
+          <div class="problem-band">
+            <span class="example-tag" id="exampleTag">Problem</span>
+            <span class="problem-copy" id="problemCopy"></span>
+            <span class="band-chips">
+              <span class="goal-chip" id="goalChip"></span>
+              <a class="sim-chip" id="simChip" target="_blank" rel="noopener" hidden>🎛 Desmos sim ▸</a>
+            </span>
+          </div>
 
-<div class="controls"><div class="controls-inner">
-  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
-  <button id="btnPrev" title="Previous step">&#9664; Back</button>
-  <button id="btnPlay" class="primary">&#9654; Play</button>
-  <button id="btnNext" title="Next step">Next &#9654;</button>
-  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
-  <span class="stepinfo" id="stepinfo"></span>
-</div></div>
+          <div class="reasoning-map" id="reasoningMap" aria-label="Problem-solving pathway"></div>
 
-<script>
-/* ================================================================
-   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
-   ================================================================ */
-const SVGNS = 'http://www.w3.org/2000/svg';
-const $ = id => document.getElementById(id);
-const stage = $('stage'), board = $('board'), bubble = $('bubble');
+          <div class="work-area">
+            <div class="model-zone">
+              <svg id="sketch" aria-label="Sketch of the physical situation" role="img"></svg>
+              <div class="model-note" id="modelNote"></div>
+            </div>
+            <div class="chalk-work">
+              <div class="chapter-line">
+                <span class="chapter-number" id="chapterNumber">01</span>
+                <h2 id="chapterTitle"></h2>
+              </div>
+              <p id="thinkingPrompt"></p>
+              <div class="equation-stack" id="equationStack" aria-label="Current derivation"></div>
+            </div>
+          </div>
+        </section>
 
-function el(tag, attrs, parent){
-  const e = document.createElementNS(SVGNS, tag);
-  for (const k in attrs){
-    let v = attrs[k];
-    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
-    e.setAttribute(k, v);
-  }
-  if (parent) parent.appendChild(e);
-  return e;
-}
+        <div class="professor-2d pose-talk" id="professor2d" aria-hidden="true">
+          <svg id="prof" viewBox="0 0 220 290" focusable="false">
+            <g id="slim" transform="translate(22 0) scale(0.8 1)">
+              <g id="headG" transform="translate(0 16)">
+                <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+                  <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+                  <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+                  <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+                  <circle cx="168" cy="98" r="20"/>
+                </g>
+                <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+                <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+                  <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+                </g>
+                <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+                <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+                <g id="lids" fill="#B5793B">
+                  <rect x="83" y="94" width="18" height="14" rx="6"/>
+                  <rect x="119" y="94" width="18" height="14" rx="6"/>
+                </g>
+                <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+                  <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+                  <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+                  <path d="M108,100 q2,-3 4,0" fill="none"/>
+                  <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+                </g>
+                <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+                <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+                  <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+                  <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+                </g>
+                <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+                <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+                <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+              </g>
+              <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+              <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+              <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+                <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+                <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+                <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+                <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+                <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+                <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+                <g id="armL">
+                  <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+                </g>
+                <g id="armR">
+                  <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+                  <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
 
-/* --- world→screen mapper: stage is 600×400 --- */
-function makeMapper(w){
-  const W=600, H=400, p=w.pad ?? 44;
-  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
-  const s = Math.min(sx, sy);
-  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
-  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
-  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
-}
+        <div class="professor-id">
+          <strong>Professor Ahsan</strong>
+          <span>Physics · with unnecessary honesty</span>
+        </div>
 
-/* --- animation manager (respects instant mode) --- */
-const running = [];
-function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
-function tween(draw, dur, instant, done){
-  if (instant){ draw(1); if(done) done(); return; }
-  const t0 = performance.now();
-  function frame(t){
-    let u = Math.min(1,(t-t0)/dur);
-    draw(1-Math.pow(1-u,3));            // ease-out cubic
-    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
-  }
-  running.push(requestAnimationFrame(frame));
-}
+      </div>
 
-/* --- drawing helpers --- */
-function headPts(x,y,ang,s){
-  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
-          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
-         .map(p=>p.join(',')).join(' ');
-}
-/* animated vector arrow in world coords */
-function arrow(ctx, x1,y1,x2,y2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
-  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
-  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
-    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
-    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
-  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
-  tween(u=>{
-    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
-    line.setAttribute('x2',x); line.setAttribute('y2',y);
-    head.setAttribute('points',headPts(x,y,ang,hs));
-  }, opt.dur||800, instant);
-  if (opt.label){
-    /* Place the label ADJACENT to the arrow, never on it: offset the
-       midpoint perpendicular to the arrow's direction (upper side by
-       default; pass side:-1 for the other side; dx/dy fine-tune). */
-    const t0 = opt.lt ?? 0.55;
-    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
-    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
-    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
-    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
-    if (opt.side === -1){ nx = -nx; ny = -ny; }
-    const fs  = opt.fs || 19;
-    /* clearance grows with label width when the offset is horizontal,
-       so wide labels (e.g. "3.00 km") clear vertical arrows too */
-    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
-    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
-    const lg = el('g',{},g);
-    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
-      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
-    t.textContent = opt.label;
-    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
-      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
-      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
-        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
-      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
-    }
-    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
-  }
-  return g;
-}
-/* animated angle arc (angles in degrees, world coords center) */
-function arc(ctx, cx,cy,r, a1,a2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
-  const R = r*M.s;
-  function d(a2c){
-    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
-    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
-    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
-    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
-    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
-  }
-  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
-  if (opt.label){
-    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
-    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
-      fill:opt.color||'#666','font-size':16,'font-style':'italic',
-      'font-family':'Georgia,serif','text-anchor':'middle'},g);
-    t.textContent=opt.label;
-  }
-  return g;
-}
-function label(ctx, x,y, txt, opt={}){
-  const g = el('g',{},ctx.svg);
-  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
-  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
-    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
-  t.textContent = txt;
-  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
-    const hw = String(txt).length*fs*0.28;
-    const cx = opt.anchor==='middle' ? lx : lx+hw;
-    const ay = ly - fs*0.95;
-    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
-      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
-    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
-  }
-  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
-  return t;
-}
-function dashLine(ctx, x1,y1,x2,y2, opt={}){
-  const {M}=ctx;
-  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
-    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
-  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
-  return l;
-}
-/* standard 2-D axes with grid */
-function axes2D(svg, M, w, opt={}){
-  const g = el('g',{},svg);
-  if (opt.grid){
-    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
-      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
-    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
-      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
-  }
-  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
-  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
-  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
-  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
-  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
-  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
-  return g;
-}
-/* oblique 3-D projection: world (x,y,z) → planar 2-D */
-const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
-function axes3D(svg, M, ext, opt={}){
-  const g = el('g',{},svg);
-  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
-  for (const [x,y,z,name] of A){
-    const [px,py]=proj(x,y,z);
-    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
-    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
-    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
-    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
-    t.textContent=name;
-  }
-  return g;
-}
+      <div class="controls">
+        <div class="transport">
+          <button class="control-button" id="restartButton" type="button" aria-label="Restart lesson" title="Restart">↺</button>
+          <button class="control-button" id="backButton" type="button" aria-label="Previous step" title="Previous step">←</button>
+          <button class="control-button primary" id="playButton" type="button" aria-label="Play lesson">▶ Play</button>
+          <button class="control-button" id="nextButton" type="button" aria-label="Next step" title="Next step">→</button>
+        </div>
 
-/* --- KaTeX board --- */
-const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
-function addBoardLine(item, animate){
-  const div = document.createElement('div');
-  div.className = 'line' + (item.t !== undefined ? ' note' : '');
-  if (item.t !== undefined) div.textContent = item.t;
-  else if (window.katex){
-    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
-    catch(e){ div.textContent = item; }
-  } else div.textContent = item;  /* offline fallback: raw LaTeX */
-  board.appendChild(div);
-  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
-}
+        <div class="timeline-wrap">
+          <div class="timeline-head"><strong id="timelineTitle"></strong><span id="stepCount"></span></div>
+          <div class="timeline" id="timeline" aria-label="Lesson chapters"></div>
+        </div>
 
-/* --- professor: poses, speech, TTS --- */
-const prof = $('prof');
-function setPose(p){
-  prof.className.baseVal = '';
-  prof.classList.add('pose-'+(p||'talk'));
-}
-/* --- voice selection: smooth, soothing British English (en-GB).
-       IMPORTANT: browsers (Chrome especially) load voices late and can
-       invalidate cached voice objects, silently reverting to the default
-       voice. So we re-select a fresh voice on EVERY utterance. --- */
-function britishVoice(){
-  const vs = speechSynthesis.getVoices();
-  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang))
-      || vs.find(v=>/en[-_]AU/i.test(v.lang))
-      || null;
-}
-if ('speechSynthesis' in window){
-  speechSynthesis.getVoices();                       /* trigger async load */
-  speechSynthesis.onvoiceschanged = ()=>britishVoice();
-}
-let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
-let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
-function speakNext(gen){
-  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
-  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
-  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
-  const v = britishVoice();                            /* fresh pick every time */
-  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
-  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
-  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
-  u.onerror = u.onend;
-  utter = u;
-  speechSynthesis.speak(u);
-  clearInterval(ttsKeepAlive);
-  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
-    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-    else { speechSynthesis.pause(); speechSynthesis.resume(); }
-  }, 12000);
-}
-/* bubble display: real greek letters instead of spelled-out phonetics */
-function greekify(t){
-  return t
-   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bh-bar\b/gi,'\u0127')
-   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
-   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
-   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
-   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
-   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
-   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
-   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
-   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
-   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
-   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
-   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
-   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
-}
-function speak(text, animate){
-  clearInterval(typeTimer);
-  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
-  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
-  speechSynthesis.cancel();
-  prof.classList.add('talking');
-  const shown = greekify(text);
-  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
-  bubble.textContent='';
-  let i=0;
-  typeTimer = setInterval(()=>{
-    bubble.textContent = shown.slice(0,++i);
-    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
-  },16);
-  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
-    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
-    const spoken = text
-      .replace(/[°]/g,' degrees ')
-      .replace(/\s*[—–]\s*/g,', ')
-      .replace(/\.\.\./g,',')
-      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
-      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
-      .replace(/\bk-hat\b/gi,'k hat')
-      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
-      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
-      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
-      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
-    /* split into sentences: one utterance each, with a breath between them */
-    /* --- pronunciation fixes (TTS only; the bubble shows the original text) --- */
-    const spoken2 = spoken
-      .replace(/\blive hard lives\b/g,'lead a hard existence')
-      .replace(/\blives\b/g,'livz')                             /* verb: rhymes with gives */
-      .replace(/\blived\b/g,'livd')
-      .replace(/\blive\b/g,'liv')                               /* verb: as in life, not broadcast */
-      .replace(/\bdrawn bow\b/g,'drawn beau')
-      .replace(/\btear\b/g,'tare')
-      .replace(/\bexam wound\b/g,'exam woond')
-      .replace(/\b(that|having|it|crystallography) read\b/g,'$1 red')   /* past tense */
-      .replace(/\bbe read\b/g,'be red')
-      .replace(/read from a stick/g,'red from a stick')
-      .replace(/read in volts/g,'red in volts')
-      .replace(/\ba squared\b/g,'ay squared')                   /* the variable a, not the article */
-      .replace(/\ba cubed\b/g,'ay cubed')
-      .replace(/\ba equals\b/g,'ay equals')
-      .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus| squared| cubed)/g,'equals ay')
-      .replace(/\bequal a plus\b/g,'equal ay plus')
-      .replace(/\bover a\b(?=[,.]| is| minus| and| grows)/g,'over ay')
-      .replace(/\bb minus a\b/g,'b minus ay')
-      .replace(/\bminus a v-squared\b/g,'minus ay v-squared')
-      .replace(/\ba plus b\b/g,'ay plus b')
-      .replace(/\ba b\b/g,'ay b')
-      .replace(/\btimes a\b(?=[,.])/g,'times ay')
-      .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
-      .replace(/\bm a\b/g,'m ay')
-      .replace(/\bM a\b(?=[,.])/g,'M ay')
-      .replace(/\bfrom a to b\b/g,'from ay to b')
-      .replace(/\btends to a\b(?=[,.])/g,'tends to ay')
-      .replace(/\ba of (t|zero)\b/g,'ay of $1')
-      .replace(/\ba crosses\b/g,'ay crosses')
-      .replace(/\ba becomes\b/g,'ay becomes')
-      .replace(/\ba is\b(?= \d)/g,'ay is');
-    sentQueue = spoken2.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken2];
-    sentIdx = 0;
-    /* small delay after cancel() — Chrome otherwise falls back to default voice */
-    const gen = speakGen;
-    setTimeout(()=>speakNext(gen), 60);
-  }
-}
+        <button class="control-button voice" id="voiceButton" type="button" aria-pressed="true">◖)) Voice: on</button>
+      </div>
 
-/* --- playback state --- */
-const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
-function queueAdvance(ms){
-  clearTimeout(state.timer);
-  let stalled = 0;   /* guards against TTS engines that never start speaking */
-  state.timer = setTimeout(function tick(){
-    /* NEVER advance over active speech — that cuts the professor off
-       mid-sentence. If he is still talking, check again shortly. */
-    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
-      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
-      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
-        state.timer = setTimeout(tick, 400);
-        return;
+      <div class="subtitle-box" role="region" aria-labelledby="captionSpeaker">
+        <span class="caption-speaker" id="captionSpeaker">Professor Ahsan</span>
+        <p id="subtitle"></p>
+      </div>
+    </section>
+
+    <section class="transcript-panel" aria-labelledby="transcriptHeading">
+      <div class="transcript-header">
+        <h2 id="transcriptHeading">Professor&rsquo;s words</h2>
+        <p>Complete accessible transcript · select a section to revisit it</p>
+      </div>
+      <ol class="transcript-list" id="transcriptList"></ol>
+    </section>
+    <div class="sr-only" id="stepAnnouncement" role="status" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* ============================================================
+       SKETCH-PAD ENGINE — world-coordinate SVG drawing helpers
+       (ported from the original tutorial engine, board-adapted)
+       ============================================================ */
+    const RED = '#e86a5a', BLUE = '#7fb8e8', GREEN = '#8ed29b',
+          PURPLE = '#c39ae0', GOLD = '#e8ac56', CHALKC = '#d8e4d4', DIMC = '#9fb4a3';
+
+    const sketchSvg = document.getElementById('sketch');
+    let running = [];
+    function cancelAnims(){ running.forEach(id => cancelAnimationFrame(id)); running.length = 0; }
+    function tween(draw, dur, instant, done){
+      if(instant){ draw(1); if(done) done(); return; }
+      const t0 = performance.now();
+      function frame(t){
+        const u = Math.min(1,(t - t0)/dur);
+        draw(1 - Math.pow(1 - u,3));
+        if(u < 1) running.push(requestAnimationFrame(frame)); else if(done) done();
       }
+      running.push(requestAnimationFrame(frame));
     }
-    const ex = EXAMPLES[state.ex];
-    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
-    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
-  }, ms);
-}
-/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
-function exLabel(i){
-  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
-}
-/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
-function showNextLink(){
-  /* finish the bubble typing first — otherwise its ticks overwrite the link */
-  clearInterval(typeTimer);
-  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
-  prof.classList.remove('talking');
-  if (state.ex >= EXAMPLES.length-1){
-    const d = document.createElement('div');
-    d.className = 'next-link';
-    d.style.animation = 'none';
-    d.textContent = 'Tutorial complete ✓';
-    bubble.appendChild(d);
-    return;
-  }
-  const a = document.createElement('div');
-  a.className = 'next-link';
-  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
-  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
-  bubble.appendChild(a);
-}
-/* ---- declutter: keep every sketch label visible and collision-free ----
-   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
-   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
-function declutter(svg){
-  const W=600, H=400, PAD=3;
-  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
-  if(!texts.length) return;
-  const items=texts.map(t=>{
-    let b; try{ b=t.getBBox(); }catch(e){ return null; }
-    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
-  }).filter(Boolean);
-  const lines=[...svg.querySelectorAll('line')].map(l=>({
-    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
-    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
-    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
-  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
-  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
-  for(const it of items){
-    for(const L of lines){
-      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
-      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
-      /* distance from bbox centre to the segment */
-      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
-      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
-      const px=L.x1+u*vx, py=L.y1+u*vy;
-      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
-      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
-      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
-        const need=clear-d+3;
-        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
-        else it.dy-=Math.min(need,18);
-      }
+    function el(tag, attrs, parent){
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for(const k in attrs) node.setAttribute(k, attrs[k]);
+      if(parent) parent.appendChild(node);
+      return node;
     }
-  }
-  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
-  for(let pass=0;pass<4;pass++){
-    let moved=false;
-    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
-      const a=box(items[i]), b=box(items[j]);
-      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
-      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
-      if(ox>4 && oy>3){
-        if(ox<=oy){                                          /* separate along the smaller overlap */
-          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
-          const nx=b.x+dir*(ox+PAD);
-          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
-          items[j].dx+=dir*(ox+PAD);
-        } else {
-          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
-          const ny=b.y+dir*(oy+PAD);
-          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
-            items[j].dy+=dir*(oy+PAD);
-          } else {                                          /* j pinned at the edge: move i instead */
-            const di=-dir, niy=a.y+di*(oy+PAD);
-            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
-            else items[j].dy+=dir*(oy+PAD);
-          }
+    function makeMapper(w){
+      const vw = 520, vh = 400;                    /* sketch viewBox */
+      sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+      const pad = 8;
+      const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
+      const s = w.aniso ? null : Math.min(sx, sy);
+      const SX = s || sx, SY = s || sy;
+      const cx = (w.x0 + w.x1)/2, cy = (w.y0 + w.y1)/2;
+      return {
+        X: x => vw/2 + (x - cx)*SX,
+        Y: y => vh/2 - (y - cy)*SY,
+        S: v => v*SX
+      };
+    }
+    function headPts(x, y, ang, s){
+      return [[x,y],[x - s*Math.cos(ang - .42), y - s*Math.sin(ang - .42)],
+              [x - s*Math.cos(ang + .42), y - s*Math.sin(ang + .42)]]
+             .map(p => p.join(',')).join(' ');
+    }
+    function arrow(c, x1,y1,x2,y2, opt = {}){
+      const {M, svg, instant} = c;
+      const g = el('g',{},svg);
+      const X1 = M.X(x1), Y1 = M.Y(y1), X2 = M.X(x2), Y2 = M.Y(y2);
+      const ang = Math.atan2(Y2 - Y1, X2 - X1), hs = opt.head ?? 10;
+      const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color || CHALKC,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round',
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, g);
+      const head = el('polygon',{fill:opt.color || CHALKC, points:headPts(X1,Y1,ang,hs)}, g);
+      tween(u => {
+        const x = X1 + (X2 - X1)*u, y = Y1 + (Y2 - Y1)*u;
+        line.setAttribute('x2',x); line.setAttribute('y2',y);
+        head.setAttribute('points', headPts(x,y,ang,hs));
+      }, opt.dur || 700, instant);
+      if(opt.label){
+        const nx = Math.sin(ang), ny = -Math.cos(ang), side = opt.side || 1, off = opt.loff || 23;
+        let lx, ly;
+        if(opt.at === 'mid'){                     /* opt-out: midpoint label */
+          lx = (X1 + X2)/2 + nx*off*side;
+          ly = (Y1 + Y2)/2 + ny*off*side;
+        }else{                                    /* default: label near the arrow tip */
+          const ext = (opt.loff || 16) + 8;
+          const toff = opt.toff ?? 6;
+          lx = X2 + Math.cos(ang)*ext + nx*toff*side;
+          ly = Y2 + Math.sin(ang)*ext + ny*toff*side + 4;
         }
-        moved=true;
+        const t = el('text',{x:lx, y:ly,
+          fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
+        t.textContent = opt.label;
+        if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
+      }
+      return g;
+    }
+    function dashLine(c, x1,y1,x2,y2, opt = {}){
+      return el('line',{x1:c.M.X(x1), y1:c.M.Y(y1), x2:c.M.X(x2), y2:c.M.Y(y2),
+        stroke:opt.color || DIMC,'stroke-width':opt.w || 1.6,'stroke-dasharray':opt.dash || '5,5'}, c.svg);
+    }
+    function arc(c, cx,cy,r, a1,a2, opt = {}){
+      const {M, svg} = c;
+      const R = M.S(r);
+      function pt(a){ const rad = a*Math.PI/180; return [M.X(cx) + R*Math.cos(rad), M.Y(cy) - R*Math.sin(rad)]; }
+      const [x1,y1] = pt(a1), [x2,y2] = pt(a2);
+      const large = Math.abs(a2 - a1) > 180 ? 1 : 0, sweep = a2 > a1 ? 0 : 1;
+      el('path',{d:`M ${x1} ${y1} A ${R} ${R} 0 ${large} ${sweep} ${x2} ${y2}`,
+        fill:'none', stroke:opt.color || DIMC,'stroke-width':opt.w || 1.8}, svg);
+      if(opt.label){
+        const mid = (a1 + a2)/2*Math.PI/180, lr = M.S(r) + (opt.lr || 14);
+        const t = el('text',{x:M.X(cx) + lr*Math.cos(mid), y:M.Y(cy) - lr*Math.sin(mid),
+          fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic'}, svg);
+        t.textContent = opt.label;
       }
     }
-    if(!moved) break;
-  }
-  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
-  for(const it of items){
-    const b=box(it);
-    if(b.x<PAD) it.dx+=PAD-b.x;
-    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
-    if(b.y<PAD) it.dy+=PAD-b.y;
-    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
-  }
-  /* apply: move the label's own group (keeps vector accents attached) or the text */
-  for(const it of items){
-    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
-    const par=it.t.parentNode;
-    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
-                  && par.childNodes.length<=3) ? par : it.t;
-    const prev=target.getAttribute('transform')||'';
-    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
-  }
-}
-
-function renderStep(animate){
-  cancelAnims(); clearTimeout(state.timer);
-  const ex = EXAMPLES[state.ex];
-  /* stage: rebuild — past steps instant, current step animated */
-  stage.innerHTML='';
-  const M = makeMapper(ex.world);
-  ex.setup({svg:stage, M, instant:true}, ex.world);
-  /* Concept Reviews present one sketch at a time — each diagram appears as
-     its topic comes up, never stacked on its predecessors. Examples accumulate.
-     A review step marked solo:true clears the stage entirely and presents its
-     own diagram alone — a fresh slide rather than an annotation. */
-  const curStep = ex.steps[state.step];
-  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
-  const seqStart = ex.tab ? state.step : 0;
-  for (let i=seqStart;i<=state.step;i++){
-    const st = ex.steps[i];
-    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
-  }
-  declutter(stage);                       /* keep labels visible and collision-free */
-  /* board: cumulative */
-  board.innerHTML='';
-  for (let i=0;i<=state.step;i++)
-    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
-  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
-  /* professor */
-  const st = ex.steps[state.step];
-  setPose(st.pose);
-  speak(st.say, animate);
-  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
-  /* auto-advance: ALWAYS schedule a timed advance while playing.
-     With voice on, the utterance's onend advances sooner; this timer is
-     the fallback so playback never stalls if speech fails to fire. */
-  if (state.playing){
-    const ms = voiceOn ? Math.max(5200, st.say.length*88)
-                       : Math.max(4000, st.say.length*70);
-    queueAdvance(ms);
-  }
-}
-function loadExample(i, autoplay){
-  state.ex=i; state.step=0; state.pendingNext=false;
-  const ex = EXAMPLES[i];
-  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
-  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
-     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
-  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
-  setPlaying(!!autoplay);
-  renderStep(true);
-}
-function setPlaying(p){
-  state.playing=p;
-  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
-  if (!p){ clearTimeout(state.timer); }
-}
-/* --- controls --- */
-$('btnPlay').onclick = ()=>{
-  if (state.playing){
-    /* PAUSE: freeze speech and auto-advance exactly where they stand */
-    setPlaying(false);
-    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
-    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
-      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
-  } else {
-    const ex=EXAMPLES[state.ex];
-    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
-      /* RESUME: continue from the very word where he was paused */
-      setPlaying(true);
-      speechSynthesis.resume();
-      clearInterval(ttsKeepAlive);
-      ttsKeepAlive = setInterval(()=>{
-        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-        else { speechSynthesis.pause(); speechSynthesis.resume(); }
-      }, 12000);
-      /* fallback advance re-armed; queueAdvance never cuts active speech */
-      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
-    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
-      /* paused between sentences: pick the narration up at the next sentence */
-      setPlaying(true);
-      speakNext(speakGen);
-      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
-    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
-               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
-      state.step=0;                                     /* finished example: replay from start */
-      setPlaying(true);
-      renderStep(true);
-    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
-      /* this step's narration already finished: continue forward */
-      setPlaying(true);
-      queueAdvance(1200);
-    } else {
-      /* step not yet narrated (fresh page load or manual browsing):
-         start it properly — animation AND voice from the first word */
-      setPlaying(true);
-      renderStep(true);
+    function label(c, x, y, txt, opt = {}){
+      const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
+        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        ...(opt.italic ? {'font-style':'italic'} : {}),
+        ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
+      t.textContent = txt;
+      return t;
     }
-  }
-};
-$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  const ex=EXAMPLES[state.ex];
-  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
-$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  if (state.step>0){ state.step--; renderStep(false); } };
-$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
-$('btnVoice').onclick = function(){
-  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
-  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
-  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
-};
-document.addEventListener('keydown',e=>{
-  if (e.key==='ArrowRight') $('btnNext').click();
-  if (e.key==='ArrowLeft') $('btnPrev').click();
-  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
-});
+    const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
+    function boxAt(c, x, y, w, h, opt = {}){
+      const {M} = c;
+      return el('rect',{x:M.X(x) - M.S(w)/2, y:M.Y(y) - M.S(h), width:M.S(w), height:M.S(h),
+        rx:3, fill:opt.fill || '#c98f52', stroke:opt.stroke || '#8a5a24','stroke-width':2}, c.svg);
+    }
+    function ground(c, x0, x1, y){
+      el('line',{x1:c.M.X(x0), y1:c.M.Y(y), x2:c.M.X(x1), y2:c.M.Y(y),
+        stroke:'#9fb4a3','stroke-width':2.5}, c.svg);
+    }
+    function circleAt(c, x, y, rWorld, opt = {}){
+      return el('circle',{cx:c.M.X(x), cy:c.M.Y(y), r:c.M.S(rWorld), fill:opt.fill || 'none',
+        stroke:opt.stroke || DIMC,'stroke-width':opt.w || 2,
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, c.svg);
+    }
+    function plotCurve(c, fn, t0, t1, opt = {}){
+      const {M, svg, instant} = c;
+      const N = 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+      tween(u => {
+        const n = Math.max(2, Math.round(u*(N + 1)));
+        poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
+      }, opt.dur || 1100, instant);
+    }
+    function axes2D(a, b, cArg, dArg){
+      /* accepts (ctx, world, opt) or legacy (svg, M, world, opt) */
+      let M, svg, w, opt;
+      if(a && a.svg){ svg = a.svg; M = a.M; w = b; opt = cArg || {}; }
+      else { svg = a; M = b; w = cArg; opt = dArg || {}; }
+      el('line',{x1:M.X(w.x0), y1:M.Y(0), x2:M.X(w.x1), y2:M.Y(0), stroke:DIMC,'stroke-width':2}, svg);
+      el('line',{x1:M.X(0), y1:M.Y(w.y0), x2:M.X(0), y2:M.Y(w.y1), stroke:DIMC,'stroke-width':2}, svg);
+      if(opt.xlab){ const t = el('text',{x:M.X(w.x1) - 4, y:M.Y(0) + 16, fill:DIMC,'font-size':14,
+        'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.xlab; }
+      if(opt.ylab){ const t = el('text',{x:M.X(0) + 7, y:M.Y(w.y1) + 13, fill:DIMC,'font-size':14,
+        'font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.ylab; }
+    }
+    /* oblique 3-D projection: world (x,y,z) → planar 2-D */
+    const proj = (x, y, z) => [ -0.6*x + y, -0.5*x + z ];
+    function axes3D(a, b, ext, opt){
+      let M, svg;
+      if(a && a.svg){ svg = a.svg; M = a.M; } else { svg = a; M = b; }
+      const g = el('g',{},svg);
+      for(const [x,y,z,name] of [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']]){
+        const [px,py] = proj(x,y,z);
+        const X2 = M.X(px), Y2 = M.Y(py), X1 = M.X(0), Y1 = M.Y(0);
+        el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:DIMC,'stroke-width':1.8},g);
+        el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:DIMC},g);
+        const t = el('text',{x:X2+9,y:Y2+5,fill:DIMC,'font-size':17,'font-style':'italic','font-family':'Georgia,serif'},g);
+        t.textContent = name;
+      }
+      return g;
+    }
 
-/* ================================================================
-   4C TUTORIAL 14 — NUCLEAR PHYSICS
-   ================================================================ */
-const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+    /* ============================================================
+       LESSON CONTENT — Tutorial 5, reasoning-first structure
+       Each example: pathway chips + chapter steps.
+       board lines: {label?, tex? | text?, kind?: key|answer|warn|note, move?}
+       ============================================================ */
+    /* ---- tutorial-specific helpers (ported) ---- */
+    function ebPerA(A){
+      if(A<1.5) return 1.1;
+      return 8.8 - 5.4*Math.exp(-A/18) - 0.0052*A + (A<5? (A>3.5? 1.0:0) : 0);
+    }
 
-function textAt(c, x, y, txt, opt={}){
-  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
-    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
-    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
-  t.textContent=txt;
-  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
-  return t;
-}
-function plotCurve(c, fn, t0, t1, opt={}){
-  const {svg,M,instant}=c; const N=opt.N||160;
-  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
-    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
-  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
-  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
-  return pl;
-}
-/* the binding-energy curve, schematic: x = A (0..250 scaled to 0..10), y = EB/A (MeV) */
-function ebPerA(A){
-  if(A<1.5) return 1.1;
-  return 8.8 - 5.4*Math.exp(-A/18) - 0.0052*A + (A<5? (A>3.5? 1.0:0) : 0);
-}
+    const EXAMPLES = [
 
-const EXAMPLES = [
-{
-  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
-  sim:{label:'radioactive decay', url:'../Simulations/sim4C_32_interactive.html'},
-  prompt:'Professor Ahsan surveys the main principles: nuclear size and density, binding energy, the decay law, decay modes and Q-values, fission and fusion.',
-  world:{x0:-22, x1:262, y0:-1.1, y1:10.6, aniso:true},
-  setup(ctx,w){
+    {
+      tab:"Concept Review", diff:"Review",
+      title:"The big picture before the problems",
+      problem:"Professor Ahsan surveys the main principles: nuclear size and density, binding energy, the decay law, decay modes and Q-values, fission and fusion.",
+      goal:"Goal → the method",
+      sim:{label:"radioactive decay", url:"../Simulations/sim4C_32_interactive.html"},
+      world:{"x0":-22,"x1":262,"y0":-1.1,"y1":10.6,"aniso":true},
+      pathway:["Size","Binding","The valley","Decay","Perspective","Applications"],
+      setup(ctx,w){
     axes2D(ctx.svg, ctx.M, w, {xlab:'A (nucleons)', ylab:'E_B/A (MeV)'});
     const pts=[]; for(let A=2;A<=250;A+=2){
       pts.push(ctx.M.X(A)+','+ctx.M.Y(ebPerA(A)));}
@@ -813,40 +689,62 @@ const EXAMPLES = [
     dashLine(c, 238,0, 238,7.6, {color:'#B0A488', dash:'4,5'});
     textAt(c, 238,8.15, '²³⁸U', {fs:11.5, anchor:'middle'});
   },
-  steps:[
-   { say:"The last tutorial of the sequence: the nucleus. A nuclide with Z protons and N neutrons packs A nucleons into a radius R-nought times A to the one-third, with R-nought one point two femtometres. Cube that: nuclear VOLUME grows exactly as A — nucleons pack like drops of incompressible fluid, and every nucleus, light or heavy, has the same staggering density, around two ten-to-the-17 kilograms per cubic metre.",
-     pose:'talk',
-     board:['R = R_0A^{1/3}, \\quad R_0 = 1.2\\ \\mathrm{fm}\\ \\Rightarrow\\ V \\propto A',
-            {t:'Same density for every nucleus ~2×10¹⁷ kg/m³ — a liquid drop of nuclear matter.'}],
-     action(c){
+      steps:[
+        { map:0, title:"A drop of nuclear matter",
+          think:"Why is every nucleus the SAME density?",
+          model:"R = R₀·A to the ⅓ makes volume ∝ A: a universal liquid drop.",
+          pose:"talk",
+          say:"The last tutorial of the sequence: the nucleus. A nuclide with Z protons and N neutrons packs A nucleons into a radius R-nought times A to the one-third, with R-nought one point two femtometres. Cube that: nuclear VOLUME grows exactly as A — nucleons pack like drops of incompressible fluid, and every nucleus, light or heavy, has the same staggering density, around two ten-to-the-17 kilograms per cubic metre.",
+          board:[
+            {label:"The size rule", tex:"R = R_0A^{1/3}, \\quad R_0 = 1.2\\ \\mathrm{fm}\\ \\Rightarrow\\ V \\propto A", kind:"key"},
+            {label:"The density", text:"Same density for every nucleus ~2×10¹⁷ kg/m³ — a liquid drop of nuclear matter."}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(30),cy:M.Y(3.1),r:8,fill:BLUE,opacity:.75},c.svg);
        el('circle',{cx:M.X(70),cy:M.Y(3.1),r:19.8,fill:BLUE,opacity:.55},c.svg);
        textAt(c, 48,1.4, '16 O vs 238 U: 15× nucleons, 2.5× radius', {fs:11, italic:true, anchor:'middle'});
-     } },
-   { say:"A nucleus weighs LESS than its parts; the deficit, times c squared, is the BINDING ENERGY — computed from atomic masses, whose electrons conveniently cancel. Per nucleon, it traces the curve on the stage: a steep climb through the light elements, a broad summit of eight point eight M-e-V near iron-56, and a gentle decline to seven point six at uranium. This one curve prices the energy economy of the universe.",
-     pose:'write',
-     board:['E_B = [Zm(^1\\mathrm H) + Nm_n - m(^A_ZX)]c^2',
-            {t:'E_B/A: steep rise → peak 8.8 MeV at Fe → gentle drift down to 7.6 MeV at U.'}],
-     action(c){
+     }
+        },
+        { map:1, title:"The missing mass",
+          think:"Why does a nucleus weigh less than its parts?",
+          model:"The deficit × c² is the binding energy — peaking 8.8 MeV/A at iron.",
+          pose:"write",
+          say:"A nucleus weighs LESS than its parts; the deficit, times c squared, is the BINDING ENERGY — computed from atomic masses, whose electrons conveniently cancel. Per nucleon, it traces the curve on the stage: a steep climb through the light elements, a broad summit of eight point eight M-e-V near iron-56, and a gentle decline to seven point six at uranium. This one curve prices the energy economy of the universe.",
+          board:[
+            {label:"Binding energy", tex:"E_B = [Zm(^1\\mathrm H) + Nm_n - m(^A_ZX)]c^2", kind:"key"},
+            {label:"The curve", text:"E_B/A: steep rise → peak 8.8 MeV at Fe → gentle drift down to 7.6 MeV at U."}
+          ],
+          action(c){
        label(c, 95,5.4, 'the whole weighs LESS than its parts —', {fs:11.5, color:'#8A5A24', italic:true});
        label(c, 95,4.7, 'the deficit, × c², is the glue', {fs:11.5, color:'#8A5A24', italic:true});
        arrow(c, 90,5.6, 60,8.4, {color:'#8A7D60', w:1.8, head:6});
-     } },
-   { say:"Read the curve like a valley seen upside down: FUSION climbs toward iron from the left — light nuclei merging release the height they gain; FISSION slides toward iron from the right — heavy nuclei splitting release theirs. Iron itself is ash for both fires: no rearrangement of its nucleons yields anything. Stars burn UP the left slope and stop, bewildered, at iron cores.",
-     pose:'point',
-     board:[{t:'Fusion: climb from the left. Fission: slide in from the right. Iron: nothing left to give.'}],
-     action(c){
+     }
+        },
+        { map:2, title:"Read the curve as terrain",
+          think:"Which direction releases energy from each side?",
+          model:"Fusion climbs from the left, fission slides from the right; iron has nothing to give.",
+          pose:"point",
+          say:"Read the curve like a valley seen upside down: FUSION climbs toward iron from the left — light nuclei merging release the height they gain; FISSION slides toward iron from the right — heavy nuclei splitting release theirs. Iron itself is ash for both fires: no rearrangement of its nucleons yields anything. Stars burn UP the left slope and stop, bewildered, at iron cores.",
+          board:[
+            {label:"The terrain", text:"Fusion: climb from the left. Fission: slide in from the right. Iron: nothing left to give.", kind:"key"}
+          ],
+          action(c){
        arrow(c, 8,2.6, 46,7.9, {color:GREEN, w:3, label:'fusion', fs:12});
        arrow(c, 232,7.4, 130,8.35, {color:PURPLE, w:3, label:'fission', fs:12, side:-1});
-     } },
-   { say:"Decay is pure probability: each nucleus, independently, has chance lambda per second. That single assumption integrates — as we shall in Example 3 — to the exponential N-nought e to the minus lambda t, with half-life log two over lambda, and ACTIVITY A equals lambda N, counted in becquerels. Decay MODES conserve charge and nucleon number across every arrow: alpha carries off a helium-4; beta-minus turns a neutron into a proton plus an electron and an antineutrino — that stolen, variable share of energy is what forced Pauli to invent the neutrino; gamma is the nucleus merely exhaling excitation. The energy released is the Q-VALUE: parent mass minus product masses, times c squared — positive or it does not proceed.",
-     pose:'write',
-     board:['N = N_0e^{-\\lambda t}, \\quad T_{1/2} = \\frac{\\ln 2}{\\lambda}, \\quad A = \\lambda N',
-            '\\alpha:\\ ^A_ZX \\to\\ ^{A-4}_{Z-2}Y + {}^4_2\\mathrm{He}; \\qquad \\beta^-:\\ ^A_ZX \\to\\ ^A_{Z+1}Y + e^- + \\bar\\nu',
-            'Q = [m_{\\rm parent} - \\textstyle\\sum m_{\\rm products}]c^2 > 0'],
-     solo:true,
-     action(c){
+     }
+        },
+        { map:3, title:"Decay: pure probability",
+          think:"What single assumption yields the exponential?",
+          model:"Independent, memoryless chance λ: N = N₀e^{−λt}; balance A and Z; Q > 0.",
+          pose:"write", solo:true,
+          say:"Decay is pure probability: each nucleus, independently, has chance lambda per second. That single assumption integrates — as we shall in Example 3 — to the exponential N-nought e to the minus lambda t, with half-life log two over lambda, and ACTIVITY A equals lambda N, counted in becquerels. Decay MODES conserve charge and nucleon number across every arrow: alpha carries off a helium-4; beta-minus turns a neutron into a proton plus an electron and an antineutrino — that stolen, variable share of energy is what forced Pauli to invent the neutrino; gamma is the nucleus merely exhaling excitation. The energy released is the Q-VALUE: parent mass minus product masses, times c squared — positive or it does not proceed.",
+          board:[
+            {label:"The decay law", tex:"N = N_0e^{-\\lambda t}, \\quad T_{1/2} = \\frac{\\ln 2}{\\lambda}, \\quad A = \\lambda N", kind:"key"},
+            {label:"The modes", tex:"\\alpha:\\ ^A_ZX \\to\\ ^{A-4}_{Z-2}Y + {}^4_2\\mathrm{He}; \\qquad \\beta^-:\\ ^A_ZX \\to\\ ^A_{Z+1}Y + e^- + \\bar\\nu"},
+            {label:"Q-values", tex:"Q = [m_{\\rm parent} - \\textstyle\\sum m_{\\rm products}]c^2 > 0"}
+          ],
+          action(c){
        const {M}=c;
        arrow(c, -8,0, 252,0, {color:'#8A7D60', w:2});
        arrow(c, 0,-0.4, 0,10.2, {color:'#8A7D60', w:2});
@@ -861,11 +759,17 @@ const EXAMPLES = [
        });
        label(c, 110,6.6, 'half, of whatever remains, every half-life —', {fs:11.5, color:'#8A5A24', italic:true});
        label(c, 110,5.9, 'the curve bends; never interpolate linearly', {fs:11.5, color:'#8A5A24', italic:true});
-     } },
-   { say:"One last wonder before the arithmetic: every atom in you heavier than helium was cooked in a star and scattered by its death. The iron in your blood sits at the very peak of tonight’s curve — forged in a supernova, delivered across gigayears, now reading a physics tutorial. Nuclear physics is not a distant subject; it is your biography, chapter one.",
-     pose:'think', solo:true,
-     board:[{t:'The iron in your blood is supernova ash at the top of the binding-energy curve. You ARE the syllabus.'}],
-     action(c){
+     }
+        },
+        { map:4, title:"You ARE the syllabus",
+          think:"Where was the iron in your blood forged?",
+          model:"In a star's death — supernova ash at the curve's peak.",
+          pose:"think", solo:true,
+          say:"One last wonder before the arithmetic: every atom in you heavier than helium was cooked in a star and scattered by its death. The iron in your blood sits at the very peak of tonight’s curve — forged in a supernova, delivered across gigayears, now reading a physics tutorial. Nuclear physics is not a distant subject; it is your biography, chapter one.",
+          board:[
+            {text:"The iron in your blood is supernova ash at the top of the binding-energy curve. You ARE the syllabus.", kind:"note"}
+          ],
+          action(c){
        const {M}=c;
        for(let k=0;k<10;k++){ const a=k*Math.PI/5;
          el('line',{x1:M.X(50+18*Math.cos(a)),y1:M.Y(6.2+0.8*Math.sin(a)),
@@ -876,14 +780,19 @@ const EXAMPLES = [
        el('path',{d:`M ${M.X(196)} ${M.Y(7.6)} C ${M.X(212)} ${M.Y(9.2)}, ${M.X(228)} ${M.Y(7.2)}, ${M.X(196)} ${M.Y(3.4)} C ${M.X(164)} ${M.Y(7.2)}, ${M.X(180)} ${M.Y(9.2)}, ${M.X(196)} ${M.Y(7.6)} Z`,
          fill:'#C0392B', stroke:'#7A2015','stroke-width':2},c.svg);
        label(c, 172,1.4, '…now reading a tutorial', {fs:12, color:'#8A5A24', italic:true});
-     } },
-   { say:"And the two great applications. FISSION: uranium-235 plus a neutron splits into mid-mass fragments, two or three fresh neutrons — hence chain reactions — and some two hundred M-e-V. FUSION: deuterium plus tritium gives helium-4, a neutron, and seventeen point six M-e-V, at the price of millions of kelvin to tunnel the Coulomb barrier — Tutorial 13’s exponential, now running the Sun. Strategy: balance A and Z FIRST; energy is always a mass difference times nine three one point five M-e-V per u; take logarithms for ages; and keep the scales straight — chemistry trades e-V, nuclei trade M-e-V, a millionfold apart. To the examples — the last six of the course.",
-     pose:'excited',
-     board:['^{235}\\mathrm U + n \\to \\text{fragments} + 2\\text{–}3\\,n + {\\sim}200\\ \\mathrm{MeV}',
-            '^2\\mathrm H + {}^3\\mathrm H \\to {}^4\\mathrm{He} + n + 17.6\\ \\mathrm{MeV}',
-            {t:'Strategy: balance A, Z → Δm × 931.5 MeV/u → logs for ages → MeV vs eV: the million-to-one ratio.'}],
-     solo:true,
-     action(c){
+     }
+        },
+        { map:5, title:"The two great applications",
+          think:"What ratio explains nuclear vs chemical energy?",
+          model:"MeV to eV — a million. Fission chains; fusion powers stars.",
+          pose:"excited", solo:true,
+          say:"And the two great applications. FISSION: uranium-235 plus a neutron splits into mid-mass fragments, two or three fresh neutrons — hence chain reactions — and some two hundred M-e-V. FUSION: deuterium plus tritium gives helium-4, a neutron, and seventeen point six M-e-V, at the price of millions of kelvin to tunnel the Coulomb barrier — Tutorial 13’s exponential, now running the Sun. Strategy: balance A and Z FIRST; energy is always a mass difference times nine three one point five M-e-V per u; take logarithms for ages; and keep the scales straight — chemistry trades e-V, nuclei trade M-e-V, a millionfold apart. To the examples — the last six of the course.",
+          board:[
+            {label:"Fission", tex:"^{235}\\mathrm U + n \\to \\text{fragments} + 2\\text{–}3\\,n + {\\sim}200\\ \\mathrm{MeV}"},
+            {label:"Fusion", tex:"^2\\mathrm H + {}^3\\mathrm H \\to {}^4\\mathrm{He} + n + 17.6\\ \\mathrm{MeV}"},
+            {label:"The pathway", text:"Strategy: balance A, Z → Δm × 931.5 MeV/u → logs for ages → MeV vs eV: the million-to-one ratio.", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(28), cy:M.Y(7.4), r:16, fill:'#8A5A24'},c.svg);
        arrow(c, 2,7.4, 20,7.4, {color:BLUE, w:2, label:'n', fs:11});
@@ -902,62 +811,101 @@ const EXAMPLES = [
        arrow(c, 219,8.2, 236,9.2, {color:BLUE, w:1.8, label:'n', fs:10.5});
        label(c, 150,3.6, 'fusion: D + T → ⁴He + n,', {fs:11.5, color:'#7A5A28', italic:true});
        label(c, 150,2.9, '17.6 MeV — the Sun’s ledger', {fs:11.5, color:'#7A5A28', italic:true});
-     } },
-  ]
-},
-
-/* ---------- Example 1: Nuclear size and density [Basic] ---------- */
-{
-  title:'Nuclear size and the density of everything.', diff:'Basic',
-  prompt:'(a) Find the radii of ¹⁶O and ²³⁸U. (b) Estimate the nuclear density and compare with water.',
-  world:{x0:-1, x1:11, y0:-1.4, y1:7.2},
-  setup(ctx,w){},
-  steps:[
-   { say:"We begin by taking the nucleus’s measurements. The rule is one line long: R equals R-nought times A to the one-third, with R-nought equal to one point two femtometres — femto being ten-to-the-minus-15, a hundred thousand times smaller than the atom that contains it.",
-     pose:'talk',
-     board:['R = R_0A^{1/3}, \\qquad R_0 = 1.2\\ \\mathrm{fm} = 1.2\\times10^{-15}\\ \\mathrm m'],
-     action(c){
+     }
+        },
+      ]
+    },
+    {
+diff:"Basic",
+      title:"Nuclear size and the density of everything",
+      problem:"(a) Find the radii of ¹⁶O and ²³⁸U. (b) Estimate the nuclear density and compare with water.",
+      goal:"Goal → R's and ρ",
+      world:{"x0":-1,"x1":11,"y0":-1.4,"y1":7.2},
+      pathway:["Read","Two radii","The density","Perspective","Neutron star"],
+      setup(ctx,w){},
+      steps:[
+        { map:0, title:"Read: take the measurements",
+          think:"What single rule sizes every nucleus?",
+          model:"R = 1.2 fm × A^{1/3}.",
+          pose:"talk",
+          say:"We begin by taking the nucleus’s measurements. The rule is one line long: R equals R-nought times A to the one-third, with R-nought equal to one point two femtometres — femto being ten-to-the-minus-15, a hundred thousand times smaller than the atom that contains it.",
+          board:[
+            {label:"The rule", tex:"R = R_0A^{1/3}, \\qquad R_0 = 1.2\\ \\mathrm{fm} = 1.2\\times10^{-15}\\ \\mathrm m", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(3.2),cy:M.Y(3.4),r:2.6*M.s,fill:'none',stroke:'#8A7D60','stroke-width':2,'stroke-dasharray':'6,5'},c.svg);
        el('circle',{cx:M.X(3.2),cy:M.Y(3.4),r:3,fill:RED},c.svg);
        textAt(c, 3.2,6.5, 'the atom: its electron cloud', {fs:11.5, anchor:'middle', italic:true});
        textAt(c, 6.3,3.3, '← the nucleus, ×100,000 smaller (not to scale)', {fs:11, italic:true});
-     } },
-   { say:"Let us take part a. Oxygen-16: cube root of sixteen is two point five two, so R is three point nought femtometres. Uranium-238: cube root of 238 is six point two nought, giving seven point four femtometres. Savour the arithmetic: FIFTEEN times the nucleons, only two and a half times the radius — because volume, not radius, tracks A.",
-     pose:'write',
-     board:['R_{\\rm O} = 1.2(16)^{1/3} = 1.2(2.52) = 3.0\\ \\mathrm{fm}',
-            'R_{\\rm U} = 1.2(238)^{1/3} = 1.2(6.20) = 7.4\\ \\mathrm{fm}'],
-     action(c){
+     }
+        },
+        { map:1, title:"Part (a): oxygen and uranium",
+          think:"Cube roots of 16 and 238 give what radii?",
+          model:"3.0 fm and 7.4 fm — fifteen times the mass, 2.5× the radius.",
+          pose:"write",
+          say:"Let us take part a. Oxygen-16: cube root of sixteen is two point five two, so R is three point nought femtometres. Uranium-238: cube root of 238 is six point two nought, giving seven point four femtometres. Savour the arithmetic: FIFTEEN times the nucleons, only two and a half times the radius — because volume, not radius, tracks A.",
+          board:[
+            {label:"Oxygen", tex:"R_{\\rm O} = 1.2(16)^{1/3} = 1.2(2.52) = 3.0\\ \\mathrm{fm}", kind:"answer"},
+            {label:"Uranium", tex:"R_{\\rm U} = 1.2(238)^{1/3} = 1.2(6.20) = 7.4\\ \\mathrm{fm}", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(2.6),cy:M.Y(4.2),r:14,fill:BLUE,opacity:.8},c.svg);
        el('circle',{cx:M.X(6.8),cy:M.Y(4.2),r:34.5,fill:BLUE,opacity:.55},c.svg);
        textAt(c, 2.6,2.9, '¹⁶O: 3.0 fm', {fs:12, anchor:'middle'});
        textAt(c, 6.8,1.9, '²³⁸U: 7.4 fm', {fs:12, anchor:'middle'});
-     } },
-   { say:"For part b, the density. Take oxygen: mass sixteen atomic units — two point six six ten-to-the-minus-26 kilograms — in a sphere of radius three femtometres, volume one point one three ten-to-the-minus-43 cubic metres. Divide: two point three ten-to-the-17 kilograms per cubic metre.",
-     pose:'point',
-     board:['\\rho = \\frac{16(1.66\\times10^{-27})}{\\tfrac43\\pi(3.0\\times10^{-15})^3} = \\frac{2.66\\times10^{-26}}{1.13\\times10^{-43}} = 2.3\\times10^{17}\\ \\mathrm{kg/m^3}'] },
-   { say:"That is ten-to-the-14 times water. A teaspoon of nuclear matter would weigh a billion tonnes — the mass of a mountain range in your palm, briefly. And notice the A CANCELS in rho: mass grows as A, volume grows as A, so EVERY nucleus has this same density. Matter is almost entirely empty space wrapped around specks of this stuff.",
-     pose:'write',
-     board:['\\rho_{\\rm nuc} \\approx 10^{14}\\,\\rho_{\\rm water}, \\qquad \\rho \\propto \\frac{A}{R^3} = \\frac{A}{R_0^3A}\\ (\\text{independent of } A)'] },
-   { say:"The cosmic footnote: a NEUTRON STAR is precisely this density, sustained at twenty kilometres’ radius — a nucleus the size of a city, bound by gravity instead of the strong force. Now comes the check: our formula at A about ten-to-the-57 gives exactly such radii. Nuclear physics, weighed against the sky, balances. Check.",
-     pose:'excited',
-     board:[{t:'Neutron star = city-sized nucleus at the same 10¹⁷ kg/m³. The density scale is universal.'}] },
-  ]
-},
-
-/* ---------- Example 2: Binding energy of iron-56 [Intermediate] ---------- */
-{
-  title:'Binding energy of iron-56.', diff:'Intermediate',
-  prompt:'The atomic mass of ⁵⁶Fe (Z = 26) is 55.934936 u. Find E_B and E_B/A.',
-  world:{x0:-1, x1:11, y0:-1.4, y1:7.2},
-  setup(ctx,w){},
-  steps:[
-   { say:"The mass-defect drill, performed on the most bound nucleus of consequence: iron-56. The plan: weigh the PARTS — twenty-six hydrogen atoms and thirty neutrons — subtract the WHOLE, and convert the missing mass to energy at nine hundred and thirty-one and a half M-e-V per atomic unit. Using ATOMIC masses throughout lets the twenty-six electrons cancel silently.",
-     pose:'talk',
-     board:[{t:'⁵⁶Fe: Z = 26, N = 30, m = 55.934936 u.'},
-            'E_B = [26\\,m(^1\\mathrm H) + 30\\,m_n - m(^{56}\\mathrm{Fe})]c^2'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): the density",
+          think:"Mass over the tiny sphere yields what number?",
+          model:"2.3×10¹⁷ kg/m³.",
+          pose:"point",
+          say:"For part b, the density. Take oxygen: mass sixteen atomic units — two point six six ten-to-the-minus-26 kilograms — in a sphere of radius three femtometres, volume one point one three ten-to-the-minus-43 cubic metres. Divide: two point three ten-to-the-17 kilograms per cubic metre.",
+          board:[
+            {label:"The density", tex:"\\rho = \\frac{16(1.66\\times10^{-27})}{\\tfrac43\\pi(3.0\\times10^{-15})^3} = \\frac{2.66\\times10^{-26}}{1.13\\times10^{-43}} = 2.3\\times10^{17}\\ \\mathrm{kg/m^3}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Feel the number",
+          think:"What would a teaspoon of nuclear matter weigh?",
+          model:"A billion tonnes — and ρ is A-independent by construction.",
+          pose:"write",
+          say:"That is ten-to-the-14 times water. A teaspoon of nuclear matter would weigh a billion tonnes — the mass of a mountain range in your palm, briefly. And notice the A CANCELS in rho: mass grows as A, volume grows as A, so EVERY nucleus has this same density. Matter is almost entirely empty space wrapped around specks of this stuff.",
+          board:[
+            {label:"The scale + the why", tex:"\\rho_{\\rm nuc} \\approx 10^{14}\\,\\rho_{\\rm water}, \\qquad \\rho \\propto \\frac{A}{R^3} = \\frac{A}{R_0^3A}\\ (\\text{independent of } A)", kind:"key"}
+          ]
+        },
+        { map:4, title:"The cosmic footnote",
+          think:"What object IS this density at city size?",
+          model:"A neutron star ✓ — the scale is universal.",
+          pose:"excited",
+          say:"The cosmic footnote: a NEUTRON STAR is precisely this density, sustained at twenty kilometres’ radius — a nucleus the size of a city, bound by gravity instead of the strong force. Now comes the check: our formula at A about ten-to-the-57 gives exactly such radii. Nuclear physics, weighed against the sky, balances. Check.",
+          board:[
+            {label:"The check", text:"Neutron star = city-sized nucleus at the same 10¹⁷ kg/m³. The density scale is universal.", kind:"key"},
+            {label:"Reusable method", text:"A^{1/3} for size → mass/volume → density independent of A → neutron stars as the cosmic check", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Binding energy of iron-56",
+      problem:"The atomic mass of ⁵⁶Fe (Z = 26) is 55.934936 u. Find E_B and E_B/A.",
+      goal:"Goal → E_B of ⁵⁶Fe",
+      world:{"x0":-1,"x1":11,"y0":-1.4,"y1":7.2},
+      pathway:["Read","Weigh the parts","The defect","Convert","Two lessons"],
+      setup(ctx,w){},
+      steps:[
+        { map:0, title:"Read: the mass-defect drill",
+          think:"Why do ATOMIC masses work — where do the electrons go?",
+          model:"They cancel between the H atoms and the Fe atom.",
+          pose:"talk",
+          say:"The mass-defect drill, performed on the most bound nucleus of consequence: iron-56. The plan: weigh the PARTS — twenty-six hydrogen atoms and thirty neutrons — subtract the WHOLE, and convert the missing mass to energy at nine hundred and thirty-one and a half M-e-V per atomic unit. Using ATOMIC masses throughout lets the twenty-six electrons cancel silently.",
+          board:[
+            {label:"Given", text:"⁵⁶Fe: Z = 26, N = 30, m = 55.934936 u."},
+            {label:"The recipe", tex:"E_B = [26\\,m(^1\\mathrm H) + 30\\,m_n - m(^{56}\\mathrm{Fe})]c^2", kind:"key"}
+          ],
+          action(c){
        const {M}=c; let seed=3;
        const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
        for(let k=0;k<56;k++){
@@ -966,208 +914,672 @@ const EXAMPLES = [
        }
        textAt(c, 2.6,6.3, '26 p (red) + 30 n (blue)', {fs:11.5, anchor:'middle'});
        textAt(c, 2.6,2.5, '⁵⁶Fe: weigh the parts, then the whole', {fs:11.5, anchor:'middle', italic:true});
-     } },
-   { say:"Weigh the parts, carrying SIX decimals — the defect is a one-per-cent difference between fifty-six-unit numbers, and sloppy rounding devours it. Twenty-six times 1.007825 is 26.203450. Thirty times 1.008665 is 30.259950. The parts total 56.463400 atomic units.",
-     pose:'write',
-     board:['26(1.007825) = 26.203450\\ \\mathrm u, \\qquad 30(1.008665) = 30.259950\\ \\mathrm u',
-            '\\text{parts: } 56.463400\\ \\mathrm u'] },
-   { say:"Subtract the assembled nucleus: 56.463400 minus 55.934936 — 0.528464 atomic units have VANISHED. Half a nucleon’s worth of mass, paid out as the glue holding the other fifty-six together. Weigh the parts, weigh the whole, and find the whole LIGHTER — chemistry never shows you this deficit because chemical glue is a millionth as strong; only nuclei bind hard enough to dent the scale.",
-     pose:'point',
-     board:['\\Delta m = 56.463400 - 55.934936 = 0.528464\\ \\mathrm u'],
-     action(c){
+     }
+        },
+        { map:1, title:"Weigh the parts — six decimals",
+          think:"Why is sloppy rounding fatal here?",
+          model:"The answer IS a 1% difference of 56-unit numbers: parts = 56.463400 u.",
+          pose:"write",
+          say:"Weigh the parts, carrying SIX decimals — the defect is a one-per-cent difference between fifty-six-unit numbers, and sloppy rounding devours it. Twenty-six times 1.007825 is 26.203450. Thirty times 1.008665 is 30.259950. The parts total 56.463400 atomic units.",
+          board:[
+            {label:"The pieces", tex:"26(1.007825) = 26.203450\\ \\mathrm u, \\qquad 30(1.008665) = 30.259950\\ \\mathrm u"},
+            {label:"The parts total", tex:"\\text{parts: } 56.463400\\ \\mathrm u", kind:"key"}
+          ]
+        },
+        { map:2, title:"The vanished mass",
+          think:"How much mass became glue?",
+          model:"0.528464 u — half a nucleon's worth.",
+          pose:"point",
+          say:"Subtract the assembled nucleus: 56.463400 minus 55.934936 — 0.528464 atomic units have VANISHED. Half a nucleon’s worth of mass, paid out as the glue holding the other fifty-six together. Weigh the parts, weigh the whole, and find the whole LIGHTER — chemistry never shows you this deficit because chemical glue is a millionth as strong; only nuclei bind hard enough to dent the scale.",
+          board:[
+            {label:"The defect", tex:"\\Delta m = 56.463400 - 55.934936 = 0.528464\\ \\mathrm u", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        el('rect',{x:M.X(1.2),y:M.Y(5.8),width:M.X(5.8)-M.X(1.2),height:M.Y(4.9)-M.Y(5.8),fill:BLUE,opacity:.6,rx:3},c.svg);
        el('rect',{x:M.X(1.2),y:M.Y(4.0),width:M.X(5.757)-M.X(1.2),height:M.Y(3.1)-M.Y(4.0),fill:GREEN,opacity:.6,rx:3},c.svg);
        el('rect',{x:M.X(5.757),y:M.Y(4.0),width:M.X(5.8)-M.X(5.757),height:M.Y(3.1)-M.Y(4.0),fill:RED,rx:1},c.svg);
        textAt(c, 6.0,5.3, 'parts: 56.463400 u', {fs:11.5});
        textAt(c, 6.0,3.5, 'whole + defect (red sliver)', {fs:11.5});
-     } },
-   { say:"Convert: 0.528464 times 931.494 — four hundred and ninety-two point three M-e-V of binding energy. Per nucleon: 492.3 over fifty-six — eight point seven nine M-e-V. That is the summit of the curve; iron sits at the very bottom of the nuclear valley, the most contented nucleus in nature.",
-     pose:'write',
-     board:['E_B = (0.528464)(931.494) = 492.3\\ \\mathrm{MeV}',
-            '\\frac{E_B}{A} = \\frac{492.3}{56} = 8.79\\ \\mathrm{MeV/nucleon}\\ \\ (\\text{the peak})'] },
-   { say:"Two lessons for the road. Physical: eight point seven nine M-e-V per nucleon is a MILLION times any chemical bond — the ratio that separates dynamite from stars. Procedural: the entire answer lived in the sixth decimal place of the masses. In nuclear energetics, significant figures are not etiquette; they are the physics. Check.",
-     pose:'excited',
-     board:[{t:'Carry six decimals or perish: the answer IS a 1% mass difference. And 8.8 MeV ≈ 10⁶ × chemistry.'}] },
-  ]
-},
-
-/* ---------- Example 3: The decay law, derived and used [Challenging] ---------- */
-{
-  title:'Deriving and using the decay law.', diff:'Challenging',
-  prompt:'(a) Derive N(t) from dN/dt = −λN. (b) Cobalt-60 (T½ = 5.27 y) has activity 1.20×10⁴ Bq; find λ, N₀, and the activity after 12.0 y. (c) A wooden artifact shows ¹⁴C activity at 23.5% of living wood (T½ = 5730 y); date it.',
-  world:{x0:-1.4, x1:13.4, y0:-0.12, y1:1.18, aniso:true},
-  setup(ctx,w){
+     }
+        },
+        { map:3, title:"Convert to MeV",
+          think:"×931.494 delivers what binding — and per nucleon?",
+          model:"492.3 MeV; 8.79 MeV/A — the peak of the curve.",
+          pose:"write",
+          say:"Convert: 0.528464 times 931.494 — four hundred and ninety-two point three M-e-V of binding energy. Per nucleon: 492.3 over fifty-six — eight point seven nine M-e-V. That is the summit of the curve; iron sits at the very bottom of the nuclear valley, the most contented nucleus in nature.",
+          board:[
+            {label:"Total", tex:"E_B = (0.528464)(931.494) = 492.3\\ \\mathrm{MeV}", kind:"answer"},
+            {label:"Per nucleon", tex:"\\frac{E_B}{A} = \\frac{492.3}{56} = 8.79\\ \\mathrm{MeV/nucleon}\\ \\ (\\text{the peak})", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Two lessons for the road",
+          think:"What separates dynamite from a reactor?",
+          model:"The MeV-to-eV million; and: carry six decimals or perish ✓.",
+          pose:"excited",
+          say:"Two lessons for the road. Physical: eight point seven nine M-e-V per nucleon is a MILLION times any chemical bond — the ratio that separates dynamite from stars. Procedural: the entire answer lived in the sixth decimal place of the masses. In nuclear energetics, significant figures are not etiquette; they are the physics. Check.",
+          board:[
+            {label:"The lessons", text:"Carry six decimals or perish: the answer IS a 1% mass difference. And 8.8 MeV ≈ 10⁶ × chemistry.", kind:"key"},
+            {label:"Reusable method", text:"parts − whole with six decimals → ×931.494 → ÷A → place it on the curve", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Deriving and using the decay law",
+      problem:"(a) Derive N(t) from dN/dt = −λN. (b) Cobalt-60 (T½ = 5.27 y) has activity 1.20×10⁴ Bq; find λ, N₀, and the activity after 12.0 y. (c) A wooden artifact shows ¹⁴C activity at 23.5% of living wood (T½ = 5730 y); date it.",
+      goal:"Goal → law, Co-60, ¹⁴C",
+      world:{"x0":-1.4,"x1":13.4,"y0":-0.12,"y1":1.18,"aniso":true},
+      pathway:["Read","Derive","Cobalt-60","After 12 years","Carbon dating"],
+      setup(ctx,w){
     axes2D(ctx.svg, ctx.M, w, {xlab:'t (half-lives)', ylab:'N/N₀'});
   },
-  steps:[
-   { say:"Radioactivity, from first principles to archaeology. The only physical input: each nucleus decays INDEPENDENTLY, with probability lambda per unit time. For N nuclei, d-N over d-t equals minus lambda N — the population shrinks in proportion to itself.",
-     pose:'talk',
-     board:['\\frac{dN}{dt} = -\\lambda N\\ \\ (\\text{each nucleus independent, memoryless})'] },
-   { say:"For part a, the derivation: separate and integrate. d-N over N from N-nought to N equals minus lambda times t. The left side is a logarithm; exponentiate: N equals N-nought e to the minus lambda t. Set N to half of N-nought and the HALF-LIFE emerges: T-half equals log two over lambda. And the activity — decays per second — is lambda N, inheriting the same exponential.",
-     pose:'write',
-     board:['\\int_{N_0}^N\\frac{dN^{\\prime}}{N^{\\prime}} = -\\lambda\\int_0^tdt^{\\prime}\\ \\Rightarrow\\ \\ln\\frac{N}{N_0} = -\\lambda t\\ \\Rightarrow\\ N = N_0e^{-\\lambda t}',
-            'T_{1/2} = \\frac{\\ln 2}{\\lambda}, \\qquad A = \\lambda N'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: one assumption",
+          think:"What is the ONLY physical input to radioactivity?",
+          model:"Independent, memoryless decay at rate λ.",
+          pose:"talk",
+          say:"Radioactivity, from first principles to archaeology. The only physical input: each nucleus decays INDEPENDENTLY, with probability lambda per unit time. For N nuclei, d-N over d-t equals minus lambda N — the population shrinks in proportion to itself.",
+          board:[
+            {label:"The input", tex:"\\frac{dN}{dt} = -\\lambda N\\ \\ (\\text{each nucleus independent, memoryless})", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): separate and integrate",
+          think:"dN/N summed becomes what law?",
+          model:"N = N₀e^{−λt}; T½ = ln2/λ; A = λN.",
+          pose:"write",
+          say:"For part a, the derivation: separate and integrate. d-N over N from N-nought to N equals minus lambda times t. The left side is a logarithm; exponentiate: N equals N-nought e to the minus lambda t. Set N to half of N-nought and the HALF-LIFE emerges: T-half equals log two over lambda. And the activity — decays per second — is lambda N, inheriting the same exponential.",
+          board:[
+            {label:"The derivation", tex:"\\int_{N_0}^N\\frac{dN^{\\prime}}{N^{\\prime}} = -\\lambda\\int_0^tdt^{\\prime}\\ \\Rightarrow\\ \\ln\\frac{N}{N_0} = -\\lambda t\\ \\Rightarrow\\ N = N_0e^{-\\lambda t}", kind:"answer", move:"separate"},
+            {label:"The companions", tex:"T_{1/2} = \\frac{\\ln 2}{\\lambda}, \\qquad A = \\lambda N"}
+          ],
+          action(c){
        plotCurve(c, t=>[t, Math.pow(0.5,t)], 0, 12.6, {color:GOLD, w:3, dur:1300});
        dashLine(c, 1,0, 1,0.5, {color:'#8A7D60'}); dashLine(c, 0,0.5, 1,0.5, {color:'#8A7D60'});
        textAt(c, 1.0,0.56, '½ every T½', {fs:11.5, italic:true});
-     } },
-   { say:"For part b, cobalt-60, the radiotherapy workhorse. Lambda: log two over five point two seven years — 0.1315 per year, or 4.17 ten-to-the-minus-9 per second. The population behind twelve thousand becquerels: N-nought equals activity over lambda — two point eight eight ten-to-the-12 nuclei. Marvel briefly: that vigorous source is a third of a NANOGRAM of cobalt.",
-     pose:'point',
-     board:['\\lambda = \\frac{0.6931}{5.27\\ \\mathrm y} = 0.1315\\ \\mathrm{y^{-1}} = 4.17\\times10^{-9}\\ \\mathrm{s^{-1}}',
-            'N_0 = \\frac{A_0}{\\lambda} = \\frac{1.20\\times10^4}{4.17\\times10^{-9}} = 2.88\\times10^{12}\\ \\ (\\approx0.3\\ \\mathrm{ng})'] },
-   { say:"After twelve years — twelve over five point two seven, two point two seven seven half-lives — the activity is A-nought times two to the minus 2.277: twelve thousand times 0.2064 — two thousand four hundred and eighty becquerels. Note the fractional half-life handled by the exponential, never by linear interpolation: decay curves bend, always.",
-     pose:'write',
-     board:['\\frac{12.0}{5.27} = 2.277\\ \\text{half-lives}: \\quad A = (1.20\\times10^4)\\,2^{-2.277} = 2.48\\times10^3\\ \\mathrm{Bq}'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): cobalt-60",
+          think:"From activity and λ, how many nuclei — and how much mass?",
+          model:"N₀ = 2.88×10¹²: a third of a nanogram doing radiotherapy.",
+          pose:"point",
+          say:"For part b, cobalt-60, the radiotherapy workhorse. Lambda: log two over five point two seven years — 0.1315 per year, or 4.17 ten-to-the-minus-9 per second. The population behind twelve thousand becquerels: N-nought equals activity over lambda — two point eight eight ten-to-the-12 nuclei. Marvel briefly: that vigorous source is a third of a NANOGRAM of cobalt.",
+          board:[
+            {label:"λ", tex:"\\lambda = \\frac{0.6931}{5.27\\ \\mathrm y} = 0.1315\\ \\mathrm{y^{-1}} = 4.17\\times10^{-9}\\ \\mathrm{s^{-1}}"},
+            {label:"N₀", tex:"N_0 = \\frac{A_0}{\\lambda} = \\frac{1.20\\times10^4}{4.17\\times10^{-9}} = 2.88\\times10^{12}\\ \\ (\\approx0.3\\ \\mathrm{ng})", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Twelve years on",
+          think:"2.277 half-lives multiply the activity by what?",
+          model:"2^{−2.277}: A = 2.48×10³ Bq.",
+          pose:"write",
+          say:"After twelve years — twelve over five point two seven, two point two seven seven half-lives — the activity is A-nought times two to the minus 2.277: twelve thousand times 0.2064 — two thousand four hundred and eighty becquerels. Note the fractional half-life handled by the exponential, never by linear interpolation: decay curves bend, always.",
+          board:[
+            {label:"The activity", tex:"\\frac{12.0}{5.27} = 2.277\\ \\text{half-lives}: \\quad A = (1.20\\times10^4)\\,2^{-2.277} = 2.48\\times10^3\\ \\mathrm{Bq}", kind:"answer"}
+          ],
+          action(c){
        dashLine(c, 2.277,0, 2.277,0.2064, {color:RED});
        textAt(c, 2.35,0.26, 'Co-60 after 12 y: ×0.206', {fs:11, italic:true});
-     } },
-   { say:"For part c, the artifact. Living wood holds a steady carbon-14 level, replenished by cosmic rays; dead wood only spends. Activity at twenty-three and a half per cent means lambda t equals log of one over 0.235 — one point four four eight. Time: T-half times 1.448 over 0.693 — twelve THOUSAND years. End of the last ice age, read from a stick by a logarithm. The exponential is nature’s clock; the log is how we ask it the time.",
-     pose:'excited',
-     board:['t = T_{1/2}\\frac{\\ln(1/0.235)}{\\ln 2} = 5730\\times\\frac{1.4479}{0.6931} = 1.20\\times10^4\\ \\mathrm y\\ \\checkmark',
-            {t:'Carbon dating: a ratio in, an age out. Logs convert percentages to millennia.'}],
-     action(c){
+     }
+        },
+        { map:4, title:"Part (c): the artifact",
+          think:"23.5% of living activity dates the wood to when?",
+          model:"12,000 years ✓ — logs convert percentages to millennia.",
+          pose:"excited",
+          say:"For part c, the artifact. Living wood holds a steady carbon-14 level, replenished by cosmic rays; dead wood only spends. Activity at twenty-three and a half per cent means lambda t equals log of one over 0.235 — one point four four eight. Time: T-half times 1.448 over 0.693 — twelve THOUSAND years. End of the last ice age, read from a stick by a logarithm. The exponential is nature’s clock; the log is how we ask it the time.",
+          board:[
+            {label:"The age", tex:"t = T_{1/2}\\frac{\\ln(1/0.235)}{\\ln 2} = 5730\\times\\frac{1.4479}{0.6931} = 1.20\\times10^4\\ \\mathrm y\\ \\checkmark", kind:"answer"},
+            {label:"The method", text:"Carbon dating: a ratio in, an age out. Logs convert percentages to millennia.", kind:"key"},
+            {label:"Reusable method", text:"separate → exponential → half-life counting for activities → invert with logs for ages", kind:"answer"}
+          ],
+          action(c){
        dashLine(c, 0,0.235, 2.089,0.235, {color:GREEN});
        dashLine(c, 2.089,0, 2.089,0.235, {color:GREEN});
        el('circle',{cx:c.M.X(2.089),cy:c.M.Y(0.235),r:5,fill:GREEN},c.svg);
        textAt(c, 3.5,0.42, '¹⁴C at 23.5% → 2.09 T½ ≈ 12,000 y', {fs:11.5, italic:true, color:'#2E5C3F'});
-     } },
-  ]
-},
-
-/* ---------- Example 4: Alpha decay with recoil [Challenging] ---------- */
-{
-  title:'Alpha decay of uranium-238, with recoil.', diff:'Challenging',
-  prompt:'For ²³⁸U → ²³⁴Th + α (masses 238.050788, 234.043601, 4.002603 u): (a) find Q; (b) divide Q between the alpha and the recoiling thorium.',
-  world:{x0:-1, x1:11, y0:-3.6, y1:3.6},
-  setup(ctx,w){
+     }
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Alpha decay of uranium-238, with recoil",
+      problem:"For ²³⁸U → ²³⁴Th + α (masses 238.050788, 234.043601, 4.002603 u): (a) find Q; (b) divide Q between the alpha and the recoiling thorium.",
+      goal:"Goal → Q, then the split",
+      world:{"x0":-1,"x1":11,"y0":-3.6,"y1":3.6},
+      pathway:["Read","The Q-value","Equal momenta","The split","The consequence"],
+      setup(ctx,w){
     const {svg,M}=ctx; const c={svg,M,instant:true};
     el('circle',{cx:M.X(4.6),cy:M.Y(0),r:26,fill:PURPLE,opacity:.7},svg);
     textAt(c, 4.6,-1.6, '²³⁸U at rest', {fs:12, italic:true, anchor:'middle'});
   },
-  steps:[
-   { say:"Uranium-238 sheds an alpha particle — the decay that anchors geological dating. Two questions: how much energy does the decay release, and WHO carries it away? Momentum conservation will answer the second with surprising decisiveness. Momentum conservation in a decay is a two-line argument with the authority of an eyewitness: the parent was at rest, so whatever momentum one fragment takes, the other must exactly refund.",
-     pose:'talk',
-     board:['^{238}\\mathrm U \\to {}^{234}\\mathrm{Th} + {}^4_2\\mathrm{He}',
-            {t:'Masses: 238.050788, 234.043601, 4.002603 u. Parent at rest.'}] },
-   { say:"For part a, the Q-value: parent minus products. 238.050788, less 234.043601 and 4.002603, leaves 0.004584 atomic units. Times 931.494: FOUR POINT TWO SEVEN M-e-V. Positive, so the decay proceeds — at uranium’s glacial convenience: half-life four and a half billion years, the age of the Earth itself, which is precisely why uranium remains to be found.",
-     pose:'write',
-     board:['\\Delta m = 238.050788 - (234.043601 + 4.002603) = 0.004584\\ \\mathrm u',
-            'Q = (0.004584)(931.494) = 4.27\\ \\mathrm{MeV} > 0\\ \\ (T_{1/2} = 4.5\\ \\mathrm{Gy})'] },
-   { say:"On we go to part b. The parent sat at REST, so the two products must carry equal and opposite momenta — one arrow each way, the lightest of conservation laws. With equal p and kinetic energy p squared over two m, the ENERGIES divide inversely with mass: K-alpha over K-thorium equals two hundred and thirty-four over four.",
-     pose:'point',
-     board:['p_\\alpha = p_{\\rm Th}\\ \\ (\\text{parent at rest}), \\qquad K = \\frac{p^2}{2m}\\ \\Rightarrow\\ \\frac{K_\\alpha}{K_{\\rm Th}} = \\frac{m_{\\rm Th}}{m_\\alpha} = \\frac{234}{4}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: who carries the cash?",
+          think:"Two products, one energy — what decides the shares?",
+          model:"Momentum conservation, from a parent at rest.",
+          pose:"talk",
+          say:"Uranium-238 sheds an alpha particle — the decay that anchors geological dating. Two questions: how much energy does the decay release, and WHO carries it away? Momentum conservation will answer the second with surprising decisiveness. Momentum conservation in a decay is a two-line argument with the authority of an eyewitness: the parent was at rest, so whatever momentum one fragment takes, the other must exactly refund.",
+          board:[
+            {label:"The decay", tex:"^{238}\\mathrm U \\to {}^{234}\\mathrm{Th} + {}^4_2\\mathrm{He}", kind:"key"},
+            {label:"The masses", text:"Masses: 238.050788, 234.043601, 4.002603 u. Parent at rest."}
+          ]
+        },
+        { map:1, title:"Part (a): the Q-value",
+          think:"Parent minus products leaves what defect — and Q?",
+          model:"0.004584 u → 4.27 MeV (over 4.5 Gyr half-lives).",
+          pose:"write",
+          say:"For part a, the Q-value: parent minus products. 238.050788, less 234.043601 and 4.002603, leaves 0.004584 atomic units. Times 931.494: FOUR POINT TWO SEVEN M-e-V. Positive, so the decay proceeds — at uranium’s glacial convenience: half-life four and a half billion years, the age of the Earth itself, which is precisely why uranium remains to be found.",
+          board:[
+            {label:"The defect", tex:"\\Delta m = 238.050788 - (234.043601 + 4.002603) = 0.004584\\ \\mathrm u"},
+            {label:"Q", tex:"Q = (0.004584)(931.494) = 4.27\\ \\mathrm{MeV} > 0\\ \\ (T_{1/2} = 4.5\\ \\mathrm{Gy})", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Equal and opposite",
+          think:"With p shared equally, K = p²/2m favours whom?",
+          model:"The light one: K ratio = inverse mass ratio.",
+          pose:"point",
+          say:"On we go to part b. The parent sat at REST, so the two products must carry equal and opposite momenta — one arrow each way, the lightest of conservation laws. With equal p and kinetic energy p squared over two m, the ENERGIES divide inversely with mass: K-alpha over K-thorium equals two hundred and thirty-four over four.",
+          board:[
+            {label:"The lightest conservation law", tex:"p_\\alpha = p_{\\rm Th}\\ \\ (\\text{parent at rest}), \\qquad K = \\frac{p^2}{2m}\\ \\Rightarrow\\ \\frac{K_\\alpha}{K_{\\rm Th}} = \\frac{m_{\\rm Th}}{m_\\alpha} = \\frac{234}{4}", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(4.6),cy:M.Y(0),r:24,fill:BLUE,opacity:.6},c.svg);
        const a=el('circle',{cx:M.X(5.4),cy:M.Y(0),r:8,fill:RED},c.svg);
        tween(u=>a.setAttribute('cx', M.X(5.4+4.4*u)), 900, c.instant);
        arrow(c, 5.6,0.9, 9.4,0.9, {color:RED, w:2.5, label:'α: fast', fs:12});
        arrow(c, 3.6,0.9, 2.6,0.9, {color:BLUE, w:2.5, label:'Th: recoil', fs:11, side:-1});
-     } },
-   { say:"So the alpha pockets Q times two-thirty-four over two-thirty-eight — four point two nought M-e-V — and the thorium trudges off with the remaining nought point nought seven. The heavy partner is the getaway car; the light particle is the loot.",
-     pose:'write',
-     board:['K_\\alpha = Q\\,\\frac{m_{\\rm Th}}{m_{\\rm Th}+m_\\alpha} = 4.27\\times\\frac{234}{238} = 4.20\\ \\mathrm{MeV}',
-            'K_{\\rm Th} = 0.07\\ \\mathrm{MeV}'] },
-   { say:"The deep consequence: every alpha from this decay emerges at essentially the SAME energy — monoenergetic, a spectral line in particle form. Contrast beta decay’s smeared continuum, where the invisible antineutrino takes a different cut each time. Two-body decays are sharp; three-body decays are smeared — and that difference, historically, is how the neutrino was deduced before it was seen. Check.",
-     pose:'excited',
-     board:[{t:'Two bodies: sharp α energy. Three bodies (β): a continuum — Pauli’s neutrino hides in the smear.'}] },
-  ]
-},
-
-/* ---------- Example 5: Fission bookkeeping [Intermediate] ---------- */
-{
-  title:'Fission bookkeeping: a power plant’s uranium diet.', diff:'Intermediate',
-  prompt:'Each ²³⁵U fission releases ~200 MeV. A 1000 MW(e) reactor runs at 33% efficiency. Find (a) the fission rate, (b) the ²³⁵U mass per year, (c) the coal equivalent (29 MJ/kg).',
-  world:{x0:-1, x1:11, y0:-1.4, y1:7.2},
-  setup(ctx,w){
+     }
+        },
+        { map:3, title:"The split",
+          think:"234/238 of Q goes to the alpha — how much?",
+          model:"4.20 MeV; thorium trudges off with 0.07.",
+          pose:"write",
+          say:"So the alpha pockets Q times two-thirty-four over two-thirty-eight — four point two nought M-e-V — and the thorium trudges off with the remaining nought point nought seven. The heavy partner is the getaway car; the light particle is the loot.",
+          board:[
+            {label:"The alpha's share", tex:"K_\\alpha = Q\\,\\frac{m_{\\rm Th}}{m_{\\rm Th}+m_\\alpha} = 4.27\\times\\frac{234}{238} = 4.20\\ \\mathrm{MeV}", kind:"answer"},
+            {label:"The recoil", tex:"K_{\\rm Th} = 0.07\\ \\mathrm{MeV}"}
+          ]
+        },
+        { map:4, title:"The deep consequence",
+          think:"Why are alpha spectra sharp but beta spectra smeared?",
+          model:"Two bodies vs three — Pauli's neutrino hides in the smear ✓.",
+          pose:"excited",
+          say:"The deep consequence: every alpha from this decay emerges at essentially the SAME energy — monoenergetic, a spectral line in particle form. Contrast beta decay’s smeared continuum, where the invisible antineutrino takes a different cut each time. Two-body decays are sharp; three-body decays are smeared — and that difference, historically, is how the neutrino was deduced before it was seen. Check.",
+          board:[
+            {label:"The spectral clue", text:"Two bodies: sharp α energy. Three bodies (β): a continuum — Pauli’s neutrino hides in the smear.", kind:"key"},
+            {label:"Reusable method", text:"Q from masses → parent at rest shares p equally → K inversely as mass → sharp lines betray two bodies", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Fission bookkeeping: a power plant’s uranium diet",
+      problem:"Each ²³⁵U fission releases ~200 MeV. A 1000 MW(e) reactor runs at 33% efficiency. Find (a) the fission rate, (b) the ²³⁵U mass per year, (c) the coal equivalent (29 MJ/kg).",
+      goal:"Goal → the uranium diet",
+      world:{"x0":-1,"x1":11,"y0":-1.4,"y1":7.2},
+      pathway:["Read","Fission rate","Mass per year","Coal equivalent","The ratio"],
+      setup(ctx,w){
     const {svg,M}=ctx; const c={svg,M,instant:true};
     el('rect',{x:M.X(0.6),y:M.Y(6.2),width:M.X(3.4)-M.X(0.6),height:M.Y(3.2)-M.Y(6.2),fill:'#B7BDC4',stroke:'#7A8288','stroke-width':2.5,rx:6},svg);
     textAt(c, 2.0,2.6, '1000 MW(e), η = 33%', {fs:12, italic:true, anchor:'middle'});
   },
-  steps:[
-   { say:"From M-e-V to megawatts. A big power reactor delivers a thousand megawatts of ELECTRICITY at thirty-three per cent thermal efficiency, and each uranium-235 fission donates roughly two hundred M-e-V. We want the fission rate, the annual uranium diet, and — for perspective — the coal it replaces.",
-     pose:'talk',
-     board:[{t:'P_e = 1000 MW, η = 0.33, 200 MeV per fission.'},
-            'P_{\\rm th} = \\frac{P_e}{\\eta}, \\qquad \\text{rate} = \\frac{P_{\\rm th}}{E_{\\rm fission}}'] },
-   { say:"Thermal power first: a thousand over 0.33 — three thousand and thirty megawatts of heat. Each fission’s two hundred M-e-V converts to three point two ten-to-the-minus-11 joules. Divide: nine point five ten-to-the-19 fissions per second. A hundred billion billion small explosions a second, in comfortable silence.",
-     pose:'write',
-     board:['P_{\\rm th} = \\frac{1000}{0.33} = 3030\\ \\mathrm{MW}, \\qquad 200\\ \\mathrm{MeV} = 3.20\\times10^{-11}\\ \\mathrm J',
-            '\\text{rate} = \\frac{3.03\\times10^9}{3.20\\times10^{-11}} = 9.5\\times10^{19}\\ \\mathrm{s^{-1}}'] },
-   { say:"Part b: a year is three point one six ten-to-the-7 seconds, so three ten-to-the-27 nuclei fission annually. Through Avogadro at two hundred and thirty-five grams per mole: about one point two TONNES of uranium-235 per year. A tonne of fuel per gigawatt-year — the entire annual appetite of a city's power station would fit in a garden shed, which is the logistical miracle hiding inside the binding-energy curve.",
-     pose:'point',
-     board:['N = (9.5\\times10^{19})(3.156\\times10^7) = 3.0\\times10^{27}\\ \\text{nuclei}',
-            'm = \\frac{N}{N_A}M = \\frac{3.0\\times10^{27}}{6.022\\times10^{23}}(235\\ \\mathrm{g/mol}) = 1.2\\times10^3\\ \\mathrm{kg}'] },
-   { say:"For part c, the comparison. The same year of heat — nine point six ten-to-the-16 joules — from coal at twenty-nine megajoules per kilogram requires three point three BILLION kilograms. Three million tonnes: a hundred railcars a day, every day, against roughly a bathtub of uranium.",
-     pose:'write',
-     board:['E_{\\rm yr} = 9.56\\times10^{16}\\ \\mathrm J\\ \\Rightarrow\\ m_{\\rm coal} = \\frac{9.56\\times10^{16}}{2.9\\times10^7} = 3.3\\times10^9\\ \\mathrm{kg}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: MeV to megawatts",
+          think:"Which power does the 200 MeV feed — electric or thermal?",
+          model:"Thermal: P_th = P_e/η first.",
+          pose:"talk",
+          say:"From M-e-V to megawatts. A big power reactor delivers a thousand megawatts of ELECTRICITY at thirty-three per cent thermal efficiency, and each uranium-235 fission donates roughly two hundred M-e-V. We want the fission rate, the annual uranium diet, and — for perspective — the coal it replaces.",
+          board:[
+            {label:"Given", text:"P_e = 1000 MW, η = 0.33, 200 MeV per fission."},
+            {label:"The chain", tex:"P_{\\rm th} = \\frac{P_e}{\\eta}, \\qquad \\text{rate} = \\frac{P_{\\rm th}}{E_{\\rm fission}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the fission rate",
+          think:"3030 MW at 3.2×10⁻¹¹ J each needs what rate?",
+          model:"9.5×10¹⁹ fissions per second.",
+          pose:"write",
+          say:"Thermal power first: a thousand over 0.33 — three thousand and thirty megawatts of heat. Each fission’s two hundred M-e-V converts to three point two ten-to-the-minus-11 joules. Divide: nine point five ten-to-the-19 fissions per second. A hundred billion billion small explosions a second, in comfortable silence.",
+          board:[
+            {label:"The conversion", tex:"P_{\\rm th} = \\frac{1000}{0.33} = 3030\\ \\mathrm{MW}, \\qquad 200\\ \\mathrm{MeV} = 3.20\\times10^{-11}\\ \\mathrm J"},
+            {label:"The rate", tex:"\\text{rate} = \\frac{3.03\\times10^9}{3.20\\times10^{-11}} = 9.5\\times10^{19}\\ \\mathrm{s^{-1}}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): the year's diet",
+          think:"Through Avogadro, 3×10²⁷ nuclei weigh what?",
+          model:"1.2 tonnes of ²³⁵U per year.",
+          pose:"point",
+          say:"Part b: a year is three point one six ten-to-the-7 seconds, so three ten-to-the-27 nuclei fission annually. Through Avogadro at two hundred and thirty-five grams per mole: about one point two TONNES of uranium-235 per year. A tonne of fuel per gigawatt-year — the entire annual appetite of a city's power station would fit in a garden shed, which is the logistical miracle hiding inside the binding-energy curve.",
+          board:[
+            {label:"The count", tex:"N = (9.5\\times10^{19})(3.156\\times10^7) = 3.0\\times10^{27}\\ \\text{nuclei}"},
+            {label:"The mass", tex:"m = \\frac{N}{N_A}M = \\frac{3.0\\times10^{27}}{6.022\\times10^{23}}(235\\ \\mathrm{g/mol}) = 1.2\\times10^3\\ \\mathrm{kg}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Part (c): the coal train",
+          think:"The same heat from coal demands what mass?",
+          model:"3.3 million tonnes.",
+          pose:"write",
+          say:"For part c, the comparison. The same year of heat — nine point six ten-to-the-16 joules — from coal at twenty-nine megajoules per kilogram requires three point three BILLION kilograms. Three million tonnes: a hundred railcars a day, every day, against roughly a bathtub of uranium.",
+          board:[
+            {label:"The equivalent", tex:"E_{\\rm yr} = 9.56\\times10^{16}\\ \\mathrm J\\ \\Rightarrow\\ m_{\\rm coal} = \\frac{9.56\\times10^{16}}{2.9\\times10^7} = 3.3\\times10^9\\ \\mathrm{kg}", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('rect',{x:M.X(5.2),y:M.Y(5.9),width:M.X(5.5)-M.X(5.2),height:M.Y(5.6)-M.Y(5.9),fill:PURPLE},c.svg);
        el('rect',{x:M.X(6.4),y:M.Y(6.4),width:M.X(10.4)-M.X(6.4),height:M.Y(3.9)-M.Y(6.4),fill:'#4A4A4A',opacity:.8,rx:3},c.svg);
        textAt(c, 5.35,5.1, '1.2 t U', {fs:11, anchor:'middle'});
        textAt(c, 8.4,3.4, '3,300,000 t coal', {fs:11.5, anchor:'middle'});
-     } },
-   { say:"The factor of a million is not engineering; it is the ratio of M-e-V to e-V — nuclear bonds against chemical ones. Every energy debate about atoms versus fire is, at bottom, this one exponent. Check. Hold onto this exponent as the tutorial's souvenir: 10-to-the-6 between chemical and nuclear bonds explains reactors, bombs, stars, and why coal trains are long.",
-     pose:'excited',
-     board:[{t:'10⁶ = MeV/eV. The entire nuclear-vs-chemical energy story in one ratio.'}] },
-  ]
-},
-
-/* ---------- Example 6: Fusion, tokamak to Sun [Challenging] ---------- */
-{
-  title:'Fusion: from the tokamak to the Sun.', diff:'Challenging',
-  prompt:'(a) Compute Q for ²H + ³H → ⁴He + n. (b) From the solar luminosity 3.85×10²⁶ W and Q = 26.7 MeV per 4 protons, find the Sun’s hydrogen consumption and estimate its fuel lifetime.',
-  world:{x0:-1, x1:11, y0:-1.4, y1:7.2},
-  setup(ctx,w){
+     }
+        },
+        { map:4, title:"The ratio behind everything",
+          think:"What is the million, physically?",
+          model:"MeV/eV — nuclear vs chemical bonds. Every debate should start here ✓.",
+          pose:"excited",
+          say:"The factor of a million is not engineering; it is the ratio of M-e-V to e-V — nuclear bonds against chemical ones. Every energy debate about atoms versus fire is, at bottom, this one exponent. Check. Hold onto this exponent as the tutorial's souvenir: 10-to-the-6 between chemical and nuclear bonds explains reactors, bombs, stars, and why coal trains are long.",
+          board:[
+            {label:"The moral", text:"10⁶ = MeV/eV. The entire nuclear-vs-chemical energy story in one ratio.", kind:"key"},
+            {label:"Reusable method", text:"P_e/η → rate = P/E per event → Avogadro for mass → compare fuels by bond energies", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Fusion: from the tokamak to the Sun",
+      problem:"(a) Compute Q for ²H + ³H → ⁴He + n. (b) From the solar luminosity 3.85×10²⁶ W and Q = 26.7 MeV per 4 protons, find the Sun’s hydrogen consumption and estimate its fuel lifetime.",
+      goal:"Goal → tokamak + star",
+      world:{"x0":-1,"x1":11,"y0":-1.4,"y1":7.2},
+      pathway:["Read","D–T","The Sun's cycle","The burn rate","The tank"],
+      setup(ctx,w){
     const {svg,M}=ctx; const c={svg,M,instant:true};
     el('circle',{cx:M.X(8.4),cy:M.Y(4.6),r:40,fill:GOLD,opacity:.85},svg);
     textAt(c, 8.4,2.5, 'the Sun: a gravity-confined fusion reactor', {fs:11.5, italic:true, anchor:'middle'});
   },
-  steps:[
-   { say:"The final example of the course: fusion, priced twice — once for a machine, once for a star. First the reaction ITER pins its hopes on: deuterium plus tritium gives helium-4 plus a neutron. ITER's bet is charming in its simplicity: recreate a star's furnace in a doughnut of magnetic field, and let the binding-energy curve pay the electricity bill.",
-     pose:'talk',
-     board:['^2\\mathrm H + {}^3\\mathrm H \\to {}^4\\mathrm{He} + n',
-            {t:'Masses: 2.014102, 3.016049 → 4.002603, 1.008665 u.'}] },
-   { say:"Let us take part a. Reactants: five point nought three nought one five one atomic units. Products: five point nought one one two six eight. Defect: 0.018883 u — times 931.494 — SEVENTEEN POINT SIX M-e-V per reaction. And by the recoil logic of Example 4, momenta are equal and opposite, so the light neutron sprints off with four-fifths of it: fourteen point one M-e-V, the number stamped on every fusion-neutron shield ever designed.",
-     pose:'write',
-     board:['\\Delta m = 5.030151 - 5.011268 = 0.018883\\ \\mathrm u',
-            'Q = (0.018883)(931.494) = 17.6\\ \\mathrm{MeV}; \\qquad K_n = Q\\,\\frac{m_{\\rm He}}{m_{\\rm He}+m_n} \\approx 14.1\\ \\mathrm{MeV}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: fusion priced twice",
+          think:"Which reaction does ITER bet on?",
+          model:"D + T → ⁴He + n.",
+          pose:"talk",
+          say:"The final example of the course: fusion, priced twice — once for a machine, once for a star. First the reaction ITER pins its hopes on: deuterium plus tritium gives helium-4 plus a neutron. ITER's bet is charming in its simplicity: recreate a star's furnace in a doughnut of magnetic field, and let the binding-energy curve pay the electricity bill.",
+          board:[
+            {label:"The reaction", tex:"^2\\mathrm H + {}^3\\mathrm H \\to {}^4\\mathrm{He} + n", kind:"key"},
+            {label:"The masses", text:"Masses: 2.014102, 3.016049 → 4.002603, 1.008665 u."}
+          ]
+        },
+        { map:1, title:"Part (a): the Q-value",
+          think:"0.018883 u converts to what — and who carries most of it?",
+          model:"17.6 MeV; the neutron takes ~14.1.",
+          pose:"write",
+          say:"Let us take part a. Reactants: five point nought three nought one five one atomic units. Products: five point nought one one two six eight. Defect: 0.018883 u — times 931.494 — SEVENTEEN POINT SIX M-e-V per reaction. And by the recoil logic of Example 4, momenta are equal and opposite, so the light neutron sprints off with four-fifths of it: fourteen point one M-e-V, the number stamped on every fusion-neutron shield ever designed.",
+          board:[
+            {label:"The defect", tex:"\\Delta m = 5.030151 - 5.011268 = 0.018883\\ \\mathrm u"},
+            {label:"Q + the split", tex:"Q = (0.018883)(931.494) = 17.6\\ \\mathrm{MeV}; \\qquad K_n = Q\\,\\frac{m_{\\rm He}}{m_{\\rm He}+m_n} \\approx 14.1\\ \\mathrm{MeV}", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(1.4),cy:M.Y(5.6),r:9,fill:BLUE},c.svg);
        el('circle',{cx:M.X(2.2),cy:M.Y(5.6),r:11,fill:GREEN},c.svg);
        arrow(c, 2.6,5.6, 4.4,6.4, {color:RED, w:2.5, label:'n: 14.1 MeV', fs:11});
        arrow(c, 1.2,5.6, 0.6,4.9, {color:PURPLE, w:2.5, label:'⁴He', fs:11, side:-1});
-     } },
-   { say:"Now the Sun, whose NET reaction chains four protons into one helium-4, two positrons, and two neutrinos: Q equals twenty-six point seven M-e-V — four point two eight ten-to-the-minus-12 joules — per four protons consumed. Positrons and neutrinos in the exhaust — the Sun's furnace is not merely hot but WEAK-interaction slow, which is precisely why it burns for gigayears instead of detonating like a bomb with better publicity.",
-     pose:'point',
-     board:['4\\,{}^1\\mathrm H \\to {}^4\\mathrm{He} + 2e^+ + 2\\nu, \\qquad Q = 26.7\\ \\mathrm{MeV} = 4.28\\times10^{-12}\\ \\mathrm J'] },
-   { say:"The luminosity sets the burn rate: 3.85 ten-to-the-26 watts over 4.28 ten-to-the-minus-12 joules — nine ten-to-the-37 cycles per second — each consuming four protons of combined mass six point seven ten-to-the-minus-27 kilograms. Multiply: six hundred MILLION TONNES of hydrogen per second. The Sun is the least frugal object you will ever depend upon.",
-     pose:'write',
-     board:['\\text{rate} = \\frac{3.85\\times10^{26}}{4.28\\times10^{-12}} = 9.0\\times10^{37}\\ \\mathrm{s^{-1}}',
-            '\\dot m_{\\rm H} = (9.0\\times10^{37})(6.69\\times10^{-27}) \\approx 6.0\\times10^{11}\\ \\mathrm{kg/s}'],
-     action(c){
+     }
+        },
+        { map:2, title:"The Sun's net reaction",
+          think:"Four protons in, what out — at what Q?",
+          model:"⁴He + 2e⁺ + 2ν: 26.7 MeV per cycle.",
+          pose:"point",
+          say:"Now the Sun, whose NET reaction chains four protons into one helium-4, two positrons, and two neutrinos: Q equals twenty-six point seven M-e-V — four point two eight ten-to-the-minus-12 joules — per four protons consumed. Positrons and neutrinos in the exhaust — the Sun's furnace is not merely hot but WEAK-interaction slow, which is precisely why it burns for gigayears instead of detonating like a bomb with better publicity.",
+          board:[
+            {label:"The solar chain", tex:"4\\,{}^1\\mathrm H \\to {}^4\\mathrm{He} + 2e^+ + 2\\nu, \\qquad Q = 26.7\\ \\mathrm{MeV} = 4.28\\times10^{-12}\\ \\mathrm J", kind:"key"}
+          ]
+        },
+        { map:3, title:"The burn rate",
+          think:"3.85×10²⁶ W demands what hydrogen consumption?",
+          model:"6×10¹¹ kg every second.",
+          pose:"write",
+          say:"The luminosity sets the burn rate: 3.85 ten-to-the-26 watts over 4.28 ten-to-the-minus-12 joules — nine ten-to-the-37 cycles per second — each consuming four protons of combined mass six point seven ten-to-the-minus-27 kilograms. Multiply: six hundred MILLION TONNES of hydrogen per second. The Sun is the least frugal object you will ever depend upon.",
+          board:[
+            {label:"The rate", tex:"\\text{rate} = \\frac{3.85\\times10^{26}}{4.28\\times10^{-12}} = 9.0\\times10^{37}\\ \\mathrm{s^{-1}}"},
+            {label:"The consumption", tex:"\\dot m_{\\rm H} = (9.0\\times10^{37})(6.69\\times10^{-27}) \\approx 6.0\\times10^{11}\\ \\mathrm{kg/s}", kind:"answer"}
+          ],
+          action(c){
        arrow(c, 4.4,4.6, 6.9,4.6, {color:RED, w:3, label:'6×10¹¹ kg of H, every second', fs:11});
-     } },
-   { say:"Yet the tank is deep. With a tenth of the solar mass available for core fusion: 0.10 times two ten-to-the-30, over six ten-to-the-11 — three point three ten-to-the-17 seconds. TEN BILLION YEARS, matching stellar-evolution models; we are comfortably at half-time. And so the course closes where it began — with energy conservation, now written as E equals delta-m c squared, pricing in a single formula a tokamak shot, a power grid, and the lifetime of the star that pays for all of it. It has been a privilege. Now go and do the problem sets.",
-     pose:'excited',
-     board:['t \\sim \\frac{0.10(1.99\\times10^{30})}{6.0\\times10^{11}} = 3.3\\times10^{17}\\ \\mathrm s \\approx 10^{10}\\ \\mathrm y\\ \\checkmark',
-            {t:'One formula, E = Δm c², prices a tokamak and a star. End of Physics 4C — the problem sets await.'}] },
-  ]
-},
-];
+     }
+        },
+        { map:4, title:"The tank is deep",
+          think:"A tenth of the solar mass lasts how long?",
+          model:"~10¹⁰ years ✓. One formula, E = Δmc², prices a tokamak and a star. End of Physics 4C!",
+          pose:"excited",
+          say:"Yet the tank is deep. With a tenth of the solar mass available for core fusion: 0.10 times two ten-to-the-30, over six ten-to-the-11 — three point three ten-to-the-17 seconds. TEN BILLION YEARS, matching stellar-evolution models; we are comfortably at half-time. And so the course closes where it began — with energy conservation, now written as E equals delta-m c squared, pricing in a single formula a tokamak shot, a power grid, and the lifetime of the star that pays for all of it. It has been a privilege. Now go and do the problem sets.",
+          board:[
+            {label:"The lifetime", tex:"t \\sim \\frac{0.10(1.99\\times10^{30})}{6.0\\times10^{11}} = 3.3\\times10^{17}\\ \\mathrm s \\approx 10^{10}\\ \\mathrm y\\ \\checkmark", kind:"answer"},
+            {label:"The closing line", text:"One formula, E = Δm c², prices a tokamak and a star. End of Physics 4C — the problem sets await.", kind:"key"},
+            {label:"Reusable method", text:"Δm × 931.494 per reaction → luminosity ÷ energy per cycle → scale to the fuel tank — stars audit like reactors", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    ];
 
-/* ---------------- init ---------------- */
-EXAMPLES.forEach((ex,i)=>{
-  const b=document.createElement('button');
-  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
-  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
-  $('tabs').appendChild(b);
-});
-loadExample(0,false);                     /* start paused — user clicks Play */
-</script>
+    /* ============================================================
+       PLAYER ENGINE
+       ============================================================ */
+    const refs = {
+      tabs:document.getElementById('exampleTabs'),
+      reasoningMap:document.getElementById('reasoningMap'),
+      equationStack:document.getElementById('equationStack'),
+      chapterNumber:document.getElementById('chapterNumber'),
+      chapterTitle:document.getElementById('chapterTitle'),
+      thinkingPrompt:document.getElementById('thinkingPrompt'),
+      modelNote:document.getElementById('modelNote'),
+      subtitle:document.getElementById('subtitle'),
+      professor2d:document.getElementById('professor2d'),
+      transcriptList:document.getElementById('transcriptList'),
+      stepAnnouncement:document.getElementById('stepAnnouncement'),
+      timeline:document.getElementById('timeline'),
+      timelineTitle:document.getElementById('timelineTitle'),
+      stepCount:document.getElementById('stepCount'),
+      playButton:document.getElementById('playButton'),
+      voiceButton:document.getElementById('voiceButton'),
+      problemCopy:document.getElementById('problemCopy'),
+      exampleTag:document.getElementById('exampleTag'),
+      goalChip:document.getElementById('goalChip'),
+      simChip:document.getElementById('simChip'),
+      formatBadge:document.getElementById('formatBadge')
+    };
+
+    let exIndex = 0, currentStep = 0;
+    let isPlaying = false, voiceOn = true, playToken = 0, advanceTimer = null;
+    let mapper = null;
+
+    /* ---------- example tabs ---------- */
+    EXAMPLES.forEach((ex,i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'diff-' + ex.diff.toLowerCase();
+      b.innerHTML = `<span class="diffdot"></span>${ex.tab || ('Example ' + i + ' · ' + ex.diff)}`;
+      if(!ex.tab) b.innerHTML = `<span class="diffdot"></span>Example ${i} · ${ex.diff}`;
+      b.addEventListener('click', () => loadExample(i));
+      refs.tabs.appendChild(b);
+    });
+
+    /* ---------- KaTeX board line ---------- */
+    function renderBoardLine(line){
+      const row = document.createElement('div');
+      row.className = `equation-line ${line.kind || ''}`;
+      let inner = line.label ? `<small>${line.label}</small>` : '';
+      row.innerHTML = inner;
+      if(line.tex !== undefined && window.katex){
+        const span = document.createElement('span');
+        try{ katex.render(line.tex, span, {throwOnError:false, macros:{'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'}}); }
+        catch(e){ span.textContent = line.tex; }
+        row.appendChild(span);
+      }else if(line.text !== undefined){
+        const span = document.createElement('span');
+        span.textContent = line.text;
+        row.appendChild(span);
+      }
+      if(line.move){
+        const badge = document.createElement('span');
+        badge.className = 'key-move';
+        badge.textContent = line.move;
+        row.appendChild(badge);
+      }
+      return row;
+    }
+
+    /* ---------- sketch rendering (setup + accumulated actions) ---------- */
+    function drawSketch(uptoStep, animateLast){
+      cancelAnims();
+      sketchSvg.innerHTML = '';
+      const ex = EXAMPLES[exIndex];
+      mapper = makeMapper(ex.world);
+      /* find last solo at or before uptoStep — actions restart there.
+         A solo step stands alone: unrelated schematics are never overlaid,
+         so the setup backdrop is skipped while a solo step governs. */
+      let start = 0;
+      for(let i = 0; i <= uptoStep; i++) if(ex.steps[i].solo || ex.steps[i].fresh) start = i;
+      const soloGoverns = !!ex.steps[start].solo;
+      const ctxInstant = {svg:sketchSvg, M:mapper, instant:true};
+      if(ex.setup && !soloGoverns) ex.setup(ctxInstant, ex.world);
+      for(let i = start; i <= uptoStep; i++){
+        const st = ex.steps[i];
+        if(!st.action) continue;
+        const animate = animateLast && i === uptoStep;
+        st.action({svg:sketchSvg, M:mapper, instant:!animate});
+      }
+    }
+
+    /* ---------- transcript + timeline for current example ---------- */
+    function buildChrome(){
+      const ex = EXAMPLES[exIndex];
+      refs.timeline.innerHTML = '';
+      refs.timeline.style.gridTemplateColumns = `repeat(${ex.steps.length},1fr)`;
+      ex.steps.forEach((step,i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.title = `${i + 1}. ${step.title}`;
+        b.setAttribute('aria-label',`Go to step ${i + 1}: ${step.title}`);
+        b.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        refs.timeline.appendChild(b);
+      });
+      refs.transcriptList.innerHTML = '';
+      ex.steps.forEach((step,i) => {
+        const li = document.createElement('li');
+        li.className = 'transcript-entry';
+        const bt = document.createElement('button');
+        bt.type = 'button';
+        bt.textContent = `${i + 1}. ${step.title}`;
+        bt.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        const p = document.createElement('p');
+        p.textContent = step.say;
+        li.append(bt,p);
+        refs.transcriptList.appendChild(li);
+      });
+      refs.reasoningMap.innerHTML = '';
+      refs.reasoningMap.style.gridTemplateColumns = `repeat(${ex.pathway.length},1fr)`;
+      ex.pathway.forEach((name,mi) => {
+        const d = document.createElement('div');
+        d.className = 'reason-step';
+        d.textContent = name;
+        d.style.cursor = 'pointer';
+        d.addEventListener('click', () => {
+          const target = ex.steps.findIndex(st => st.map === mi);
+          if(target >= 0){ stopPlayback(); currentStep = target; renderStep(true); }
+        });
+        refs.reasoningMap.appendChild(d);
+      });
+      /* header strip */
+      refs.exampleTag.textContent = ex.tab ? 'Review' : 'Problem';
+      refs.problemCopy.textContent = ex.problem;
+      refs.goalChip.textContent = ex.goal;
+      if(ex.sim){ refs.simChip.hidden = false; refs.simChip.href = ex.sim.url; refs.simChip.textContent = '🎛 ' + ex.sim.label + ' ▸'; }
+      else refs.simChip.hidden = true;
+      /* estimated duration badge (≈150 wpm + step pauses) */
+      const words = ex.steps.reduce((a,s) => a + s.say.split(/\s+/).length, 0);
+      const secs = Math.round(words/150*60 + ex.steps.length*1.4);
+      const mm = Math.floor(secs/60), ss = String(secs % 60).padStart(2,'0');
+      refs.formatBadge.textContent = `${ex.tab ? 'Concept review' : 'Worked example'} · ${mm}:${ss}`;
+    }
+
+    const poseClasses = ['pose-talk','pose-point','pose-write','pose-think','pose-excited'];
+    function setProfessorPose(pose){
+      refs.professor2d.classList.remove(...poseClasses);
+      refs.professor2d.classList.add('pose-' + (pose || 'talk'));
+    }
+    const setProfessorTalking = v => refs.professor2d.classList.toggle('talking', v);
+
+    function renderStep(animate){
+      const ex = EXAMPLES[exIndex];
+      const step = ex.steps[currentStep];
+      refs.chapterNumber.textContent = String(currentStep + 1).padStart(2,'0');
+      refs.chapterTitle.textContent = step.title;
+      refs.thinkingPrompt.textContent = step.think || '';
+      refs.modelNote.innerHTML = step.model ? `<strong>Model</strong>${step.model}` : '';
+      refs.subtitle.textContent = step.say;
+      refs.timelineTitle.textContent = step.title;
+      refs.stepCount.textContent = `Step ${currentStep + 1} of ${ex.steps.length}`;
+      refs.stepAnnouncement.textContent = `Step ${currentStep + 1}: ${step.title}. ${step.say}`;
+      setProfessorPose(step.pose);
+
+      [...refs.reasoningMap.children].forEach((node,i) => {
+        node.classList.toggle('done', i < step.map);
+        node.classList.toggle('active', i === step.map);
+      });
+      [...refs.timeline.children].forEach((node,i) => {
+        node.classList.toggle('done', i < currentStep);
+        node.classList.toggle('active', i === currentStep);
+      });
+      [...refs.transcriptList.children].forEach((node,i) => {
+        const active = i === currentStep;
+        node.classList.toggle('active', active);
+        const button = node.querySelector('button');
+        if(active) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current');
+      });
+
+      refs.equationStack.innerHTML = '';
+      (step.board || []).forEach((line,i) => {
+        const row = renderBoardLine(line);
+        refs.equationStack.appendChild(row);
+        window.setTimeout(() => row.classList.add('show'), animate ? 90 + i*140 : 0);
+      });
+
+      drawSketch(currentStep, animate);
+    }
+
+    function loadExample(i){
+      stopPlayback();
+      exIndex = i; currentStep = 0;
+      [...refs.tabs.children].forEach((b,j) => b.classList.toggle('active', j === i));
+      buildChrome();
+      renderStep(true);
+    }
+
+    /* ---------- voice: fluid single-utterance en-GB ---------- */
+    let britishVoice = null;
+    function loadVoices(){
+      if(!('speechSynthesis' in window)){
+        voiceOn = false;
+        refs.voiceButton.textContent = 'Voice unavailable';
+        refs.voiceButton.disabled = true;
+        return;
+      }
+      const voices = speechSynthesis.getVoices();
+      const gb = voices.filter(v => /^en-GB/i.test(v.lang));
+      const preferred = ['Daniel','Arthur','Serena','Oliver','Sonia','Libby','Ryan','Kate','Google UK English Male'];
+      britishVoice = preferred.map(name => gb.find(v => v.name.includes(name))).find(Boolean)
+                     || gb[0] || voices.find(v => /^en/i.test(v.lang)) || null;
+    }
+    loadVoices();
+    if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+
+    /* pronunciation layer: TTS only — captions show the original text */
+    function speechText(text){
+      const spoken = text
+        .replace(/[°]/g,' degrees ')
+        .replace(/\s*[—–]\s*/g,', ')
+        .replace(/\.\.\./g,',')
+        .replace(/\s*;\s*/g, ', ')
+        .replace(/\s*:\s+/g, ', ')
+        .replace(/\bg\b/g,'gee')
+        .replace(/(\d)\.(\d)/g,'$1 point $2');
+      return spoken
+        .replace(/\blives\b/g,'livz')
+        .replace(/\blive\b/g,'liv')
+        .replace(/\ba squared\b/g,'ay squared')
+        .replace(/\ba equals\b/g,'ay equals')
+        .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus)/g,'equals ay')
+        .replace(/\bover a\b(?=[,.]| is| minus| and)/g,'over ay')
+        .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
+        .replace(/\bm a\b/g,'m ay')
+        .replace(/\ba is\b(?= \d)/g,'ay is')
+        .replace(/\ba becomes\b/g,'ay becomes');
+    }
+
+    function stopSpeech(){
+      playToken += 1;
+      window.clearTimeout(advanceTimer);
+      advanceTimer = null;
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+      setProfessorTalking(false);
+    }
+    function stopPlayback(){
+      isPlaying = false;
+      stopSpeech();
+      refs.playButton.textContent = '▶ Play';
+      refs.playButton.setAttribute('aria-label','Play lesson');
+    }
+    function scheduleNext(token, delay = 700){
+      advanceTimer = window.setTimeout(() => {
+        if(!isPlaying || token !== playToken) return;
+        const ex = EXAMPLES[exIndex];
+        if(currentStep < ex.steps.length - 1){
+          currentStep += 1;
+          renderStep(true);
+          speakCurrent();
+        }else stopPlayback();
+      }, delay);
+    }
+    function speakCurrent(){
+      stopSpeech();
+      const token = playToken;
+      const text = EXAMPLES[exIndex].steps[currentStep].say;
+      setProfessorTalking(true);
+      if(voiceOn && 'speechSynthesis' in window){
+        const u = new SpeechSynthesisUtterance(speechText(text));
+        u.lang = 'en-GB';
+        u.rate = 0.94;
+        u.pitch = 0.92;
+        if(britishVoice) u.voice = britishVoice;
+        u.onend = () => { setProfessorTalking(false); scheduleNext(token, 650); };
+        u.onerror = () => {
+          setProfessorTalking(false);
+          scheduleNext(token, Math.max(5200, text.split(/\s+/).length/145*60000));
+        };
+        speechSynthesis.speak(u);
+      }else{
+        const readingTime = Math.max(5200, text.split(/\s+/).length/145*60000);
+        advanceTimer = window.setTimeout(() => { setProfessorTalking(false); scheduleNext(token, 250); }, readingTime);
+      }
+    }
+    function startPlayback(){
+      isPlaying = true;
+      refs.playButton.textContent = 'Ⅱ Pause';
+      refs.playButton.setAttribute('aria-label','Pause lesson');
+      speakCurrent();
+    }
+
+    refs.playButton.addEventListener('click', () => { isPlaying ? stopPlayback() : startPlayback(); });
+    document.getElementById('nextButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep < EXAMPLES[exIndex].steps.length - 1) currentStep += 1;
+      renderStep(true);
+    });
+    document.getElementById('backButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep > 0) currentStep -= 1;
+      renderStep(true);
+    });
+    document.getElementById('restartButton').addEventListener('click', () => {
+      stopPlayback(); currentStep = 0; renderStep(true);
+    });
+    refs.voiceButton.addEventListener('click', () => {
+      voiceOn = !voiceOn;
+      refs.voiceButton.setAttribute('aria-pressed', String(voiceOn));
+      refs.voiceButton.textContent = voiceOn ? '◖)) Voice: on' : '◖× Voice: off';
+      if(isPlaying) speakCurrent();
+    });
+    document.addEventListener('keydown', event => {
+      if(event.target.matches('button,a,input,textarea')) return;
+      if(event.key === ' '){ event.preventDefault(); refs.playButton.click(); }
+      if(event.key === 'ArrowRight') document.getElementById('nextButton').click();
+      if(event.key === 'ArrowLeft') document.getElementById('backButton').click();
+    });
+
+    /* ---------- go ---------- */
+    loadExample(0);
+  })();
+  </script>
 </body>
 </html>

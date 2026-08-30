@@ -1,804 +1,681 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics 4C · Tutorial 10: Diffraction — Animated Worked Examples</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<style>
-  :root{
-    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
-    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
-  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
-  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
-  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
-  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
-  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
-    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
-  nav button:hover{background:#3a5245}
-  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
-  /* ---- professor column ---- */
-  .prof-col{display:flex;flex-direction:column;gap:10px}
-  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
-    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
-  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
-    border-top-color:var(--accent-dk)}
-  /* highlighted link to the next example, shown when an example finishes */
-  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
-    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
-    animation:pulseLink 1.6s ease-in-out infinite}
-  .next-link:hover{background:var(--accent-dk)}
-  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
-    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
-  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
-  /* ---- stage & board ---- */
-  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
-  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
-    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
-  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
-    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
-  .prompt .simlink:hover{background:#1D4568}
-  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
-    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
-  .diff.review{background:#7B4FA0}
-  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
-  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
-  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
-    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
-  #stage{width:100%;height:auto;display:block}
-  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
-    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
-  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
-    transition:opacity .5s,transform .5s}
-  #board .katex{font-size:1em}
-  #board .line.show{opacity:1;transform:none}
-  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
-  #board .katex{color:var(--chalk)}
-  /* ---- controls: pinned to the bottom of the window, always visible ---- */
-  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
-    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
-    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
-  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
-  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
-    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
-  .controls button:hover{background:#F3E7D2}
-  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
-  .controls button.primary:hover{background:var(--accent-dk)}
-  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
-  .controls .voice.on{background:var(--board);color:var(--chalk)}
-  /* ---- professor animation ---- */
-  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
-  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
-  .pose-point #armR{transform:rotate(-118deg)}
-  .pose-write #armR{transform:rotate(-62deg)}
-  .pose-think #armR{transform:rotate(-152deg)}
-  .pose-excited #armR{transform:rotate(-146deg)}
-  .pose-excited #armL{transform:rotate(146deg)}
-  #brows{transition:transform .3s}
-  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
-  #mouth{transform-box:fill-box;transform-origin:center}
-  .talking #mouth{animation:talk .28s infinite alternate}
-  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
-  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
-  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
-  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
-  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
-  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
-    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
-    border:8px solid transparent;border-right-color:var(--accent-dk)}
-    .stage-row{flex-direction:column}#stagebox{flex:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Physics 4C · Diffraction — reasoning-first worked examples with Professor Ahsan.">
+  <title>Physics 4C · Tutorial 10: Diffraction — Reasoning-First Lectures</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+    :root{
+      --night:#101813;
+      --board:#203c31;
+      --board-deep:#152b23;
+      --chalk:#f5f0dc;
+      --chalk-dim:#b8c9bc;
+      --amber:#e8ac56;
+      --amber-dark:#9c6528;
+      --cyan:#76d4da;
+      --green:#8ed29b;
+      --coral:#ef806f;
+      --paper:#f0eadc;
+      --ink:#221e17;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 50% 0%,rgba(244,231,199,.82),transparent 48%),
+        linear-gradient(145deg,#d8cfbe,#b9ad98 68%,#9e927d);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    button{font:inherit}
+    .page{width:min(1500px,100%);margin:0 auto;padding:clamp(10px,2vw,28px)}
+    .masthead{
+      display:flex;align-items:end;justify-content:space-between;gap:24px;
+      margin:0 2px 10px;color:#2a251d;
+    }
+    .masthead p{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#6e573b}
+    .masthead h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(1.25rem,2.15vw,2rem)}
+    .lecture-note{font-size:.8rem;color:#6a5f50;text-align:right;line-height:1.45}
+    .lecture-note a{color:#7a5218;font-weight:700;text-decoration:none;border-bottom:1px dotted #9c6528}
+    .lecture-note a:hover{color:#4c3410}
+    /* ---- example tabs ---- */
+    .example-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 2px 12px}
+    .example-tabs button{
+      padding:7px 13px;
+      border:1px solid rgba(60,48,30,.35);
+      border-radius:999px;
+      color:#4b3d28;
+      background:rgba(255,252,242,.6);
+      cursor:pointer;font-size:.78rem;font-weight:750;
+      transition:.18s ease;
+    }
+    .example-tabs button:hover{border-color:var(--amber-dark);background:#fff6e2}
+    .example-tabs button.active{border-color:var(--amber-dark);background:var(--amber);color:#241a0c;box-shadow:0 2px 8px rgba(156,101,40,.3)}
+    .example-tabs button .diffdot{display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;vertical-align:1px}
+    .diff-review .diffdot{background:#8e6bb5}.diff-basic .diffdot{background:#5f9e63}
+    .diff-intermediate .diffdot{background:#c9922e}.diff-challenging .diffdot{background:#bf5540}
+    .player-shell{
+      overflow:hidden;
+      border:1px solid rgba(47,39,26,.4);
+      border-radius:20px;
+      background:#121914;
+      box-shadow:0 25px 70px rgba(45,34,18,.3),0 3px 0 rgba(255,255,255,.5) inset;
+    }
+    .lecture-stage{
+      position:relative;
+      aspect-ratio:16/7.6;
+      min-height:400px;
+      overflow:hidden;
+      isolation:isolate;
+      background:
+        linear-gradient(90deg,transparent 0 82%,rgba(8,17,13,.38) 82%),
+        radial-gradient(circle at 53% 32%,rgba(93,135,107,.2),transparent 42%),
+        #27352c;
+    }
+    .topline{
+      position:absolute;z-index:6;top:2.6%;left:3%;right:3%;
+      display:flex;align-items:center;justify-content:space-between;
+      color:#e7e0ce;font-size:clamp(.52rem,.78vw,.72rem);font-weight:800;
+      letter-spacing:.15em;text-transform:uppercase;
+    }
+    .series-lockup{display:flex;align-items:center;gap:10px}
+    .series-lockup::before{content:"";width:25px;height:2px;background:var(--amber)}
+    .format-badge{border:1px solid rgba(240,234,216,.3);border-radius:999px;padding:5px 9px;letter-spacing:.1em}
+    .board{
+      position:absolute;z-index:1;left:3.6%;top:7.6%;
+      width:79%;height:85.5%;
+      border:clamp(6px,1vw,13px) solid #735336;
+      border-radius:7px;
+      background:
+        radial-gradient(circle at 23% 30%,rgba(255,255,255,.035),transparent 22%),
+        radial-gradient(circle at 74% 67%,rgba(255,255,255,.025),transparent 28%),
+        repeating-linear-gradient(175deg,transparent 0 34px,rgba(234,244,226,.012) 35px 36px),
+        var(--board);
+      box-shadow:0 0 0 3px #392c21,0 18px 38px rgba(0,0,0,.38),inset 0 0 70px rgba(0,0,0,.28);
+    }
+    .board::after{
+      content:"";position:absolute;left:-2%;right:-2%;bottom:-18px;height:16px;border-radius:2px;
+      background:linear-gradient(#8d6845,#563d29);
+      box-shadow:0 4px 7px rgba(0,0,0,.4);
+    }
+    .board-content{
+      position:absolute;z-index:3;left:5.4%;top:10.4%;
+      width:75.5%;height:79%;
+      color:var(--chalk);
+      display:grid;grid-template-rows:auto auto 1fr;
+      gap:clamp(5px,.75vw,11px);
+    }
+    .problem-band{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(7px,1vw,16px);min-width:0;
+      padding-bottom:clamp(5px,.6vw,9px);
+      border-bottom:1px solid rgba(245,240,220,.18);
+    }
+    .example-tag{color:var(--amber);font-size:clamp(.56rem,.78vw,.78rem);font-weight:900;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+    .problem-copy{
+      min-width:0;color:#fffbed;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(.66rem,1.02vw,1rem);line-height:1.28;
+    }
+    .band-chips{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+    .goal-chip{
+      display:flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--green);
+      border:1px solid rgba(142,210,155,.46);border-radius:999px;background:rgba(142,210,155,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+    }
+    .sim-chip{
+      display:inline-flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--cyan);
+      border:1px solid rgba(118,212,218,.5);border-radius:999px;background:rgba(118,212,218,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+      text-decoration:none;pointer-events:auto;cursor:pointer;
+    }
+    .sim-chip:hover{background:rgba(118,212,218,.2)}
+    .sim-chip[hidden]{display:none}
+    .reasoning-map{display:grid;gap:clamp(3px,.48vw,7px);pointer-events:auto}
+    .reason-step{
+      position:relative;min-width:0;
+      padding:clamp(5px,.62vw,9px) 4px;overflow:hidden;
+      border:1px solid rgba(245,240,220,.12);border-radius:5px;
+      color:#93a99b;background:rgba(7,20,14,.15);
+      font-size:clamp(.48rem,.68vw,.7rem);font-weight:850;letter-spacing:.07em;
+      text-align:center;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap;
+      transition:.35s ease;
+    }
+    .reason-step.done{color:#b8d6c0;border-color:rgba(142,210,155,.28);background:rgba(142,210,155,.06)}
+    .reason-step.active{color:#17241d;border-color:var(--amber);background:var(--amber);box-shadow:0 0 22px rgba(232,172,86,.2)}
+    .work-area{display:grid;grid-template-columns:37% 63%;min-height:0}
+    .model-zone{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;padding-right:2.5%}
+    #sketch{flex:1;min-height:0;width:100%}
+    .model-note{
+      margin-top:4px;padding:5px 8px;
+      border-left:2px solid var(--cyan);
+      color:#cfe6d7;background:rgba(7,20,14,.42);
+      font-size:clamp(.55rem,.76vw,.78rem);line-height:1.35;
+      min-height:1.4em;
+    }
+    .model-note strong{color:var(--cyan);letter-spacing:.08em;text-transform:uppercase;font-size:.92em;margin-right:6px}
+    .chalk-work{
+      min-width:0;min-height:0;
+      padding:clamp(3px,.4vw,7px) 1% 0 4.5%;
+      border-left:1px dashed rgba(245,240,220,.18);
+      overflow:hidden;display:flex;flex-direction:column;
+    }
+    .chapter-line{display:flex;align-items:baseline;gap:10px;margin-bottom:clamp(3px,.5vw,8px)}
+    .chapter-number{color:var(--amber);font-size:clamp(.55rem,.82vw,.8rem);font-weight:900;letter-spacing:.12em}
+    #chapterTitle{margin:0;color:#fffbed;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1rem,1.75vw,1.65rem);font-weight:500}
+    #thinkingPrompt{
+      margin:0 0 clamp(4px,.7vw,10px);
+      color:var(--green);
+      font-size:clamp(.6rem,.88vw,.88rem);font-weight:700;line-height:1.35;
+    }
+    .equation-stack{display:flex;flex-direction:column;gap:clamp(3px,.5vw,8px);min-height:0;overflow:hidden}
+    .equation-line{
+      position:relative;opacity:0;transform:translateY(7px);
+      padding:clamp(3px,.42vw,6px) clamp(5px,.7vw,10px);
+      border-left:2px solid transparent;
+      color:#dce6db;
+      font-size:clamp(.72rem,1.18vw,1.16rem);
+      line-height:1.3;
+      transition:opacity .45s ease,transform .45s ease,background .45s ease;
+    }
+    .equation-line .katex{font-size:1em}
+    .equation-line.show{opacity:1;transform:none}
+    .equation-line small{
+      display:block;margin-bottom:1px;
+      color:#91aa9b;font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.56em;font-weight:850;letter-spacing:.13em;text-transform:uppercase;
+    }
+    .equation-line.key{border-color:var(--amber);background:linear-gradient(90deg,rgba(232,172,86,.13),transparent 85%);color:#fff8df}
+    .equation-line.answer{border:1px solid rgba(142,210,155,.55);border-radius:5px;background:rgba(142,210,155,.1);color:#dcffe4}
+    .equation-line.warn{border-color:var(--coral);background:linear-gradient(90deg,rgba(239,128,111,.12),transparent);color:#ffe3dd}
+    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:clamp(.66rem,1vw,.98rem)}
+    .key-move{
+      display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;
+      background:var(--amber);color:#17241d;
+      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.5em;font-weight:900;letter-spacing:.08em;text-transform:uppercase;vertical-align:.25em;
+    }
+    /* ---- professor ---- */
+    .professor-2d{
+      position:absolute;z-index:4;right:5.4%;bottom:2.5%;
+      width:21%;height:76%;
+      display:flex;align-items:flex-end;justify-content:center;
+      pointer-events:none;
+      filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
+    }
+    .professor-2d svg{display:block;width:100%;height:100%;overflow:visible}
+    .professor-2d #armL,.professor-2d #armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+    .professor-2d #armL{transform-origin:74px 200px}
+    .professor-2d #armR{transform-origin:146px 200px}
+    .professor-2d.pose-point #armR{transform:rotate(-118deg)}
+    .professor-2d.pose-write #armR{transform:rotate(-62deg)}
+    .professor-2d.pose-think #armR{transform:rotate(-152deg)}
+    .professor-2d.pose-excited #armR{transform:rotate(-146deg)}
+    .professor-2d.pose-excited #armL{transform:rotate(146deg)}
+    .professor-2d #brows{transition:transform .3s}
+    .professor-2d.pose-excited #brows,.professor-2d.pose-think #brows{transform:translateY(-4px)}
+    .professor-2d #mouth{transform-box:fill-box;transform-origin:center}
+    .professor-2d.talking #mouth{animation:prof-talk .28s infinite alternate}
+    @keyframes prof-talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+    .professor-2d #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:prof-blink 4.2s infinite}
+    @keyframes prof-blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+    .professor-2d #hairG{animation:prof-sway 5s ease-in-out infinite;transform-origin:110px 70px}
+    @keyframes prof-sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+    .professor-id{
+      position:absolute;z-index:5;right:.8%;top:12%;width:16%;
+      color:#eee5d4;text-align:center;text-shadow:0 2px 8px #000;pointer-events:none;
+    }
+    .professor-id strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(.68rem,1.05vw,1rem);font-weight:500}
+    .professor-id span{font-size:clamp(.43rem,.58vw,.58rem);font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#c6a777}
+    .subtitle-box{
+      position:relative;z-index:2;
+      display:grid;grid-template-columns:auto 1fr;align-items:start;gap:14px;
+      min-height:76px;
+      padding:13px clamp(14px,2vw,28px);
+      border-top:1px solid rgba(255,255,255,.07);
+      background:#0b110d;color:#f8f4e8;
+      font-size:clamp(.75rem,1vw,.95rem);font-weight:560;line-height:1.5;text-align:left;
+    }
+    .caption-speaker{
+      margin-top:2px;padding:4px 8px;border-radius:999px;
+      background:var(--amber);color:#1b241d;
+      font-size:.66rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+    }
+    #subtitle{margin:0}
+    .controls{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(10px,1.6vw,24px);
+      padding:13px clamp(12px,2vw,28px) 15px;
+      color:#e7e1d2;
+      background:linear-gradient(180deg,#18231c,#101713);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .transport{display:flex;gap:7px}
+    .control-button{
+      min-width:42px;height:38px;
+      border:1px solid rgba(231,225,210,.22);border-radius:9px;
+      color:#e9e1d0;background:#253329;cursor:pointer;transition:.18s ease;
+    }
+    .control-button:hover{border-color:rgba(232,172,86,.72);background:#2f4034;transform:translateY(-1px)}
+    .control-button:focus-visible{outline:3px solid rgba(118,212,218,.55);outline-offset:2px}
+    .control-button.primary{min-width:92px;border-color:var(--amber-dark);background:var(--amber);color:#1e241d;font-weight:900}
+    .control-button.primary:hover{background:#f1bd70}
+    .control-button.voice{min-width:132px;padding:0 12px;font-size:.76rem;font-weight:750}
+    .timeline-wrap{min-width:0}
+    .timeline-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;color:#9eab9f;font-size:.68rem}
+    .timeline-head strong{color:#eee6d6;font-weight:750}
+    .timeline{display:grid;gap:5px}
+    .timeline button{
+      position:relative;height:7px;padding:0;
+      border:0;border-radius:999px;background:#34443a;cursor:pointer;overflow:hidden
+    }
+    .timeline button::after{content:"";position:absolute;inset:0;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+    .timeline button.done::after,.timeline button.active::after{transform:scaleX(1)}
+    .timeline button.active{box-shadow:0 0 0 2px rgba(232,172,86,.25)}
+    .timeline button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .transcript-panel{
+      margin-top:16px;overflow:hidden;
+      border:1px solid rgba(67,53,34,.28);border-radius:15px;
+      background:rgba(250,247,239,.82);
+      box-shadow:0 10px 30px rgba(65,48,23,.12);
+    }
+    .transcript-header{
+      display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+      padding:16px 18px 12px;border-bottom:1px solid rgba(67,53,34,.16);
+    }
+    .transcript-header h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:1.22rem;font-weight:500;color:#2a4637}
+    .transcript-header p{margin:0;color:#6b6257;font-size:.76rem}
+    .transcript-list{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;
+      margin:0;padding:14px;list-style:none;
+    }
+    .transcript-entry{
+      padding:12px 13px;
+      border:1px solid rgba(73,61,43,.16);border-radius:10px;background:#fffdf8;
+      transition:border-color .2s,background .2s,box-shadow .2s;
+    }
+    .transcript-entry.active{border-color:#a66c2f;background:#fff8e9;box-shadow:0 0 0 2px rgba(232,172,86,.16)}
+    .transcript-entry button{width:100%;padding:0;border:0;background:transparent;color:#2f5542;cursor:pointer;font-weight:850;text-align:left}
+    .transcript-entry button:focus-visible{outline:3px solid rgba(46,109,164,.38);outline-offset:4px}
+    .transcript-entry p{margin:7px 0 0;color:#403b34;font-family:Georgia,"Times New Roman",serif;font-size:.88rem;line-height:1.48}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+    @media (max-width:900px){
+      .page{padding:8px}
+      .masthead{align-items:start;flex-direction:column;gap:5px}
+      .lecture-note{text-align:left}
+      .lecture-stage{min-height:340px}
+      .board{left:2%;width:84%}
+      .board-content{left:4%;width:80%}
+      .work-area{grid-template-columns:33% 67%}
+      .professor-id{display:none}
+      .professor-2d{right:2.5%;width:22%;height:70%;bottom:2.5%}
+      .subtitle-box{grid-template-columns:1fr;gap:7px}
+      .controls{grid-template-columns:1fr auto}
+      .timeline-wrap{grid-column:1/-1;grid-row:1}
+      .transport{grid-row:2}
+    }
+    @media (max-width:620px){
+      .lecture-stage{min-height:300px}
+      .problem-copy{line-height:1.15}
+      .problem-band{grid-template-columns:auto 1fr}.band-chips{display:none}
+      .model-note{display:none}
+      .reason-step{letter-spacing:0}
+      .control-button.voice{min-width:45px;width:45px;font-size:0}.control-button.voice::after{content:"Voice";font-size:.62rem}
+    }
+  </style>
 </head>
 <body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <p>Physics 4C · Tutorial 10</p>
+        <h1>Diffraction</h1>
+      </div>
+      <div class="lecture-note">
+        Single slit · gratings · Rayleigh · Bragg<br>
+        <a href="../index.html">↩ Course Hub</a>
+      </div>
+    </header>
 
-<header>
-  <h1>Physics 4C &middot; Tutorial 10: Diffraction</h1>
-  <div class="sub">Animated worked examples &mdash; with Professor Ahsan &middot; <a href="../index.html" style="color:#D8C9A3">Course Hub</a></div>
-</header>
+    <nav class="example-tabs" id="exampleTabs" aria-label="Choose a lesson"></nav>
 
-<nav id="tabs"></nav>
+    <section class="player-shell" aria-label="Worked-example lecture player">
+      <div class="lecture-stage" id="lectureStage">
+        <div class="topline">
+          <div class="series-lockup">Physics with Professor Ahsan</div>
+          <div class="format-badge" id="formatBadge">Worked example</div>
+        </div>
 
-<div class="wrap">
-  <div class="prof-col">
-    <div class="bubble" id="bubble"></div>
-    <div class="prof-box">
-      <!-- ============ PROFESSOR AHSAN ============ -->
-      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
-        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
-        <g id="slim" transform="translate(22 0) scale(0.8 1)">
-        <!-- head group: shifted down to halve the visible neck -->
-        <g id="headG" transform="translate(0 16)">
-        <!-- wild cloud-like hair (the original) -->
-        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
-          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
-          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
-          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
-          <circle cx="168" cy="98" r="20"/>
-        </g>
-        <!-- ears -->
-        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <!-- face -->
-        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
-        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <!-- brows -->
-        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
-          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
-        </g>
-        <!-- eyes -->
-        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
-        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
-        <g id="lids" fill="#B5793B">
-          <rect x="83" y="94" width="18" height="14" rx="6"/>
-          <rect x="119" y="94" width="18" height="14" rx="6"/>
-        </g>
-        <!-- round glasses: bold black frames.
-             Each lens carries a 1.25× x counter-scale about its own centre, so after the
-             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
-             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
-        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
-          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
-          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
-          <path d="M108,100 q2,-3 4,0" fill="none"/>
-          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
-        </g>
-        <!-- nose -->
-        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
-        <!-- mustache: two combed lobes with a center part -->
-        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
-          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
-          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
-        </g>
-        <!-- lip area: philtrum shadow, mouth, lower lip -->
-        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
-        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
-        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
-        </g><!-- /headG -->
-        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
-        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
-        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
-        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
-        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
-        <!-- torso: tweed jacket (collar raised to meet the neck) -->
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
-        <!-- vest + shirt -->
-        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
-        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
-        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
-        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
-        <!-- lapels -->
-        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
-        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
-        <!-- left arm (screen left) -->
-        <g id="armL">
-          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
-        </g>
-        <!-- right arm (screen right) — the pointing arm -->
-        <g id="armR">
-          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
-          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
-        </g>
-        </g><!-- /bodyG -->
-        </g><!-- /slim -->
-      </svg>
-    </div>
-  </div>
+        <div class="board" aria-hidden="true"></div>
 
-  <div class="main-col">
-    <div class="prompt" id="prompt"></div>
-    <div class="stage-row">
-      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
-      <div id="boardwrap"><div id="board"></div></div>
-    </div>
-  </div>
-</div>
+        <section class="board-content" aria-label="Chalkboard derivation">
+          <div class="problem-band">
+            <span class="example-tag" id="exampleTag">Problem</span>
+            <span class="problem-copy" id="problemCopy"></span>
+            <span class="band-chips">
+              <span class="goal-chip" id="goalChip"></span>
+              <a class="sim-chip" id="simChip" target="_blank" rel="noopener" hidden>🎛 Desmos sim ▸</a>
+            </span>
+          </div>
 
-<div class="controls"><div class="controls-inner">
-  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
-  <button id="btnPrev" title="Previous step">&#9664; Back</button>
-  <button id="btnPlay" class="primary">&#9654; Play</button>
-  <button id="btnNext" title="Next step">Next &#9654;</button>
-  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
-  <span class="stepinfo" id="stepinfo"></span>
-</div></div>
+          <div class="reasoning-map" id="reasoningMap" aria-label="Problem-solving pathway"></div>
 
-<script>
-/* ================================================================
-   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
-   ================================================================ */
-const SVGNS = 'http://www.w3.org/2000/svg';
-const $ = id => document.getElementById(id);
-const stage = $('stage'), board = $('board'), bubble = $('bubble');
+          <div class="work-area">
+            <div class="model-zone">
+              <svg id="sketch" aria-label="Sketch of the physical situation" role="img"></svg>
+              <div class="model-note" id="modelNote"></div>
+            </div>
+            <div class="chalk-work">
+              <div class="chapter-line">
+                <span class="chapter-number" id="chapterNumber">01</span>
+                <h2 id="chapterTitle"></h2>
+              </div>
+              <p id="thinkingPrompt"></p>
+              <div class="equation-stack" id="equationStack" aria-label="Current derivation"></div>
+            </div>
+          </div>
+        </section>
 
-function el(tag, attrs, parent){
-  const e = document.createElementNS(SVGNS, tag);
-  for (const k in attrs){
-    let v = attrs[k];
-    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
-    e.setAttribute(k, v);
-  }
-  if (parent) parent.appendChild(e);
-  return e;
-}
+        <div class="professor-2d pose-talk" id="professor2d" aria-hidden="true">
+          <svg id="prof" viewBox="0 0 220 290" focusable="false">
+            <g id="slim" transform="translate(22 0) scale(0.8 1)">
+              <g id="headG" transform="translate(0 16)">
+                <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+                  <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+                  <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+                  <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+                  <circle cx="168" cy="98" r="20"/>
+                </g>
+                <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+                <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+                  <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+                </g>
+                <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+                <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+                <g id="lids" fill="#B5793B">
+                  <rect x="83" y="94" width="18" height="14" rx="6"/>
+                  <rect x="119" y="94" width="18" height="14" rx="6"/>
+                </g>
+                <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+                  <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+                  <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+                  <path d="M108,100 q2,-3 4,0" fill="none"/>
+                  <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+                </g>
+                <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+                <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+                  <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+                  <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+                </g>
+                <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+                <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+                <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+              </g>
+              <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+              <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+              <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+                <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+                <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+                <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+                <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+                <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+                <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+                <g id="armL">
+                  <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+                </g>
+                <g id="armR">
+                  <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+                  <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
 
-/* --- world→screen mapper: stage is 600×400 --- */
-function makeMapper(w){
-  const W=600, H=400, p=w.pad ?? 44;
-  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
-  const s = Math.min(sx, sy);
-  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
-  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
-  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
-}
+        <div class="professor-id">
+          <strong>Professor Ahsan</strong>
+          <span>Physics · with unnecessary honesty</span>
+        </div>
 
-/* --- animation manager (respects instant mode) --- */
-const running = [];
-function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
-function tween(draw, dur, instant, done){
-  if (instant){ draw(1); if(done) done(); return; }
-  const t0 = performance.now();
-  function frame(t){
-    let u = Math.min(1,(t-t0)/dur);
-    draw(1-Math.pow(1-u,3));            // ease-out cubic
-    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
-  }
-  running.push(requestAnimationFrame(frame));
-}
+      </div>
 
-/* --- drawing helpers --- */
-function headPts(x,y,ang,s){
-  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
-          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
-         .map(p=>p.join(',')).join(' ');
-}
-/* animated vector arrow in world coords */
-function arrow(ctx, x1,y1,x2,y2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
-  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
-  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
-    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
-    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
-  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
-  tween(u=>{
-    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
-    line.setAttribute('x2',x); line.setAttribute('y2',y);
-    head.setAttribute('points',headPts(x,y,ang,hs));
-  }, opt.dur||800, instant);
-  if (opt.label){
-    /* Place the label ADJACENT to the arrow, never on it: offset the
-       midpoint perpendicular to the arrow's direction (upper side by
-       default; pass side:-1 for the other side; dx/dy fine-tune). */
-    const t0 = opt.lt ?? 0.55;
-    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
-    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
-    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
-    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
-    if (opt.side === -1){ nx = -nx; ny = -ny; }
-    const fs  = opt.fs || 19;
-    /* clearance grows with label width when the offset is horizontal,
-       so wide labels (e.g. "3.00 km") clear vertical arrows too */
-    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
-    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
-    const lg = el('g',{},g);
-    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
-      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
-    t.textContent = opt.label;
-    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
-      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
-      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
-        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
-      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
-    }
-    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
-  }
-  return g;
-}
-/* animated angle arc (angles in degrees, world coords center) */
-function arc(ctx, cx,cy,r, a1,a2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
-  const R = r*M.s;
-  function d(a2c){
-    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
-    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
-    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
-    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
-    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
-  }
-  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
-  if (opt.label){
-    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
-    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
-      fill:opt.color||'#666','font-size':16,'font-style':'italic',
-      'font-family':'Georgia,serif','text-anchor':'middle'},g);
-    t.textContent=opt.label;
-  }
-  return g;
-}
-function label(ctx, x,y, txt, opt={}){
-  const g = el('g',{},ctx.svg);
-  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
-  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
-    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
-  t.textContent = txt;
-  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
-    const hw = String(txt).length*fs*0.28;
-    const cx = opt.anchor==='middle' ? lx : lx+hw;
-    const ay = ly - fs*0.95;
-    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
-      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
-    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
-  }
-  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
-  return t;
-}
-function dashLine(ctx, x1,y1,x2,y2, opt={}){
-  const {M}=ctx;
-  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
-    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
-  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
-  return l;
-}
-/* standard 2-D axes with grid */
-function axes2D(svg, M, w, opt={}){
-  const g = el('g',{},svg);
-  if (opt.grid){
-    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
-      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
-    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
-      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
-  }
-  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
-  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
-  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
-  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
-  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
-  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
-  return g;
-}
-/* oblique 3-D projection: world (x,y,z) → planar 2-D */
-const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
-function axes3D(svg, M, ext, opt={}){
-  const g = el('g',{},svg);
-  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
-  for (const [x,y,z,name] of A){
-    const [px,py]=proj(x,y,z);
-    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
-    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
-    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
-    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
-    t.textContent=name;
-  }
-  return g;
-}
+      <div class="controls">
+        <div class="transport">
+          <button class="control-button" id="restartButton" type="button" aria-label="Restart lesson" title="Restart">↺</button>
+          <button class="control-button" id="backButton" type="button" aria-label="Previous step" title="Previous step">←</button>
+          <button class="control-button primary" id="playButton" type="button" aria-label="Play lesson">▶ Play</button>
+          <button class="control-button" id="nextButton" type="button" aria-label="Next step" title="Next step">→</button>
+        </div>
 
-/* --- KaTeX board --- */
-const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
-function addBoardLine(item, animate){
-  const div = document.createElement('div');
-  div.className = 'line' + (item.t !== undefined ? ' note' : '');
-  if (item.t !== undefined) div.textContent = item.t;
-  else if (window.katex){
-    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
-    catch(e){ div.textContent = item; }
-  } else div.textContent = item;  /* offline fallback: raw LaTeX */
-  board.appendChild(div);
-  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
-}
+        <div class="timeline-wrap">
+          <div class="timeline-head"><strong id="timelineTitle"></strong><span id="stepCount"></span></div>
+          <div class="timeline" id="timeline" aria-label="Lesson chapters"></div>
+        </div>
 
-/* --- professor: poses, speech, TTS --- */
-const prof = $('prof');
-function setPose(p){
-  prof.className.baseVal = '';
-  prof.classList.add('pose-'+(p||'talk'));
-}
-/* --- voice selection: smooth, soothing British English (en-GB).
-       IMPORTANT: browsers (Chrome especially) load voices late and can
-       invalidate cached voice objects, silently reverting to the default
-       voice. So we re-select a fresh voice on EVERY utterance. --- */
-function britishVoice(){
-  const vs = speechSynthesis.getVoices();
-  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang))
-      || vs.find(v=>/en[-_]AU/i.test(v.lang))
-      || null;
-}
-if ('speechSynthesis' in window){
-  speechSynthesis.getVoices();                       /* trigger async load */
-  speechSynthesis.onvoiceschanged = ()=>britishVoice();
-}
-let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
-let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
-function speakNext(gen){
-  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
-  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
-  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
-  const v = britishVoice();                            /* fresh pick every time */
-  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
-  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
-  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
-  u.onerror = u.onend;
-  utter = u;
-  speechSynthesis.speak(u);
-  clearInterval(ttsKeepAlive);
-  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
-    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-    else { speechSynthesis.pause(); speechSynthesis.resume(); }
-  }, 12000);
-}
-/* bubble display: real greek letters instead of spelled-out phonetics */
-function greekify(t){
-  return t
-   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bh-bar\b/gi,'\u0127')
-   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
-   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
-   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
-   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
-   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
-   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
-   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
-   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
-   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
-   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
-   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
-   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
-}
-function speak(text, animate){
-  clearInterval(typeTimer);
-  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
-  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
-  speechSynthesis.cancel();
-  prof.classList.add('talking');
-  const shown = greekify(text);
-  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
-  bubble.textContent='';
-  let i=0;
-  typeTimer = setInterval(()=>{
-    bubble.textContent = shown.slice(0,++i);
-    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
-  },16);
-  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
-    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
-    const spoken = text
-      .replace(/[°]/g,' degrees ')
-      .replace(/\s*[—–]\s*/g,', ')
-      .replace(/\.\.\./g,',')
-      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
-      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
-      .replace(/\bk-hat\b/gi,'k hat')
-      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
-      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
-      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
-      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
-    /* split into sentences: one utterance each, with a breath between them */
-    /* --- pronunciation fixes (TTS only; the bubble shows the original text) --- */
-    const spoken2 = spoken
-      .replace(/\blive hard lives\b/g,'lead a hard existence')
-      .replace(/\blives\b/g,'livz')                             /* verb: rhymes with gives */
-      .replace(/\blived\b/g,'livd')
-      .replace(/\blive\b/g,'liv')                               /* verb: as in life, not broadcast */
-      .replace(/\bdrawn bow\b/g,'drawn beau')
-      .replace(/\btear\b/g,'tare')
-      .replace(/\bexam wound\b/g,'exam woond')
-      .replace(/\b(that|having|it|crystallography) read\b/g,'$1 red')   /* past tense */
-      .replace(/\bbe read\b/g,'be red')
-      .replace(/read from a stick/g,'red from a stick')
-      .replace(/read in volts/g,'red in volts')
-      .replace(/\ba squared\b/g,'ay squared')                   /* the variable a, not the article */
-      .replace(/\ba cubed\b/g,'ay cubed')
-      .replace(/\ba equals\b/g,'ay equals')
-      .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus| squared| cubed)/g,'equals ay')
-      .replace(/\bequal a plus\b/g,'equal ay plus')
-      .replace(/\bover a\b(?=[,.]| is| minus| and| grows)/g,'over ay')
-      .replace(/\bb minus a\b/g,'b minus ay')
-      .replace(/\bminus a v-squared\b/g,'minus ay v-squared')
-      .replace(/\ba plus b\b/g,'ay plus b')
-      .replace(/\ba b\b/g,'ay b')
-      .replace(/\btimes a\b(?=[,.])/g,'times ay')
-      .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
-      .replace(/\bm a\b/g,'m ay')
-      .replace(/\bM a\b(?=[,.])/g,'M ay')
-      .replace(/\bfrom a to b\b/g,'from ay to b')
-      .replace(/\btends to a\b(?=[,.])/g,'tends to ay')
-      .replace(/\ba of (t|zero)\b/g,'ay of $1')
-      .replace(/\ba crosses\b/g,'ay crosses')
-      .replace(/\ba becomes\b/g,'ay becomes')
-      .replace(/\ba is\b(?= \d)/g,'ay is');
-    sentQueue = spoken2.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken2];
-    sentIdx = 0;
-    /* small delay after cancel() — Chrome otherwise falls back to default voice */
-    const gen = speakGen;
-    setTimeout(()=>speakNext(gen), 60);
-  }
-}
+        <button class="control-button voice" id="voiceButton" type="button" aria-pressed="true">◖)) Voice: on</button>
+      </div>
 
-/* --- playback state --- */
-const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
-function queueAdvance(ms){
-  clearTimeout(state.timer);
-  let stalled = 0;   /* guards against TTS engines that never start speaking */
-  state.timer = setTimeout(function tick(){
-    /* NEVER advance over active speech — that cuts the professor off
-       mid-sentence. If he is still talking, check again shortly. */
-    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
-      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
-      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
-        state.timer = setTimeout(tick, 400);
-        return;
+      <div class="subtitle-box" role="region" aria-labelledby="captionSpeaker">
+        <span class="caption-speaker" id="captionSpeaker">Professor Ahsan</span>
+        <p id="subtitle"></p>
+      </div>
+    </section>
+
+    <section class="transcript-panel" aria-labelledby="transcriptHeading">
+      <div class="transcript-header">
+        <h2 id="transcriptHeading">Professor&rsquo;s words</h2>
+        <p>Complete accessible transcript · select a section to revisit it</p>
+      </div>
+      <ol class="transcript-list" id="transcriptList"></ol>
+    </section>
+    <div class="sr-only" id="stepAnnouncement" role="status" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* ============================================================
+       SKETCH-PAD ENGINE — world-coordinate SVG drawing helpers
+       (ported from the original tutorial engine, board-adapted)
+       ============================================================ */
+    const RED = '#e86a5a', BLUE = '#7fb8e8', GREEN = '#8ed29b',
+          PURPLE = '#c39ae0', GOLD = '#e8ac56', CHALKC = '#d8e4d4', DIMC = '#9fb4a3';
+
+    const sketchSvg = document.getElementById('sketch');
+    let running = [];
+    function cancelAnims(){ running.forEach(id => cancelAnimationFrame(id)); running.length = 0; }
+    function tween(draw, dur, instant, done){
+      if(instant){ draw(1); if(done) done(); return; }
+      const t0 = performance.now();
+      function frame(t){
+        const u = Math.min(1,(t - t0)/dur);
+        draw(1 - Math.pow(1 - u,3));
+        if(u < 1) running.push(requestAnimationFrame(frame)); else if(done) done();
       }
+      running.push(requestAnimationFrame(frame));
     }
-    const ex = EXAMPLES[state.ex];
-    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
-    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
-  }, ms);
-}
-/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
-function exLabel(i){
-  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
-}
-/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
-function showNextLink(){
-  /* finish the bubble typing first — otherwise its ticks overwrite the link */
-  clearInterval(typeTimer);
-  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
-  prof.classList.remove('talking');
-  if (state.ex >= EXAMPLES.length-1){
-    const d = document.createElement('div');
-    d.className = 'next-link';
-    d.style.animation = 'none';
-    d.textContent = 'Tutorial complete ✓';
-    bubble.appendChild(d);
-    return;
-  }
-  const a = document.createElement('div');
-  a.className = 'next-link';
-  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
-  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
-  bubble.appendChild(a);
-}
-/* ---- declutter: keep every sketch label visible and collision-free ----
-   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
-   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
-function declutter(svg){
-  const W=600, H=400, PAD=3;
-  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
-  if(!texts.length) return;
-  const items=texts.map(t=>{
-    let b; try{ b=t.getBBox(); }catch(e){ return null; }
-    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
-  }).filter(Boolean);
-  const lines=[...svg.querySelectorAll('line')].map(l=>({
-    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
-    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
-    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
-  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
-  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
-  for(const it of items){
-    for(const L of lines){
-      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
-      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
-      /* distance from bbox centre to the segment */
-      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
-      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
-      const px=L.x1+u*vx, py=L.y1+u*vy;
-      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
-      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
-      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
-        const need=clear-d+3;
-        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
-        else it.dy-=Math.min(need,18);
-      }
+    function el(tag, attrs, parent){
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for(const k in attrs) node.setAttribute(k, attrs[k]);
+      if(parent) parent.appendChild(node);
+      return node;
     }
-  }
-  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
-  for(let pass=0;pass<4;pass++){
-    let moved=false;
-    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
-      const a=box(items[i]), b=box(items[j]);
-      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
-      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
-      if(ox>4 && oy>3){
-        if(ox<=oy){                                          /* separate along the smaller overlap */
-          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
-          const nx=b.x+dir*(ox+PAD);
-          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
-          items[j].dx+=dir*(ox+PAD);
-        } else {
-          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
-          const ny=b.y+dir*(oy+PAD);
-          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
-            items[j].dy+=dir*(oy+PAD);
-          } else {                                          /* j pinned at the edge: move i instead */
-            const di=-dir, niy=a.y+di*(oy+PAD);
-            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
-            else items[j].dy+=dir*(oy+PAD);
-          }
+    function makeMapper(w){
+      const vw = 520, vh = 400;                    /* sketch viewBox */
+      sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+      const pad = 8;
+      const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
+      const s = w.aniso ? null : Math.min(sx, sy);
+      const SX = s || sx, SY = s || sy;
+      const cx = (w.x0 + w.x1)/2, cy = (w.y0 + w.y1)/2;
+      return {
+        X: x => vw/2 + (x - cx)*SX,
+        Y: y => vh/2 - (y - cy)*SY,
+        S: v => v*SX
+      };
+    }
+    function headPts(x, y, ang, s){
+      return [[x,y],[x - s*Math.cos(ang - .42), y - s*Math.sin(ang - .42)],
+              [x - s*Math.cos(ang + .42), y - s*Math.sin(ang + .42)]]
+             .map(p => p.join(',')).join(' ');
+    }
+    function arrow(c, x1,y1,x2,y2, opt = {}){
+      const {M, svg, instant} = c;
+      const g = el('g',{},svg);
+      const X1 = M.X(x1), Y1 = M.Y(y1), X2 = M.X(x2), Y2 = M.Y(y2);
+      const ang = Math.atan2(Y2 - Y1, X2 - X1), hs = opt.head ?? 10;
+      const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color || CHALKC,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round',
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, g);
+      const head = el('polygon',{fill:opt.color || CHALKC, points:headPts(X1,Y1,ang,hs)}, g);
+      tween(u => {
+        const x = X1 + (X2 - X1)*u, y = Y1 + (Y2 - Y1)*u;
+        line.setAttribute('x2',x); line.setAttribute('y2',y);
+        head.setAttribute('points', headPts(x,y,ang,hs));
+      }, opt.dur || 700, instant);
+      if(opt.label){
+        const nx = Math.sin(ang), ny = -Math.cos(ang), side = opt.side || 1, off = opt.loff || 23;
+        let lx, ly;
+        if(opt.at === 'mid'){                     /* opt-out: midpoint label */
+          lx = (X1 + X2)/2 + nx*off*side;
+          ly = (Y1 + Y2)/2 + ny*off*side;
+        }else{                                    /* default: label near the arrow tip */
+          const ext = (opt.loff || 16) + 8;
+          const toff = opt.toff ?? 6;
+          lx = X2 + Math.cos(ang)*ext + nx*toff*side;
+          ly = Y2 + Math.sin(ang)*ext + ny*toff*side + 4;
         }
-        moved=true;
+        const t = el('text',{x:lx, y:ly,
+          fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
+        t.textContent = opt.label;
+        if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
+      }
+      return g;
+    }
+    function dashLine(c, x1,y1,x2,y2, opt = {}){
+      return el('line',{x1:c.M.X(x1), y1:c.M.Y(y1), x2:c.M.X(x2), y2:c.M.Y(y2),
+        stroke:opt.color || DIMC,'stroke-width':opt.w || 1.6,'stroke-dasharray':opt.dash || '5,5'}, c.svg);
+    }
+    function arc(c, cx,cy,r, a1,a2, opt = {}){
+      const {M, svg} = c;
+      const R = M.S(r);
+      function pt(a){ const rad = a*Math.PI/180; return [M.X(cx) + R*Math.cos(rad), M.Y(cy) - R*Math.sin(rad)]; }
+      const [x1,y1] = pt(a1), [x2,y2] = pt(a2);
+      const large = Math.abs(a2 - a1) > 180 ? 1 : 0, sweep = a2 > a1 ? 0 : 1;
+      el('path',{d:`M ${x1} ${y1} A ${R} ${R} 0 ${large} ${sweep} ${x2} ${y2}`,
+        fill:'none', stroke:opt.color || DIMC,'stroke-width':opt.w || 1.8}, svg);
+      if(opt.label){
+        const mid = (a1 + a2)/2*Math.PI/180, lr = M.S(r) + (opt.lr || 14);
+        const t = el('text',{x:M.X(cx) + lr*Math.cos(mid), y:M.Y(cy) - lr*Math.sin(mid),
+          fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic'}, svg);
+        t.textContent = opt.label;
       }
     }
-    if(!moved) break;
-  }
-  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
-  for(const it of items){
-    const b=box(it);
-    if(b.x<PAD) it.dx+=PAD-b.x;
-    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
-    if(b.y<PAD) it.dy+=PAD-b.y;
-    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
-  }
-  /* apply: move the label's own group (keeps vector accents attached) or the text */
-  for(const it of items){
-    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
-    const par=it.t.parentNode;
-    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
-                  && par.childNodes.length<=3) ? par : it.t;
-    const prev=target.getAttribute('transform')||'';
-    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
-  }
-}
-
-function renderStep(animate){
-  cancelAnims(); clearTimeout(state.timer);
-  const ex = EXAMPLES[state.ex];
-  /* stage: rebuild — past steps instant, current step animated */
-  stage.innerHTML='';
-  const M = makeMapper(ex.world);
-  ex.setup({svg:stage, M, instant:true}, ex.world);
-  /* Concept Reviews present one sketch at a time — each diagram appears as
-     its topic comes up, never stacked on its predecessors. Examples accumulate.
-     A review step marked solo:true clears the stage entirely and presents its
-     own diagram alone — a fresh slide rather than an annotation. */
-  const curStep = ex.steps[state.step];
-  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
-  const seqStart = ex.tab ? state.step : 0;
-  for (let i=seqStart;i<=state.step;i++){
-    const st = ex.steps[i];
-    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
-  }
-  declutter(stage);                       /* keep labels visible and collision-free */
-  /* board: cumulative */
-  board.innerHTML='';
-  for (let i=0;i<=state.step;i++)
-    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
-  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
-  /* professor */
-  const st = ex.steps[state.step];
-  setPose(st.pose);
-  speak(st.say, animate);
-  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
-  /* auto-advance: ALWAYS schedule a timed advance while playing.
-     With voice on, the utterance's onend advances sooner; this timer is
-     the fallback so playback never stalls if speech fails to fire. */
-  if (state.playing){
-    const ms = voiceOn ? Math.max(5200, st.say.length*88)
-                       : Math.max(4000, st.say.length*70);
-    queueAdvance(ms);
-  }
-}
-function loadExample(i, autoplay){
-  state.ex=i; state.step=0; state.pendingNext=false;
-  const ex = EXAMPLES[i];
-  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
-  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
-     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
-  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
-  setPlaying(!!autoplay);
-  renderStep(true);
-}
-function setPlaying(p){
-  state.playing=p;
-  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
-  if (!p){ clearTimeout(state.timer); }
-}
-/* --- controls --- */
-$('btnPlay').onclick = ()=>{
-  if (state.playing){
-    /* PAUSE: freeze speech and auto-advance exactly where they stand */
-    setPlaying(false);
-    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
-    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
-      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
-  } else {
-    const ex=EXAMPLES[state.ex];
-    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
-      /* RESUME: continue from the very word where he was paused */
-      setPlaying(true);
-      speechSynthesis.resume();
-      clearInterval(ttsKeepAlive);
-      ttsKeepAlive = setInterval(()=>{
-        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-        else { speechSynthesis.pause(); speechSynthesis.resume(); }
-      }, 12000);
-      /* fallback advance re-armed; queueAdvance never cuts active speech */
-      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
-    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
-      /* paused between sentences: pick the narration up at the next sentence */
-      setPlaying(true);
-      speakNext(speakGen);
-      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
-    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
-               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
-      state.step=0;                                     /* finished example: replay from start */
-      setPlaying(true);
-      renderStep(true);
-    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
-      /* this step's narration already finished: continue forward */
-      setPlaying(true);
-      queueAdvance(1200);
-    } else {
-      /* step not yet narrated (fresh page load or manual browsing):
-         start it properly — animation AND voice from the first word */
-      setPlaying(true);
-      renderStep(true);
+    function label(c, x, y, txt, opt = {}){
+      const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
+        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        ...(opt.italic ? {'font-style':'italic'} : {}),
+        ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
+      t.textContent = txt;
+      return t;
     }
-  }
-};
-$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  const ex=EXAMPLES[state.ex];
-  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
-$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  if (state.step>0){ state.step--; renderStep(false); } };
-$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
-$('btnVoice').onclick = function(){
-  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
-  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
-  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
-};
-document.addEventListener('keydown',e=>{
-  if (e.key==='ArrowRight') $('btnNext').click();
-  if (e.key==='ArrowLeft') $('btnPrev').click();
-  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
-});
+    const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
+    function boxAt(c, x, y, w, h, opt = {}){
+      const {M} = c;
+      return el('rect',{x:M.X(x) - M.S(w)/2, y:M.Y(y) - M.S(h), width:M.S(w), height:M.S(h),
+        rx:3, fill:opt.fill || '#c98f52', stroke:opt.stroke || '#8a5a24','stroke-width':2}, c.svg);
+    }
+    function ground(c, x0, x1, y){
+      el('line',{x1:c.M.X(x0), y1:c.M.Y(y), x2:c.M.X(x1), y2:c.M.Y(y),
+        stroke:'#9fb4a3','stroke-width':2.5}, c.svg);
+    }
+    function circleAt(c, x, y, rWorld, opt = {}){
+      return el('circle',{cx:c.M.X(x), cy:c.M.Y(y), r:c.M.S(rWorld), fill:opt.fill || 'none',
+        stroke:opt.stroke || DIMC,'stroke-width':opt.w || 2,
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, c.svg);
+    }
+    function plotCurve(c, fn, t0, t1, opt = {}){
+      const {M, svg, instant} = c;
+      const N = 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+      tween(u => {
+        const n = Math.max(2, Math.round(u*(N + 1)));
+        poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
+      }, opt.dur || 1100, instant);
+    }
+    function axes2D(a, b, cArg, dArg){
+      /* accepts (ctx, world, opt) or legacy (svg, M, world, opt) */
+      let M, svg, w, opt;
+      if(a && a.svg){ svg = a.svg; M = a.M; w = b; opt = cArg || {}; }
+      else { svg = a; M = b; w = cArg; opt = dArg || {}; }
+      el('line',{x1:M.X(w.x0), y1:M.Y(0), x2:M.X(w.x1), y2:M.Y(0), stroke:DIMC,'stroke-width':2}, svg);
+      el('line',{x1:M.X(0), y1:M.Y(w.y0), x2:M.X(0), y2:M.Y(w.y1), stroke:DIMC,'stroke-width':2}, svg);
+      if(opt.xlab){ const t = el('text',{x:M.X(w.x1) - 4, y:M.Y(0) + 16, fill:DIMC,'font-size':14,
+        'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.xlab; }
+      if(opt.ylab){ const t = el('text',{x:M.X(0) + 7, y:M.Y(w.y1) + 13, fill:DIMC,'font-size':14,
+        'font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.ylab; }
+    }
+    /* oblique 3-D projection: world (x,y,z) → planar 2-D */
+    const proj = (x, y, z) => [ -0.6*x + y, -0.5*x + z ];
+    function axes3D(a, b, ext, opt){
+      let M, svg;
+      if(a && a.svg){ svg = a.svg; M = a.M; } else { svg = a; M = b; }
+      const g = el('g',{},svg);
+      for(const [x,y,z,name] of [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']]){
+        const [px,py] = proj(x,y,z);
+        const X2 = M.X(px), Y2 = M.Y(py), X1 = M.X(0), Y1 = M.Y(0);
+        el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:DIMC,'stroke-width':1.8},g);
+        el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:DIMC},g);
+        const t = el('text',{x:X2+9,y:Y2+5,fill:DIMC,'font-size':17,'font-style':'italic','font-family':'Georgia,serif'},g);
+        t.textContent = name;
+      }
+      return g;
+    }
 
-/* ================================================================
-   4C TUTORIAL 10 — DIFFRACTION
-   ================================================================ */
-const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+    /* ============================================================
+       LESSON CONTENT — Tutorial 5, reasoning-first structure
+       Each example: pathway chips + chapter steps.
+       board lines: {label?, tex? | text?, kind?: key|answer|warn|note, move?}
+       ============================================================ */
+    /* ---- tutorial-specific helpers (ported) ---- */
+    function sinc2(x){ if(Math.abs(x)<1e-9) return 1; const s=Math.sin(x)/x; return s*s; }
 
-function textAt(c, x, y, txt, opt={}){
-  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
-    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
-    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
-  t.textContent=txt;
-  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
-  return t;
-}
-function plotCurve(c, fn, t0, t1, opt={}){
-  const {svg,M,instant}=c; const N=opt.N||200;
-  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
-    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
-  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
-  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
-  return pl;
-}
-function sinc2(x){ if(Math.abs(x)<1e-9) return 1; const s=Math.sin(x)/x; return s*s; }
+    const EXAMPLES = [
 
-const EXAMPLES = [
-{
-  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
-  sim:{label:'single- and double-slit patterns', url:'../Simulations/sim4C_23_interactive.html'},
-  prompt:'Professor Ahsan surveys the main principles: single-slit diffraction, the sinc² envelope, gratings, resolving power, and Rayleigh’s criterion.',
-  world:{x0:-10.6, x1:10.6, y0:-0.14, y1:1.15, aniso:true},
-  setup(ctx,w){
+    {
+      tab:"Concept Review", diff:"Review",
+      title:"The big picture before the problems",
+      problem:"Professor Ahsan surveys the main principles: single-slit diffraction, the sinc² envelope, gratings, resolving power, and Rayleigh’s criterion.",
+      goal:"Goal → the method",
+      sim:{label:"single- and double-slit patterns", url:"../Simulations/sim4C_23_interactive.html"},
+      world:{"x0":-10.6,"x1":10.6,"y0":-0.14,"y1":1.15,"aniso":true},
+      pathway:["Single slit","The envelope","Gratings","Rayleigh","Perspective","Bragg"],
+      setup(ctx,w){
     axes2D(ctx.svg, ctx.M, w, {xlab:'β/2 (rad)', ylab:'I/I_max'});
     const pts=[]; for(let i=0;i<=240;i++){const x=-10.2+20.4*i/240;
       pts.push(ctx.M.X(x)+','+ctx.M.Y(sinc2(x)));}
@@ -806,41 +683,64 @@ const EXAMPLES = [
     const t=el('text',{x:ctx.M.X(5.8),y:ctx.M.Y(0.62),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
     t.textContent='one slit: the sinc² profile — wide crown, dim shoulders';
   },
-  steps:[
-   { say:"Diffraction: interference's confession that even a SINGLE opening cannot cast a clean shadow. Every point across a slit is a Huygens source, and the slit interferes with ITSELF. The astonishing headline: a slit of width a throws its first DARKNESS at sine theta equals lambda over a — the narrower the slit, the WIDER the spread. Squeeze light, and it splays.",
-     pose:'talk',
-     board:['a\\sin\\theta = m\\lambda\\ \\ (m = 1,2,\\ldots:\\ \\text{DARK fringes})',
-            {t:'Narrower slit → wider pattern. Note: this formula gives MINIMA (contrast the double slit!).'}],
-     action(c){
+      steps:[
+        { map:0, title:"No clean shadows",
+          think:"Does a sinθ = mλ mark bright or DARK here?",
+          model:"DARK — the single slit's minima, opposite to the double slit.",
+          pose:"talk",
+          say:"Diffraction: interference's confession that even a SINGLE opening cannot cast a clean shadow. Every point across a slit is a Huygens source, and the slit interferes with ITSELF. The astonishing headline: a slit of width a throws its first DARKNESS at sine theta equals lambda over a — the narrower the slit, the WIDER the spread. Squeeze light, and it splays.",
+          board:[
+            {label:"The minima", tex:"a\\sin\\theta = m\\lambda\\ \\ (m = 1,2,\\ldots:\\ \\text{DARK fringes})", kind:"key"},
+            {label:"The contrast", text:"Narrower slit → wider pattern. Note: this formula gives MINIMA (contrast the double slit!).", kind:"warn"}
+          ],
+          action(c){
        dashLine(c, Math.PI,0, Math.PI,0.55, {color:RED});
        dashLine(c, -Math.PI,0, -Math.PI,0.55, {color:RED});
        label(c, 3.3,0.5, 'first darkness: a sinθ = λ', {fs:12, color:RED, italic:true});
        label(c, -9.9,0.9, 'squeeze the slit → the crown widens', {fs:11.5, color:'#8A5A24', italic:true});
-     } },
-   { say:"The full portrait, derived by honest integration in Example 2, is the sinc-squared curve on the stage: intensity I-max times sine of beta over two, over beta over two, all squared — a broad central crown flanked by feeble shoulders, the first only four and a half per cent of the peak. The central maximum is DOUBLE the width of every side fringe: the single slit's fingerprint.",
-     pose:'write',
-     board:['I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2, \\qquad \\beta = \\frac{2\\pi a\\sin\\theta}{\\lambda}'],
-     action(c){
+     }
+        },
+        { map:1, title:"The sinc² portrait",
+          think:"What curve does honest integration over the slit deliver?",
+          model:"I = I_max[sin(β/2)/(β/2)]².",
+          pose:"write",
+          say:"The full portrait, derived by honest integration in Example 2, is the sinc-squared curve on the stage: intensity I-max times sine of beta over two, over beta over two, all squared — a broad central crown flanked by feeble shoulders, the first only four and a half per cent of the peak. The central maximum is DOUBLE the width of every side fringe: the single slit's fingerprint.",
+          board:[
+            {label:"The envelope", tex:"I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2, \\qquad \\beta = \\frac{2\\pi a\\sin\\theta}{\\lambda}", kind:"key"}
+          ],
+          action(c){
        arrow(c, -Math.PI,0.72, Math.PI,0.72, {color:GREEN, w:2, head:7});
        arrow(c, Math.PI,0.72, -Math.PI,0.72, {color:GREEN, w:2, head:7});
        label(c, -1.7,0.78, 'double width', {fs:11.5, color:GREEN, italic:true});
        dashLine(c, 3.5,0.045, 9.8,0.045, {color:PURPLE});
        label(c, 5.4,0.14, 'shoulders: 4.5% of the peak', {fs:11.5, color:PURPLE, italic:true});
-     } },
-   { say:"The diffraction GRATING multiplies the double slit to thousands of slits: same bright-fringe condition, d sine theta equals m lambda, but the maxima sharpen into needles — the more slits conspire, the more jealously they cancel everything off-peak. Sharp needles are what a spectroscopist calls RESOLUTION, and the resolving power is simply R equals m N: order times illuminated lines.",
-     pose:'point',
-     board:['d\\sin\\theta = m\\lambda\\ (\\text{maxima}), \\qquad R = \\frac{\\lambda}{\\Delta\\lambda} = mN'],
-     action(c){
+     }
+        },
+        { map:2, title:"Gratings: thousands of slits",
+          think:"Same bright condition — so what do many slits change?",
+          model:"Sharpness: R = λ/Δλ = mN.",
+          pose:"point",
+          say:"The diffraction GRATING multiplies the double slit to thousands of slits: same bright-fringe condition, d sine theta equals m lambda, but the maxima sharpen into needles — the more slits conspire, the more jealously they cancel everything off-peak. Sharp needles are what a spectroscopist calls RESOLUTION, and the resolving power is simply R equals m N: order times illuminated lines.",
+          board:[
+            {label:"The grating", tex:"d\\sin\\theta = m\\lambda\\ (\\text{maxima}), \\qquad R = \\frac{\\lambda}{\\Delta\\lambda} = mN", kind:"key"}
+          ],
+          action(c){
        for(const x of [-9.4,-6.3,-3.1,0,3.1,6.3,9.4]){
          const h=sinc2(x*0.33);
          plotCurve(c, t=>[x+0.28*Math.sin(Math.PI*t), h*t], 0, 1, {color:PURPLE, w:2.2, dur:500, N:40});
        }
        textAt(c, -6.3,1.05, 'many slits: needles under the envelope', {fs:11.5, italic:true, anchor:'middle'});
-     } },
-   { say:"Circular apertures — pupils, lenses, telescope mirrors — diffract too, wrapping the pattern into the AIRY disc, with the first dark ring at 1.22 lambda over D. RAYLEIGH'S CRITERION then rules all optics: two sources are just resolved when one's peak lands on the other's first dark ring. No polish, no engineering, no expense evades it — only a bigger aperture or a shorter wavelength.",
-     pose:'write', solo:true,
-     board:['\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}\\ \\ (\\text{Rayleigh: the diffraction limit})'],
-     action(c){
+     }
+        },
+        { map:3, title:"Round holes: the Airy disc",
+          think:"What is the universe's fine print for every lens?",
+          model:"θ_min = 1.22 λ/D — the diffraction limit.",
+          pose:"write", solo:true,
+          say:"Circular apertures — pupils, lenses, telescope mirrors — diffract too, wrapping the pattern into the AIRY disc, with the first dark ring at 1.22 lambda over D. RAYLEIGH'S CRITERION then rules all optics: two sources are just resolved when one's peak lands on the other's first dark ring. No polish, no engineering, no expense evades it — only a bigger aperture or a shorter wavelength.",
+          board:[
+            {label:"Rayleigh", tex:"\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}\\ \\ (\\text{Rayleigh: the diffraction limit})", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        const hump=(x0,col)=>{ const pts=[]; for(let i=0;i<=80;i++){const x=-6+12*i/80;
          pts.push(M.X(x+x0)+','+M.Y(0.72*sinc2((x)*0.85)));}
@@ -852,11 +752,17 @@ const EXAMPLES = [
        label(c, -0.9,1.02, 'the just-visible dip', {fs:11.5, color:'#2E7D4F', italic:true});
        label(c, -9.9,0.25, 'peak on first dark ring:', {fs:11.5, color:'#8A5A24', italic:true});
        label(c, -9.9,0.14, '“just resolved”', {fs:11.5, color:'#8A5A24', italic:true});
-     } },
-   { say:"Diffraction sets the melancholy, magnificent rule: no image can be sharper than the wavelength allows, no matter the craftsmanship or the budget. It is the universe’s resolution limit — the fine print on every eye, telescope, and microscope. And yet within that limit we resolved moons of Jupiter, then galaxies, then atoms. A boundary, properly understood, is an invitation.",
-     pose:'think', solo:true,
-     board:[{t:'1.22 λ/D is the universe’s fine print. We read it — then built around it, all the way to atoms.'}],
-     action(c){
+     }
+        },
+        { map:4, title:"The magnificent rule",
+          think:"Can craftsmanship or budget beat the wavelength?",
+          model:"Never. We read the fine print — then built around it.",
+          pose:"think", solo:true,
+          say:"Diffraction sets the melancholy, magnificent rule: no image can be sharper than the wavelength allows, no matter the craftsmanship or the budget. It is the universe’s resolution limit — the fine print on every eye, telescope, and microscope. And yet within that limit we resolved moons of Jupiter, then galaxies, then atoms. A boundary, properly understood, is an invitation.",
+          board:[
+            {text:"1.22 λ/D is the universe’s fine print. We read it — then built around it, all the way to atoms.", kind:"note"}
+          ],
+          action(c){
        const {M}=c;
        el('circle',{cx:M.X(-6.4), cy:M.Y(0.62), r:8, fill:GOLD},c.svg);
        el('circle',{cx:M.X(-4.9), cy:M.Y(0.62), r:8, fill:GOLD},c.svg);
@@ -865,13 +771,18 @@ const EXAMPLES = [
        label(c, 3.1,0.36, 'past 10 km: one blur', {fs:11.5, color:'#7A5A28', italic:true});
        arrow(c, -3.0,0.62, 1.8,0.62, {color:'#8A7D60', w:2.5, label:'distance', fs:12});
        label(c, -6.4,0.06, 'no polish evades it — only a bigger aperture or a bluer photon', {fs:11.5, color:'#8A5A24', italic:true});
-     } },
-   { say:"And at the smallest scales, BRAGG turns diffraction into a ruler for atoms: X-rays reflecting off crystal planes a distance d apart interfere constructively when 2 d sine theta equals m lambda — the law that read the structure of salt, of silicon, and of DNA itself. Strategy: minima for one slit, maxima for many; amplitudes before intensities; and 1.22 lambda over D whenever anything round looks at anything far. To the examples.",
-     pose:'excited',
-     board:['2d\\sin\\theta = m\\lambda\\ \\ (\\text{Bragg: }\\theta\\text{ measured from the PLANES})',
-            {t:'Strategy: single slit → dark; grating → bright; round aperture → 1.22λ/D; crystals → Bragg.'}],
-     solo:true,
-     action(c){
+     }
+        },
+        { map:5, title:"Bragg: a ruler for atoms",
+          think:"From which line is Bragg's θ measured?",
+          model:"The PLANES, not the normal: 2d sinθ = mλ.",
+          pose:"excited", solo:true,
+          say:"And at the smallest scales, BRAGG turns diffraction into a ruler for atoms: X-rays reflecting off crystal planes a distance d apart interfere constructively when 2 d sine theta equals m lambda — the law that read the structure of salt, of silicon, and of DNA itself. Strategy: minima for one slit, maxima for many; amplitudes before intensities; and 1.22 lambda over D whenever anything round looks at anything far. To the examples.",
+          board:[
+            {label:"Bragg", tex:"2d\\sin\\theta = m\\lambda\\ \\ (\\text{Bragg: }\\theta\\text{ measured from the PLANES})", kind:"key"},
+            {label:"The pathway", text:"Strategy: single slit → dark; grating → bright; round aperture → 1.22λ/D; crystals → Bragg.", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        [0.62,0.30].forEach(y=>{ for(let i=0;i<11;i++)
          el('circle',{cx:M.X(-7.5+i*1.5), cy:M.Y(y), r:5, fill:'#8A5A24'},c.svg);
@@ -884,163 +795,293 @@ const EXAMPLES = [
        label(c, 4.0,0.44, 'd', {fs:13, color:'#7A5A28', italic:true});
        dashLine(c, 3.7,0.3, 3.7,0.62, {});
        label(c, -8.0,0.04, 'atomic planes as mirrors: θ from the PLANES — the crystallographers insist', {fs:11, color:'#8A5A24', italic:true});
-     } },
-  ]
-},
-
-/* ---------- Example 1: Single slit dark fringes [Basic] ---------- */
-{
-  title:'Single slit: mapping the dark fringes.', diff:'Basic',
-  prompt:'Light of λ = 546 nm passes a slit a = 0.0300 mm wide onto a screen L = 2.00 m away. Find (a) the width of the central bright fringe and (b) the width of the first side fringe.',
-  world:{x0:-10.6, x1:10.6, y0:-0.14, y1:1.15, aniso:true},
-  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'y (cm) on the screen', ylab:'I/I_max'}); },
-  steps:[
-   { say:"The single slit, measured. Green mercury light, a slit three hundredths of a millimetre wide, a screen two metres downstream. The map's landmarks are the DARK fringes — a sine theta equals m lambda — and everything bright lives between them.",
-     pose:'talk',
-     board:[{t:'λ = 546 nm, a = 0.0300 mm, L = 2.00 m.'},
-            'a\\sin\\theta_m = m\\lambda\\ (\\text{minima})'] },
-   { say:"Let us take part a. The first minimum: sine theta-one equals lambda over a — 546 nanometres over thirty microns — 0.0182. Comfortably small, so positions on the screen are simply L times that: three point six four centimetres. The CENTRAL fringe spans from minus y-one to plus y-one — seven point two eight centimetres of brightness from a slit thinner than a hair.",
-     pose:'write',
-     board:['\\sin\\theta_1 = \\frac{\\lambda}{a} = \\frac{546\\times10^{-9}}{3.00\\times10^{-5}} = 0.0182, \\qquad y_1 = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}',
-            'w_{\\rm central} = 2y_1 = 7.28\\ \\mathrm{cm}'],
-     action(c){
+     }
+        },
+      ]
+    },
+    {
+diff:"Basic",
+      title:"Single slit: mapping the dark fringes",
+      problem:"Light of λ = 546 nm passes a slit a = 0.0300 mm wide onto a screen L = 2.00 m away. Find (a) the width of the central bright fringe and (b) the width of the first side fringe.",
+      goal:"Goal → two widths",
+      world:{"x0":-10.6,"x1":10.6,"y0":-0.14,"y1":1.15,"aniso":true},
+      pathway:["Read","Central fringe","Side fringes","The contrast","Check"],
+      setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'y (cm) on the screen', ylab:'I/I_max'}); },
+      steps:[
+        { map:0, title:"Read: map the darkness",
+          think:"Which formula marks this pattern's landmarks — and are they bright?",
+          model:"a sinθ = mλ: the MINIMA.",
+          pose:"talk",
+          say:"The single slit, measured. Green mercury light, a slit three hundredths of a millimetre wide, a screen two metres downstream. The map's landmarks are the DARK fringes — a sine theta equals m lambda — and everything bright lives between them.",
+          board:[
+            {label:"Given", text:"λ = 546 nm, a = 0.0300 mm, L = 2.00 m."},
+            {label:"The landmarks", tex:"a\\sin\\theta_m = m\\lambda\\ (\\text{minima})", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the central crown",
+          think:"First minima at ±Lλ/a bracket what width?",
+          model:"2y₁ = 7.28 cm.",
+          pose:"write",
+          say:"Let us take part a. The first minimum: sine theta-one equals lambda over a — 546 nanometres over thirty microns — 0.0182. Comfortably small, so positions on the screen are simply L times that: three point six four centimetres. The CENTRAL fringe spans from minus y-one to plus y-one — seven point two eight centimetres of brightness from a slit thinner than a hair.",
+          board:[
+            {label:"First minimum", tex:"\\sin\\theta_1 = \\frac{\\lambda}{a} = \\frac{546\\times10^{-9}}{3.00\\times10^{-5}} = 0.0182, \\qquad y_1 = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}"},
+            {label:"Central width", tex:"w_{\\rm central} = 2y_1 = 7.28\\ \\mathrm{cm}", kind:"answer"}
+          ],
+          action(c){
        plotCurve(c, y=>[y, sinc2(Math.PI*y/3.64)], -10.2, 10.2, {color:GOLD, w:3, dur:1600});
        dashLine(c, -3.64,0, -3.64,0.35, {color:'#8A7D60'}); dashLine(c, 3.64,0, 3.64,0.35, {color:'#8A7D60'});
        textAt(c, 0,1.06, 'central crown: 7.28 cm wide', {fs:12, italic:true, anchor:'middle'});
-     } },
-   { say:"On we go to part b. Each side fringe runs between successive minima, and the minima sit at multiples of L lambda over a — so every side fringe is exactly ONE unit wide: three point six four centimetres, half the central crown. The central maximum standing double-width above its neighbours is the single-slit signature — spot it in any pattern and you know at once a lone slit, not a pair, is responsible.",
-     pose:'point',
-     board:['w_{\\rm side} = y_2 - y_1 = L\\frac{2\\lambda}{a} - L\\frac{\\lambda}{a} = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): the side fringes",
+          think:"Between successive minima — how wide is each?",
+          model:"Exactly Lλ/a = 3.64 cm: half the crown.",
+          pose:"point",
+          say:"On we go to part b. Each side fringe runs between successive minima, and the minima sit at multiples of L lambda over a — so every side fringe is exactly ONE unit wide: three point six four centimetres, half the central crown. The central maximum standing double-width above its neighbours is the single-slit signature — spot it in any pattern and you know at once a lone slit, not a pair, is responsible.",
+          board:[
+            {label:"Side width", tex:"w_{\\rm side} = y_2 - y_1 = L\\frac{2\\lambda}{a} - L\\frac{\\lambda}{a} = L\\frac{\\lambda}{a} = 3.64\\ \\mathrm{cm}", kind:"answer"}
+          ],
+          action(c){
        dashLine(c, 7.28,0, 7.28,0.35, {color:'#8A7D60'});
        arrow(c, 3.64,0.28, 7.28,0.28, {color:GREEN, w:2, head:6, label:'side: 3.64 cm', fs:11.5});
        arrow(c, -3.64,0.5, 3.64,0.5, {color:PURPLE, w:2, head:6, label:'central: 7.28 cm', fs:11.5});
-     } },
-   { say:"Mark the contrast with the double slit while it is fresh: THERE, d sine theta equals m lambda located the BRIGHT fringes; HERE, the same-shaped formula locates the DARK. Same algebra, opposite verdicts — the single most reliable mix-up in the optics exam, now permanently labelled.",
-     pose:'write',
-     board:[{t:'Double slit: d sinθ = mλ → BRIGHT. Single slit: a sinθ = mλ → DARK. Label them and live.'}] },
-   { say:"The check is the profile's signature: the central fringe always DOUBLE the width of its neighbours — if your pattern's crown is not the wide one, you have mislabelled something. And the inverse law delights: narrow the slit and the pattern broadens in protest. Light does not like being cornered; remember that temperament when quantum mechanics gives it a name.",
-     pose:'excited',
-     board:[{t:'Check: central = 2× side width ✓; narrower a → wider pattern (a preview of uncertainty).'}],
-     action(c){
+     }
+        },
+        { map:3, title:"The labelled contrast",
+          think:"Same-shaped formula as Young's — what differs?",
+          model:"There bright, here dark. Label them and live.",
+          pose:"write",
+          say:"Mark the contrast with the double slit while it is fresh: THERE, d sine theta equals m lambda located the BRIGHT fringes; HERE, the same-shaped formula locates the DARK. Same algebra, opposite verdicts — the single most reliable mix-up in the optics exam, now permanently labelled.",
+          board:[
+            {label:"The warning", text:"Double slit: d sinθ = mλ → BRIGHT. Single slit: a sinθ = mλ → DARK. Label them and live.", kind:"warn"}
+          ]
+        },
+        { map:4, title:"Check the signature",
+          think:"Which fringe must always be double-width?",
+          model:"The central ✓ — and narrower a widens all (uncertainty's preview).",
+          pose:"excited",
+          say:"The check is the profile's signature: the central fringe always DOUBLE the width of its neighbours — if your pattern's crown is not the wide one, you have mislabelled something. And the inverse law delights: narrow the slit and the pattern broadens in protest. Light does not like being cornered; remember that temperament when quantum mechanics gives it a name.",
+          board:[
+            {label:"The signature", text:"Check: central = 2× side width ✓; narrower a → wider pattern (a preview of uncertainty).", kind:"key"},
+            {label:"Reusable method", text:"minima at mλL/a → central = 2 side widths → narrower slit, wider pattern", kind:"answer"}
+          ],
+          action(c){
        plotCurve(c, y=>[y, sinc2(Math.PI*y/5.8)], -10.2, 10.2, {color:BLUE, w:2, dash:'7,5', dur:1200});
        textAt(c, -7.2,0.88, 'slit narrowed → crown widens', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
-     } },
-  ]
-},
-
-/* ---------- Example 2: Deriving the intensity [Challenging] ---------- */
-{
-  title:'Deriving the single-slit intensity (integration over the slit).', diff:'Challenging',
-  prompt:'Treat the slit as infinitely many strips of width dx. Derive I(θ) = I_max[sin(β/2)/(β/2)]².',
-  world:{x0:-10.6, x1:10.6, y0:-0.14, y1:1.15, aniso:true},
-  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'β/2 (rad)', ylab:'I/I_max'}); },
-  steps:[
-   { say:"Now we earn the sinc-squared curve by integration — Huygens taken literally. Slice the slit into strips of width d-x, each a tiny source. The strip at position x reaches the screen with an extra path x sine theta, hence an extra phase k x sine theta. The total field is the INTEGRAL of all the strips' contributions.",
-     pose:'talk',
-     board:['E(\\theta) = \\frac{E_a}{a}\\int_{-a/2}^{a/2}\\cos(\\omega t - kx\\sin\\theta)\\,dx'] },
-   { say:"Integrate — the antiderivative of cosine is sine, divided by the inner coefficient — and evaluate at the slit's two edges. Out come two sines with the phases omega t plus-and-minus half of k a sine theta. Integrating across the slit is Huygens' principle taken at its word: every point a source, every source summed — the pattern is nothing but that sum, evaluated honestly.",
-     pose:'write',
-     board:['E = \\frac{E_a}{a\\,k\\sin\\theta}\\Big[\\sin\\big(\\omega t + \\tfrac{ka\\sin\\theta}{2}\\big) - \\sin\\big(\\omega t - \\tfrac{ka\\sin\\theta}{2}\\big)\\Big]'] },
-   { say:"The difference-of-sines identity — sine A minus sine B equals twice cosine of the mean times sine of the half-difference — collapses the bracket. Define beta as k a sine theta, and the field becomes E-a times sine of beta over two, over beta over two, times cosine omega t. The famous SINC function, appearing from pure trigonometry.",
-     pose:'point',
-     board:['E = E_a\\,\\frac{\\sin(\\beta/2)}{\\beta/2}\\,\\cos\\omega t, \\qquad \\beta = ka\\sin\\theta = \\frac{2\\pi a\\sin\\theta}{\\lambda}'] },
-   { say:"Square the amplitude for intensity, and the portrait is complete: I equals I-max times sinc-squared of beta over two. Watch the checks salute in turn: as theta goes to zero, sinc goes to one — the central maximum, intact. Zeros exactly where beta over two is a multiple of pi — which is a sine theta equals m lambda, our dark-fringe map.",
-     pose:'write',
-     board:['I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2',
-            '\\theta\\to0:\\ I\\to I_{\\max}\\ \\checkmark, \\qquad \\text{zeros at } a\\sin\\theta = m\\lambda\\ \\checkmark'],
-     action(c){
+     }
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Deriving the single-slit intensity (integration over the slit)",
+      problem:"Treat the slit as infinitely many strips of width dx. Derive I(θ) = I_max[sin(β/2)/(β/2)]².",
+      goal:"Goal → derive sinc²",
+      world:{"x0":-10.6,"x1":10.6,"y0":-0.14,"y1":1.15,"aniso":true},
+      pathway:["Read","Integrate","Identity","The portrait","Audit"],
+      setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'β/2 (rad)', ylab:'I/I_max'}); },
+      steps:[
+        { map:0, title:"Read: Huygens, literally",
+          think:"What does each strip of the slit contribute at angle θ?",
+          model:"A phase-delayed cosine: integrate across the width.",
+          pose:"talk",
+          say:"Now we earn the sinc-squared curve by integration — Huygens taken literally. Slice the slit into strips of width d-x, each a tiny source. The strip at position x reaches the screen with an extra path x sine theta, hence an extra phase k x sine theta. The total field is the INTEGRAL of all the strips' contributions.",
+          board:[
+            {label:"The integral", tex:"E(\\theta) = \\frac{E_a}{a}\\int_{-a/2}^{a/2}\\cos(\\omega t - kx\\sin\\theta)\\,dx", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate to the edges",
+          think:"The antiderivative evaluated at ±a/2 leaves what?",
+          model:"A difference of two sines.",
+          pose:"write",
+          say:"Integrate — the antiderivative of cosine is sine, divided by the inner coefficient — and evaluate at the slit's two edges. Out come two sines with the phases omega t plus-and-minus half of k a sine theta. Integrating across the slit is Huygens' principle taken at its word: every point a source, every source summed — the pattern is nothing but that sum, evaluated honestly.",
+          board:[
+            {label:"The evaluation", tex:"E = \\frac{E_a}{a\\,k\\sin\\theta}\\Big[\\sin\\big(\\omega t + \\tfrac{ka\\sin\\theta}{2}\\big) - \\sin\\big(\\omega t - \\tfrac{ka\\sin\\theta}{2}\\big)\\Big]", kind:"key", move:"integrate"}
+          ]
+        },
+        { map:2, title:"The identity collapses it",
+          think:"Difference of sines becomes what product?",
+          model:"E = E_a sinc(β/2) cosωt, β = 2πa sinθ/λ.",
+          pose:"point",
+          say:"The difference-of-sines identity — sine A minus sine B equals twice cosine of the mean times sine of the half-difference — collapses the bracket. Define beta as k a sine theta, and the field becomes E-a times sine of beta over two, over beta over two, times cosine omega t. The famous SINC function, appearing from pure trigonometry.",
+          board:[
+            {label:"The amplitude", tex:"E = E_a\\,\\frac{\\sin(\\beta/2)}{\\beta/2}\\,\\cos\\omega t, \\qquad \\beta = ka\\sin\\theta = \\frac{2\\pi a\\sin\\theta}{\\lambda}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Square: the portrait",
+          think:"Do the limits salute — θ → 0, and the zeros?",
+          model:"I → I_max ✓, zeros at a sinθ = mλ ✓.",
+          pose:"write",
+          say:"Square the amplitude for intensity, and the portrait is complete: I equals I-max times sinc-squared of beta over two. Watch the checks salute in turn: as theta goes to zero, sinc goes to one — the central maximum, intact. Zeros exactly where beta over two is a multiple of pi — which is a sine theta equals m lambda, our dark-fringe map.",
+          board:[
+            {label:"The intensity", tex:"I(\\theta) = I_{\\max}\\Big[\\frac{\\sin(\\beta/2)}{\\beta/2}\\Big]^2", kind:"answer"},
+            {label:"The salutes", tex:"\\theta\\to0:\\ I\\to I_{\\max}\\ \\checkmark, \\qquad \\text{zeros at } a\\sin\\theta = m\\lambda\\ \\checkmark", kind:"key"}
+          ],
+          action(c){
        plotCurve(c, x=>[x, sinc2(x)], -10.2, 10.2, {color:GOLD, w:3, dur:1600});
-     } },
-   { say:"And the final audit, on the shoulders: the first side peak sits near beta over two equal to three pi over two, where the intensity is one over that quantity squared — about four and a half per cent of the crown. Dim, exactly as every laboratory screen confirms. One integral, one identity, one squaring — and the entire anatomy of the single slit, derived while seated.",
-     pose:'excited',
-     board:['\\text{1st side peak: } \\frac{I}{I_{\\max}} \\approx \\Big(\\frac{1}{3\\pi/2}\\Big)^2 = 0.045\\ \\checkmark\\ (\\text{dim shoulders, as observed})'] },
-  ]
-},
-
-/* ---------- Example 3: A grating spectrum [Intermediate] ---------- */
-{
-  title:'A grating spectrum.', diff:'Intermediate',
-  prompt:'A grating has 600 lines/mm; white light (400–700 nm) shines through. (a) Find the first-order violet and red angles. (b) How many complete visible orders exist? (c) Show that the second and third orders overlap.',
-  world:{x0:-2, x1:62, y0:-1, y1:9},
-  setup(ctx,w){
+     }
+        },
+        { map:4, title:"Audit the shoulders",
+          think:"How dim is the first side peak?",
+          model:"(2/3π)² ≈ 4.5% — dim, as observed ✓.",
+          pose:"excited",
+          say:"And the final audit, on the shoulders: the first side peak sits near beta over two equal to three pi over two, where the intensity is one over that quantity squared — about four and a half per cent of the crown. Dim, exactly as every laboratory screen confirms. One integral, one identity, one squaring — and the entire anatomy of the single slit, derived while seated.",
+          board:[
+            {label:"The shoulder check", tex:"\\text{1st side peak: } \\frac{I}{I_{\\max}} \\approx \\Big(\\frac{1}{3\\pi/2}\\Big)^2 = 0.045\\ \\checkmark\\ (\\text{dim shoulders, as observed})", kind:"key"},
+            {label:"Reusable method", text:"strips → integrate → sum-to-product → sinc² → check limits and shoulders", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"A grating spectrum",
+      problem:"A grating has 600 lines/mm; white light (400–700 nm) shines through. (a) Find the first-order violet and red angles. (b) How many complete visible orders exist? (c) Show that the second and third orders overlap.",
+      goal:"Goal → the sorted rainbow",
+      world:{"x0":-2,"x1":62,"y0":-1,"y1":9},
+      pathway:["Read","First order","Complete orders","Overlap","Check"],
+      setup(ctx,w){
     const c={svg:ctx.svg, M:ctx.M, instant:true};
     const {svg,M}=ctx;
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(0),y2:M.Y(8.4),stroke:'#5C4B30','stroke-width':5},svg);
     textAt(c, 0.8,8.2, 'grating, 600 lines/mm', {fs:12, italic:true});
   },
-  steps:[
-   { say:"Give a grating white light and it hands you back a rainbow, sorted by mathematics. Six hundred lines per millimetre means a slit spacing d of one six-hundredth of a millimetre — 1.667 microns — and every wavelength gets its own angle from d sine theta equals m lambda.",
-     pose:'talk',
-     board:['d = \\frac{1}{600}\\ \\mathrm{mm} = 1.667\\times10^{-6}\\ \\mathrm m, \\qquad d\\sin\\theta = m\\lambda'] },
-   { say:"For part a, the first-order rainbow. Violet, four hundred nanometres: sine theta is 0.240 — thirteen point nine degrees. Red, seven hundred: sine theta 0.420 — twenty-four point eight. Eleven degrees of spectrum, violet hugging the axis, red swung wide — the grating bends the LONG wavelengths hardest, precisely opposite to a glass prism.",
-     pose:'point',
-     board:['\\sin\\theta_v = \\frac{400}{1667} = 0.240 \\Rightarrow 13.9^{\\circ}, \\qquad \\sin\\theta_r = \\frac{700}{1667} = 0.420 \\Rightarrow 24.8^{\\circ}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: rainbows by mathematics",
+          think:"600 lines/mm sets what spacing d?",
+          model:"1.667 μm; d sinθ = mλ.",
+          pose:"talk",
+          say:"Give a grating white light and it hands you back a rainbow, sorted by mathematics. Six hundred lines per millimetre means a slit spacing d of one six-hundredth of a millimetre — 1.667 microns — and every wavelength gets its own angle from d sine theta equals m lambda.",
+          board:[
+            {label:"Given", tex:"d = \\frac{1}{600}\\ \\mathrm{mm} = 1.667\\times10^{-6}\\ \\mathrm m, \\qquad d\\sin\\theta = m\\lambda", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the first-order fan",
+          think:"Violet and red land at what angles?",
+          model:"13.9° and 24.8° — red bends MORE.",
+          pose:"point",
+          say:"For part a, the first-order rainbow. Violet, four hundred nanometres: sine theta is 0.240 — thirteen point nine degrees. Red, seven hundred: sine theta 0.420 — twenty-four point eight. Eleven degrees of spectrum, violet hugging the axis, red swung wide — the grating bends the LONG wavelengths hardest, precisely opposite to a glass prism.",
+          board:[
+            {label:"The fan", tex:"\\sin\\theta_v = \\frac{400}{1667} = 0.240 \\Rightarrow 13.9^{\\circ}, \\qquad \\sin\\theta_r = \\frac{700}{1667} = 0.420 \\Rightarrow 24.8^{\\circ}", kind:"answer"}
+          ],
+          action(c){
        arrow(c, 0,4, 56,17.8, {color:PURPLE, w:2.5, dur:700, label:'violet 400', fs:11.5, lt:0.8});
        arrow(c, 0,4, 50,4+50*0.464, {color:RED, w:2.5, dur:700, label:'red 700', fs:11.5, lt:0.55, side:-1});
        arrow(c, 0,4, 58,4, {color:'#B0A488', w:1.5, dash:'6,5', dur:400});
        arc(c, 0,4, 9, 0, 13.9, {color:PURPLE, label:'13.9°'});
        arc(c, 0,4, 14, 0, 24.8, {color:RED, label:'24.8°'});
-     } },
-   { say:"Part b: how many COMPLETE rainbows? The red end is the first to fall off the table, needing m times 700 nanometres over d to stay at or below one: m at most 2.38. So orders one and two arrive complete; order three exists only for wavelengths below five hundred and fifty-six nanometres — a rainbow amputated at the green.",
-     pose:'write',
-     board:['m \\le \\frac{d}{\\lambda_{\\rm red}} = \\frac{1667}{700} = 2.38 \\;\\Rightarrow\\; \\text{orders 1, 2 complete; order 3 partial}'] },
-   { say:"For part c, the interleaving scandal: third-order violet sits at sine theta equal to three times 400 over 1667 — 0.720 — while SECOND-order red reaches 0.840. The third rainbow's violet edge falls INSIDE the second rainbow's red: the orders overlap, and beyond the first order the spectrum becomes a palimpsest.",
-     pose:'write',
-     board:['\\sin\\theta_{3,\\rm violet} = \\frac{3(400)}{1667} = 0.720 < \\sin\\theta_{2,\\rm red} = \\frac{2(700)}{1667} = 0.840\\ \\ (\\text{overlap!})'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): complete rainbows",
+          think:"Which colour falls off the table first, and at what m?",
+          model:"Red at m = 3: orders 1 and 2 complete.",
+          pose:"write",
+          say:"Part b: how many COMPLETE rainbows? The red end is the first to fall off the table, needing m times 700 nanometres over d to stay at or below one: m at most 2.38. So orders one and two arrive complete; order three exists only for wavelengths below five hundred and fifty-six nanometres — a rainbow amputated at the green.",
+          board:[
+            {label:"The census", tex:"m \\le \\frac{d}{\\lambda_{\\rm red}} = \\frac{1667}{700} = 2.38 \\;\\Rightarrow\\; \\text{orders 1, 2 complete; order 3 partial}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Part (c): the interleaving scandal",
+          think:"Where does 3rd-order violet sit relative to 2nd-order red?",
+          model:"Inside it: 0.720 < 0.840 — orders overlap.",
+          pose:"write",
+          say:"For part c, the interleaving scandal: third-order violet sits at sine theta equal to three times 400 over 1667 — 0.720 — while SECOND-order red reaches 0.840. The third rainbow's violet edge falls INSIDE the second rainbow's red: the orders overlap, and beyond the first order the spectrum becomes a palimpsest.",
+          board:[
+            {label:"The overlap", tex:"\\sin\\theta_{3,\\rm violet} = \\frac{3(400)}{1667} = 0.720 < \\sin\\theta_{2,\\rm red} = \\frac{2(700)}{1667} = 0.840\\ \\ (\\text{overlap!})", kind:"key"}
+          ],
+          action(c){
        arrow(c, 0,4, 12,22.6, {color:RED, w:2, dash:'6,4', dur:600});
        label(c, 13,22.0, '2nd-order red: 57.1°', {fs:11, color:RED, italic:true});
        arrow(c, 0,4, 16,20.6, {color:PURPLE, w:2, dash:'6,4', dur:600});
        label(c, 17,19.6, '3rd-order violet: 46.1° — inside it!', {fs:11, color:PURPLE, italic:true});
-     } },
-   { say:"The check is the spectroscopist's daily bread: order overlap is why real instruments carry filters or cross-dispersers to sort the palimpsest into legible pages. And the design tension is now yours to appreciate — higher orders spread the colours wider and resolve finer, but tangle with their neighbours. Every spectrograph is a negotiated settlement with this example.",
-     pose:'excited',
-     board:[{t:'Check: gratings bend red MOST (opposite to prisms) ✓; order sorting is the price of dispersion.'}] },
-  ]
-},
-
-/* ---------- Example 4: Resolving the sodium doublet [Intermediate] ---------- */
-{
-  title:'Resolving the sodium doublet.', diff:'Intermediate',
-  prompt:'The sodium D lines sit at 589.00 and 589.59 nm. (a) What resolving power separates them? (b) How many grating lines are needed in first order? In second? (c) With 600 lines/mm, what beam width suffices in first order?',
-  world:{x0:-2, x1:12, y0:-0.14, y1:1.2, aniso:true},
-  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'λ (offset, arb.)', ylab:'I'}); },
-  steps:[
-   { say:"Sodium's famous yellow is a LIE of low resolution: it is two lines, 589.00 and 589.59 nanometres, masquerading as one. Splitting them is the classic test of a spectrograph, and the figure of merit is RESOLVING POWER: lambda over delta lambda.",
-     pose:'talk',
-     board:[{t:'D lines: 589.00 and 589.59 nm — Δλ = 0.59 nm.'},
-            'R = \\frac{\\lambda}{\\Delta\\lambda}'] },
-   { say:"Part a: 589 over 0.59 — nine hundred and ninety-eight; call it a thousand. A resolving power of one thousand splits the doublet; anything less smears it back into the single yellow smudge your eye has always believed in. Resolving power scales with how many rulings the beam actually ILLUMINATES — a wider beam recruits more slits into the conspiracy, and the needles sharpen accordingly.",
-     pose:'write',
-     board:['R = \\frac{589.0}{0.59} = 998 \\approx 1.0\\times10^{3}'],
-     action(c){
+     }
+        },
+        { map:4, title:"Check against the prism",
+          think:"Which instrument bends red most — grating or prism?",
+          model:"Grating (opposite to prisms) ✓; order-sorting filters are the price.",
+          pose:"excited",
+          say:"The check is the spectroscopist's daily bread: order overlap is why real instruments carry filters or cross-dispersers to sort the palimpsest into legible pages. And the design tension is now yours to appreciate — higher orders spread the colours wider and resolve finer, but tangle with their neighbours. Every spectrograph is a negotiated settlement with this example.",
+          board:[
+            {label:"The contrast", text:"Check: gratings bend red MOST (opposite to prisms) ✓; order sorting is the price of dispersion.", kind:"key"},
+            {label:"Reusable method", text:"d from lines/mm → fan per order → census by sinθ ≤ 1 → expect overlaps beyond first order", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Resolving the sodium doublet",
+      problem:"The sodium D lines sit at 589.00 and 589.59 nm. (a) What resolving power separates them? (b) How many grating lines are needed in first order? In second? (c) With 600 lines/mm, what beam width suffices in first order?",
+      goal:"Goal → R, N, width",
+      world:{"x0":-2,"x1":12,"y0":-0.14,"y1":1.2,"aniso":true},
+      pathway:["Read","The R needed","Lines needed","The 2 mm shock","The idea"],
+      setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'λ (offset, arb.)', ylab:'I'}); },
+      steps:[
+        { map:0, title:"Read: the yellow lie",
+          think:"What resolving power unmasks two lines 0.59 nm apart?",
+          model:"R = λ/Δλ.",
+          pose:"talk",
+          say:"Sodium's famous yellow is a LIE of low resolution: it is two lines, 589.00 and 589.59 nanometres, masquerading as one. Splitting them is the classic test of a spectrograph, and the figure of merit is RESOLVING POWER: lambda over delta lambda.",
+          board:[
+            {label:"Given", text:"D lines: 589.00 and 589.59 nm — Δλ = 0.59 nm."},
+            {label:"The measure", tex:"R = \\frac{\\lambda}{\\Delta\\lambda}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the requirement",
+          think:"589/0.59 rounds to what?",
+          model:"R ≈ 1000.",
+          pose:"write",
+          say:"Part a: 589 over 0.59 — nine hundred and ninety-eight; call it a thousand. A resolving power of one thousand splits the doublet; anything less smears it back into the single yellow smudge your eye has always believed in. Resolving power scales with how many rulings the beam actually ILLUMINATES — a wider beam recruits more slits into the conspiracy, and the needles sharpen accordingly.",
+          board:[
+            {label:"The requirement", tex:"R = \\frac{589.0}{0.59} = 998 \\approx 1.0\\times10^{3}", kind:"answer"}
+          ],
+          action(c){
        plotCurve(c, x=>[x, Math.exp(-Math.pow((x-4.4)/0.55,2)) + Math.exp(-Math.pow((x-6.2)/0.55,2))], 1, 11, {color:GOLD, w:3, dur:1400});
        textAt(c, 5.3,1.1, 'just resolved: two peaks, one valley', {fs:12, italic:true, anchor:'middle'});
-     } },
-   { say:"On we go to part b. For a grating, R equals m N — order times illuminated lines, nothing else. First order: about nine hundred and ninety-eight lines. Second order: half that, four hundred and ninety-nine — the higher order does double duty because each line contributes twice the path difference.",
-     pose:'point',
-     board:['R = mN \\;\\Rightarrow\\; N_1 = \\frac{998}{1} = 998, \\qquad N_2 = \\frac{998}{2} = 499'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): lines needed",
+          think:"R = mN — how do higher orders discount the bill?",
+          model:"998 lines in first order; 499 in second.",
+          pose:"point",
+          say:"On we go to part b. For a grating, R equals m N — order times illuminated lines, nothing else. First order: about nine hundred and ninety-eight lines. Second order: half that, four hundred and ninety-nine — the higher order does double duty because each line contributes twice the path difference.",
+          board:[
+            {label:"The counts", tex:"R = mN \\;\\Rightarrow\\; N_1 = \\frac{998}{1} = 998, \\qquad N_2 = \\frac{998}{2} = 499", kind:"answer"}
+          ],
+          action(c){
        plotCurve(c, x=>[x, 0.62*(Math.exp(-Math.pow((x-4.4)/1.3,2)) + Math.exp(-Math.pow((x-6.2)/1.3,2)))], 1, 11, {color:RED, w:2, dash:'7,5', dur:1200});
        textAt(c, 8.6,0.62, 'too few lines: one yellow smudge', {fs:11.5, color:'#7A2015', italic:true, anchor:'middle'});
-     } },
-   { say:"For part c, the practical astonishment: at six hundred lines per millimetre, nine hundred and ninety-eight lines occupy 998 over 600 millimetres — one point six six millimetres. A beam THINNER THAN A MATCHSTICK on a pocket grating cleanly divides what the naked eye has never once suspected of being two.",
-     pose:'write',
-     board:['\\text{width} = \\frac{N}{600\\ \\mathrm{lines/mm}} = \\frac{998}{600} = 1.66\\ \\mathrm{mm}'] },
-   { say:"The check is the idea worth exporting from this whole chapter: resolving power counts the wavelengths of path difference you can marshal ACROSS the aperture — m N is exactly that tally. Wider beams, finer lines, higher orders: all just ways of stacking more wavelengths between one edge of your instrument and the other. Resolution is geometry's bank balance.",
-     pose:'excited',
-     board:[{t:'Check: R = mN = wavelengths of path spanned across the aperture. Resolution = marshalled path difference.'}] },
-  ]
-},
-
-/* ---------- Example 5: Rayleigh’s criterion [Intermediate] ---------- */
-{
-  title:'Rayleigh’s criterion, from headlights to Hubble.', diff:'Intermediate',
-  prompt:'(a) At what distance can a dark-adapted eye (pupil D = 5.0 mm, λ = 550 nm) just resolve headlights 1.40 m apart? (b) What is the smallest crater Hubble (D = 2.4 m) resolves on the Moon (3.84×10⁸ m)?',
-  world:{x0:-2, x1:62, y0:-1, y1:9},
-  setup(ctx,w){
+     }
+        },
+        { map:3, title:"Part (c): the practical shock",
+          think:"How wide a beam covers 998 lines at 600/mm?",
+          model:"1.66 mm — a pencil beam splits the doublet.",
+          pose:"write",
+          say:"For part c, the practical astonishment: at six hundred lines per millimetre, nine hundred and ninety-eight lines occupy 998 over 600 millimetres — one point six six millimetres. A beam THINNER THAN A MATCHSTICK on a pocket grating cleanly divides what the naked eye has never once suspected of being two.",
+          board:[
+            {label:"The width", tex:"\\text{width} = \\frac{N}{600\\ \\mathrm{lines/mm}} = \\frac{998}{600} = 1.66\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The exportable idea",
+          think:"What does R = mN really count?",
+          model:"Wavelengths of path difference marshalled across the aperture ✓.",
+          pose:"excited",
+          say:"The check is the idea worth exporting from this whole chapter: resolving power counts the wavelengths of path difference you can marshal ACROSS the aperture — m N is exactly that tally. Wider beams, finer lines, higher orders: all just ways of stacking more wavelengths between one edge of your instrument and the other. Resolution is geometry's bank balance.",
+          board:[
+            {label:"The idea", text:"Check: R = mN = wavelengths of path spanned across the aperture. Resolution = marshalled path difference.", kind:"key"},
+            {label:"Reusable method", text:"R = λ/Δλ → R = mN → beam width = N/(lines per mm) → resolution is marshalled path", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Rayleigh’s criterion, from headlights to Hubble",
+      problem:"(a) At what distance can a dark-adapted eye (pupil D = 5.0 mm, λ = 550 nm) just resolve headlights 1.40 m apart? (b) What is the smallest crater Hubble (D = 2.4 m) resolves on the Moon (3.84×10⁸ m)?",
+      goal:"Goal → eye, then Hubble",
+      world:{"x0":-2,"x1":62,"y0":-1,"y1":9},
+      pathway:["Read","Headlights","Honesty","Hubble","The myth"],
+      setup(ctx,w){
     const c={svg:ctx.svg, M:ctx.M, instant:true};
     const {svg,M}=ctx;
     el('circle',{cx:M.X(2),cy:M.Y(4),r:9,fill:'none',stroke:'#5C4B30','stroke-width':3},svg);
@@ -1048,38 +1089,70 @@ const EXAMPLES = [
     el('circle',{cx:M.X(56),cy:M.Y(6.4),r:5,fill:GOLD},svg);
     el('circle',{cx:M.X(56),cy:M.Y(1.6),r:5,fill:GOLD},svg);
   },
-  steps:[
-   { say:"Rayleigh's criterion, road-tested. Every circular aperture — pupil, lens, mirror — smears a point of light into an Airy disc, and two points are JUST distinguishable when one's peak falls on the other's first dark ring: theta-min equals 1.22 lambda over D. Today: your own eye, and humanity's most famous telescope.",
-     pose:'talk',
-     board:['\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}'] },
-   { say:"For part a, the eye. Pupil five millimetres, green light: theta-min is 1.22 times 550 nanometres over five millimetres — 1.34 ten-to-the-minus-4 radians. Two headlights 1.4 metres apart subtend that angle at a distance L equals s over theta-min: ten kilometres. Beyond that, the approaching car is optically a motorcycle.",
-     pose:'write',
-     board:['\\theta_{\\min} = 1.22\\,\\frac{550\\times10^{-9}}{5.0\\times10^{-3}} = 1.34\\times10^{-4}\\ \\mathrm{rad}',
-            'L = \\frac{s}{\\theta_{\\min}} = \\frac{1.40}{1.34\\times10^{-4}} = 1.0\\times10^{4}\\ \\mathrm m \\approx 10\\ \\mathrm{km}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: the criterion road-tested",
+          think:"When are two points JUST resolved?",
+          model:"Peak on first dark ring: θ_min = 1.22λ/D.",
+          pose:"talk",
+          say:"Rayleigh's criterion, road-tested. Every circular aperture — pupil, lens, mirror — smears a point of light into an Airy disc, and two points are JUST distinguishable when one's peak falls on the other's first dark ring: theta-min equals 1.22 lambda over D. Today: your own eye, and humanity's most famous telescope.",
+          board:[
+            {label:"The criterion", tex:"\\theta_{\\min} = 1.22\\,\\frac{\\lambda}{D}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the headlights",
+          think:"A 5-mm pupil resolves 1.4 m at what range?",
+          model:"≈10 km.",
+          pose:"write",
+          say:"For part a, the eye. Pupil five millimetres, green light: theta-min is 1.22 times 550 nanometres over five millimetres — 1.34 ten-to-the-minus-4 radians. Two headlights 1.4 metres apart subtend that angle at a distance L equals s over theta-min: ten kilometres. Beyond that, the approaching car is optically a motorcycle.",
+          board:[
+            {label:"The angle", tex:"\\theta_{\\min} = 1.22\\,\\frac{550\\times10^{-9}}{5.0\\times10^{-3}} = 1.34\\times10^{-4}\\ \\mathrm{rad}"},
+            {label:"The range", tex:"L = \\frac{s}{\\theta_{\\min}} = \\frac{1.40}{1.34\\times10^{-4}} = 1.0\\times10^{4}\\ \\mathrm m \\approx 10\\ \\mathrm{km}", kind:"answer"}
+          ],
+          action(c){
        arrow(c, 2,4, 55,6.3, {color:'#B0A488', w:1.5, dur:600});
        arrow(c, 2,4, 55,1.7, {color:'#B0A488', w:1.5, dur:600});
        arc(c, 2,4, 10, -2.5, 2.5, {color:'#888', label:'θ_min'});
-     } },
-   { say:"In honesty, the atmosphere's shimmer and the retina's pixel mosaic intervene before ten kilometres — Rayleigh sets the CEILING, and biology rents below it. But the diffraction limit is the one no optometrist can prescribe away. Engineering can polish mirrors, cool sensors, and bribe the atmosphere with adaptive optics — but the aperture's diffraction limit is constitutional law, amendable only by building bigger.",
-     pose:'point',
-     board:[{t:'Rayleigh = the ceiling; atmosphere and retina take their cut first.'}] },
-   { say:"For part b, Hubble at the Moon. Aperture 2.4 metres: theta-min is 2.8 ten-to-the-minus-7 radians. At the Moon's distance, that angle spans s equals theta times L — one hundred and seven metres. The smallest lunar feature Hubble can resolve is the size of a football pitch.",
-     pose:'write',
-     board:['\\theta_{\\min} = 1.22\\,\\frac{550\\times10^{-9}}{2.4} = 2.80\\times10^{-7}\\ \\mathrm{rad}',
-            's = \\theta_{\\min}L = (2.80\\times10^{-7})(3.84\\times10^{8}) = 107\\ \\mathrm m'] },
-   { say:"Which settles a persistent myth with arithmetic: the Apollo landers, ten metres across, are a full order of magnitude below Hubble's limit — no telescope on or near Earth can photograph them, and the failure is not engineering but DIFFRACTION, which accepts no bribes. The only appeals are a bigger mirror or a shorter wavelength; conspiracy theories, alas, change neither variable.",
-     pose:'excited',
-     board:[{t:'Check: landers ~10 m ≪ 107 m — invisible by law of physics, not by cover-up ✓. Cures: bigger D, smaller λ.'}] },
-  ]
-},
-
-/* ---------- Example 6: Bragg diffraction [Challenging] ---------- */
-{
-  title:'Bragg diffraction: measuring atomic planes.', diff:'Challenging',
-  prompt:'X-rays of λ = 0.154 nm reflect off crystal planes, first-order maximum at θ = 21.2° from the planes. (a) Find the plane spacing d. (b) Where is second order? (c) Why X-rays and not visible light?',
-  world:{x0:-6, x1:6, y0:-4.5, y1:4.5},
-  setup(ctx,w){
+     }
+        },
+        { map:2, title:"Honesty about the ceiling",
+          think:"What intervenes before 10 km in practice?",
+          model:"Atmosphere and retina — Rayleigh is the ceiling; biology rents below.",
+          pose:"point",
+          say:"In honesty, the atmosphere's shimmer and the retina's pixel mosaic intervene before ten kilometres — Rayleigh sets the CEILING, and biology rents below it. But the diffraction limit is the one no optometrist can prescribe away. Engineering can polish mirrors, cool sensors, and bribe the atmosphere with adaptive optics — but the aperture's diffraction limit is constitutional law, amendable only by building bigger.",
+          board:[
+            {label:"The fine print", text:"Rayleigh = the ceiling; atmosphere and retina take their cut first.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Part (b): Hubble at the Moon",
+          think:"2.4 m of aperture spans what at 3.84×10⁸ m?",
+          model:"107 m — the smallest resolvable crater.",
+          pose:"write",
+          say:"For part b, Hubble at the Moon. Aperture 2.4 metres: theta-min is 2.8 ten-to-the-minus-7 radians. At the Moon's distance, that angle spans s equals theta times L — one hundred and seven metres. The smallest lunar feature Hubble can resolve is the size of a football pitch.",
+          board:[
+            {label:"The angle", tex:"\\theta_{\\min} = 1.22\\,\\frac{550\\times10^{-9}}{2.4} = 2.80\\times10^{-7}\\ \\mathrm{rad}"},
+            {label:"The span", tex:"s = \\theta_{\\min}L = (2.80\\times10^{-7})(3.84\\times10^{8}) = 107\\ \\mathrm m", kind:"answer"}
+          ]
+        },
+        { map:4, title:"A myth settled by arithmetic",
+          think:"Why can't ANY telescope photograph the Apollo landers?",
+          model:"10 m ≪ 107 m: invisible by law, not cover-up ✓.",
+          pose:"excited",
+          say:"Which settles a persistent myth with arithmetic: the Apollo landers, ten metres across, are a full order of magnitude below Hubble's limit — no telescope on or near Earth can photograph them, and the failure is not engineering but DIFFRACTION, which accepts no bribes. The only appeals are a bigger mirror or a shorter wavelength; conspiracy theories, alas, change neither variable.",
+          board:[
+            {label:"The verdict", text:"Check: landers ~10 m ≪ 107 m — invisible by law of physics, not by cover-up ✓. Cures: bigger D, smaller λ.", kind:"key"},
+            {label:"Reusable method", text:"1.22λ/D → multiply by range for the span → remember what rents below the ceiling", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Bragg diffraction: measuring atomic planes",
+      problem:"X-rays of λ = 0.154 nm reflect off crystal planes, first-order maximum at θ = 21.2° from the planes. (a) Find the plane spacing d. (b) Where is second order? (c) Why X-rays and not visible light?",
+      goal:"Goal → d, θ₂, why X-rays",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Read","Geometry","The spacing","Second order","Why X-rays"],
+      setup(ctx,w){
     const c={svg:ctx.svg, M:ctx.M, instant:true};
     const {svg,M}=ctx;
     for(const y of [0.6,-0.8,-2.2]){
@@ -1088,52 +1161,393 @@ const EXAMPLES = [
     }
     textAt(c, 4.3,-3.2, 'atomic planes, spacing d', {fs:11.5, italic:true, anchor:'middle'});
   },
-  steps:[
-   { say:"The finale takes diffraction down to the atom. A crystal is a stack of mirror-planes of atoms, spaced a fraction of a nanometre apart; X-rays reflecting off SUCCESSIVE planes interfere, and the bright directions measure the spacing. One convention demands respect: Bragg's theta is measured from the PLANES themselves, not from their normal.",
-     pose:'talk',
-     board:[{t:'λ = 0.154 nm (Cu Kα); first-order maximum at θ = 21.2° from the planes.'},
-            '2d\\sin\\theta = m\\lambda\\ \\ (\\theta\\ \\text{from the planes!})'] },
-   { say:"The geometry, on the stage: the ray reflecting off the LOWER plane travels an extra d sine theta going down and d sine theta coming back — two d sine theta in all. Constructive interference when that equals m lambda: Bragg's law, complete. Mind the convention that trips half of every class: Bragg's theta is measured from the PLANES, not the normal — crystallographers simply chose differently from the optics tribe, and both tribes refuse to budge.",
-     pose:'point',
-     board:['\\Delta = d\\sin\\theta + d\\sin\\theta = 2d\\sin\\theta'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: down to the atom",
+          think:"From which reference is Bragg's angle measured?",
+          model:"The PLANES — the chapter's final trap.",
+          pose:"talk",
+          say:"The finale takes diffraction down to the atom. A crystal is a stack of mirror-planes of atoms, spaced a fraction of a nanometre apart; X-rays reflecting off SUCCESSIVE planes interfere, and the bright directions measure the spacing. One convention demands respect: Bragg's theta is measured from the PLANES themselves, not from their normal.",
+          board:[
+            {label:"Given", text:"λ = 0.154 nm (Cu Kα); first-order maximum at θ = 21.2° from the planes."},
+            {label:"Bragg", tex:"2d\\sin\\theta = m\\lambda\\ \\ (\\theta\\ \\text{from the planes!})", kind:"warn"}
+          ]
+        },
+        { map:1, title:"The extra journey",
+          think:"Down d sinθ and back up — total path difference?",
+          model:"2d sinθ.",
+          pose:"point",
+          say:"The geometry, on the stage: the ray reflecting off the LOWER plane travels an extra d sine theta going down and d sine theta coming back — two d sine theta in all. Constructive interference when that equals m lambda: Bragg's law, complete. Mind the convention that trips half of every class: Bragg's theta is measured from the PLANES, not the normal — crystallographers simply chose differently from the optics tribe, and both tribes refuse to budge.",
+          board:[
+            {label:"The geometry", tex:"\\Delta = d\\sin\\theta + d\\sin\\theta = 2d\\sin\\theta", kind:"key"}
+          ],
+          action(c){
        arrow(c, -4.6,3.4, -0.9,0.6, {color:GOLD, w:2.5});
        arrow(c, -0.9,0.6, 2.8,3.4, {color:GOLD, w:2.5});
        arrow(c, -4.6,2.0, -0.9,-0.8, {color:PURPLE, w:2.5, dash:'6,4'});
        arrow(c, -0.9,-0.8, 2.8,2.0, {color:PURPLE, w:2.5, dash:'6,4'});
        arc(c, -0.9,0.6, 1.5, 180, 217.1, {color:'#888', label:'θ'});
-     } },
-   { say:"For part a, invert for the spacing: d equals lambda over twice sine twenty-one point two — 0.154 over two times 0.3616 — 0.213 nanometres. We have just measured the distance between planes of ATOMS, with a protractor. A protractor and a wavelength, measuring atomic architecture — before Bragg, atomic spacing was inference; after him, it was surveying.",
-     pose:'write',
-     board:['d = \\frac{\\lambda}{2\\sin21.2^{\\circ}} = \\frac{0.154}{2(0.3616)} = 0.213\\ \\mathrm{nm}'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (a): the spacing",
+          think:"Inverting at 21.2° yields what atomic ruler?",
+          model:"d = 0.213 nm — an interatomic distance, measured.",
+          pose:"write",
+          say:"For part a, invert for the spacing: d equals lambda over twice sine twenty-one point two — 0.154 over two times 0.3616 — 0.213 nanometres. We have just measured the distance between planes of ATOMS, with a protractor. A protractor and a wavelength, measuring atomic architecture — before Bragg, atomic spacing was inference; after him, it was surveying.",
+          board:[
+            {label:"The spacing", tex:"d = \\frac{\\lambda}{2\\sin21.2^{\\circ}} = \\frac{0.154}{2(0.3616)} = 0.213\\ \\mathrm{nm}", kind:"answer"}
+          ],
+          action(c){
        arrow(c, 4.0,0.6, 4.0,-0.8, {color:GREEN, w:2.2, head:7, label:'d = 0.213 nm', fs:12});
        arrow(c, 4.0,-0.8, 4.0,0.6, {color:GREEN, w:2.2, head:7});
-     } },
-   { say:"For part b, second order — and a trap with teeth: sine theta-two equals two lambda over two d, which is 0.723, so theta-two is forty-six point three degrees. NOT double the twenty-one; the SINE doubles, and the angle follows the arcsine's crooked path. Angles never scale; sines do.",
-     pose:'write',
-     board:['\\sin\\theta_2 = \\frac{2\\lambda}{2d} = 0.723 \\;\\Rightarrow\\; \\theta_2 = 46.3^{\\circ}\\ \\ (\\ne 2\\times21.2^{\\circ}!)'],
-     action(c){
+     }
+        },
+        { map:3, title:"Part (b): the toothed trap",
+          think:"Is θ₂ just twice θ₁?",
+          model:"No: sinθ₂ = 0.723 → 46.3°, not 42.4°.",
+          pose:"write",
+          say:"For part b, second order — and a trap with teeth: sine theta-two equals two lambda over two d, which is 0.723, so theta-two is forty-six point three degrees. NOT double the twenty-one; the SINE doubles, and the angle follows the arcsine's crooked path. Angles never scale; sines do.",
+          board:[
+            {label:"Second order", tex:"\\sin\\theta_2 = \\frac{2\\lambda}{2d} = 0.723 \\;\\Rightarrow\\; \\theta_2 = 46.3^{\\circ}\\ \\ (\\ne 2\\times21.2^{\\circ}!)", kind:"answer"}
+          ],
+          action(c){
        arrow(c, -3.57,3.4, -0.9,0.6, {color:RED, w:2.2, dur:600});
        arrow(c, -0.9,0.6, 1.77,3.4, {color:RED, w:2.2, dur:600});
        label(c, 1.0,2.2, '2nd order: steeper, 46.3°', {fs:11.5, color:RED, italic:true});
-     } },
-   { say:"For part c, why X-rays: Bragg demands sine theta no greater than one, so lambda can be at most 2 d — about 0.43 nanometres here. Visible light, at five hundred nanometres, is a THOUSAND times too coarse a ruler; asking it to read atomic planes is measuring a coin with a motorway. Matching the wavelength to the spacing is the whole art — and it is precisely how X-ray crystallography read the structure of DNA from Rosalind Franklin's Photo 51. Diffraction, which began this chapter blurring your shadows, ends it having read the book of life. On to relativity.",
-     pose:'excited',
-     board:['\\lambda \\le 2d \\approx 0.43\\ \\mathrm{nm} \\;\\Rightarrow\\; \\text{visible light (about 500 nm) is 1000 times too coarse}',
-            {t:'Match λ to d: the principle behind crystallography — including Photo 51 and the double helix ✓'}] },
-  ]
-},
-];
+     }
+        },
+        { map:4, title:"Part (c): why X-rays",
+          think:"Bragg demands λ ≤ 2d — where does visible light fail?",
+          model:"1000× too coarse. Match λ to d: crystallography, Photo 51, the helix ✓.",
+          pose:"excited",
+          say:"For part c, why X-rays: Bragg demands sine theta no greater than one, so lambda can be at most 2 d — about 0.43 nanometres here. Visible light, at five hundred nanometres, is a THOUSAND times too coarse a ruler; asking it to read atomic planes is measuring a coin with a motorway. Matching the wavelength to the spacing is the whole art — and it is precisely how X-ray crystallography read the structure of DNA from Rosalind Franklin's Photo 51. Diffraction, which began this chapter blurring your shadows, ends it having read the book of life. On to relativity.",
+          board:[
+            {label:"The requirement", tex:"\\lambda \\le 2d \\approx 0.43\\ \\mathrm{nm} \\;\\Rightarrow\\; \\text{visible light (about 500 nm) is 1000 times too coarse}", kind:"key"},
+            {label:"The legacy", text:"Match λ to d: the principle behind crystallography — including Photo 51 and the double helix ✓", kind:"key"},
+            {label:"Reusable method", text:"θ from the planes → 2d sinθ = mλ → invert for d → λ must match the target's scale", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    ];
 
-/* ---------------- init ---------------- */
-EXAMPLES.forEach((ex,i)=>{
-  const b=document.createElement('button');
-  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
-  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
-  $('tabs').appendChild(b);
-});
-loadExample(0,false);                     /* start paused — user clicks Play */
-</script>
+    /* ============================================================
+       PLAYER ENGINE
+       ============================================================ */
+    const refs = {
+      tabs:document.getElementById('exampleTabs'),
+      reasoningMap:document.getElementById('reasoningMap'),
+      equationStack:document.getElementById('equationStack'),
+      chapterNumber:document.getElementById('chapterNumber'),
+      chapterTitle:document.getElementById('chapterTitle'),
+      thinkingPrompt:document.getElementById('thinkingPrompt'),
+      modelNote:document.getElementById('modelNote'),
+      subtitle:document.getElementById('subtitle'),
+      professor2d:document.getElementById('professor2d'),
+      transcriptList:document.getElementById('transcriptList'),
+      stepAnnouncement:document.getElementById('stepAnnouncement'),
+      timeline:document.getElementById('timeline'),
+      timelineTitle:document.getElementById('timelineTitle'),
+      stepCount:document.getElementById('stepCount'),
+      playButton:document.getElementById('playButton'),
+      voiceButton:document.getElementById('voiceButton'),
+      problemCopy:document.getElementById('problemCopy'),
+      exampleTag:document.getElementById('exampleTag'),
+      goalChip:document.getElementById('goalChip'),
+      simChip:document.getElementById('simChip'),
+      formatBadge:document.getElementById('formatBadge')
+    };
+
+    let exIndex = 0, currentStep = 0;
+    let isPlaying = false, voiceOn = true, playToken = 0, advanceTimer = null;
+    let mapper = null;
+
+    /* ---------- example tabs ---------- */
+    EXAMPLES.forEach((ex,i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'diff-' + ex.diff.toLowerCase();
+      b.innerHTML = `<span class="diffdot"></span>${ex.tab || ('Example ' + i + ' · ' + ex.diff)}`;
+      if(!ex.tab) b.innerHTML = `<span class="diffdot"></span>Example ${i} · ${ex.diff}`;
+      b.addEventListener('click', () => loadExample(i));
+      refs.tabs.appendChild(b);
+    });
+
+    /* ---------- KaTeX board line ---------- */
+    function renderBoardLine(line){
+      const row = document.createElement('div');
+      row.className = `equation-line ${line.kind || ''}`;
+      let inner = line.label ? `<small>${line.label}</small>` : '';
+      row.innerHTML = inner;
+      if(line.tex !== undefined && window.katex){
+        const span = document.createElement('span');
+        try{ katex.render(line.tex, span, {throwOnError:false, macros:{'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'}}); }
+        catch(e){ span.textContent = line.tex; }
+        row.appendChild(span);
+      }else if(line.text !== undefined){
+        const span = document.createElement('span');
+        span.textContent = line.text;
+        row.appendChild(span);
+      }
+      if(line.move){
+        const badge = document.createElement('span');
+        badge.className = 'key-move';
+        badge.textContent = line.move;
+        row.appendChild(badge);
+      }
+      return row;
+    }
+
+    /* ---------- sketch rendering (setup + accumulated actions) ---------- */
+    function drawSketch(uptoStep, animateLast){
+      cancelAnims();
+      sketchSvg.innerHTML = '';
+      const ex = EXAMPLES[exIndex];
+      mapper = makeMapper(ex.world);
+      /* find last solo at or before uptoStep — actions restart there.
+         A solo step stands alone: unrelated schematics are never overlaid,
+         so the setup backdrop is skipped while a solo step governs. */
+      let start = 0;
+      for(let i = 0; i <= uptoStep; i++) if(ex.steps[i].solo || ex.steps[i].fresh) start = i;
+      const soloGoverns = !!ex.steps[start].solo;
+      const ctxInstant = {svg:sketchSvg, M:mapper, instant:true};
+      if(ex.setup && !soloGoverns) ex.setup(ctxInstant, ex.world);
+      for(let i = start; i <= uptoStep; i++){
+        const st = ex.steps[i];
+        if(!st.action) continue;
+        const animate = animateLast && i === uptoStep;
+        st.action({svg:sketchSvg, M:mapper, instant:!animate});
+      }
+    }
+
+    /* ---------- transcript + timeline for current example ---------- */
+    function buildChrome(){
+      const ex = EXAMPLES[exIndex];
+      refs.timeline.innerHTML = '';
+      refs.timeline.style.gridTemplateColumns = `repeat(${ex.steps.length},1fr)`;
+      ex.steps.forEach((step,i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.title = `${i + 1}. ${step.title}`;
+        b.setAttribute('aria-label',`Go to step ${i + 1}: ${step.title}`);
+        b.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        refs.timeline.appendChild(b);
+      });
+      refs.transcriptList.innerHTML = '';
+      ex.steps.forEach((step,i) => {
+        const li = document.createElement('li');
+        li.className = 'transcript-entry';
+        const bt = document.createElement('button');
+        bt.type = 'button';
+        bt.textContent = `${i + 1}. ${step.title}`;
+        bt.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        const p = document.createElement('p');
+        p.textContent = step.say;
+        li.append(bt,p);
+        refs.transcriptList.appendChild(li);
+      });
+      refs.reasoningMap.innerHTML = '';
+      refs.reasoningMap.style.gridTemplateColumns = `repeat(${ex.pathway.length},1fr)`;
+      ex.pathway.forEach((name,mi) => {
+        const d = document.createElement('div');
+        d.className = 'reason-step';
+        d.textContent = name;
+        d.style.cursor = 'pointer';
+        d.addEventListener('click', () => {
+          const target = ex.steps.findIndex(st => st.map === mi);
+          if(target >= 0){ stopPlayback(); currentStep = target; renderStep(true); }
+        });
+        refs.reasoningMap.appendChild(d);
+      });
+      /* header strip */
+      refs.exampleTag.textContent = ex.tab ? 'Review' : 'Problem';
+      refs.problemCopy.textContent = ex.problem;
+      refs.goalChip.textContent = ex.goal;
+      if(ex.sim){ refs.simChip.hidden = false; refs.simChip.href = ex.sim.url; refs.simChip.textContent = '🎛 ' + ex.sim.label + ' ▸'; }
+      else refs.simChip.hidden = true;
+      /* estimated duration badge (≈150 wpm + step pauses) */
+      const words = ex.steps.reduce((a,s) => a + s.say.split(/\s+/).length, 0);
+      const secs = Math.round(words/150*60 + ex.steps.length*1.4);
+      const mm = Math.floor(secs/60), ss = String(secs % 60).padStart(2,'0');
+      refs.formatBadge.textContent = `${ex.tab ? 'Concept review' : 'Worked example'} · ${mm}:${ss}`;
+    }
+
+    const poseClasses = ['pose-talk','pose-point','pose-write','pose-think','pose-excited'];
+    function setProfessorPose(pose){
+      refs.professor2d.classList.remove(...poseClasses);
+      refs.professor2d.classList.add('pose-' + (pose || 'talk'));
+    }
+    const setProfessorTalking = v => refs.professor2d.classList.toggle('talking', v);
+
+    function renderStep(animate){
+      const ex = EXAMPLES[exIndex];
+      const step = ex.steps[currentStep];
+      refs.chapterNumber.textContent = String(currentStep + 1).padStart(2,'0');
+      refs.chapterTitle.textContent = step.title;
+      refs.thinkingPrompt.textContent = step.think || '';
+      refs.modelNote.innerHTML = step.model ? `<strong>Model</strong>${step.model}` : '';
+      refs.subtitle.textContent = step.say;
+      refs.timelineTitle.textContent = step.title;
+      refs.stepCount.textContent = `Step ${currentStep + 1} of ${ex.steps.length}`;
+      refs.stepAnnouncement.textContent = `Step ${currentStep + 1}: ${step.title}. ${step.say}`;
+      setProfessorPose(step.pose);
+
+      [...refs.reasoningMap.children].forEach((node,i) => {
+        node.classList.toggle('done', i < step.map);
+        node.classList.toggle('active', i === step.map);
+      });
+      [...refs.timeline.children].forEach((node,i) => {
+        node.classList.toggle('done', i < currentStep);
+        node.classList.toggle('active', i === currentStep);
+      });
+      [...refs.transcriptList.children].forEach((node,i) => {
+        const active = i === currentStep;
+        node.classList.toggle('active', active);
+        const button = node.querySelector('button');
+        if(active) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current');
+      });
+
+      refs.equationStack.innerHTML = '';
+      (step.board || []).forEach((line,i) => {
+        const row = renderBoardLine(line);
+        refs.equationStack.appendChild(row);
+        window.setTimeout(() => row.classList.add('show'), animate ? 90 + i*140 : 0);
+      });
+
+      drawSketch(currentStep, animate);
+    }
+
+    function loadExample(i){
+      stopPlayback();
+      exIndex = i; currentStep = 0;
+      [...refs.tabs.children].forEach((b,j) => b.classList.toggle('active', j === i));
+      buildChrome();
+      renderStep(true);
+    }
+
+    /* ---------- voice: fluid single-utterance en-GB ---------- */
+    let britishVoice = null;
+    function loadVoices(){
+      if(!('speechSynthesis' in window)){
+        voiceOn = false;
+        refs.voiceButton.textContent = 'Voice unavailable';
+        refs.voiceButton.disabled = true;
+        return;
+      }
+      const voices = speechSynthesis.getVoices();
+      const gb = voices.filter(v => /^en-GB/i.test(v.lang));
+      const preferred = ['Daniel','Arthur','Serena','Oliver','Sonia','Libby','Ryan','Kate','Google UK English Male'];
+      britishVoice = preferred.map(name => gb.find(v => v.name.includes(name))).find(Boolean)
+                     || gb[0] || voices.find(v => /^en/i.test(v.lang)) || null;
+    }
+    loadVoices();
+    if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+
+    /* pronunciation layer: TTS only — captions show the original text */
+    function speechText(text){
+      const spoken = text
+        .replace(/[°]/g,' degrees ')
+        .replace(/\s*[—–]\s*/g,', ')
+        .replace(/\.\.\./g,',')
+        .replace(/\s*;\s*/g, ', ')
+        .replace(/\s*:\s+/g, ', ')
+        .replace(/\bg\b/g,'gee')
+        .replace(/(\d)\.(\d)/g,'$1 point $2');
+      return spoken
+        .replace(/\blives\b/g,'livz')
+        .replace(/\blive\b/g,'liv')
+        .replace(/\ba squared\b/g,'ay squared')
+        .replace(/\ba equals\b/g,'ay equals')
+        .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus)/g,'equals ay')
+        .replace(/\bover a\b(?=[,.]| is| minus| and)/g,'over ay')
+        .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
+        .replace(/\bm a\b/g,'m ay')
+        .replace(/\ba is\b(?= \d)/g,'ay is')
+        .replace(/\ba becomes\b/g,'ay becomes');
+    }
+
+    function stopSpeech(){
+      playToken += 1;
+      window.clearTimeout(advanceTimer);
+      advanceTimer = null;
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+      setProfessorTalking(false);
+    }
+    function stopPlayback(){
+      isPlaying = false;
+      stopSpeech();
+      refs.playButton.textContent = '▶ Play';
+      refs.playButton.setAttribute('aria-label','Play lesson');
+    }
+    function scheduleNext(token, delay = 700){
+      advanceTimer = window.setTimeout(() => {
+        if(!isPlaying || token !== playToken) return;
+        const ex = EXAMPLES[exIndex];
+        if(currentStep < ex.steps.length - 1){
+          currentStep += 1;
+          renderStep(true);
+          speakCurrent();
+        }else stopPlayback();
+      }, delay);
+    }
+    function speakCurrent(){
+      stopSpeech();
+      const token = playToken;
+      const text = EXAMPLES[exIndex].steps[currentStep].say;
+      setProfessorTalking(true);
+      if(voiceOn && 'speechSynthesis' in window){
+        const u = new SpeechSynthesisUtterance(speechText(text));
+        u.lang = 'en-GB';
+        u.rate = 0.94;
+        u.pitch = 0.92;
+        if(britishVoice) u.voice = britishVoice;
+        u.onend = () => { setProfessorTalking(false); scheduleNext(token, 650); };
+        u.onerror = () => {
+          setProfessorTalking(false);
+          scheduleNext(token, Math.max(5200, text.split(/\s+/).length/145*60000));
+        };
+        speechSynthesis.speak(u);
+      }else{
+        const readingTime = Math.max(5200, text.split(/\s+/).length/145*60000);
+        advanceTimer = window.setTimeout(() => { setProfessorTalking(false); scheduleNext(token, 250); }, readingTime);
+      }
+    }
+    function startPlayback(){
+      isPlaying = true;
+      refs.playButton.textContent = 'Ⅱ Pause';
+      refs.playButton.setAttribute('aria-label','Pause lesson');
+      speakCurrent();
+    }
+
+    refs.playButton.addEventListener('click', () => { isPlaying ? stopPlayback() : startPlayback(); });
+    document.getElementById('nextButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep < EXAMPLES[exIndex].steps.length - 1) currentStep += 1;
+      renderStep(true);
+    });
+    document.getElementById('backButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep > 0) currentStep -= 1;
+      renderStep(true);
+    });
+    document.getElementById('restartButton').addEventListener('click', () => {
+      stopPlayback(); currentStep = 0; renderStep(true);
+    });
+    refs.voiceButton.addEventListener('click', () => {
+      voiceOn = !voiceOn;
+      refs.voiceButton.setAttribute('aria-pressed', String(voiceOn));
+      refs.voiceButton.textContent = voiceOn ? '◖)) Voice: on' : '◖× Voice: off';
+      if(isPlaying) speakCurrent();
+    });
+    document.addEventListener('keydown', event => {
+      if(event.target.matches('button,a,input,textarea')) return;
+      if(event.key === ' '){ event.preventDefault(); refs.playButton.click(); }
+      if(event.key === 'ArrowRight') document.getElementById('nextButton').click();
+      if(event.key === 'ArrowLeft') document.getElementById('backButton').click();
+    });
+
+    /* ---------- go ---------- */
+    loadExample(0);
+  })();
+  </script>
 </body>
 </html>
