@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -799,7 +816,7 @@
          arrow(c, x,y, x-1.1*Math.cos(a), y-1.1*Math.sin(a), {color:PURPLE, w:2.5, head:8});
        });
        label(c, 8.3,5.9, 'v (tangent)', {fs:12, color:GREEN, italic:true});
-       label(c, 5.9,3.0, 'F (radial)', {fs:12, color:PURPLE, italic:true});
+       label(c, 6.6,2.2, 'F (radial)', {fs:12, color:PURPLE, italic:true});
        label(c, 2.4,-0.4, 'always perpendicular → the speedometer never moves', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -1177,7 +1194,7 @@ diff:"Challenging",
           action(c){
        const {M}=c;
        arrow(c, 8,10, 20,10, {color:RED, w:3, label:'I', fs:14});
-       arrow(c, 40,10, 30,10, {color:BLUE, w:2.5, label:'v_d (e⁻)', fs:12.5, side:-1});
+       arrow(c, 40,10, 30,10, {color:BLUE, w:2.5, label:'v_d (e⁻)', fs:12.5, at:'mid', side:-1});
        /* v = −x̂, B = −ẑ  →  F = (−e)v×B = +evB ŷ: electrons pushed UP */
        for(let i=0;i<6;i++){
          const d=el('circle',{cx:M.X(12+i*6),cy:M.Y(9),r:4,fill:BLUE},c.svg);

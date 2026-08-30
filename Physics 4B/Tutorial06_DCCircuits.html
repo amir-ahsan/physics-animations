@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -732,7 +749,7 @@
     el('line',{x1:M.X(1.5),y1:M.Y(5.2),x2:M.X(8.5),y2:M.Y(5.2),stroke:'#5C4B30','stroke-width':2.5},svg);
     el('line',{x1:M.X(8.5),y1:M.Y(5.2),x2:M.X(8.5),y2:M.Y(0.8),stroke:'#5C4B30','stroke-width':2.5},svg);
     el('line',{x1:M.X(8.5),y1:M.Y(0.8),x2:M.X(1.5),y2:M.Y(0.8),stroke:'#5C4B30','stroke-width':2.5},svg);
-    const t=el('text',{x:M.X(5),y:M.Y(3),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
+    const t=el('text',{x:M.X(5),y:M.Y(1.75),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='every loop: ΣΔV = 0 · every junction: ΣI = 0';
   },
       steps:[
@@ -754,8 +771,8 @@
        el('rect',{x:M.X(1.28), y:M.Y(2.6), width:0.44*M.s, height:0.75*M.s, fill:'#C98F52', stroke:'#8A5A24','stroke-width':1.6},c.svg);
        label(c, 2.2,2.3, 'r (internal)', {fs:12, color:'#8A5A24', italic:true});
        arrow(c, 3.4,5.55, 6.6,5.55, {color:GOLD, w:2.5, label:'I', fs:13});
-       label(c, 6.6,3.0, 'V_term = ε − Ir: the promise,', {fs:12.5, color:'#8A5A24', italic:true});
-       label(c, 6.6,2.4, 'minus the internal toll', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 1.4,4.55, 'V_term = ε − Ir: promise minus toll', {fs:9, color:'#8A5A24', italic:true});
+       
      }
         },
         { map:1, title:"Reduction grammar",
@@ -794,10 +811,10 @@
           action(c){
        const {M}=c;
        el('circle',{cx:M.X(8.8),cy:M.Y(5.6),r:6,fill:'#5C4B30'},c.svg);
-       arrow(c, 7.3,5.6, 8.5,5.6, {color:GOLD, w:2.5, label:'I₁', fs:11});
-       arrow(c, 8.8,7.0, 8.8,5.95, {color:BLUE, w:2.5, label:'I₂', fs:11});
-       arrow(c, 9.1,5.45, 10.3,4.8, {color:GREEN, w:2.5, label:'I₁+I₂', fs:11});
-       textAt(c, 8.8,4.1, 'junction: in = out', {fs:11, italic:true, anchor:'middle'});
+       arrow(c, 7.3,5.6, 8.5,5.6, {color:GOLD, w:2.5, label:'I₁', fs:11, at:'mid', side:-1});
+       arrow(c, 8.8,7.0, 8.8,5.95, {color:BLUE, w:2.5, label:'I₂', fs:11, at:'mid', side:1});
+       arrow(c, 9.1,5.45, 10.3,4.8, {color:GREEN, w:2.5, label:'I₁+I₂', fs:11, at:'mid', side:-1});
+       textAt(c, 8.8,3.55, 'junction: in = out', {fs:11, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"RC: time enters",
@@ -1052,8 +1069,8 @@ diff:"Challenging",
             {label:"Junction at A", tex:"\\text{(J)}\\quad I_1 + I_2 = I_3", kind:"key"}
           ],
           action(c){
-       arrow(c, -0.85,1.2, -0.85,2.4, {color:RED, w:3, label:'I₁', fs:14, side:-1});
-       arrow(c, 7.65,1.2, 7.65,2.4, {color:PURPLE, w:3, label:'I₂', fs:14});
+       arrow(c, -0.85,1.2, -0.85,2.4, {color:RED, w:3, label:'I₁', fs:14, at:'mid', side:-1});
+       arrow(c, 7.65,1.2, 7.65,2.4, {color:PURPLE, w:3, label:'I₂', fs:14, at:'mid', side:1});
        arrow(c, 2.5,2.6, 2.5,1.4, {color:BLUE, w:3, label:'I₃', fs:14, side:-1});
      }
         },
@@ -1096,8 +1113,8 @@ diff:"Challenging",
           action(c){
        /* the truth: I₂ really flows downward, into battery 2 */
        arrow(c, 8.6,2.4, 8.6,1.2, {color:PURPLE, w:2.5, dash:'6,4', label:'I₂ real: 0.50 A', fs:11, head:8});
-       textAt(c, -2.9,2.9, 'I₁ = 2.0 A', {fs:11.5, color:RED});
-       textAt(c, 1.05,0.6, 'I₃ = 1.5 A', {fs:11.5, color:BLUE});
+       textAt(c, -4.6,0.35, 'I₁ = 2.0 A', {fs:11.5, color:RED});
+       textAt(c, -0.6,-0.5, 'I₃ = 1.5 A', {fs:11.5, color:BLUE});
      }
         },
       ]
@@ -1265,7 +1282,7 @@ diff:"Challenging",
           action(c){
        /* switch open again: the little discharge loop, battery excluded */
        currentDots(c, [[8.2,3.6],[5.8,3.6],[5.8,0],[8.2,0],[8.2,3.6]], 5, 3600, GREEN);
-       textAt(c, 6.0,4.3, 'discharge: C → R₂ alone', {fs:11.5, color:GREEN, italic:true});
+       textAt(c, 5.6,-1.05, 'discharge: C → R₂ alone', {fs:10, color:GREEN, italic:true});
      }
         },
       ]

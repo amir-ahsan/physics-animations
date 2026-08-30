@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -766,10 +783,10 @@
        el('line',{x1:M.X(1.6),y1:M.Y(5.6),x2:M.X(1.6),y2:M.Y(3.4),stroke:'#8A7D60','stroke-width':2},c.svg);
        el('line',{x1:M.X(3.4),y1:M.Y(5.6),x2:M.X(3.4),y2:M.Y(3.4),stroke:'#8A7D60','stroke-width':2},c.svg);
        cap(1.38,4.5); cap(3.18,4.5);
-       label(c, 0.6,2.4, 'parallel: same V, C’s add', {fs:12.5, color:'#7A5A28'});
+       label(c, 0.1,2.4, 'parallel: V shared', {fs:10, color:'#7A5A28'});
        el('line',{x1:M.X(6.2),y1:M.Y(4.5),x2:M.X(10.4),y2:M.Y(4.5),stroke:'#8A7D60','stroke-width':2},c.svg);
        cap(7.2,4.5); cap(8.9,4.5);
-       label(c, 6.2,2.4, 'series: same Q, gaps add', {fs:12.5, color:'#7A5A28'});
+       label(c, 6.9,2.4, 'series: Q shared', {fs:10, color:'#7A5A28'});
        label(c, 2.4,0.8, 'note: the rules are the REVERSE of resistors', {fs:12.5, color:RED, italic:true});
      }
         },
@@ -902,7 +919,7 @@ diff:"Basic",
           ],
           action(c){
        for(const y of [11,25,39]) arrow(c, 22.5,y, 43.5,y, {color:GOLD, w:2.5, dur:700});
-       textAt(c, 30,42.5, 'E = V/d', {fs:13, italic:true, color:GOLD});
+       textAt(c, 24.5,45.5, 'E = V/d', {fs:13, italic:true, color:GOLD});
      }
         },
         { map:4, title:"Check by the sheet formula",
@@ -963,7 +980,7 @@ diff:"Intermediate",
        el('rect',{x:M.X(4.2), y:M.Y(2.85), width:M.X(8.3)-M.X(4.2), height:M.Y(1.1)-M.Y(2.85),
          fill:'none', stroke:GREEN,'stroke-width':1.8,'stroke-dasharray':'6,4', rx:8},c.svg);
        textAt(c, 6.25,0.55, 'C₂₃ = 8.0 μF', {fs:12.5, color:GREEN, anchor:'middle'});
-       textAt(c, 3.6,4.7, 'C_eq = 4.0 μF (whole network)', {fs:12.5, color:PURPLE});
+       textAt(c, 3.6,5.35, 'C_eq = 4.0 μF (whole network)', {fs:11, color:PURPLE});
      }
         },
         { map:2, title:"The total charge",
@@ -975,7 +992,7 @@ diff:"Intermediate",
             {label:"Q from the battery", tex:"Q = C_{\\rm eq}V = (4.0\\ \\mu\\mathrm F)(24\\ \\mathrm V) = 96\\ \\mu\\mathrm C = Q_1", kind:"answer"}
           ],
           action(c){
-       textAt(c, 1.65,4.35, 'Q₁ = 96 μC', {fs:13, color:RED});
+       textAt(c, 1.65,3.98, 'Q₁ = 96 μC', {fs:13, color:RED});
      }
         },
         { map:3, title:"Expand back out",
@@ -989,7 +1006,7 @@ diff:"Intermediate",
           ],
           action(c){
        textAt(c, 3.1,1.9, 'Q₂ = 48 μC', {fs:12, color:BLUE, anchor:'end'});
-       textAt(c, 8.0,1.9, 'Q₃ = 48 μC', {fs:12, color:BLUE});
+       textAt(c, 9.0,1.32, 'Q₃ = 48 μC', {fs:12, color:BLUE});
        textAt(c, 5.35,4.35, '12 V', {fs:12, color:GREEN});
      }
         },
@@ -1123,7 +1140,7 @@ diff:"Challenging",
           action(c){
        const {M}=c;
        el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(4)-M.X(0)),fill:'none',stroke:RED,'stroke-width':2.5,'stroke-dasharray':'7,5'},c.svg);
-       textAt(c, 2.9,-4.6, 'Gaussian cylinder, radius r', {fs:12, italic:true, color:RED});
+       textAt(c, 3.6,-5.5, 'Gaussian cylinder, radius r', {fs:11, italic:true, color:RED});
        for(const ang of [0,60,120,180,240,300]){
          const r1=2.2, r2=5.6, rad=ang*Math.PI/180;
          arrow(c, r1*Math.cos(rad), r1*Math.sin(rad), r2*Math.cos(rad), r2*Math.sin(rad), {color:GOLD, w:2.2, dur:700});

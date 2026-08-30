@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -731,10 +748,10 @@
        textAt(c, -4.4,-0.9, 'wire: rings', {fs:12, italic:true});
        el('ellipse',{cx:M.X(0), cy:M.Y(1.2), rx:0.55*M.s, ry:1.3*M.s, fill:'none', stroke:'#8A5A24','stroke-width':3},c.svg);
        arrow(c, 0,1.2, 1.7,1.2, {color:GOLD, w:2.5, label:'B', fs:12});
-       textAt(c, -0.9,-0.9, 'loop: axial B', {fs:12, italic:true});
+       textAt(c, -1.3,-0.9, 'loop: axial B', {fs:10, italic:true});
        for(let k=0;k<5;k++) el('ellipse',{cx:M.X(2.9+k*0.5), cy:M.Y(1.2), rx:5, ry:0.9*M.s, fill:'none', stroke:'#8A5A24','stroke-width':2},c.svg);
        arrow(c, 2.7,1.2, 5.3,1.2, {color:GOLD, w:2.5, head:8});
-       textAt(c, 2.5,-0.9, 'solenoid: uniform inside', {fs:12, italic:true});
+       textAt(c, 2.8,-1.75, 'solenoid: uniform inside', {fs:10, italic:true});
      }
         },
         { map:2, title:"Wires converse",
@@ -815,11 +832,11 @@
            const x=x0+0.55+ (i%2)*1.3, y=1.6-Math.floor(i/2)*1.3;
            arrow(c, x-0.4*Math.cos(a), y-0.4*Math.sin(a), x+0.4*Math.cos(a), y+0.4*Math.sin(a), {color:col, w:2.2, head:6});
          });
-         textAt(c, x0+0.1,-1.4, name, {fs:12, italic:true});
+         textAt(c, x0+0.1,-1.4, name, {fs:10, italic:true});
        };
        arrow(c, -4.6,3.5, 4.6,3.5, {color:'#8A7D60', w:2.5, label:'applied B', fs:12});
-       panel(-4.8,[0.3,-0.2,0.15,-0.3],'para: leans in, weakly',GREEN);
-       panel(-1.3,[Math.PI-0.25,Math.PI+0.2,Math.PI-0.1,Math.PI+0.3],'dia: leans away',BLUE);
+       panel(-4.8,[0.3,-0.2,0.15,-0.3],'para: leans in',GREEN);
+       panel(-1.25,[Math.PI-0.25,Math.PI+0.2,Math.PI-0.1,Math.PI+0.3],'dia: away',BLUE);
        panel(2.2,[0,0,0,0],'ferro: domains lock',RED);
      }
         },
@@ -890,7 +907,7 @@ diff:"Basic",
           ],
           action(c){
        el('circle',{cx:c.M.X(3.8),cy:c.M.Y(0),r:5,fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
-       textAt(c, 2.6,-1.9, 'B = 0 here', {fs:12.5, italic:true, color:GREEN});
+       textAt(c, 5.6,-4.3, 'B = 0 here', {fs:12, italic:true, color:GREEN});
      }
         },
         { map:4, title:"Check the referee",
@@ -951,8 +968,8 @@ diff:"Intermediate",
           action(c){
        arrow(c, 6,12, 16,12, {color:RED, w:3, dur:600});
        arrow(c, 6,0, 16,0, {color:RED, w:3, dur:600});
-       arrow(c, 22,1.2, 22,4.8, {color:PURPLE, w:3.5, label:'F on 2', fs:13});
-       arrow(c, 22,10.8, 22,7.2, {color:PURPLE, w:3.5, label:'F on 1', fs:13, side:-1});
+       arrow(c, 22,1.2, 22,4.8, {color:PURPLE, w:3.5, label:'F on 2', fs:13, at:'mid', loff:40});
+       arrow(c, 22,10.8, 22,7.2, {color:PURPLE, w:3.5, label:'F on 1', fs:13, side:-1, at:'mid', loff:40});
      }
         },
         { map:3, title:"Newton III reports",
@@ -1018,7 +1035,7 @@ diff:"Intermediate",
        el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(-6),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},c.svg);
        arrow(c, 6.3,-0.5, 6.3,1.8, {color:RED, w:2.5, dur:600});
        textAt(c, 6.9,0.3, 'I', {fs:14, italic:true, color:RED});
-       textAt(c, -5.6,-1.5, 'radial legs: silent', {fs:12, italic:true, color:PURPLE});
+       textAt(c, 1.6,-6.6, 'radial legs: silent', {fs:11, italic:true, color:PURPLE});
      }
         },
         { map:2, title:"The arc: everything constant",
@@ -1042,7 +1059,7 @@ diff:"Intermediate",
        const {M}=c;
        el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:9,fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
        el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:2.6,fill:GREEN},c.svg);
-       textAt(c, 3.7,3.3, 'B out of page', {fs:12.5, italic:true, color:GREEN});
+       textAt(c, 5.4,1.9, 'B out of page', {fs:11, italic:true, color:GREEN});
      }
         },
         { map:4, title:"Check by completion",

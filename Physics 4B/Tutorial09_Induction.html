@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -698,7 +715,7 @@
       el('line',{x1:M.X(x)-s,y1:M.Y(y)+s,x2:M.X(x)+s,y2:M.Y(y)-s,stroke:'#B0A488','stroke-width':1.5},svg);
       el('circle',{cx:M.X(x),cy:M.Y(y),r:6,fill:'none',stroke:'#B0A488','stroke-width':1.5},svg);
     }
-    const t=el('text',{x:M.X(5),y:M.Y(6.3),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
+    const t=el('text',{x:M.X(6.4),y:M.Y(7.2),fill:'#8A7D60','font-size':12,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='change the flux through the loop — any of three ways';
   },
       steps:[
@@ -712,9 +729,9 @@
             {label:"The three knobs", text:"Three knobs: B(t), A(t), θ(t)."}
           ],
           action(c){
-       label(c, 0.2,6.4, 'knob 1: B(t) — strengthen the field', {fs:12, color:'#8A5A24', italic:true});
-       label(c, 0.2,5.7, 'knob 2: A(t) — shrink the loop', {fs:12, color:'#8A5A24', italic:true});
-       label(c, 0.2,5.0, 'knob 3: θ(t) — spin it', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.2,6.45, 'knob 1: B(t) — strengthen the field', {fs:10, color:'#8A5A24', italic:true});
+       label(c, 0.2,5.75, 'knob 2: A(t) — shrink the loop', {fs:10, color:'#8A5A24', italic:true});
+       label(c, 0.2,5.05, 'knob 3: θ(t) — spin it', {fs:10, color:'#8A5A24', italic:true});
        arrow(c, 8.0,0.35, 9.4,0.35, {color:GOLD, w:2.5, label:'ε appears', fs:12});
      }
         },
@@ -755,7 +772,7 @@
        label(c, 0.15,3.1, 'R', {fs:14, color:'#8A5A24', italic:true});
        el('line',{x1:M.X(6.4),y1:M.Y(5.4),x2:M.X(6.4),y2:M.Y(0.8),stroke:GOLD,'stroke-width':5,'stroke-linecap':'round'},c.svg);
        arrow(c, 6.8,3.1, 8.4,3.1, {color:GREEN, w:3, label:'v', fs:14});
-       arrow(c, 6.0,3.1, 4.6,3.1, {color:RED, w:2.5, label:'F drag (Lenz)', fs:11.5, side:-1});
+       arrow(c, 6.0,3.1, 4.6,3.1, {color:RED, w:2.5, label:'F drag (Lenz)', fs:11.5, side:-1, at:'mid', loff:30});
        label(c, 1.6,6.3, 'ε = BLv: induction you can feel in your arm', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -846,7 +863,7 @@ diff:"Basic",
           action(c){
        const {M}=c;
        el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(6)-M.X(0)),fill:'none',stroke:'#5C4B30','stroke-width':4},c.svg);
-       textAt(c, -10.8,7.6, 'the coil: N = 200 turns', {fs:12.5, italic:true, color:'#5C4B30'});
+       textAt(c, -10.8,6.1, 'the coil: N = 200 turns', {fs:12.5, italic:true, color:'#5C4B30'});
      }
         },
         { map:1, title:"The rate, then the emf",
@@ -904,7 +921,7 @@ diff:"Intermediate",
     /* field region: left of x=0 */
     crossField({svg,M,instant:true}, -26,-1, -11,11, 6,5);
     el('line',{x1:M.X(0),y1:M.Y(-13),x2:M.X(0),y2:M.Y(13),stroke:'#B0A488','stroke-width':2,'stroke-dasharray':'8,6'},svg);
-    textAt({svg,M,instant:true}, -26,12.2, 'B into page (region ends here →)', {fs:12.5, italic:true});
+    textAt({svg,M,instant:true}, -27,14.6, 'B into page (region ends here →)', {fs:11, italic:true});
   },
       steps:[
         { map:0, title:"Read: knob two — the area",
@@ -936,7 +953,7 @@ diff:"Intermediate",
        el('polygon',{fill:GREEN,points:headPts(M.X(-2),M.Y(8.6),0,10)},g);
        el('line',{x1:M.X(-2),y1:M.Y(-8.6),x2:M.X(-8),y2:M.Y(-8.6),stroke:GREEN,'stroke-width':2.5,'stroke-linecap':'round'},g);
        el('polygon',{fill:GREEN,points:headPts(M.X(-8),M.Y(-8.6),Math.PI,10)},g);
-       const tl=el('text',{x:M.X(-6),y:M.Y(5.6),fill:GREEN,'font-size':14.5,'font-style':'italic','font-family':'Georgia,serif'},g);
+       const tl=el('text',{x:M.X(-12.5),y:M.Y(5.6),fill:GREEN,'font-size':14.5,'font-style':'italic','font-family':'Georgia,serif'},g);
        tl.textContent='I clockwise';
        tween(u=>{ g.setAttribute('transform','translate('+((M.X(12)-M.X(-14))*u*0.35)+',0)'); }, 2600, c.instant);
        arrow(c, 12,10.5, 21,10.5, {color:GOLD, w:3.5, label:'v', fs:15});
@@ -952,7 +969,7 @@ diff:"Intermediate",
           ],
           action(c){
        arrow(c, -4.9,0, -11.5,0, {color:RED, w:3.5, label:'F = BIL', fs:13});
-       textAt(c, -26,-12.6, 'the field tugs back on the in-field side only', {fs:12, italic:true, color:RED});
+       textAt(c, -27,-15.2, 'the field tugs back on the in-field side only', {fs:11, italic:true, color:RED});
      }
         },
         { map:3, title:"Part (c): the audit",
@@ -1017,7 +1034,7 @@ diff:"Intermediate",
           action(c){
        plotCurve(c, t=>[t, 45*Math.sin(377*t)], 0, 0.035, {color:GOLD, w:3.5, dur:2400});
        dashLine(c, 0,45, 0.035,45, {color:'#B0A488', dash:'7,5'});
-       textAt(c, 0.029,49, 'ε₀ = 45 V', {fs:12.5, color:'#8A7D60'});
+       textAt(c, 0.029,55, 'ε₀ = 45 V', {fs:12.5, color:'#8A7D60'});
      }
         },
         { map:3, title:"Part (b): the honest average",
@@ -1030,7 +1047,7 @@ diff:"Intermediate",
           ],
           action(c){
        dashLine(c, 0,31.8, 0.035,31.8, {color:BLUE, dash:'7,5'});
-       textAt(c, 0.0025,36, 'ε rms = 32 V', {fs:12.5, color:BLUE, italic:true});
+       textAt(c, 0.0025,28, 'ε rms = 32 V', {fs:12.5, color:BLUE, italic:true});
      }
         },
         { map:4, title:"Part (c): the lovely subtlety",
@@ -1163,7 +1180,7 @@ diff:"Challenging",
        const {M}=c;
        const st=el('rect',{x:M.X(2),y:M.Y(12),width:M.X(2.6)-M.X(2),height:M.Y(2)-M.Y(12),fill:PURPLE,opacity:.45},c.svg);
        tween(u=>{ st.setAttribute('x', M.X(2+5.4*u)); }, 2400, c.instant);
-       textAt(c, 3.2,13.2, 'strip: width dx, area a·dx', {fs:12.5, italic:true, color:PURPLE});
+       textAt(c, 9.8,13.2, 'strip: area a·dx', {fs:12.5, italic:true, color:PURPLE});
      }
         },
         { map:2, title:"Integrate: the logarithm",
