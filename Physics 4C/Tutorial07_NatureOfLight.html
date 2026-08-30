@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -701,7 +718,7 @@
          el('polyline',{points:pts.join(' '),fill:'none',stroke:col,'stroke-width':2.5},c.svg); };
        wave(3.4, 2.2, -5.4, -0.6, GOLD);
        wave(-3.4, 1.35, -5.4, -0.6, GOLD);
-       label(c, -5.4,4.55, 'in air: long steps', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.5,4.85, 'in air: long steps', {fs:10, color:'#8A5A24', italic:true});
        label(c, -5.4,-4.6, 'in glass: short steps, same cadence — colour survives', {fs:11.5, color:'#8A5A24', italic:true});
      }
         },
@@ -716,9 +733,9 @@
           ],
           action(c){
        arrow(c, -3.4,3.9, -4.6,2.7, {color:'#C9A86A', w:2, head:7});
-       label(c, -5.5,3.5, 'reflected: same θ', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -1.0,4.6, 'reflected: same θ', {fs:10, color:'#8A5A24', italic:true});
        label(c, 1.0,2.5, 'n₁ sinθ₁', {fs:12.5, color:GREEN, italic:true});
-       label(c, 2.4,-2.4, '= n₂ sinθ₂: the passport', {fs:12.5, color:GREEN, italic:true});
+       textAt(c, 1.7,-2.55, '= n₂ sinθ₂: the passport', {fs:11, italic:true, color:GREEN});
      }
         },
         { map:2, title:"The perfect mirror",
@@ -732,7 +749,7 @@
           action(c){
        arrow(c, -5.4,-2.1, -2.9,0, {color:RED, w:2.5, dur:600});
        arrow(c, -2.9,0, -0.4,-2.1, {color:RED, w:2.5, dur:600});
-       textAt(c, -3.0,0.9, 'θ > θc: total internal reflection', {fs:11.5, italic:true, anchor:'middle', color:'#8A3324'});
+       textAt(c, -5.6,-3.4, 'θ > θc: total internal reflection', {fs:9, italic:true, color:'#8A3324'});
      }
         },
         { map:3, title:"Polarization",
@@ -747,14 +764,14 @@
        const {M}=c;
        for(let k=0;k<8;k++){ const a=k*Math.PI/8;
          el('line',{x1:M.X(-4.4-0.8*Math.cos(a)),y1:M.Y(1.6-0.8*Math.sin(a)),x2:M.X(-4.4+0.8*Math.cos(a)),y2:M.Y(1.6+0.8*Math.sin(a)),stroke:GOLD,'stroke-width':2},c.svg); }
-       label(c, -5.3,-0.2, 'unpolarized: all angles', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.6,-0.2, 'unpolarized', {fs:10, color:'#8A5A24', italic:true});
        el('rect',{x:M.X(-2.2), y:M.Y(3.2), width:0.5*M.s, height:3.2*M.s, rx:4, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2},c.svg);
        for(const y of [2.4,1.6,0.8]) el('line',{x1:M.X(-2.05),y1:M.Y(y+0.25),x2:M.X(-2.05),y2:M.Y(y-0.25),stroke:'#1D4568','stroke-width':2},c.svg);
        el('line',{x1:M.X(0.4),y1:M.Y(0.8),x2:M.X(0.4),y2:M.Y(2.4),stroke:GOLD,'stroke-width':3},c.svg);
-       label(c, -0.4,-0.2, '½I₀, vertical', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -0.4,-0.2, '½I₀, vertical', {fs:10, color:'#8A5A24', italic:true});
        el('rect',{x:M.X(1.8), y:M.Y(3.2), width:0.5*M.s, height:3.2*M.s, rx:4, fill:'rgba(90,136,168,.3)', stroke:'#5A88A8','stroke-width':2, transform:`rotate(28 ${M.X(2.05)} ${M.Y(1.6)})`},c.svg);
        el('line',{x1:M.X(4.2)-14,y1:M.Y(1.25),x2:M.X(4.2)+14,y2:M.Y(2.35),stroke:GOLD,'stroke-width':3},c.svg);
-       label(c, 3.3,-0.2, 'cos²θ: re-projected', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 3.8,-0.2, 'cos²θ: projected', {fs:10, color:'#8A5A24', italic:true});
        label(c, -3.6,-3.9, 'a polarizer is a projector, not a sieve', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -773,7 +790,7 @@
        el('line',{x1:M.X(1.6),y1:M.Y(3.4),x2:M.X(0.15),y2:M.Y(0.2),stroke:'#B5793B','stroke-width':5,'stroke-linecap':'round'},c.svg);
        el('line',{x1:M.X(0.15),y1:M.Y(0.2),x2:M.X(-1.3),y2:M.Y(-2.4),stroke:'#B5793B','stroke-width':6,'stroke-linecap':'round', opacity:.8},c.svg);
        el('line',{x1:M.X(0.15),y1:M.Y(0.2),x2:M.X(-0.75),y2:M.Y(-2.4),stroke:'#B5793B','stroke-width':6,'stroke-linecap':'round','stroke-dasharray':'7,5', opacity:.5},c.svg);
-       label(c, 1.3,-1.4, 'where it looks like it is (dashed)', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 2.0,-2.6, 'where it looks like it is (dashed)', {fs:10, color:'#8A5A24', italic:true});
        label(c, -5.6,-3.9, 'the pencil never bent; the light filed a change of speed', {fs:12, color:'#8A5A24', italic:true});
      }
         },
@@ -945,8 +962,8 @@ diff:"Intermediate",
          tick(-3.2+3.2*t, 4.57-4.57*t, 0.37,0.26); }
        for(let k=1;k<=4;k++){ const t=0.14+k*0.19;      /* in water: spacing shrunk by 1/1.33 */
          tick(1.62*t, -3.4*t, 0.36,0.17); }
-       label(c, -4.6,2.0, 'λ = 589 nm', {fs:11.5, color:'#8A5A24', italic:true});
-       label(c, -2.6,-2.2, 'λₙ = 443 nm', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.5,1.5, 'λ = 589 nm', {fs:11, color:'#8A5A24', italic:true});
+       label(c, -4.4,-2.6, 'λₙ = 443 nm', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:3, title:"Part (c): the conserved passport",
@@ -960,7 +977,8 @@ diff:"Intermediate",
           ],
           action(c){
        arrow(c, 1.62,-3.4, 2.52,-5.6, {color:GOLD, w:3.5});
-       arc(c, 1.62,-3.4, 1.3, 270, 292.2, {color:'#888', label:'22.2°'});
+       arc(c, 1.62,-3.4, 1.3, 270, 292.2, {color:'#888'});
+       label(c, 0.5,-5.3, '22.2°', {fs:11, color:'#888', italic:true});
        dashLine(c, 1.62,-5.4, 1.62,-2.6, {color:'#B0A488', dash:'5,4'});
      }
         },
@@ -1038,8 +1056,8 @@ diff:"Intermediate",
             {label:"The circle", tex:"r = d\\tan\\theta_c = (2.00)\\tan48.8^{\\circ} = (2.00)(1.140) = 2.28\\ \\mathrm m", kind:"answer"}
           ],
           action(c){
-       arrow(c, 0,0.02, 4.10,0.02, {color:GREEN, w:3, label:'r = 2.28 m', fs:13, side:-1});
-       label(c, 0.2,-1.7, 'd = 2.00 m', {fs:12, color:'#666', italic:true});
+       arrow(c, 0,0.02, 4.10,0.02, {color:GREEN, w:3, label:'r = 2.28 m', fs:13, side:-1, at:'mid', loff:30});
+       label(c, 0.25,-1.3, 'd = 2.00 m', {fs:11, color:'#666', italic:true});
      }
         },
         { map:4, title:"The view itself is the check",
@@ -1167,7 +1185,7 @@ diff:"Challenging",
        arc(c, 0,0, 1.7, 90, 146.7, {color:'#888', label:'θ_B'});
        arc(c, 0,0, 1.7, 270, 303.3, {color:'#888', label:'θ₂'});
        arc(c, 0,0, 0.95, 33.3, -56.7, {color:RED, label:'90°', lr:16});
-       label(c, 3.3,1.4, 'reflected: this polarization dies', {fs:11, color:PURPLE, italic:true, anchor:'middle'});
+       label(c, 3.6,3.2, 'reflected: this polarization dies', {fs:10, color:PURPLE, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Turn the picture to algebra",

@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -727,7 +744,7 @@
        };
        string(0.8, 2.5, 7.4, GOLD);
        arrow(c, 8.2,2.35, 9.6,2.35, {color:GOLD, w:2, head:7});
-       label(c, 1.0,2.1, 'light string: fast (v = √(F/μ), small μ)', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.4,2.75, 'light string: fast (small μ)', {fs:10, color:'#8A5A24', italic:true});
        string(-1.8, 5.5, 3.6, BLUE);
        arrow(c, 4.4,-0.25, 5.3,-0.25, {color:BLUE, w:2, head:7});
        label(c, 1.0,-2.45, 'heavy rope: slow — same shaking hand, different medium', {fs:12, color:'#1D4568', italic:true});
@@ -742,7 +759,7 @@
             {label:"The distinction", tex:"v_y = \\frac{\\partial y}{\\partial t}, \\qquad v_{y,\\max} = \\omega A \\ne v\\ \\ (\\text{two different speeds!})", kind:"warn"}
           ],
           action(c){
-       arrow(c, 4.4,2.2, 7.0,2.2, {color:GOLD, w:3, label:'the PATTERN: v = ω/k', fs:12});
+       arrow(c, 4.4,2.2, 7.0,2.2, {color:GOLD, w:3, label:'the PATTERN: v = ω/k', fs:12, at:'mid', side:-1, loff:30});
        el('circle',{cx:c.M.X(2.42), cy:c.M.Y(0), r:6, fill:RED},c.svg);
        arrow(c, 2.42,0.25, 2.42,1.35, {color:RED, w:2.5, head:7});
        arrow(c, 2.42,-0.25, 2.42,-1.35, {color:RED, w:2.5, head:7});
@@ -790,7 +807,7 @@
        arrow(c, 3.6,1.3, 5.8,1.3, {color:GOLD, w:2.5, label:'the pattern moves →', fs:12});
        arrow(c, 4.2,-1.35, 4.2,-2.15, {color:'#8A7D60', w:2, head:6});
        arrow(c, 4.2,-2.15, 4.2,-1.35, {color:'#8A7D60', w:2, head:6});
-       label(c, 4.6,-1.9, 'each person only stands and sits', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 5.1,-2.5, 'each person only stands and sits', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:5, title:"Confinement composes music",
@@ -918,7 +935,8 @@ diff:"Intermediate",
             {label:"The speed", tex:"v = \\sqrt{\\frac{82.0}{4.62\\times10^{-3}}} = 133\\ \\mathrm{m/s}", kind:"answer"}
           ],
           action(c){
-       arrow(c, 0.66,0.03, 0.74,0.03, {color:BLUE, w:3, label:'F_T = 82.0 N', fs:11.5});
+       arrow(c, 0.66,0.03, 0.74,0.03, {color:BLUE, w:3});
+       label(c, 0.31,0.048, 'F_T = 82.0 N', {fs:11.5, color:BLUE, italic:true});
        textAt(c, 0.2,0.062, 'μ = 4.62 g/m → v = 133 m/s', {fs:12, italic:true, color:'#8A5A24'});
      }
         },
@@ -944,8 +962,9 @@ diff:"Intermediate",
             {label:"The new tension", tex:"f_1 \\propto \\sqrt{F_T} \\;\\Rightarrow\\; F_T\\prime = F_T\\Big(\\frac{f\\prime}{f}\\Big)^2 = 82.0\\Big(\\frac{110}{102.5}\\Big)^2 = 94.4\\ \\mathrm N", kind:"answer", move:"square"}
           ],
           action(c){
-       arrow(c, 0.66,-0.03, 0.745,-0.03, {color:RED, w:3, label:'crank to 94.4 N', fs:11.5, side:-1});
-       textAt(c, 0.05,-0.062, '102.5 Hz → 110 Hz: +7% pitch costs +15% tension', {fs:11.5, italic:true, color:RED});
+       arrow(c, 0.66,-0.03, 0.745,-0.03, {color:RED, w:3});
+       label(c, 0.31,-0.045, 'crank to 94.4 N', {fs:11.5, color:RED, italic:true});
+       textAt(c, 0.03,-0.062, '+7% pitch costs +15% tension', {fs:11, italic:true, color:RED});
      }
         },
         { map:4, title:"The guitarist's lament",
@@ -1062,7 +1081,7 @@ diff:"Challenging",
           action(c){
        plotCurve(c, x=>[x, -2.3+0.8*Math.pow(Math.cos(1.3*x),2)], 0.2, 10.2, {color:PURPLE, w:2.5, dur:1000});
        dashLine(c, 0.2,-1.9, 10.2,-1.9, {color:'#8A7D60'});
-       textAt(c, 8.4,-1.62, 'cos²: mean = ½', {fs:12, italic:true, color:PURPLE});
+       textAt(c, 9.0,-1.35, 'cos²: mean = ½', {fs:12, italic:true, color:PURPLE});
      }
         },
         { map:2, title:"The equal partner",
@@ -1131,7 +1150,7 @@ diff:"Challenging",
           ],
           action(c){
        arrow(c, 5.0,1.44, 6.3,1.05, {color:BLUE, w:3, label:'F_T', fs:13});
-       arrow(c, 4.2,1.15, 2.9,0.85, {color:BLUE, w:3, label:'F_T', fs:13, side:-1});
+       arrow(c, 4.2,1.15, 2.9,0.85, {color:BLUE, w:3, label:'F_T', fs:13, side:-1, at:'mid', loff:26});
      }
         },
         { map:1, title:"The net transverse force",
@@ -1144,7 +1163,7 @@ diff:"Challenging",
           ],
           action(c){
        textAt(c, 6.5,1.6, 'slope at x+dx', {fs:11.5, italic:true, color:'#1D4568'});
-       textAt(c, 1.6,0.55, 'slope at x', {fs:11.5, italic:true, color:'#1D4568'});
+       textAt(c, 1.2,0.35, 'slope at x', {fs:11.5, italic:true, color:'#1D4568'});
        textAt(c, 4.6,-0.35, 'their DIFFERENCE = curvature × dx', {fs:12, italic:true, color:'#8A5A24', anchor:'middle'});
      }
         },
@@ -1179,7 +1198,7 @@ diff:"Challenging",
           ],
           action(c){
        plotCurve(c, x=>[x, -0.95+0.75*Math.exp(-Math.pow((x-2.6)/0.55,2))+0.45*Math.exp(-Math.pow((x-3.6)/0.35,2))], 0.4, 9.6, {color:GREEN, w:3, dur:1000});
-       arrow(c, 4.6,-0.45, 6.4,-0.45, {color:GREEN, w:2.5, label:'any f(x − vt), same v', fs:12});
+       arrow(c, 4.6,-0.45, 6.4,-0.45, {color:GREEN, w:2.5, label:'any f(x − vt), same v', fs:12, at:'mid', side:-1, loff:26});
      }
         },
       ]

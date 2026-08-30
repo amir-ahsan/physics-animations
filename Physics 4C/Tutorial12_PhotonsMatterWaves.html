@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -748,7 +765,7 @@
        photon(c, 3.6,-0.8, 5.4,-0.8, {color:GOLD, n:7, amp:0.10});
        photon(c, 5.4,-0.8, 6.9,-1.35, {color:RED, n:5, amp:0.12});
        arrow(c, 5.4,-0.8, 6.5,-0.35, {color:BLUE, w:2, label:'e⁻', fs:11, dur:500});
-       textAt(c, 7.0,-0.85, 'longer λ out: the photon paid', {fs:11, italic:true});
+       textAt(c, 0.0,-1.6, 'longer λ out: the photon paid', {fs:11, italic:true});
      }
         },
         { map:3, title:"De Broglie's inversion",
@@ -934,7 +951,7 @@ diff:"Intermediate",
           ],
           action(c){
        photon(c, 5.2,5.6, 2.1,4.6, {color:PURPLE, n:7, amp:0.12});
-       arrow(c, 2.1,4.6, 4.6,3.6, {color:BLUE, w:2.5, label:'e⁻: 0.82 eV', fs:12, dur:600});
+       arrow(c, 2.1,4.6, 4.6,3.6, {color:BLUE, w:2.5, label:'e⁻: 0.82 eV', fs:12, at:'mid', side:1, loff:40, dur:600});
      }
         },
         { map:2, title:"Part (b): the threshold",
@@ -947,7 +964,7 @@ diff:"Intermediate",
           ],
           action(c){
        photon(c, 5.4,3.0, 2.1,2.8, {color:GREEN, n:6, amp:0.12});
-       textAt(c, 5.6,3.1, '544 nm: just pays the 2.28 eV fee', {fs:11.5, italic:true, color:'#2E5C3F'});
+       textAt(c, 6.0,3.1, '544 nm: just pays 2.28 eV', {fs:11.5, italic:true, color:'#2E5C3F'});
      }
         },
         { map:3, title:"Part (c): triple the brightness",
@@ -963,7 +980,7 @@ diff:"Intermediate",
        photon(c, 6.2,5.5, 3.0,4.5, {color:PURPLE, n:7, amp:0.12});
        arrow(c, 2.4,4.1, 4.9,3.1, {color:BLUE, w:2, dur:500, head:8});
        arrow(c, 2.7,3.6, 5.2,2.6, {color:BLUE, w:2, dur:500, head:8});
-       textAt(c, 7.2,4.0, 'more electrons — each still 0.82 eV', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 8.0,4.0, 'more e⁻ — each still 0.82 eV', {fs:11, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"Part (d): the red silence",
@@ -1065,7 +1082,7 @@ diff:"Challenging",
       setup(ctx,w){
     const {svg,M}=ctx; const c={svg,M,instant:true};
     el('circle',{cx:M.X(5.2),cy:M.Y(0),r:9,fill:BLUE},svg);
-    textAt(c, 5.2,-0.75, 'e⁻ at rest', {fs:12, italic:true, anchor:'middle'});
+    textAt(c, 4.2,-0.75, 'e⁻ at rest', {fs:12, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Read: honest billiards",
@@ -1227,7 +1244,7 @@ diff:"Challenging",
           ],
           action(c){
        plotCurve(c, t=>[1.5+2.2*t, 4.0+0.9*Math.sin(Math.PI*t)*Math.sin(2*Math.PI*6*t)], 0, 1, {color:PURPLE, w:2.5, dur:900});
-       textAt(c, 2.6,5.9, 'squeezed wave: wide Δp', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 2.0,5.9, 'squeezed wave: wide Δp', {fs:11.5, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Convert to energy currency",
@@ -1269,7 +1286,8 @@ diff:"Challenging",
             {label:"Reusable method", text:"Δp from confinement → pc in MeV → triangle for K → compare with experiment → hypotheses die by arithmetic", kind:"answer"}
           ],
           action(c){
-       arrow(c, 3.6,4.7, 6.6,6.2, {color:RED, w:2.5, label:'β: created at the instant of decay', fs:11});
+       arrow(c, 3.6,4.7, 6.6,6.2, {color:RED, w:2.5});
+       label(c, -0.2,4.0, 'β: born at the decay instant', {fs:11, color:RED, italic:true});
      }
         },
       ]

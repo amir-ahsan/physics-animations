@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -696,7 +713,7 @@
       el('polyline',{points:pts.join(' '),fill:'none',stroke:'#2E6DA4','stroke-width':2.8,'stroke-linejoin':'round'},svg);
       textAt(c, 10.25,e, n===1?'E₁':(n===2?'4E₁':'9E₁'), {fs:12.5});
     }
-    textAt(c, 5,10.4, 'the box: ψₙ drawn on its energy rung', {fs:12, italic:true, anchor:'middle'});
+    textAt(c, 5,10.4, 'ψₙ drawn on its energy rung', {fs:12, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"The biography is ψ",
@@ -715,9 +732,11 @@
          pts.push(M.X(x)+','+M.Y(1.0+0.85*Math.sin(Math.PI*x/10)));}
        pts.push(M.X(6.5)+','+M.Y(1.0));
        el('polygon',{points:pts.join(' '),fill:'rgba(46,109,164,.3)',stroke:'none'},c.svg);
-       label(c, 4.0,2.6, 'P(a≤x≤b) = the shaded area of |ψ|²', {fs:11.5, color:'#1D4568', italic:true});
-       label(c, 11.0,10.3, 'ψ can be negative;', {fs:11, color:'#8A5A24', italic:true});
-       label(c, 11.0,9.6, 'only |ψ|² is a probability', {fs:11, color:'#8A5A24', italic:true});
+       label(c, 0.3,2.6, 'P(a≤x≤b) = shaded area of |ψ|²', {fs:11.5, color:'#1D4568', italic:true});
+       label(c, 11.6,10.3, 'ψ can be', {fs:9, color:'#8A5A24', italic:true});
+       label(c, 11.6,9.5, 'negative;', {fs:9, color:'#8A5A24', italic:true});
+       label(c, 11.6,8.7, 'only |ψ|² is', {fs:9, color:'#8A5A24', italic:true});
+       label(c, 11.6,7.9, 'a probability', {fs:9, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"Fourier partners",
@@ -730,7 +749,7 @@
           ],
           action(c){
        plotCurve(c, t=>[11.6+2.4*t, 6.2+1.1*Math.exp(-14*(t-0.5)*(t-0.5))*Math.sin(2*Math.PI*9*t)], 0, 1, {color:PURPLE, w:2.2, dur:900, N:140});
-       textAt(c, 12.8,4.6, 'narrow packet ⇒ many wavelengths inside', {fs:10.5, italic:true, anchor:'middle'});
+       textAt(c, 12.8,2.45, 'narrow packet ⇒ many wavelengths inside', {fs:10.5, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"The law of motion",
@@ -744,10 +763,10 @@
           ],
           action(c){
        el('circle',{cx:c.M.X(5), cy:c.M.Y(4.0), r:5, fill:RED},c.svg);
-       label(c, 5.3,4.55, 'node (n−1 of them in state n)', {fs:11, color:RED, italic:true});
-       label(c, 11.0,6.2, 'the guitar string,', {fs:11.5, color:'#8A5A24', italic:true});
-       label(c, 11.0,5.5, 'reborn as an atom:', {fs:11.5, color:'#8A5A24', italic:true});
-       label(c, 11.0,4.8, 'boundaries quantize', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 5.4,3.55, 'node (n−1 of them in state n)', {fs:11, color:RED, italic:true});
+       label(c, 11.0,6.6, 'the guitar string,', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 11.0,5.6, 'reborn as an atom:', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 11.0,4.6, 'boundaries quantize', {fs:11.5, color:'#8A5A24', italic:true});
      }
         },
         { map:3, title:"The universal spring",
@@ -774,7 +793,7 @@
           action(c){
        const {M}=c;
        el('rect',{x:M.X(5.4), y:M.Y(8.6), width:2.2*M.s, height:8.0*M.s, fill:'rgba(138,125,96,.35)', stroke:'#8A7D60','stroke-width':2.5},c.svg);
-       label(c, 5.6,9.4, 'the barrier (E < U₀)', {fs:11.5, color:'#7A5A28', italic:true});
+       label(c, 5.6,10.15, 'the barrier (E < U₀)', {fs:11.5, color:'#7A5A28', italic:true});
        const win=[]; for(let i=0;i<=50;i++){const x=-1.6+7.0*i/50;
          win.push(M.X(x)+','+M.Y(4.4+1.3*Math.sin(2.4*x)));}
        el('polyline',{points:win.join(' '),fill:'none',stroke:GOLD,'stroke-width':2.5},c.svg);
@@ -848,7 +867,7 @@ diff:"Basic",
          const pts=[]; for(let i=0;i<=80;i++){const x=10*i/80;
            pts.push(M.X(x)+','+M.Y(e+3.4*Math.sin(n*Math.PI*x/10)));}
          el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.6},c.svg);
-         textAt(c, 10.3,e, `E${n===1?'₁':n===2?'₂':'₃'} = ${e} eV`, {fs:11.5});
+         textAt(c, 0.35,e+4.5, `E${n===1?'₁':n===2?'₂':'₃'} = ${e} eV`, {fs:11.5});
        }
      }
         },
@@ -862,7 +881,7 @@ diff:"Basic",
             {label:"The photon", tex:"\\lambda = \\frac{hc}{\\Delta E} = \\frac{1240}{18.1} = 68.7\\ \\mathrm{nm}\\ \\ (\\text{far UV})", kind:"answer"}
           ],
           action(c){
-       arrow(c, 5,6.02, 5,24.1, {color:GOLD, w:3, label:'hf = 3E₁', fs:12});
+       arrow(c, 5,6.02, 5,24.1, {color:GOLD, w:3, label:'hf = 3E₁', fs:12, at:'mid', side:1});
      }
         },
         { map:3, title:"Part (c): the dust grain",
@@ -876,10 +895,10 @@ diff:"Basic",
           ],
           action(c){
        const {M}=c;
-       for(let k=0;k<26;k++)
-         el('line',{x1:M.X(11.4),y1:M.Y(4+k*2.0),x2:M.X(14.2),y2:M.Y(4+k*2.0),stroke:GREEN,'stroke-width':1,opacity:.8},c.svg);
-       textAt(c, 12.8,1.4, 'the grain’s ladder:', {fs:11, italic:true, anchor:'middle'});
-       textAt(c, 12.8,-1.6, 'rungs so fine it is a ramp', {fs:11, italic:true, anchor:'middle'});
+       for(let k=0;k<25;k++)
+         el('line',{x1:M.X(11.4),y1:M.Y(5+k*2.0),x2:M.X(14.2),y2:M.Y(5+k*2.0),stroke:GREEN,'stroke-width':1,opacity:.8},c.svg);
+       textAt(c, 12.8,-0.9, 'grain’s ladder:', {fs:9, italic:true, anchor:'middle'});
+       textAt(c, 12.8,-6.0, 'rungs so fine: a ramp', {fs:9, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"The one-line moral",
@@ -931,7 +950,7 @@ diff:"Challenging",
        plotCurve(c, x=>[x, 5.4+1.1*Math.sin(Math.PI*x/10)], 0, 10, {color:BLUE, w:2.4, dur:800});
        plotCurve(c, x=>[x, 5.4+1.1*Math.cos(Math.PI*x/10)], 0, 10, {color:RED, w:2.4, dash:'6,5', dur:800});
        textAt(c, 0.4,7.6, 'cos: nonzero at the wall — doomed', {fs:11, italic:true, color:'#C0392B'});
-       textAt(c, 6.4,7.0, 'sin: can clamp at both ends', {fs:11, italic:true, color:'#1D4568'});
+       textAt(c, 2.0,6.2, 'sin: can clamp at both ends', {fs:11, italic:true, color:'#1D4568'});
      }
         },
         { map:2, title:"Step 2: boundaries quantize",
@@ -951,7 +970,7 @@ diff:"Challenging",
            pts.push(M.X(x)+','+M.Y(e+0.85*Math.sin(n*Math.PI*x/10)));}
          el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.6},c.svg);
        }
-       textAt(c, 10.3,4.0, 'kL = nπ: whole half-waves only', {fs:11, italic:true});
+       textAt(c, 0.3,2.5, 'kL = nπ: whole half-waves only', {fs:11, italic:true});
      }
         },
         { map:3, title:"Step 3: normalize",
@@ -966,7 +985,8 @@ diff:"Challenging",
           action(c){
        shade(c, x=>1.6*Math.pow(Math.sin(Math.PI*(x-10.8)/3.4),2), 10.8, 14.2, {color:GOLD, op:.35});
        dashLine(c, 10.8,0.8, 14.2,0.8, {color:'#8A5A24'});
-       textAt(c, 12.5,2.15, 'sin² averages to ½ → area L/2', {fs:10.5, italic:true, anchor:'middle'});
+       textAt(c, 12.7,4.5, 'sin² averages to ½', {fs:9, italic:true, anchor:'middle'});
+       textAt(c, 12.7,3.4, '→ area L/2', {fs:9, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"The assembled ritual",
@@ -1215,7 +1235,7 @@ diff:"Intermediate",
        for(let i=0;i<12;i++)
          el('circle',{cx:M.X(3.75+0.23*i),cy:M.Y(0.32)-7,r:3.5,fill:RED},c.svg);
        textAt(c, 1.0,0.55, 'n = 0: everyone', {fs:11, italic:true});
-       textAt(c, 7.4,1.35, 'n = 1: fewer than one in a million', {fs:11, italic:true});
+       textAt(c, 7.4,1.35, 'n = 1: <1 in a million', {fs:11, italic:true});
      }
         },
         { map:4, title:"Tutorial 2's puzzle dissolves",

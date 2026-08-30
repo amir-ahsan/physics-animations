@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -690,7 +707,7 @@
     el('polyline',{points:pts2.join(' '),fill:'none',stroke:'#7B4FA0','stroke-width':2.5,'stroke-dasharray':'7,5'},ctx.svg);
     const t=el('text',{x:ctx.M.X(3.4),y:ctx.M.Y(160),fill:'#B5793B','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
     t.textContent='isotherm';
-    const t2=el('text',{x:ctx.M.X(1.7),y:ctx.M.Y(70),fill:'#7B4FA0','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
+    const t2=el('text',{x:ctx.M.X(2.7),y:ctx.M.Y(36),fill:'#7B4FA0','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
     t2.textContent='adiabat: steeper';
   },
       steps:[
@@ -708,7 +725,7 @@
        pts.push(M.X(3.2)+','+M.Y(0)); pts.push(M.X(1.6)+','+M.Y(0));
        el('polygon',{points:pts.join(' '),fill:'rgba(181,121,59,.28)',stroke:'none'},c.svg);
        dashLine(c, 1.6,0, 1.6,218, {}); dashLine(c, 3.2,0, 3.2,109, {});
-       label(c, 2.15,55, 'W', {fs:17, color:'#8A5A24', italic:true, anchor:'middle'});
+       label(c, 2.3,42, 'W', {fs:17, color:'#8A5A24', italic:true, anchor:'middle'});
        label(c, 1.5,-32, 'V_i', {fs:12.5, color:'#7A5A28', italic:true});
        label(c, 3.1,-32, 'V_f', {fs:12.5, color:'#7A5A28', italic:true});
      }
@@ -751,7 +768,7 @@
        label(c, 3.4,140, 'isotherm: ΔE=0', {fs:12, color:'#8A5A24', italic:true});
        const ad=[]; for(let i=0;i<=30;i++){const v=3.3+1.1*i/30; ad.push(M.X(v)+','+M.Y(1050/Math.pow(v,1.67)*Math.pow(3.3,0.67)-70));}
        el('polyline',{points:ad.join(' '),fill:'none',stroke:PURPLE,'stroke-width':3,'stroke-dasharray':'6,5'},c.svg);
-       label(c, 3.9,20, 'adiabat: Q = 0', {fs:12, color:PURPLE, italic:true});
+       label(c, 4.05,14, 'adiabat: Q = 0', {fs:11, color:PURPLE, italic:true});
      }
         },
         { map:3, title:"Adiabats fall harder",
@@ -766,7 +783,7 @@
           action(c){
        el('circle',{cx:c.M.X(1.0), cy:c.M.Y(350), r:6, fill:'#2B2317'},c.svg);
        arrow(c, 2.6,135, 3.4,105, {color:'#B5793B', w:2.5, label:'same T', fs:11.5, side:-1});
-       arrow(c, 1.9,50, 2.7,26, {color:PURPLE, w:2.5, label:'T falling — paying for W', fs:11.5});
+       arrow(c, 1.9,50, 2.7,26, {color:PURPLE, w:2.5, label:'T falling — paying for W', fs:11.5, at:'mid', side:-1});
      }
         },
         { map:4, title:"The unbreakable contract",
@@ -785,7 +802,7 @@
        arc(c, 2.6,190, 1.05, -30, 200, {color:GOLD, w:2.5, label:'forever?'});
        el('circle',{cx:M.X(2.6), cy:M.Y(190), r:78, fill:'none', stroke:RED,'stroke-width':6},c.svg);
        el('line',{x1:M.X(2.6)-55,y1:M.Y(190)+55,x2:M.X(2.6)+55,y2:M.Y(190)-55,stroke:RED,'stroke-width':6},c.svg);
-       label(c, 3.9,120, 'DENIED — since 1850, without appeal', {fs:13, color:RED, italic:true});
+       label(c, 3.9,35, 'DENIED — since 1850, without appeal', {fs:11, color:RED, italic:true});
      }
         },
         { map:5, title:"The accounting habits",
@@ -866,9 +883,9 @@ diff:"Basic",
           action(c){
        const {M}=c;
        el('rect',{x:M.X(0.016),y:M.Y(2.15e5),width:M.X(0.028)-M.X(0.016),height:M.Y(1.72e5)-M.Y(2.15e5),rx:8,fill:'rgba(201,143,82,.25)',stroke:'#8A5A24','stroke-width':2},c.svg);
-       textAt(c, 0.022, 1.92e5, 'ΔE = +3375 J', {fs:11.5, italic:true, color:'#5C3A16', anchor:'middle'});
-       arrow(c, 0.003,1.93e5, 0.015,1.93e5, {color:RED, w:3, label:'Q = 5625 J', fs:11.5});
-       arrow(c, 0.029,1.93e5, 0.0415,1.93e5, {color:GREEN, w:3, label:'W = 2250 J', fs:11.5});
+       textAt(c, 0.019, 1.80e5, 'ΔE = +3375 J', {fs:11.5, italic:true, color:'#5C3A16', anchor:'middle'});
+       arrow(c, 0.003,1.93e5, 0.015,1.93e5, {color:RED, w:3, label:'Q = 5625 J', fs:11.5, at:'mid', side:-1});
+       arrow(c, 0.029,1.93e5, 0.0415,1.93e5, {color:GREEN, w:3, label:'W = 2250 J', fs:11.5, at:'mid', side:-1});
      }
         },
         { map:4, title:"Check: the 3 : 2 anatomy",
@@ -1031,7 +1048,7 @@ diff:"Intermediate",
           ],
           action(c){
        arrow(c, 4,365, 4,315, {color:RED, w:2.5, label:'+3000 J', fs:11.5});
-       arrow(c, 0.6,200, 1.7,200, {color:GREEN, w:2.5, label:'+600 J', fs:11.5});
+       arrow(c, 0.6,200, 1.7,200, {color:GREEN, w:2.5, label:'+600 J', fs:11.5, at:'mid'});
        arrow(c, 6.3,200, 7.3,200, {color:BLUE, w:2.5, label:'−1800 J', fs:11.5});
        arrow(c, 4,85, 4,30, {color:PURPLE, w:2.5, label:'−1000 J', fs:11.5});
      }
@@ -1095,7 +1112,7 @@ diff:"Challenging",
           action(c){
        el('circle',{cx:c.M.X(4.6),cy:c.M.Y(380/Math.pow(4.6,1.4)),r:5,fill:'#5C4B30'},c.svg);
        el('circle',{cx:c.M.X(1.05),cy:c.M.Y(380/Math.pow(1.05,1.4)),r:5,fill:RED},c.svg);
-       textAt(c, 4.15, 95, 'T_i = 300 K', {fs:12, italic:true});
+       textAt(c, 4.5, 60, 'T_i = 300 K', {fs:11, italic:true});
        textAt(c, 1.25, 395, 'T_f = 886 K', {fs:12, italic:true, color:RED});
        arrow(c, 3.6,120, 1.8,255, {color:RED, w:2.5, dash:'6,4', label:'compress ×15', fs:11.5});
      }

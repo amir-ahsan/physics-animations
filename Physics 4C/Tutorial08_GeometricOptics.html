@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -712,9 +729,9 @@
           ],
           action(c){
        arrow(c, -9,-2.2, -0.4,-2.2, {color:GREEN, w:2, head:7});
-       label(c, -7.4,-3.2, 'd_o > 0: in front', {fs:12, color:GREEN, italic:true});
+       label(c, -13.8,-3.2, 'd_o > 0: in front', {fs:10, color:GREEN, italic:true});
        arrow(c, 0.4,-2.2, 9,-2.2, {color:PURPLE, w:2, head:7});
-       label(c, 2.6,-3.2, 'd_i > 0: where light really goes', {fs:12, color:PURPLE, italic:true});
+       label(c, 0.0,-6.0, 'd_i > 0: where light really goes', {fs:10, color:PURPLE, italic:true});
      }
         },
         { map:1, title:"Where f comes from",
@@ -734,12 +751,12 @@
        label(c, -13.2,1.0, 'C (at R)', {fs:12, color:'#7A5A28', italic:true});
        el('circle',{cx:M.X(-7.6), cy:M.Y(0), r:4, fill:GOLD},c.svg);
        label(c, -8.4,1.0, 'F (at R/2)', {fs:12, color:'#8A5A24', italic:true});
-       label(c, -13.5,-3.4, 'mirror: geometry alone', {fs:12, color:'#7A5A28', italic:true});
+       label(c, -14.2,-3.4, 'mirror: geometry alone', {fs:10, color:'#7A5A28', italic:true});
        el('path',{d:`M ${M.X(8.2)} ${M.Y(4.4)} Q ${M.X(6.0)} ${M.Y(0)} ${M.X(8.2)} ${M.Y(-4.4)} Q ${M.X(10.4)} ${M.Y(0)} ${M.X(8.2)} ${M.Y(4.4)} Z`,
          fill:'rgba(90,136,168,.25)', stroke:'#5A88A8','stroke-width':2.5},c.svg);
        label(c, 5.0,5.6, 'R₁', {fs:12.5, color:'#1D4568', italic:true});
        label(c, 10.6,5.6, 'R₂', {fs:12.5, color:'#1D4568', italic:true});
-       label(c, 4.4,-3.4, 'lens: curvature × contrast (n−1)', {fs:12, color:'#1D4568', italic:true});
+       label(c, 5.0,-3.4, 'lens: contrast (n−1)', {fs:10, color:'#1D4568', italic:true});
      }
         },
         { map:2, title:"The image's biography",
@@ -757,13 +774,13 @@
        arrow(c, -13.4,-2.6, -8.6,1.6, {color:GOLD, w:2});
        el('line',{x1:M.X(-8.0),y1:M.Y(3.2),x2:M.X(-8.0),y2:M.Y(-3.2),stroke:'#5C4B30','stroke-width':4},c.svg);
        el('circle',{cx:M.X(-11.0), cy:M.Y(0), r:5, fill:RED},c.svg);
-       label(c, -14.2,-4.6, 'real: rays truly cross — a screen catches it', {fs:12, color:'#7A2015', italic:true});
+       label(c, -14.4,-4.6, 'real: rays cross — catchable', {fs:10, color:'#7A2015', italic:true});
        arrow(c, 4.4,0.6, 9.2,2.8, {color:GOLD, w:2});
        arrow(c, 4.4,-0.6, 9.2,-2.8, {color:GOLD, w:2});
        dashLine(c, 4.4,0.6, 0.6,-1.15, {color:'#B0A488'});
        dashLine(c, 4.4,-0.6, 0.6,1.15, {color:'#B0A488'});
        el('circle',{cx:M.X(1.6), cy:M.Y(0), r:5, fill:'none', stroke:RED,'stroke-width':2,'stroke-dasharray':'4,3'},c.svg);
-       label(c, 0.4,-4.6, 'virtual: only the extensions meet — visible, uncatchable', {fs:12, color:'#7A2015', italic:true});
+       label(c, 3.0,-4.6, 'virtual: extensions only', {fs:10, color:'#7A2015', italic:true});
      }
         },
         { map:3, title:"Three rays, no algebra",
@@ -776,8 +793,8 @@
           ],
           action(c){
        label(c, -4.6,3.2, '① parallel in → through F', {fs:12, color:'#8A5A24', italic:true});
-       label(c, -4.6,0.7, '② centre: straight through', {fs:12, color:'#8A5A24', italic:true});
-       label(c, 2.4,-3.4, 'they meet at the image', {fs:12, color:GREEN, italic:true});
+       label(c, -5.3,1.25, '② centre: straight', {fs:10, color:'#8A5A24', italic:true});
+       label(c, -6.6,-2.6, 'they meet at the image', {fs:10, color:GREEN, italic:true});
      }
         },
         { map:4, title:"Worn on the face",
@@ -792,7 +809,7 @@
        const {M}=c;
        el('circle',{cx:M.X(2.0), cy:M.Y(0), r:4.4*M.s, fill:'rgba(245,241,230,.6)', stroke:'#8A5A24','stroke-width':3},c.svg);
        el('ellipse',{cx:M.X(-2.2), cy:M.Y(0), rx:0.5*M.s, ry:1.5*M.s, fill:'rgba(90,136,168,.4)', stroke:'#1D4568','stroke-width':2},c.svg);
-       label(c, -3.4,2.4, 'the lens', {fs:12, color:'#1D4568', italic:true});
+       label(c, -3.4,1.6, 'the lens', {fs:12, color:'#1D4568', italic:true});
        el('path',{d:`M ${M.X(5.9)} ${M.Y(2.6)} Q ${M.X(6.8)} ${M.Y(0)} ${M.X(5.9)} ${M.Y(-2.6)}`, fill:'none', stroke:RED,'stroke-width':3},c.svg);
        label(c, 5.4,3.6, 'the retina: the screen', {fs:12, color:'#7A2015', italic:true});
        arrow(c, -8.4,1.6, -2.6,0.6, {color:GOLD, w:2});
@@ -842,7 +859,7 @@ diff:"Basic",
     const {svg,M}=ctx;
     el('path',{d:`M ${M.X(2)} ${M.Y(20)} Q ${M.X(9)} ${M.Y(0)} ${M.X(2)} ${M.Y(-20)}`,fill:'none',stroke:'#5C4B30','stroke-width':4},svg);
     el('circle',{cx:M.X(-20),cy:M.Y(0),r:4,fill:'#5C4B30'},svg);
-    textAt(c, -20,1.8, 'F (+20 cm)', {fs:12, italic:true, anchor:'middle'});
+    textAt(c, -33,0.9, 'F (+20 cm)', {fs:11, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Read: two personalities",
@@ -1033,7 +1050,7 @@ diff:"Intermediate",
        const {M}=c;
        dashLine(c, -7,0, 13,0, {color:'#B0A488'});
        el('circle',{cx:M.X(13),cy:M.Y(0),r:4,fill:'#5A88A8'},c.svg);
-       label(c, 13,-2.2, 'C₁ (R₁ = +20)', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
+       label(c, 13,-9.3, 'C₁ (R₁ = +20)', {fs:11, color:'#1D4568', italic:true, anchor:'middle'});
        el('circle',{cx:M.X(-13),cy:M.Y(0),r:4,fill:PURPLE},c.svg);
        label(c, -13,-2.2, 'C₂ (R₂ = −28)', {fs:11.5, color:PURPLE, italic:true, anchor:'middle'});
      }
@@ -1054,7 +1071,7 @@ diff:"Intermediate",
        arrow(c, -27,-7, 0,-7, {color:GOLD, w:2, dur:500});
        arrow(c, 0,-7, 22.4,0, {color:GOLD, w:2, dur:500});
        el('circle',{cx:M.X(22.4),cy:M.Y(0),r:4,fill:GOLD},c.svg);
-       label(c, 22.4,-2.4, 'f = 22.4 cm (air)', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+       label(c, 24.5,5.4, 'f = 22.4 cm (air)', {fs:11, color:'#8A5A24', italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Part (b): underwater",
@@ -1069,7 +1086,7 @@ diff:"Intermediate",
           action(c){
        arrow(c, 0,4.5, 28,2.96, {color:BLUE, w:2, dur:700});
        arrow(c, 0,-4.5, 28,-2.96, {color:BLUE, w:2, dur:700});
-       label(c, 15,5.9, 'in water: f → 81.6 cm, far off-stage', {fs:11.5, color:'#1D4568', italic:true, anchor:'middle'});
+       label(c, 16,9.0, 'in water: f → 81.6 cm, far off-stage', {fs:11, color:'#1D4568', italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"Check inside your skull",
@@ -1126,7 +1143,7 @@ diff:"Challenging",
        arc(c, 1.1,0, 1.15, 90, 67, {color:'#888', label:'θ₂'});
        arrow(c, 0,0.55, 1.1,0.55, {color:GREEN, w:1.8, head:6, label:'x', fs:12, dur:500});
        el('circle',{cx:c.M.X(0),cy:c.M.Y(-2.6),r:4,fill:PURPLE},c.svg);
-       textAt(c, -1.9,-2.4, 'apparent coin', {fs:11.5, italic:true, color:PURPLE});
+       textAt(c, -3.3,-3.0, 'apparent coin', {fs:11, italic:true, color:PURPLE});
      }
         },
         { map:2, title:"Small angles collapse it",
@@ -1209,7 +1226,7 @@ diff:"Challenging",
             {label:"The virtual-object alert", text:"If separation < d_i1: virtual object, d_o2 < 0 — same equation, honest signs.", kind:"warn"}
           ],
           action(c){
-       arrow(c, 9,-11, 15,-11, {color:GREEN, w:2.5, head:8, label:'d_o2 = 6 cm', fs:12, side:-1});
+       arrow(c, 9,-11, 15,-11, {color:GREEN, w:2.5, head:8, label:'d_o2 = 6 cm', fs:12, at:'mid', side:1});
        dashLine(c, 9,-6, 9,-11.5, {color:'#B0A488'});
        dashLine(c, 15,-9, 15,-11.5, {color:'#B0A488'});
      }
@@ -1224,7 +1241,8 @@ diff:"Challenging",
             {label:"Its magnification", tex:"m_2 = -\\frac{(-4.62)}{6.0} = +0.769"}
           ],
           action(c){
-       objArrow(c, 10.4, -4.6, PURPLE, 'final image');
+       objArrow(c, 10.4, -4.6, PURPLE, '');
+       label(c, 11.0,2.2, 'final image', {fs:12, color:PURPLE, italic:true});
      }
         },
         { map:4, title:"Multiply the m's",
@@ -1253,7 +1271,7 @@ diff:"Challenging",
     lensSym(c, -35, 13, true, 'objective');
     lensSym(c, 39, 8, true, 'eyepiece');
     el('circle',{cx:ctx.M.X(33),cy:ctx.M.Y(0),r:3.5,fill:'#5C4B30'},ctx.svg);
-    textAt(c, 30,-2.6, 'shared focus', {fs:11.5, italic:true, anchor:'middle'});
+    textAt(c, 30,-4.4, 'shared focus', {fs:11, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Read: physics at the optician's",
@@ -1302,8 +1320,8 @@ diff:"Challenging",
        arrow(c, 33,0, 39,0.88, {color:GOLD, w:2, head:0.1, dur:400});
        arrow(c, 39,-0.88, 51,-6.6, {color:GOLD, w:2, dur:500});
        arrow(c, 39,0.88, 51,-4.85, {color:GOLD, w:2, dur:500});
-       label(c, 45,-9.5, 'steep exit: 45× the angle', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
-       arrow(c, -35,-16, 33,-16, {color:GREEN, w:2, head:7, label:'f_obj = 90 cm', fs:12, side:-1});
+       label(c, 44,-22, '45× steeper exit', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+       arrow(c, -35,-16, 33,-16, {color:GREEN, w:2, head:7, label:'f_obj = 90 cm', fs:12, at:'mid', side:1});
        label(c, 38,-14.2, 'f_eye', {fs:11, color:GREEN, italic:true});
      }
         },

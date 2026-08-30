@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -757,7 +774,7 @@
        const pb=[]; for(let i=0;i<=60;i++){const x=0.62+0.36*i/60;
          pb.push(M.X(x)+','+M.Y(4.4+0.5*Math.sin(2*Math.PI*(x-0.62)/0.045)));}
        el('polyline',{points:pb.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.2},c.svg);
-       label(c, 0.60,5.7, 'ahead: squeezed — blueshift', {fs:11.5, color:BLUE, italic:true});
+       label(c, 0.60,6.5, 'ahead: squeezed — blueshift', {fs:11.5, color:BLUE, italic:true});
        label(c, 0.10,1.6, 'no medium, no referee: only the RELATIVE velocity appears', {fs:12, color:'#8A5A24', italic:true});
      }
         },
@@ -1158,10 +1175,10 @@ diff:"Challenging",
           ],
           action(c){
        const x0=1.6, y0=1.2, sc=0.0038;
-       arrow(c, x0,y0, x0+1090*sc,y0, {color:BLUE, w:3, label:'pc = 1090', fs:12});
-       arrow(c, x0+1090*sc,y0, x0+1090*sc,y0+938.3*sc, {color:GREEN, w:3, label:'mc² = 938.3', fs:12});
+       arrow(c, x0,y0, x0+1090*sc,y0, {color:BLUE, w:3, label:'pc = 1090', fs:12, at:'mid', side:1});
+       arrow(c, x0+1090*sc,y0, x0+1090*sc,y0+938.3*sc, {color:GREEN, w:3, label:'mc² = 938.3', fs:12, at:'mid', side:1});
        arrow(c, x0,y0, x0+1090*sc,y0+938.3*sc, {color:RED, w:3.5, label:'E = 1438.3', fs:13, side:-1});
-       textAt(c, x0+2.1,y0+5.0, 'the invariant triangle, to scale', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, x0+2.1,y0-1.5, 'the invariant triangle, to scale', {fs:12, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"The speed comes free",
@@ -1262,7 +1279,7 @@ diff:"Challenging",
           ],
           action(c){
        dashLine(c, 3,5, 0,8, {color:GOLD});
-       textAt(c, 1.5,7.0, 'turnaround image: arrives year 8', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 1.95,7.0, 'turnaround image: arrives year 8', {fs:11.5, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"The verdict",

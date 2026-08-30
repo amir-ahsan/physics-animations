@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -680,7 +697,7 @@
     const pts=[]; for(let i=0;i<=240;i++){const x=-10.2+20.4*i/240;
       pts.push(ctx.M.X(x)+','+ctx.M.Y(sinc2(x)));}
     el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3,'stroke-linejoin':'round'},ctx.svg);
-    const t=el('text',{x:ctx.M.X(5.8),y:ctx.M.Y(0.62),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(4.4),y:ctx.M.Y(0.62),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
     t.textContent='one slit: the sinc² profile — wide crown, dim shoulders';
   },
       steps:[
@@ -729,7 +746,8 @@
          const h=sinc2(x*0.33);
          plotCurve(c, t=>[x+0.28*Math.sin(Math.PI*t), h*t], 0, 1, {color:PURPLE, w:2.2, dur:500, N:40});
        }
-       textAt(c, -6.3,1.05, 'many slits: needles under the envelope', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 7.0,1.02, 'many slits:', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 3.6,0.30, 'needles under envelope', {fs:11.5, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Round holes: the Airy disc",
@@ -791,7 +809,7 @@
        arrow(c, -2.3,0.635, 2.0,1.0, {color:GOLD, w:2.2});
        arrow(c, -6.0,1.06, -1.55,0.315, {color:RED, w:2.2});
        arrow(c, -1.55,0.315, 2.9,1.06, {color:RED, w:2.2});
-       label(c, -1.3,0.42, 'extra path: 2d sinθ', {fs:11.5, color:RED, italic:true});
+       label(c, -2.9,0.16, 'extra path: 2d sinθ', {fs:11.5, color:RED, italic:true});
        label(c, 4.0,0.44, 'd', {fs:13, color:'#7A5A28', italic:true});
        dashLine(c, 3.7,0.3, 3.7,0.62, {});
        label(c, -8.0,0.04, 'atomic planes as mirrors: θ from the PLANES — the crystallographers insist', {fs:11, color:'#8A5A24', italic:true});
@@ -830,7 +848,7 @@ diff:"Basic",
           action(c){
        plotCurve(c, y=>[y, sinc2(Math.PI*y/3.64)], -10.2, 10.2, {color:GOLD, w:3, dur:1600});
        dashLine(c, -3.64,0, -3.64,0.35, {color:'#8A7D60'}); dashLine(c, 3.64,0, 3.64,0.35, {color:'#8A7D60'});
-       textAt(c, 0,1.06, 'central crown: 7.28 cm wide', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 2.9,0.75, 'central crown: 7.28 cm wide', {fs:12, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Part (b): the side fringes",
@@ -944,7 +962,7 @@ diff:"Intermediate",
     const c={svg:ctx.svg, M:ctx.M, instant:true};
     const {svg,M}=ctx;
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(0),y2:M.Y(8.4),stroke:'#5C4B30','stroke-width':5},svg);
-    textAt(c, 0.8,8.2, 'grating, 600 lines/mm', {fs:12, italic:true});
+    textAt(c, 1.0,-1.0, 'grating, 600 lines/mm', {fs:12, italic:true});
   },
       steps:[
         { map:0, title:"Read: rainbows by mathematics",
@@ -965,11 +983,13 @@ diff:"Intermediate",
             {label:"The fan", tex:"\\sin\\theta_v = \\frac{400}{1667} = 0.240 \\Rightarrow 13.9^{\\circ}, \\qquad \\sin\\theta_r = \\frac{700}{1667} = 0.420 \\Rightarrow 24.8^{\\circ}", kind:"answer"}
           ],
           action(c){
-       arrow(c, 0,4, 56,17.8, {color:PURPLE, w:2.5, dur:700, label:'violet 400', fs:11.5, lt:0.8});
+       arrow(c, 0,4, 56,17.8, {color:PURPLE, w:2.5, dur:700, label:'violet 400', fs:11.5, lt:0.7});
        arrow(c, 0,4, 50,4+50*0.464, {color:RED, w:2.5, dur:700, label:'red 700', fs:11.5, lt:0.55, side:-1});
        arrow(c, 0,4, 58,4, {color:'#B0A488', w:1.5, dash:'6,5', dur:400});
-       arc(c, 0,4, 9, 0, 13.9, {color:PURPLE, label:'13.9°'});
-       arc(c, 0,4, 14, 0, 24.8, {color:RED, label:'24.8°'});
+       arc(c, 0,4, 9, 0, 13.9, {color:PURPLE});
+       label(c, 10.5,2.6, '13.9°', {fs:11, color:PURPLE, italic:true});
+       arc(c, 0,4, 14, 0, 24.8, {color:RED});
+       label(c, 29,2.0, '24.8°', {fs:11, color:RED, italic:true});
      }
         },
         { map:2, title:"Part (b): complete rainbows",
@@ -993,7 +1013,7 @@ diff:"Intermediate",
        arrow(c, 0,4, 12,22.6, {color:RED, w:2, dash:'6,4', dur:600});
        label(c, 13,22.0, '2nd-order red: 57.1°', {fs:11, color:RED, italic:true});
        arrow(c, 0,4, 16,20.6, {color:PURPLE, w:2, dash:'6,4', dur:600});
-       label(c, 17,19.6, '3rd-order violet: 46.1° — inside it!', {fs:11, color:PURPLE, italic:true});
+       label(c, 44,7.5, '3rd violet: 46.1° — inside!', {fs:11, color:PURPLE, italic:true});
      }
         },
         { map:4, title:"Check against the prism",
@@ -1111,7 +1131,8 @@ diff:"Intermediate",
           action(c){
        arrow(c, 2,4, 55,6.3, {color:'#B0A488', w:1.5, dur:600});
        arrow(c, 2,4, 55,1.7, {color:'#B0A488', w:1.5, dur:600});
-       arc(c, 2,4, 10, -2.5, 2.5, {color:'#888', label:'θ_min'});
+       arc(c, 2,4, 10, -2.5, 2.5, {color:'#888'});
+       label(c, 30,7.0, 'θ_min', {fs:11, color:'#888', italic:true});
      }
         },
         { map:2, title:"Honesty about the ceiling",
@@ -1212,7 +1233,7 @@ diff:"Challenging",
           action(c){
        arrow(c, -3.57,3.4, -0.9,0.6, {color:RED, w:2.2, dur:600});
        arrow(c, -0.9,0.6, 1.77,3.4, {color:RED, w:2.2, dur:600});
-       label(c, 1.0,2.2, '2nd order: steeper, 46.3°', {fs:11.5, color:RED, italic:true});
+       label(c, 3.0,2.2, '2nd: steeper, 46.3°', {fs:11.5, color:RED, italic:true});
      }
         },
         { map:4, title:"Part (c): why X-rays",
