@@ -1,819 +1,695 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physics 4B · Tutorial 5: Current and Resistance — Animated Worked Examples</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<style>
-  :root{
-    --paper:#FAF6EE; --ink:#2B2317; --accent:#B5793B; --accent-dk:#8A5A24;
-    --board:#2F4538; --chalk:#F2EEDC; --red:#C0392B; --blue:#2E6DA4; --green:#2E7D4F; --purple:#7B4FA0;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Georgia,'Times New Roman',serif;background:#EFE7D8;color:var(--ink)}
-  header{background:var(--board);color:var(--chalk);padding:14px 22px 10px}
-  header h1{margin:0;font-size:1.25rem;font-weight:normal;letter-spacing:.5px}
-  header .sub{font-size:.85rem;opacity:.75;margin-top:2px}
-  nav{display:flex;gap:8px;padding:10px 22px;background:#25382D;flex-wrap:wrap}
-  nav button{font-family:inherit;font-size:.85rem;padding:6px 14px;border-radius:18px;border:1px solid #4a6353;
-    background:transparent;color:var(--chalk);cursor:pointer;transition:.2s}
-  nav button:hover{background:#3a5245}
-  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .wrap{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:16px 22px;max-width:1460px;margin:0 auto}
-  /* ---- professor column ---- */
-  .prof-col{display:flex;flex-direction:column;gap:10px}
-  .bubble{position:relative;background:#fff;border:2px solid var(--accent-dk);border-radius:14px;
-    padding:12px 14px;min-height:110px;font-size:.95rem;line-height:1.45;box-shadow:2px 3px 0 rgba(0,0,0,.08)}
-  .bubble:after{content:'';position:absolute;bottom:-14px;left:38px;border:8px solid transparent;
-    border-top-color:var(--accent-dk)}
-  /* highlighted link to the next example, shown when an example finishes */
-  .next-link{display:inline-block;margin-top:10px;padding:7px 14px;background:var(--accent);color:#fff;
-    border-radius:8px;cursor:pointer;font-weight:bold;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.18);
-    animation:pulseLink 1.6s ease-in-out infinite}
-  .next-link:hover{background:var(--accent-dk)}
-  @keyframes pulseLink{0%,100%{box-shadow:0 2px 6px rgba(0,0,0,.18)}
-    50%{box-shadow:0 0 16px 3px rgba(181,121,59,.75)}}
-  .prof-box{background:linear-gradient(#3A5546,#2F4538);border-radius:14px;padding:6px;display:flex;justify-content:center}
-  /* ---- stage & board ---- */
-  .main-col{display:flex;flex-direction:column;gap:12px;min-width:0}
-  .prompt{background:#fff;border-left:5px solid var(--accent);padding:10px 14px;font-size:.92rem;
-    border-radius:0 8px 8px 0;box-shadow:1px 2px 0 rgba(0,0,0,.06)}
-  .prompt .simlink{display:inline-block;background:#2E6DA4;color:#fff;font-size:.78rem;font-weight:bold;
-    padding:3px 12px;border-radius:12px;text-decoration:none;margin-left:8px;vertical-align:1px}
-  .prompt .simlink:hover{background:#1D4568}
-  .prompt .diff{display:inline-block;font-size:.72rem;padding:2px 9px;border-radius:10px;color:#fff;
-    margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-  .diff.basic{background:var(--green)} .diff.intermediate{background:var(--blue)} .diff.challenging{background:var(--red)}
-  .diff.review{background:#7B4FA0}
-  /* stage and chalkboard sit SIDE BY SIDE so both are visible without scrolling */
-  .stage-row{display:flex;gap:12px;align-items:stretch;min-height:0}
-  #stagebox{flex:0 0 55%;min-width:0;background:var(--paper);border-radius:12px;border:1px solid #D9CDB4;
-    box-shadow:1px 2px 0 rgba(0,0,0,.06);align-self:flex-start}
-  #stage{width:100%;height:auto;display:block}
-  #boardwrap{flex:1;min-width:0;background:var(--board);border-radius:12px;padding:12px 14px;
-    max-height:540px;overflow-y:auto;overflow-x:auto;box-shadow:inset 0 0 30px rgba(0,0,0,.25)}
-  #board .line{color:var(--chalk);margin:9px 0;font-size:1.26rem;opacity:0;transform:translateY(4px);
-    transition:opacity .5s,transform .5s}
-  #board .katex{font-size:1em}
-  #board .line.show{opacity:1;transform:none}
-  #board .line.note{font-style:italic;font-size:1.08rem;color:#CBD8C6}
-  #board .katex{color:var(--chalk)}
-  /* ---- controls: pinned to the bottom of the window, always visible ---- */
-  .controls{position:sticky;bottom:0;z-index:60;display:flex;align-items:center;gap:10px;
-    padding:10px 22px;flex-wrap:wrap;background:#EFE7D8;border-top:1px solid #D9CDB4;
-    box-shadow:0 -3px 10px rgba(0,0,0,.07)}
-  .controls-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:1460px;margin:0 auto;width:100%}
-  .controls button{font-family:inherit;font-size:.95rem;padding:8px 16px;border-radius:8px;cursor:pointer;
-    border:1px solid var(--accent-dk);background:#fff;color:var(--ink);transition:.15s}
-  .controls button:hover{background:#F3E7D2}
-  .controls button.primary{background:var(--accent);color:#fff;font-weight:bold;min-width:96px}
-  .controls button.primary:hover{background:var(--accent-dk)}
-  .controls .stepinfo{margin-left:auto;font-size:.9rem;opacity:.75}
-  .controls .voice.on{background:var(--board);color:var(--chalk)}
-  /* ---- professor animation ---- */
-  #armL,#armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
-  #armL{transform-origin:74px 200px} #armR{transform-origin:146px 200px}
-  .pose-point #armR{transform:rotate(-118deg)}
-  .pose-write #armR{transform:rotate(-62deg)}
-  .pose-think #armR{transform:rotate(-152deg)}
-  .pose-excited #armR{transform:rotate(-146deg)}
-  .pose-excited #armL{transform:rotate(146deg)}
-  #brows{transition:transform .3s}
-  .pose-excited #brows,.pose-think #brows{transform:translateY(-4px)}
-  #mouth{transform-box:fill-box;transform-origin:center}
-  .talking #mouth{animation:talk .28s infinite alternate}
-  @keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
-  #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blink 4.2s infinite}
-  @keyframes blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
-  #hairG{animation:sway 5s ease-in-out infinite;transform-origin:110px 70px}
-  @keyframes sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
-  @media (max-width:820px){.wrap{grid-template-columns:1fr}.prof-col{flex-direction:row;align-items:flex-start}
-    .prof-box svg{width:130px;height:auto}.bubble{flex:1}.bubble:after{left:-14px;bottom:22px;
-    border:8px solid transparent;border-right-color:var(--accent-dk)}
-    .stage-row{flex-direction:column}#stagebox{flex:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Physics 4B · Current and Resistance — reasoning-first worked examples with Professor Ahsan.">
+  <title>Physics 4B · Tutorial 5: Current, Resistance, and EMF — Reasoning-First Lectures</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <style>
+    :root{
+      --night:#101813;
+      --board:#203c31;
+      --board-deep:#152b23;
+      --chalk:#f5f0dc;
+      --chalk-dim:#b8c9bc;
+      --amber:#e8ac56;
+      --amber-dark:#9c6528;
+      --cyan:#76d4da;
+      --green:#8ed29b;
+      --coral:#ef806f;
+      --paper:#f0eadc;
+      --ink:#221e17;
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 50% 0%,rgba(244,231,199,.82),transparent 48%),
+        linear-gradient(145deg,#d8cfbe,#b9ad98 68%,#9e927d);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    button{font:inherit}
+    .page{width:min(1500px,100%);margin:0 auto;padding:clamp(10px,2vw,28px)}
+    .masthead{
+      display:flex;align-items:end;justify-content:space-between;gap:24px;
+      margin:0 2px 10px;color:#2a251d;
+    }
+    .masthead p{margin:0;font-size:.72rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:#6e573b}
+    .masthead h1{margin:4px 0 0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(1.25rem,2.15vw,2rem)}
+    .lecture-note{font-size:.8rem;color:#6a5f50;text-align:right;line-height:1.45}
+    .lecture-note a{color:#7a5218;font-weight:700;text-decoration:none;border-bottom:1px dotted #9c6528}
+    .lecture-note a:hover{color:#4c3410}
+    /* ---- example tabs ---- */
+    .example-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 2px 12px}
+    .example-tabs button{
+      padding:7px 13px;
+      border:1px solid rgba(60,48,30,.35);
+      border-radius:999px;
+      color:#4b3d28;
+      background:rgba(255,252,242,.6);
+      cursor:pointer;font-size:.78rem;font-weight:750;
+      transition:.18s ease;
+    }
+    .example-tabs button:hover{border-color:var(--amber-dark);background:#fff6e2}
+    .example-tabs button.active{border-color:var(--amber-dark);background:var(--amber);color:#241a0c;box-shadow:0 2px 8px rgba(156,101,40,.3)}
+    .example-tabs button .diffdot{display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;vertical-align:1px}
+    .diff-review .diffdot{background:#8e6bb5}.diff-basic .diffdot{background:#5f9e63}
+    .diff-intermediate .diffdot{background:#c9922e}.diff-challenging .diffdot{background:#bf5540}
+    .player-shell{
+      overflow:hidden;
+      border:1px solid rgba(47,39,26,.4);
+      border-radius:20px;
+      background:#121914;
+      box-shadow:0 25px 70px rgba(45,34,18,.3),0 3px 0 rgba(255,255,255,.5) inset;
+    }
+    .lecture-stage{
+      position:relative;
+      aspect-ratio:16/7.6;
+      min-height:400px;
+      overflow:hidden;
+      isolation:isolate;
+      background:
+        linear-gradient(90deg,transparent 0 82%,rgba(8,17,13,.38) 82%),
+        radial-gradient(circle at 53% 32%,rgba(93,135,107,.2),transparent 42%),
+        #27352c;
+    }
+    .topline{
+      position:absolute;z-index:6;top:2.6%;left:3%;right:3%;
+      display:flex;align-items:center;justify-content:space-between;
+      color:#e7e0ce;font-size:clamp(.52rem,.78vw,.72rem);font-weight:800;
+      letter-spacing:.15em;text-transform:uppercase;
+    }
+    .series-lockup{display:flex;align-items:center;gap:10px}
+    .series-lockup::before{content:"";width:25px;height:2px;background:var(--amber)}
+    .format-badge{border:1px solid rgba(240,234,216,.3);border-radius:999px;padding:5px 9px;letter-spacing:.1em}
+    .board{
+      position:absolute;z-index:1;left:3.6%;top:7.6%;
+      width:79%;height:85.5%;
+      border:clamp(6px,1vw,13px) solid #735336;
+      border-radius:7px;
+      background:
+        radial-gradient(circle at 23% 30%,rgba(255,255,255,.035),transparent 22%),
+        radial-gradient(circle at 74% 67%,rgba(255,255,255,.025),transparent 28%),
+        repeating-linear-gradient(175deg,transparent 0 34px,rgba(234,244,226,.012) 35px 36px),
+        var(--board);
+      box-shadow:0 0 0 3px #392c21,0 18px 38px rgba(0,0,0,.38),inset 0 0 70px rgba(0,0,0,.28);
+    }
+    .board::after{
+      content:"";position:absolute;left:-2%;right:-2%;bottom:-18px;height:16px;border-radius:2px;
+      background:linear-gradient(#8d6845,#563d29);
+      box-shadow:0 4px 7px rgba(0,0,0,.4);
+    }
+    .board-content{
+      position:absolute;z-index:3;left:5.4%;top:10.4%;
+      width:75.5%;height:79%;
+      color:var(--chalk);
+      display:grid;grid-template-rows:auto auto 1fr;
+      gap:clamp(5px,.75vw,11px);
+    }
+    .problem-band{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(7px,1vw,16px);min-width:0;
+      padding-bottom:clamp(5px,.6vw,9px);
+      border-bottom:1px solid rgba(245,240,220,.18);
+    }
+    .example-tag{color:var(--amber);font-size:clamp(.56rem,.78vw,.78rem);font-weight:900;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
+    .problem-copy{
+      min-width:0;color:#fffbed;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(.66rem,1.02vw,1rem);line-height:1.28;
+    }
+    .band-chips{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+    .goal-chip{
+      display:flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--green);
+      border:1px solid rgba(142,210,155,.46);border-radius:999px;background:rgba(142,210,155,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+    }
+    .sim-chip{
+      display:inline-flex;align-items:center;gap:6px;padding:4px 9px;
+      color:var(--cyan);
+      border:1px solid rgba(118,212,218,.5);border-radius:999px;background:rgba(118,212,218,.08);
+      font-size:clamp(.54rem,.74vw,.74rem);font-weight:850;white-space:nowrap;
+      text-decoration:none;pointer-events:auto;cursor:pointer;
+    }
+    .sim-chip:hover{background:rgba(118,212,218,.2)}
+    .sim-chip[hidden]{display:none}
+    .reasoning-map{display:grid;gap:clamp(3px,.48vw,7px);pointer-events:auto}
+    .reason-step{
+      position:relative;min-width:0;
+      padding:clamp(5px,.62vw,9px) 4px;overflow:hidden;
+      border:1px solid rgba(245,240,220,.12);border-radius:5px;
+      color:#93a99b;background:rgba(7,20,14,.15);
+      font-size:clamp(.48rem,.68vw,.7rem);font-weight:850;letter-spacing:.07em;
+      text-align:center;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap;
+      transition:.35s ease;
+    }
+    .reason-step.done{color:#b8d6c0;border-color:rgba(142,210,155,.28);background:rgba(142,210,155,.06)}
+    .reason-step.active{color:#17241d;border-color:var(--amber);background:var(--amber);box-shadow:0 0 22px rgba(232,172,86,.2)}
+    .work-area{display:grid;grid-template-columns:37% 63%;min-height:0}
+    .model-zone{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;padding-right:2.5%}
+    #sketch{flex:1;min-height:0;width:100%}
+    .model-note{
+      margin-top:4px;padding:5px 8px;
+      border-left:2px solid var(--cyan);
+      color:#cfe6d7;background:rgba(7,20,14,.42);
+      font-size:clamp(.55rem,.76vw,.78rem);line-height:1.35;
+      min-height:1.4em;
+    }
+    .model-note strong{color:var(--cyan);letter-spacing:.08em;text-transform:uppercase;font-size:.92em;margin-right:6px}
+    .chalk-work{
+      min-width:0;min-height:0;
+      padding:clamp(3px,.4vw,7px) 1% 0 4.5%;
+      border-left:1px dashed rgba(245,240,220,.18);
+      overflow:hidden;display:flex;flex-direction:column;
+    }
+    .chapter-line{display:flex;align-items:baseline;gap:10px;margin-bottom:clamp(3px,.5vw,8px)}
+    .chapter-number{color:var(--amber);font-size:clamp(.55rem,.82vw,.8rem);font-weight:900;letter-spacing:.12em}
+    #chapterTitle{margin:0;color:#fffbed;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1rem,1.75vw,1.65rem);font-weight:500}
+    #thinkingPrompt{
+      margin:0 0 clamp(4px,.7vw,10px);
+      color:var(--green);
+      font-size:clamp(.6rem,.88vw,.88rem);font-weight:700;line-height:1.35;
+    }
+    .equation-stack{display:flex;flex-direction:column;gap:clamp(3px,.5vw,8px);min-height:0;overflow:hidden}
+    .equation-line{
+      position:relative;opacity:0;transform:translateY(7px);
+      padding:clamp(3px,.42vw,6px) clamp(5px,.7vw,10px);
+      border-left:2px solid transparent;
+      color:#dce6db;
+      font-size:clamp(.72rem,1.18vw,1.16rem);
+      line-height:1.3;
+      transition:opacity .45s ease,transform .45s ease,background .45s ease;
+    }
+    .equation-line .katex{font-size:1em}
+    .equation-line.show{opacity:1;transform:none}
+    .equation-line small{
+      display:block;margin-bottom:1px;
+      color:#91aa9b;font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.56em;font-weight:850;letter-spacing:.13em;text-transform:uppercase;
+    }
+    .equation-line.key{border-color:var(--amber);background:linear-gradient(90deg,rgba(232,172,86,.13),transparent 85%);color:#fff8df}
+    .equation-line.answer{border:1px solid rgba(142,210,155,.55);border-radius:5px;background:rgba(142,210,155,.1);color:#dcffe4}
+    .equation-line.warn{border-color:var(--coral);background:linear-gradient(90deg,rgba(239,128,111,.12),transparent);color:#ffe3dd}
+    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:clamp(.66rem,1vw,.98rem)}
+    .key-move{
+      display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;
+      background:var(--amber);color:#17241d;
+      font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+      font-size:.5em;font-weight:900;letter-spacing:.08em;text-transform:uppercase;vertical-align:.25em;
+    }
+    /* ---- professor ---- */
+    .professor-2d{
+      position:absolute;z-index:4;right:5.4%;bottom:2.5%;
+      width:21%;height:76%;
+      display:flex;align-items:flex-end;justify-content:center;
+      pointer-events:none;
+      filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
+    }
+    .professor-2d svg{display:block;width:100%;height:100%;overflow:visible}
+    .professor-2d #armL,.professor-2d #armR{transition:transform .5s cubic-bezier(.34,1.4,.64,1)}
+    .professor-2d #armL{transform-origin:74px 200px}
+    .professor-2d #armR{transform-origin:146px 200px}
+    .professor-2d.pose-point #armR{transform:rotate(-118deg)}
+    .professor-2d.pose-write #armR{transform:rotate(-62deg)}
+    .professor-2d.pose-think #armR{transform:rotate(-152deg)}
+    .professor-2d.pose-excited #armR{transform:rotate(-146deg)}
+    .professor-2d.pose-excited #armL{transform:rotate(146deg)}
+    .professor-2d #brows{transition:transform .3s}
+    .professor-2d.pose-excited #brows,.professor-2d.pose-think #brows{transform:translateY(-4px)}
+    .professor-2d #mouth{transform-box:fill-box;transform-origin:center}
+    .professor-2d.talking #mouth{animation:prof-talk .28s infinite alternate}
+    @keyframes prof-talk{from{transform:scaleY(.55)}to{transform:scaleY(2.4)}}
+    .professor-2d #lids{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:prof-blink 4.2s infinite}
+    @keyframes prof-blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
+    .professor-2d #hairG{animation:prof-sway 5s ease-in-out infinite;transform-origin:110px 70px}
+    @keyframes prof-sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+    .professor-id{
+      position:absolute;z-index:5;right:.8%;top:12%;width:16%;
+      color:#eee5d4;text-align:center;text-shadow:0 2px 8px #000;pointer-events:none;
+    }
+    .professor-id strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(.68rem,1.05vw,1rem);font-weight:500}
+    .professor-id span{font-size:clamp(.43rem,.58vw,.58rem);font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#c6a777}
+    .subtitle-box{
+      position:relative;z-index:2;
+      display:grid;grid-template-columns:auto 1fr;align-items:start;gap:14px;
+      min-height:76px;
+      padding:13px clamp(14px,2vw,28px);
+      border-top:1px solid rgba(255,255,255,.07);
+      background:#0b110d;color:#f8f4e8;
+      font-size:clamp(.75rem,1vw,.95rem);font-weight:560;line-height:1.5;text-align:left;
+    }
+    .caption-speaker{
+      margin-top:2px;padding:4px 8px;border-radius:999px;
+      background:var(--amber);color:#1b241d;
+      font-size:.66rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
+    }
+    #subtitle{margin:0}
+    .controls{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:clamp(10px,1.6vw,24px);
+      padding:13px clamp(12px,2vw,28px) 15px;
+      color:#e7e1d2;
+      background:linear-gradient(180deg,#18231c,#101713);
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .transport{display:flex;gap:7px}
+    .control-button{
+      min-width:42px;height:38px;
+      border:1px solid rgba(231,225,210,.22);border-radius:9px;
+      color:#e9e1d0;background:#253329;cursor:pointer;transition:.18s ease;
+    }
+    .control-button:hover{border-color:rgba(232,172,86,.72);background:#2f4034;transform:translateY(-1px)}
+    .control-button:focus-visible{outline:3px solid rgba(118,212,218,.55);outline-offset:2px}
+    .control-button.primary{min-width:92px;border-color:var(--amber-dark);background:var(--amber);color:#1e241d;font-weight:900}
+    .control-button.primary:hover{background:#f1bd70}
+    .control-button.voice{min-width:132px;padding:0 12px;font-size:.76rem;font-weight:750}
+    .timeline-wrap{min-width:0}
+    .timeline-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;color:#9eab9f;font-size:.68rem}
+    .timeline-head strong{color:#eee6d6;font-weight:750}
+    .timeline{display:grid;gap:5px}
+    .timeline button{
+      position:relative;height:7px;padding:0;
+      border:0;border-radius:999px;background:#34443a;cursor:pointer;overflow:hidden
+    }
+    .timeline button::after{content:"";position:absolute;inset:0;background:var(--amber);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+    .timeline button.done::after,.timeline button.active::after{transform:scaleX(1)}
+    .timeline button.active{box-shadow:0 0 0 2px rgba(232,172,86,.25)}
+    .timeline button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .transcript-panel{
+      margin-top:16px;overflow:hidden;
+      border:1px solid rgba(67,53,34,.28);border-radius:15px;
+      background:rgba(250,247,239,.82);
+      box-shadow:0 10px 30px rgba(65,48,23,.12);
+    }
+    .transcript-header{
+      display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+      padding:16px 18px 12px;border-bottom:1px solid rgba(67,53,34,.16);
+    }
+    .transcript-header h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:1.22rem;font-weight:500;color:#2a4637}
+    .transcript-header p{margin:0;color:#6b6257;font-size:.76rem}
+    .transcript-list{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;
+      margin:0;padding:14px;list-style:none;
+    }
+    .transcript-entry{
+      padding:12px 13px;
+      border:1px solid rgba(73,61,43,.16);border-radius:10px;background:#fffdf8;
+      transition:border-color .2s,background .2s,box-shadow .2s;
+    }
+    .transcript-entry.active{border-color:#a66c2f;background:#fff8e9;box-shadow:0 0 0 2px rgba(232,172,86,.16)}
+    .transcript-entry button{width:100%;padding:0;border:0;background:transparent;color:#2f5542;cursor:pointer;font-weight:850;text-align:left}
+    .transcript-entry button:focus-visible{outline:3px solid rgba(46,109,164,.38);outline-offset:4px}
+    .transcript-entry p{margin:7px 0 0;color:#403b34;font-family:Georgia,"Times New Roman",serif;font-size:.88rem;line-height:1.48}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+    @media (max-width:900px){
+      .page{padding:8px}
+      .masthead{align-items:start;flex-direction:column;gap:5px}
+      .lecture-note{text-align:left}
+      .lecture-stage{min-height:340px}
+      .board{left:2%;width:84%}
+      .board-content{left:4%;width:80%}
+      .work-area{grid-template-columns:33% 67%}
+      .professor-id{display:none}
+      .professor-2d{right:2.5%;width:22%;height:70%;bottom:2.5%}
+      .subtitle-box{grid-template-columns:1fr;gap:7px}
+      .controls{grid-template-columns:1fr auto}
+      .timeline-wrap{grid-column:1/-1;grid-row:1}
+      .transport{grid-row:2}
+    }
+    @media (max-width:620px){
+      .lecture-stage{min-height:300px}
+      .problem-copy{line-height:1.15}
+      .problem-band{grid-template-columns:auto 1fr}.band-chips{display:none}
+      .model-note{display:none}
+      .reason-step{letter-spacing:0}
+      .control-button.voice{min-width:45px;width:45px;font-size:0}.control-button.voice::after{content:"Voice";font-size:.62rem}
+    }
+  </style>
 </head>
 <body>
+  <main class="page">
+    <header class="masthead">
+      <div>
+        <p>Physics 4B · Tutorial 5</p>
+        <h1>Current &amp; Resistance</h1>
+      </div>
+      <div class="lecture-note">
+        Current · drift · resistivity · temperature · power<br>
+        <a href="../index.html">↩ Course Hub</a>
+      </div>
+    </header>
 
-<header>
-  <h1>Physics 4B &middot; Tutorial 5: Current and Resistance</h1>
-  <div class="sub">Animated worked examples &mdash; with Professor Ahsan &middot; <a href="../index.html" style="color:#D8C9A3">Course Hub</a></div>
-</header>
+    <nav class="example-tabs" id="exampleTabs" aria-label="Choose a lesson"></nav>
 
-<nav id="tabs"></nav>
+    <section class="player-shell" aria-label="Worked-example lecture player">
+      <div class="lecture-stage" id="lectureStage">
+        <div class="topline">
+          <div class="series-lockup">Physics with Professor Ahsan</div>
+          <div class="format-badge" id="formatBadge">Worked example</div>
+        </div>
 
-<div class="wrap">
-  <div class="prof-col">
-    <div class="bubble" id="bubble"></div>
-    <div class="prof-box">
-      <!-- ============ PROFESSOR AHSAN ============ -->
-      <svg id="prof" width="220" height="280" viewBox="0 0 220 290" aria-label="Professor Ahsan">
-        <!-- slimming wrap: 20% narrower about the figure's centre line x = 110 -->
-        <g id="slim" transform="translate(22 0) scale(0.8 1)">
-        <!-- head group: shifted down to halve the visible neck -->
-        <g id="headG" transform="translate(0 16)">
-        <!-- wild cloud-like hair (the original) -->
-        <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
-          <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
-          <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
-          <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
-          <circle cx="168" cy="98" r="20"/>
-        </g>
-        <!-- ears -->
-        <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
-        <!-- face -->
-        <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
-        <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
-        <!-- brows -->
-        <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
-          <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
-        </g>
-        <!-- eyes -->
-        <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
-        <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
-        <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
-        <g id="lids" fill="#B5793B">
-          <rect x="83" y="94" width="18" height="14" rx="6"/>
-          <rect x="119" y="94" width="18" height="14" rx="6"/>
-        </g>
-        <!-- round glasses: bold black frames.
-             Each lens carries a 1.25× x counter-scale about its own centre, so after the
-             outer 0.8× slim squeeze the lenses render as PERFECT CIRCLES (and the net
-             1:1 scale keeps the stroke uniform). Bridge shortened to fit the closer lenses. -->
-        <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
-          <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
-          <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
-          <path d="M108,100 q2,-3 4,0" fill="none"/>
-          <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
-        </g>
-        <!-- nose -->
-        <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
-        <!-- mustache: two combed lobes with a center part -->
-        <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
-          <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
-          <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
-        </g>
-        <!-- lip area: philtrum shadow, mouth, lower lip -->
-        <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
-        <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
-        <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
-        </g><!-- /headG -->
-        <!-- neck (half length: top follows the lowered chin; still tucks behind the collar) -->
-        <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
-        <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
-        <!-- body group: an additional 20% narrower than the face, about x = 110 -->
-        <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
-        <!-- torso: tweed jacket (collar raised to meet the neck) -->
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
-        <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
-        <!-- vest + shirt -->
-        <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
-        <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
-        <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
-        <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
-        <!-- lapels -->
-        <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
-        <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
-        <!-- left arm (screen left) -->
-        <g id="armL">
-          <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="66" cy="264" r="9" fill="#B5793B"/>
-        </g>
-        <!-- right arm (screen right) — the pointing arm -->
-        <g id="armR">
-          <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
-          <circle cx="154" cy="264" r="9" fill="#B5793B"/>
-          <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
-        </g>
-        </g><!-- /bodyG -->
-        </g><!-- /slim -->
-      </svg>
-    </div>
-  </div>
+        <div class="board" aria-hidden="true"></div>
 
-  <div class="main-col">
-    <div class="prompt" id="prompt"></div>
-    <div class="stage-row">
-      <div id="stagebox"><svg id="stage" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
-      <div id="boardwrap"><div id="board"></div></div>
-    </div>
-  </div>
-</div>
+        <section class="board-content" aria-label="Chalkboard derivation">
+          <div class="problem-band">
+            <span class="example-tag" id="exampleTag">Problem</span>
+            <span class="problem-copy" id="problemCopy"></span>
+            <span class="band-chips">
+              <span class="goal-chip" id="goalChip"></span>
+              <a class="sim-chip" id="simChip" target="_blank" rel="noopener" hidden>🎛 Desmos sim ▸</a>
+            </span>
+          </div>
 
-<div class="controls"><div class="controls-inner">
-  <button id="btnRestart" title="Restart example">&#9198; Restart</button>
-  <button id="btnPrev" title="Previous step">&#9664; Back</button>
-  <button id="btnPlay" class="primary">&#9654; Play</button>
-  <button id="btnNext" title="Next step">Next &#9654;</button>
-  <button id="btnVoice" class="voice on" title="Toggle text-to-speech">&#128266; Voice: on</button>
-  <span class="stepinfo" id="stepinfo"></span>
-</div></div>
+          <div class="reasoning-map" id="reasoningMap" aria-label="Problem-solving pathway"></div>
 
-<script>
-/* ================================================================
-   STEP ENGINE — shared across all tutorials (copy from TEMPLATE)
-   ================================================================ */
-const SVGNS = 'http://www.w3.org/2000/svg';
-const $ = id => document.getElementById(id);
-const stage = $('stage'), board = $('board'), bubble = $('bubble');
+          <div class="work-area">
+            <div class="model-zone">
+              <svg id="sketch" aria-label="Sketch of the physical situation" role="img"></svg>
+              <div class="model-note" id="modelNote"></div>
+            </div>
+            <div class="chalk-work">
+              <div class="chapter-line">
+                <span class="chapter-number" id="chapterNumber">01</span>
+                <h2 id="chapterTitle"></h2>
+              </div>
+              <p id="thinkingPrompt"></p>
+              <div class="equation-stack" id="equationStack" aria-label="Current derivation"></div>
+            </div>
+          </div>
+        </section>
 
-function el(tag, attrs, parent){
-  const e = document.createElementNS(SVGNS, tag);
-  for (const k in attrs){
-    let v = attrs[k];
-    if (tag==='text' && k==='font-size') v = Math.round(v*1.15*10)/10;  /* global sketch-font bump */
-    e.setAttribute(k, v);
-  }
-  if (parent) parent.appendChild(e);
-  return e;
-}
+        <div class="professor-2d pose-talk" id="professor2d" aria-hidden="true">
+          <svg id="prof" viewBox="0 0 220 290" focusable="false">
+            <g id="slim" transform="translate(22 0) scale(0.8 1)">
+              <g id="headG" transform="translate(0 16)">
+                <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+                  <circle cx="58" cy="72" r="27"/><circle cx="80" cy="50" r="29"/>
+                  <circle cx="110" cy="42" r="31"/><circle cx="140" cy="50" r="29"/>
+                  <circle cx="162" cy="72" r="27"/><circle cx="52" cy="98" r="20"/>
+                  <circle cx="168" cy="98" r="20"/>
+                </g>
+                <ellipse cx="68" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="152" cy="110" rx="9" ry="13" fill="#B5793B"/>
+                <ellipse cx="110" cy="106" rx="41" ry="47" fill="#B5793B"/>
+                <ellipse cx="96" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <ellipse cx="124" cy="122" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <g id="brows" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round">
+                  <path d="M78,88 q13,-9 27,-3"/><path d="M115,85 q14,-6 27,3"/>
+                </g>
+                <ellipse cx="92" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <ellipse cx="128" cy="101" rx="8" ry="6.5" fill="#fff"/>
+                <circle cx="93" cy="102" r="3.2" fill="#3A2A18"/>
+                <circle cx="127" cy="102" r="3.2" fill="#3A2A18"/>
+                <g id="lids" fill="#B5793B">
+                  <rect x="83" y="94" width="18" height="14" rx="6"/>
+                  <rect x="119" y="94" width="18" height="14" rx="6"/>
+                </g>
+                <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+                  <circle cx="92" cy="101" r="13" transform="translate(-23 0) scale(1.25 1)"/>
+                  <circle cx="128" cy="101" r="13" transform="translate(-32 0) scale(1.25 1)"/>
+                  <path d="M108,100 q2,-3 4,0" fill="none"/>
+                  <path d="M79,99 L69,104 M141,99 L151,104" fill="none"/>
+                </g>
+                <ellipse cx="110" cy="119" rx="6.5" ry="10" fill="#A0682C"/>
+                <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+                  <path d="M109,130 Q97,124 86,131 Q88,142 106,140 Q109,136 109,130 Z"/>
+                  <path d="M111,130 Q123,124 134,131 Q132,142 114,140 Q111,136 111,130 Z"/>
+                </g>
+                <path d="M107,141 Q110,144 113,141" fill="none" stroke="#8A5626" stroke-width="1.2"/>
+                <path id="mouth" d="M99,147 Q110,153 121,147 Q110,150.5 99,147 Z" fill="#5A3222"/>
+                <path d="M102,151 Q110,156 118,151 Q110,153.5 102,151 Z" fill="#9A5B33"/>
+              </g>
+              <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
+              <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
+              <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
+                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
+                <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+                <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
+                <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
+                <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
+                <path d="M93,186 L78,186 Q70,206 74,230 L96,202 Z" fill="#5C4B30"/>
+                <path d="M127,186 L142,186 Q150,206 146,230 L124,202 Z" fill="#5C4B30"/>
+                <g id="armL">
+                  <rect x="58" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="66" cy="264" r="9" fill="#B5793B"/>
+                </g>
+                <g id="armR">
+                  <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <circle cx="154" cy="264" r="9" fill="#B5793B"/>
+                  <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+                </g>
+              </g>
+            </g>
+          </svg>
+        </div>
 
-/* --- world→screen mapper: stage is 600×400 --- */
-function makeMapper(w){
-  const W=600, H=400, p=w.pad ?? 44;
-  const sx=(W-2*p)/(w.x1-w.x0), sy=(H-2*p)/(w.y1-w.y0);
-  const s = Math.min(sx, sy);
-  const cx=(w.x0+w.x1)/2, cy=(w.y0+w.y1)/2;
-  if (w.aniso) return { X:x=>300+(x-cx)*sx, Y:y=>200-(y-cy)*sy, s };  /* graphs: fill the stage */
-  return { X:x=>300+(x-cx)*s, Y:y=>200-(y-cy)*s, s };                 /* diagrams: true aspect */
-}
+        <div class="professor-id">
+          <strong>Professor Ahsan</strong>
+          <span>Physics · with unnecessary honesty</span>
+        </div>
 
-/* --- animation manager (respects instant mode) --- */
-const running = [];
-function cancelAnims(){ running.forEach(id=>cancelAnimationFrame(id)); running.length=0; }
-function tween(draw, dur, instant, done){
-  if (instant){ draw(1); if(done) done(); return; }
-  const t0 = performance.now();
-  function frame(t){
-    let u = Math.min(1,(t-t0)/dur);
-    draw(1-Math.pow(1-u,3));            // ease-out cubic
-    if (u<1){ running.push(requestAnimationFrame(frame)); } else if (done) done();
-  }
-  running.push(requestAnimationFrame(frame));
-}
+      </div>
 
-/* --- drawing helpers --- */
-function headPts(x,y,ang,s){
-  return [[x,y],[x-s*Math.cos(ang-0.42),y-s*Math.sin(ang-0.42)],
-          [x-s*Math.cos(ang+0.42),y-s*Math.sin(ang+0.42)]]
-         .map(p=>p.join(',')).join(' ');
-}
-/* animated vector arrow in world coords */
-function arrow(ctx, x1,y1,x2,y2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const X1=M.X(x1),Y1=M.Y(y1),X2=M.X(x2),Y2=M.Y(y2);
-  const ang = Math.atan2(Y2-Y1,X2-X1), hs = opt.head ?? 11;
-  const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color||'#333',
-    'stroke-width':opt.w||3.5,'stroke-linecap':'round',
-    ...(opt.dash?{'stroke-dasharray':opt.dash}:{})},g);
-  const head = el('polygon',{fill:opt.color||'#333',points:headPts(X1,Y1,ang,hs)},g);
-  tween(u=>{
-    const x=X1+(X2-X1)*u, y=Y1+(Y2-Y1)*u;
-    line.setAttribute('x2',x); line.setAttribute('y2',y);
-    head.setAttribute('points',headPts(x,y,ang,hs));
-  }, opt.dur||800, instant);
-  if (opt.label){
-    /* Place the label ADJACENT to the arrow, never on it: offset the
-       midpoint perpendicular to the arrow's direction (upper side by
-       default; pass side:-1 for the other side; dx/dy fine-tune). */
-    const t0 = opt.lt ?? 0.55;
-    const mx = X1+(X2-X1)*t0, my = Y1+(Y2-Y1)*t0;
-    const L  = Math.hypot(X2-X1, Y2-Y1) || 1;
-    let nx = -(Y2-Y1)/L, ny = (X2-X1)/L;        /* unit normal to the arrow */
-    if (ny > 0){ nx = -nx; ny = -ny; }          /* prefer the upper side */
-    if (opt.side === -1){ nx = -nx; ny = -ny; }
-    const fs  = opt.fs || 19;
-    /* clearance grows with label width when the offset is horizontal,
-       so wide labels (e.g. "3.00 km") clear vertical arrows too */
-    const off = opt.off ?? (fs*0.95 + Math.abs(nx)*(String(opt.label).length*fs*0.28));
-    const lx = mx+nx*off+(opt.dx??0), ly = my+ny*off+(opt.dy??0)+fs*0.34;
-    const lg = el('g',{},g);
-    const t = el('text',{x:lx, y:ly, fill:opt.color||'#333','font-size':fs,'text-anchor':'middle',
-      'font-style':'italic','font-family':'Georgia,serif','font-weight':'bold'},lg);
-    t.textContent = opt.label;
-    if (opt.vec){  /* proper vector notation: draw an arrow accent over the symbol */
-      const hw = String(opt.label).length*fs*0.28, ay = ly - fs*0.98;
-      el('line',{x1:lx-hw, y1:ay, x2:lx+hw*0.7, y2:ay,
-        stroke:opt.color||'#333','stroke-width':1.6,'stroke-linecap':'round'},lg);
-      el('polygon',{fill:opt.color||'#333', points:headPts(lx+hw, ay, 0, 6)},lg);
-    }
-    if(!instant){ lg.setAttribute('opacity',0); tween(u=>lg.setAttribute('opacity',u),400,false); }
-  }
-  return g;
-}
-/* animated angle arc (angles in degrees, world coords center) */
-function arc(ctx, cx,cy,r, a1,a2, opt={}){
-  const {svg,M,instant} = ctx;
-  const g = el('g',{},svg);
-  const path = el('path',{fill:'none',stroke:opt.color||'#666','stroke-width':opt.w||2},g);
-  const R = r*M.s;
-  function d(a2c){
-    const A1=a1*Math.PI/180, A2=a2c*Math.PI/180;
-    const x1=M.X(cx)+R*Math.cos(A1), y1=M.Y(cy)-R*Math.sin(A1);
-    const x2=M.X(cx)+R*Math.cos(A2), y2=M.Y(cy)-R*Math.sin(A2);
-    const large = Math.abs(a2c-a1)>180?1:0, sweep = a2c>a1?0:1;
-    return `M${x1},${y1} A${R},${R} 0 ${large} ${sweep} ${x2},${y2}`;
-  }
-  tween(u=>path.setAttribute('d', d(a1+(a2-a1)*u)), opt.dur||700, instant);
-  if (opt.label){
-    const mid=(a1+a2)/2*Math.PI/180, LR=R+(opt.lr??18);
-    const t=el('text',{x:M.X(cx)+LR*Math.cos(mid),y:M.Y(cy)-LR*Math.sin(mid)+5,
-      fill:opt.color||'#666','font-size':16,'font-style':'italic',
-      'font-family':'Georgia,serif','text-anchor':'middle'},g);
-    t.textContent=opt.label;
-  }
-  return g;
-}
-function label(ctx, x,y, txt, opt={}){
-  const g = el('g',{},ctx.svg);
-  const lx = ctx.M.X(x)+(opt.dx||0), ly = ctx.M.Y(y)+(opt.dy||0), fs = opt.fs||15;
-  const t = el('text',{x:lx, y:ly, fill:opt.color||'#444','font-size':fs,'font-family':'Georgia,serif',
-    'text-anchor':opt.anchor||'start',...(opt.italic?{'font-style':'italic'}:{})},g);
-  t.textContent = txt;
-  if (opt.vec){  /* arrow accent over the symbol (assumes short symbol text) */
-    const hw = String(txt).length*fs*0.28;
-    const cx = opt.anchor==='middle' ? lx : lx+hw;
-    const ay = ly - fs*0.95;
-    el('line',{x1:cx-hw, y1:ay, x2:cx+hw*0.7, y2:ay,
-      stroke:opt.color||'#444','stroke-width':1.5,'stroke-linecap':'round'},g);
-    el('polygon',{fill:opt.color||'#444', points:headPts(cx+hw, ay, 0, 5.5)},g);
-  }
-  if(!ctx.instant){ g.setAttribute('opacity',0); tween(u=>g.setAttribute('opacity',u),400,false); }
-  return t;
-}
-function dashLine(ctx, x1,y1,x2,y2, opt={}){
-  const {M}=ctx;
-  const l = el('line',{x1:M.X(x1),y1:M.Y(y1),x2:M.X(x2),y2:M.Y(y2),
-    stroke:opt.color||'#999','stroke-width':opt.w||1.6,'stroke-dasharray':opt.dash||'5,4'},ctx.svg);
-  if(!ctx.instant){ l.setAttribute('opacity',0); tween(u=>l.setAttribute('opacity',u),500,false); }
-  return l;
-}
-/* standard 2-D axes with grid */
-function axes2D(svg, M, w, opt={}){
-  const g = el('g',{},svg);
-  if (opt.grid){
-    for(let x=Math.ceil(w.x0); x<=w.x1; x+=opt.grid)
-      el('line',{x1:M.X(x),y1:M.Y(w.y0),x2:M.X(x),y2:M.Y(w.y1),stroke:'#E3D9C2','stroke-width':1},g);
-    for(let y=Math.ceil(w.y0); y<=w.y1; y+=opt.grid)
-      el('line',{x1:M.X(w.x0),y1:M.Y(y),x2:M.X(w.x1),y2:M.Y(y),stroke:'#E3D9C2','stroke-width':1},g);
-  }
-  const ax = el('line',{x1:M.X(w.x0),y1:M.Y(0),x2:M.X(w.x1),y2:M.Y(0),stroke:'#B0A488','stroke-width':1.8},g);
-  const ay = el('line',{x1:M.X(0),y1:M.Y(w.y0),x2:M.X(0),y2:M.Y(w.y1),stroke:'#B0A488','stroke-width':1.8},g);
-  el('polygon',{points:headPts(M.X(w.x1),M.Y(0),0,9),fill:'#B0A488'},g);
-  el('polygon',{points:headPts(M.X(0),M.Y(w.y1),-Math.PI/2,9),fill:'#B0A488'},g);
-  const tx=el('text',{x:M.X(w.x1)-4,y:M.Y(0)+18,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); tx.textContent=opt.xlab||'x';
-  const ty=el('text',{x:M.X(0)+8,y:M.Y(w.y1)+8,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g); ty.textContent=opt.ylab||'y';
-  return g;
-}
-/* oblique 3-D projection: world (x,y,z) → planar 2-D */
-const proj = (x,y,z) => [ -0.6*x + y, -0.5*x + z ];
-function axes3D(svg, M, ext, opt={}){
-  const g = el('g',{},svg);
-  const A = [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']];
-  for (const [x,y,z,name] of A){
-    const [px,py]=proj(x,y,z);
-    const X2=M.X(px), Y2=M.Y(py), X1=M.X(0), Y1=M.Y(0);
-    el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:'#B0A488','stroke-width':1.8},g);
-    el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:'#B0A488'},g);
-    const t=el('text',{x:X2+8,y:Y2+4,fill:'#8A7D60','font-size':15,'font-style':'italic','font-family':'Georgia,serif'},g);
-    t.textContent=name;
-  }
-  return g;
-}
+      <div class="controls">
+        <div class="transport">
+          <button class="control-button" id="restartButton" type="button" aria-label="Restart lesson" title="Restart">↺</button>
+          <button class="control-button" id="backButton" type="button" aria-label="Previous step" title="Previous step">←</button>
+          <button class="control-button primary" id="playButton" type="button" aria-label="Play lesson">▶ Play</button>
+          <button class="control-button" id="nextButton" type="button" aria-label="Next step" title="Next step">→</button>
+        </div>
 
-/* --- KaTeX board --- */
-const KX_MACROS = {'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'};
-function addBoardLine(item, animate){
-  const div = document.createElement('div');
-  div.className = 'line' + (item.t !== undefined ? ' note' : '');
-  if (item.t !== undefined) div.textContent = item.t;
-  else if (window.katex){
-    try { katex.render(item, div, {throwOnError:false, macros:KX_MACROS}); }
-    catch(e){ div.textContent = item; }
-  } else div.textContent = item;  /* offline fallback: raw LaTeX */
-  board.appendChild(div);
-  requestAnimationFrame(()=> setTimeout(()=>div.classList.add('show'), animate?60:0));
-}
+        <div class="timeline-wrap">
+          <div class="timeline-head"><strong id="timelineTitle"></strong><span id="stepCount"></span></div>
+          <div class="timeline" id="timeline" aria-label="Lesson chapters"></div>
+        </div>
 
-/* --- professor: poses, speech, TTS --- */
-const prof = $('prof');
-function setPose(p){
-  prof.className.baseVal = '';
-  prof.classList.add('pose-'+(p||'talk'));
-}
-/* --- voice selection: smooth, soothing British English (en-GB).
-       IMPORTANT: browsers (Chrome especially) load voices late and can
-       invalidate cached voice objects, silently reverting to the default
-       voice. So we re-select a fresh voice on EVERY utterance. --- */
-function britishVoice(){
-  const vs = speechSynthesis.getVoices();
-  return vs.find(v=>/en[-_]GB/i.test(v.lang) && /daniel|arthur|oliver|james|male/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang) && /google/i.test(v.name))
-      || vs.find(v=>/en[-_]GB/i.test(v.lang))
-      || vs.find(v=>/en[-_]AU/i.test(v.lang))
-      || null;
-}
-if ('speechSynthesis' in window){
-  speechSynthesis.getVoices();                       /* trigger async load */
-  speechSynthesis.onvoiceschanged = ()=>britishVoice();
-}
-let typeTimer=null, voiceOn=true, utter=null, ttsKeepAlive=null;   /* voice ON by default */
-let sentQueue=[], sentIdx=0, speakGen=0;   /* sentence queue: the professor pauses at full stops */
-function speakNext(gen){
-  if (gen!==speakGen || !state.playing) return;       /* stale chain, or user paused in a gap */
-  if (sentIdx >= sentQueue.length){ queueAdvance(1200); return; }
-  const u = new SpeechSynthesisUtterance(sentQueue[sentIdx++].trim());
-  const v = britishVoice();                            /* fresh pick every time */
-  if (v){ u.voice = v; u.lang = v.lang; } else u.lang = 'en-GB';
-  u.rate = 0.92; u.pitch = 1.0;                        /* measured lecture pace */
-  u.onend = ()=>{ clearInterval(ttsKeepAlive); setTimeout(()=>speakNext(gen), 420); };  /* the breath after a period */
-  u.onerror = u.onend;
-  utter = u;
-  speechSynthesis.speak(u);
-  clearInterval(ttsKeepAlive);
-  ttsKeepAlive = setInterval(()=>{                     /* Chrome stalls on long utterances unless nudged */
-    if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-    else { speechSynthesis.pause(); speechSynthesis.resume(); }
-  }, 12000);
-}
-/* bubble display: real greek letters instead of spelled-out phonetics */
-function greekify(t){
-  return t
-   .replace(/\bdelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bDelta-([a-zA-Z])/g,'\u0394$1')
-   .replace(/\bh-bar\b/gi,'\u0127')
-   .replace(/\bepsilon-nought\b/gi,'\u03b5\u2080').replace(/\bmu-nought\b/gi,'\u03bc\u2080')
-   .replace(/\bomega-nought\b/gi,'\u03c9\u2080').replace(/\blambda-nought\b/gi,'\u03bb\u2080')
-   .replace(/\btheta-nought\b/gi,'\u03b8\u2080')
-   .replace(/\bmu-s\b/g,'\u03bc\u209b').replace(/\bmu-k\b/g,'\u03bc\u2096')
-   .replace(/\b[Aa]lpha\b/g,'\u03b1').replace(/\b[Bb]eta\b/g,'\u03b2')
-   .replace(/\b[Gg]amma\b/g,'\u03b3').replace(/\b[Dd]elta\b/g,'\u03b4')
-   .replace(/\b[Tt]heta\b/g,'\u03b8').replace(/\b[Kk]appa\b/g,'\u03ba')
-   .replace(/\b[Ll]ambda\b/g,'\u03bb').replace(/\b[Ss]igma\b/g,'\u03c3')
-   .replace(/\b[Oo]mega\b/g,'\u03c9').replace(/\b[Pp]si\b/g,'\u03c8')
-   .replace(/\b[Pp]hi\b/g,'\u03c6').replace(/\b[Tt]au\b/g,'\u03c4')
-   .replace(/\b[Rr]ho\b/g,'\u03c1').replace(/\bepsilon\b/g,'\u03b5')
-   .replace(/\bmu\b/g,'\u03bc').replace(/\bpi\b/g,'\u03c0');
-}
-function speak(text, animate){
-  clearInterval(typeTimer);
-  speakGen++; sentQueue=[]; sentIdx=0;                 /* invalidate any pending sentence chain */
-  if ('speechSynthesis' in window && speechSynthesis.paused) speechSynthesis.resume();  /* unstick before cancel */
-  speechSynthesis.cancel();
-  prof.classList.add('talking');
-  const shown = greekify(text);
-  if (!animate){ bubble.textContent=shown; prof.classList.remove('talking'); return; }
-  bubble.textContent='';
-  let i=0;
-  typeTimer = setInterval(()=>{
-    bubble.textContent = shown.slice(0,++i);
-    if (i>=shown.length){ clearInterval(typeTimer); prof.classList.remove('talking'); }
-  },16);
-  if (voiceOn && state.playing && 'speechSynthesis' in window){   /* speak only during playback — never on load or manual browsing */
-    /* smooth the text for spoken delivery: soften dashes, ellipses, symbols */
-    const spoken = text
-      .replace(/[°]/g,' degrees ')
-      .replace(/\s*[—–]\s*/g,', ')
-      .replace(/\.\.\./g,',')
-      .replace(/\s*;\s*/g, ', ')                                 /* semicolons read as gentle pauses */
-      .replace(/\s*:\s+/g, ', ')                                 /* colons flow as commas, not full stops */
-      .replace(/\bk-hat\b/gi,'k hat')
-      .replace(/\bg\b/g,'gee')                                   /* standalone g = gravity, not grams */
-      .replace(/\bpsi\b/gi,'sigh')                               /* ψ rhymes with pie, not 'p-see' */
-      .replace(/(\d)\.(\d)/g,'$1 point $2')                       /* 16.9 -> 'sixteen point nine', no pause */
-      .replace(/coulomb/gi, m => (m[0]==='C'?'K':'k')+'oolom');  /* pronounce Coulomb correctly (koo-lom) */
-    /* split into sentences: one utterance each, with a breath between them */
-    /* --- pronunciation fixes (TTS only; the bubble shows the original text) --- */
-    const spoken2 = spoken
-      .replace(/\blive hard lives\b/g,'lead a hard existence')
-      .replace(/\blives\b/g,'livz')                             /* verb: rhymes with gives */
-      .replace(/\blived\b/g,'livd')
-      .replace(/\blive\b/g,'liv')                               /* verb: as in life, not broadcast */
-      .replace(/\bdrawn bow\b/g,'drawn beau')
-      .replace(/\btear\b/g,'tare')
-      .replace(/\bexam wound\b/g,'exam woond')
-      .replace(/\b(that|having|it|crystallography) read\b/g,'$1 red')   /* past tense */
-      .replace(/\bbe read\b/g,'be red')
-      .replace(/read from a stick/g,'red from a stick')
-      .replace(/read in volts/g,'red in volts')
-      .replace(/\ba squared\b/g,'ay squared')                   /* the variable a, not the article */
-      .replace(/\ba cubed\b/g,'ay cubed')
-      .replace(/\ba equals\b/g,'ay equals')
-      .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus| squared| cubed)/g,'equals ay')
-      .replace(/\bequal a plus\b/g,'equal ay plus')
-      .replace(/\bover a\b(?=[,.]| is| minus| and| grows)/g,'over ay')
-      .replace(/\bb minus a\b/g,'b minus ay')
-      .replace(/\bminus a v-squared\b/g,'minus ay v-squared')
-      .replace(/\ba plus b\b/g,'ay plus b')
-      .replace(/\ba b\b/g,'ay b')
-      .replace(/\btimes a\b(?=[,.])/g,'times ay')
-      .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
-      .replace(/\bm a\b/g,'m ay')
-      .replace(/\bM a\b(?=[,.])/g,'M ay')
-      .replace(/\bfrom a to b\b/g,'from ay to b')
-      .replace(/\btends to a\b(?=[,.])/g,'tends to ay')
-      .replace(/\ba of (t|zero)\b/g,'ay of $1')
-      .replace(/\ba crosses\b/g,'ay crosses')
-      .replace(/\ba becomes\b/g,'ay becomes')
-      .replace(/\ba is\b(?= \d)/g,'ay is');
-    sentQueue = spoken2.match(/.+?[.!?]+(?=\s|$)|.+$/g) || [spoken2];
-    sentIdx = 0;
-    /* small delay after cancel() — Chrome otherwise falls back to default voice */
-    const gen = speakGen;
-    setTimeout(()=>speakNext(gen), 60);
-  }
-}
+        <button class="control-button voice" id="voiceButton" type="button" aria-pressed="true">◖)) Voice: on</button>
+      </div>
 
-/* --- playback state --- */
-const state = {ex:0, step:0, playing:false, timer:null, pendingNext:false};
-function queueAdvance(ms){
-  clearTimeout(state.timer);
-  let stalled = 0;   /* guards against TTS engines that never start speaking */
-  state.timer = setTimeout(function tick(){
-    /* NEVER advance over active speech — that cuts the professor off
-       mid-sentence. If he is still talking, check again shortly. */
-    if (voiceOn && 'speechSynthesis' in window && (speechSynthesis.speaking || sentIdx < sentQueue.length)){
-      stalled = speechSynthesis.speaking ? 0 : stalled + 1;
-      if (stalled < 15){                    /* ~6 s of silence with sentences pending = broken TTS */
-        state.timer = setTimeout(tick, 400);
-        return;
+      <div class="subtitle-box" role="region" aria-labelledby="captionSpeaker">
+        <span class="caption-speaker" id="captionSpeaker">Professor Ahsan</span>
+        <p id="subtitle"></p>
+      </div>
+    </section>
+
+    <section class="transcript-panel" aria-labelledby="transcriptHeading">
+      <div class="transcript-header">
+        <h2 id="transcriptHeading">Professor&rsquo;s words</h2>
+        <p>Complete accessible transcript · select a section to revisit it</p>
+      </div>
+      <ol class="transcript-list" id="transcriptList"></ol>
+    </section>
+    <div class="sr-only" id="stepAnnouncement" role="status" aria-live="polite" aria-atomic="true"></div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* ============================================================
+       SKETCH-PAD ENGINE — world-coordinate SVG drawing helpers
+       (ported from the original tutorial engine, board-adapted)
+       ============================================================ */
+    const RED = '#e86a5a', BLUE = '#7fb8e8', GREEN = '#8ed29b',
+          PURPLE = '#c39ae0', GOLD = '#e8ac56', CHALKC = '#d8e4d4', DIMC = '#9fb4a3';
+
+    const sketchSvg = document.getElementById('sketch');
+    let running = [];
+    function cancelAnims(){ running.forEach(id => cancelAnimationFrame(id)); running.length = 0; }
+    function tween(draw, dur, instant, done){
+      if(instant){ draw(1); if(done) done(); return; }
+      const t0 = performance.now();
+      function frame(t){
+        const u = Math.min(1,(t - t0)/dur);
+        draw(1 - Math.pow(1 - u,3));
+        if(u < 1) running.push(requestAnimationFrame(frame)); else if(done) done();
       }
+      running.push(requestAnimationFrame(frame));
     }
-    const ex = EXAMPLES[state.ex];
-    if (state.step < ex.steps.length-1){ state.step++; renderStep(true); }
-    else { setPlaying(false); showNextLink(); }  /* end of example: STOP and offer the next one */
-  }, ms);
-}
-/* label for entry i — entry 0 may be a Concept Review carrying tab:'Concept Review' */
-function exLabel(i){
-  return EXAMPLES[i].tab || ('Example ' + (i + 1 - (EXAMPLES[0].tab ? 1 : 0)));
-}
-/* highlighted link in the speech bubble → loads the next example PAUSED (user presses Play) */
-function showNextLink(){
-  /* finish the bubble typing first — otherwise its ticks overwrite the link */
-  clearInterval(typeTimer);
-  bubble.textContent = EXAMPLES[state.ex].steps[state.step].say;
-  prof.classList.remove('talking');
-  if (state.ex >= EXAMPLES.length-1){
-    const d = document.createElement('div');
-    d.className = 'next-link';
-    d.style.animation = 'none';
-    d.textContent = 'Tutorial complete ✓';
-    bubble.appendChild(d);
-    return;
-  }
-  const a = document.createElement('div');
-  a.className = 'next-link';
-  a.textContent = 'Continue to ' + exLabel(state.ex+1) + ' ▸';
-  a.onclick = ()=> loadExample(state.ex+1, true);   /* clicking through starts playback automatically */
-  bubble.appendChild(a);
-}
-/* ---- declutter: keep every sketch label visible and collision-free ----
-   Runs after each render. Fixes, in order: labels crossing arrow/line shafts,
-   label-on-label overlaps, and labels clipped outside the 600x400 viewBox. */
-function declutter(svg){
-  const W=600, H=400, PAD=3;
-  const texts=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim());
-  if(!texts.length) return;
-  const items=texts.map(t=>{
-    let b; try{ b=t.getBBox(); }catch(e){ return null; }
-    return {t, x:b.x, y:b.y, w:b.width, h:b.height, dx:0, dy:0};
-  }).filter(Boolean);
-  const lines=[...svg.querySelectorAll('line')].map(l=>({
-    x1:+l.getAttribute('x1'), y1:+l.getAttribute('y1'),
-    x2:+l.getAttribute('x2'), y2:+l.getAttribute('y2'), el:l}))
-    .filter(l=>Math.hypot(l.x2-l.x1,l.y2-l.y1)>30);
-  const box=it=>({x:it.x+it.dx, y:it.y+it.dy, w:it.w, h:it.h});
-  /* --- pass 1: push labels off long straight shafts (arrows, dashed guides) --- */
-  for(const it of items){
-    for(const L of lines){
-      if(L.el.parentNode===it.t.parentNode) continue;      /* its own accent line */
-      const b=box(it), cx=b.x+b.w/2, cy=b.y+b.h/2;
-      /* distance from bbox centre to the segment */
-      const vx=L.x2-L.x1, vy=L.y2-L.y1, len2=vx*vx+vy*vy||1;
-      let u=((cx-L.x1)*vx+(cy-L.y1)*vy)/len2; u=Math.max(0,Math.min(1,u));
-      const px=L.x1+u*vx, py=L.y1+u*vy;
-      const dx=cx-px, dy=cy-py, d=Math.hypot(dx,dy);
-      const clear=Math.min(b.h*0.55, 14);                   /* how close counts as a hit */
-      if(d<clear && px>b.x+b.w*0.12 && px<b.x+b.w*0.88){
-        const need=clear-d+3;
-        if(d>0.5){ it.dx+=dx/d*Math.min(need,18); it.dy+=dy/d*Math.min(need,18); }
-        else it.dy-=Math.min(need,18);
-      }
+    function el(tag, attrs, parent){
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for(const k in attrs) node.setAttribute(k, attrs[k]);
+      if(parent) parent.appendChild(node);
+      return node;
     }
-  }
-  /* --- pass 2: separate overlapping labels (direction-aware, up to 4 sweeps) --- */
-  for(let pass=0;pass<4;pass++){
-    let moved=false;
-    for(let i=0;i<items.length;i++) for(let j=i+1;j<items.length;j++){
-      const a=box(items[i]), b=box(items[j]);
-      const ox=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
-      const oy=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
-      if(ox>4 && oy>3){
-        if(ox<=oy){                                          /* separate along the smaller overlap */
-          let dir=(b.x+b.w/2 >= a.x+a.w/2) ? 1 : -1;
-          const nx=b.x+dir*(ox+PAD);
-          if(nx<PAD) dir=1; else if(nx+b.w>W-PAD) dir=-1;
-          items[j].dx+=dir*(ox+PAD);
-        } else {
-          const dir=(b.y+b.h/2 >= a.y+a.h/2) ? 1 : -1;      /* push j AWAY from i */
-          const ny=b.y+dir*(oy+PAD);
-          if(dir>0 ? ny+b.h<=H-PAD : ny>=PAD){
-            items[j].dy+=dir*(oy+PAD);
-          } else {                                          /* j pinned at the edge: move i instead */
-            const di=-dir, niy=a.y+di*(oy+PAD);
-            if(di>0 ? niy+a.h<=H-PAD : niy>=PAD) items[i].dy+=di*(oy+PAD);
-            else items[j].dy+=dir*(oy+PAD);
-          }
+    function makeMapper(w){
+      const vw = 520, vh = 400;                    /* sketch viewBox */
+      sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+      const pad = 8;
+      const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
+      const s = w.aniso ? null : Math.min(sx, sy);
+      const SX = s || sx, SY = s || sy;
+      const cx = (w.x0 + w.x1)/2, cy = (w.y0 + w.y1)/2;
+      return {
+        X: x => vw/2 + (x - cx)*SX,
+        Y: y => vh/2 - (y - cy)*SY,
+        S: v => v*SX
+      };
+    }
+    function headPts(x, y, ang, s){
+      return [[x,y],[x - s*Math.cos(ang - .42), y - s*Math.sin(ang - .42)],
+              [x - s*Math.cos(ang + .42), y - s*Math.sin(ang + .42)]]
+             .map(p => p.join(',')).join(' ');
+    }
+    function arrow(c, x1,y1,x2,y2, opt = {}){
+      const {M, svg, instant} = c;
+      const g = el('g',{},svg);
+      const X1 = M.X(x1), Y1 = M.Y(y1), X2 = M.X(x2), Y2 = M.Y(y2);
+      const ang = Math.atan2(Y2 - Y1, X2 - X1), hs = opt.head ?? 10;
+      const line = el('line',{x1:X1,y1:Y1,x2:X1,y2:Y1,stroke:opt.color || CHALKC,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round',
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, g);
+      const head = el('polygon',{fill:opt.color || CHALKC, points:headPts(X1,Y1,ang,hs)}, g);
+      tween(u => {
+        const x = X1 + (X2 - X1)*u, y = Y1 + (Y2 - Y1)*u;
+        line.setAttribute('x2',x); line.setAttribute('y2',y);
+        head.setAttribute('points', headPts(x,y,ang,hs));
+      }, opt.dur || 700, instant);
+      if(opt.label){
+        const nx = Math.sin(ang), ny = -Math.cos(ang), side = opt.side || 1, off = opt.loff || 23;
+        let lx, ly;
+        if(opt.at === 'mid'){                     /* opt-out: midpoint label */
+          lx = (X1 + X2)/2 + nx*off*side;
+          ly = (Y1 + Y2)/2 + ny*off*side;
+        }else{                                    /* default: label near the arrow tip */
+          const ext = (opt.loff || 16) + 8;
+          const toff = opt.toff ?? 6;
+          lx = X2 + Math.cos(ang)*ext + nx*toff*side;
+          ly = Y2 + Math.sin(ang)*ext + ny*toff*side + 4;
         }
-        moved=true;
+        const t = el('text',{x:lx, y:ly,
+          fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
+        t.textContent = opt.label;
+        if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
+      }
+      return g;
+    }
+    function dashLine(c, x1,y1,x2,y2, opt = {}){
+      return el('line',{x1:c.M.X(x1), y1:c.M.Y(y1), x2:c.M.X(x2), y2:c.M.Y(y2),
+        stroke:opt.color || DIMC,'stroke-width':opt.w || 1.6,'stroke-dasharray':opt.dash || '5,5'}, c.svg);
+    }
+    function arc(c, cx,cy,r, a1,a2, opt = {}){
+      const {M, svg} = c;
+      const R = M.S(r);
+      function pt(a){ const rad = a*Math.PI/180; return [M.X(cx) + R*Math.cos(rad), M.Y(cy) - R*Math.sin(rad)]; }
+      const [x1,y1] = pt(a1), [x2,y2] = pt(a2);
+      const large = Math.abs(a2 - a1) > 180 ? 1 : 0, sweep = a2 > a1 ? 0 : 1;
+      el('path',{d:`M ${x1} ${y1} A ${R} ${R} 0 ${large} ${sweep} ${x2} ${y2}`,
+        fill:'none', stroke:opt.color || DIMC,'stroke-width':opt.w || 1.8}, svg);
+      if(opt.label){
+        const mid = (a1 + a2)/2*Math.PI/180, lr = M.S(r) + (opt.lr || 14);
+        const t = el('text',{x:M.X(cx) + lr*Math.cos(mid), y:M.Y(cy) - lr*Math.sin(mid),
+          fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
+          'font-family':'Georgia,serif','font-style':'italic'}, svg);
+        t.textContent = opt.label;
       }
     }
-    if(!moved) break;
-  }
-  /* --- pass 3: clamp everything into the viewBox so axis labels stay visible --- */
-  for(const it of items){
-    const b=box(it);
-    if(b.x<PAD) it.dx+=PAD-b.x;
-    if(b.x+b.w>W-PAD) it.dx-=b.x+b.w-(W-PAD);
-    if(b.y<PAD) it.dy+=PAD-b.y;
-    if(b.y+b.h>H-PAD) it.dy-=b.y+b.h-(H-PAD);
-  }
-  /* apply: move the label's own group (keeps vector accents attached) or the text */
-  for(const it of items){
-    if(Math.abs(it.dx)<0.6 && Math.abs(it.dy)<0.6) continue;
-    const par=it.t.parentNode;
-    const target=(par && par.tagName==='g' && par.querySelectorAll('text').length===1
-                  && par.childNodes.length<=3) ? par : it.t;
-    const prev=target.getAttribute('transform')||'';
-    target.setAttribute('transform', prev+` translate(${it.dx.toFixed(1)} ${it.dy.toFixed(1)})`);
-  }
-}
-
-function renderStep(animate){
-  cancelAnims(); clearTimeout(state.timer);
-  const ex = EXAMPLES[state.ex];
-  /* stage: rebuild — past steps instant, current step animated */
-  stage.innerHTML='';
-  const M = makeMapper(ex.world);
-  ex.setup({svg:stage, M, instant:true}, ex.world);
-  /* Concept Reviews present one sketch at a time — each diagram appears as
-     its topic comes up, never stacked on its predecessors. Examples accumulate.
-     A review step marked solo:true clears the stage entirely and presents its
-     own diagram alone — a fresh slide rather than an annotation. */
-  const curStep = ex.steps[state.step];
-  if (ex.tab && curStep.solo){ stage.innerHTML=''; }
-  const seqStart = ex.tab ? state.step : 0;
-  for (let i=seqStart;i<=state.step;i++){
-    const st = ex.steps[i];
-    if (st.action) st.action({svg:stage, M, instant: i<state.step || !animate});
-  }
-  declutter(stage);                       /* keep labels visible and collision-free */
-  /* board: cumulative */
-  board.innerHTML='';
-  for (let i=0;i<=state.step;i++)
-    (ex.steps[i].board||[]).forEach(b=>addBoardLine(b, animate && i===state.step));
-  $('boardwrap').scrollTop = $('boardwrap').scrollHeight;
-  /* professor */
-  const st = ex.steps[state.step];
-  setPose(st.pose);
-  speak(st.say, animate);
-  $('stepinfo').textContent = `Step ${state.step+1} of ${ex.steps.length}`;
-  /* auto-advance: ALWAYS schedule a timed advance while playing.
-     With voice on, the utterance's onend advances sooner; this timer is
-     the fallback so playback never stalls if speech fails to fire. */
-  if (state.playing){
-    const ms = voiceOn ? Math.max(5200, st.say.length*88)
-                       : Math.max(4000, st.say.length*70);
-    queueAdvance(ms);
-  }
-}
-function loadExample(i, autoplay){
-  state.ex=i; state.step=0; state.pendingNext=false;
-  const ex = EXAMPLES[i];
-  const simChip = ex.sim ? ` <a class="simlink" href="${ex.sim.url}" target="_blank" rel="noopener">&#129518; Desmos: ${ex.sim.label} &#9656;</a>` : '';
-  $('prompt').innerHTML = `<b>${exLabel(i)}.</b> ${ex.title}
-     <span class="diff ${ex.diff.toLowerCase()}">${ex.diff}</span>${simChip}<br>${ex.prompt}`;
-  document.querySelectorAll('#tabs button').forEach((b,j)=>b.classList.toggle('active', j===i));
-  setPlaying(!!autoplay);
-  renderStep(true);
-}
-function setPlaying(p){
-  state.playing=p;
-  $('btnPlay').innerHTML = p ? '&#9646;&#9646; Pause' : '&#9654; Play';
-  if (!p){ clearTimeout(state.timer); }
-}
-/* --- controls --- */
-$('btnPlay').onclick = ()=>{
-  if (state.playing){
-    /* PAUSE: freeze speech and auto-advance exactly where they stand */
-    setPlaying(false);
-    clearInterval(ttsKeepAlive);                        /* keep-alive would un-pause the audio */
-    if ('speechSynthesis' in window && speechSynthesis.speaking && !speechSynthesis.paused)
-      speechSynthesis.pause();                          /* hold mid-sentence — do NOT cancel */
-  } else {
-    const ex=EXAMPLES[state.ex];
-    if ('speechSynthesis' in window && speechSynthesis.paused && speechSynthesis.speaking){
-      /* RESUME: continue from the very word where he was paused */
-      setPlaying(true);
-      speechSynthesis.resume();
-      clearInterval(ttsKeepAlive);
-      ttsKeepAlive = setInterval(()=>{
-        if (!speechSynthesis.speaking) clearInterval(ttsKeepAlive);
-        else { speechSynthesis.pause(); speechSynthesis.resume(); }
-      }, 12000);
-      /* fallback advance re-armed; queueAdvance never cuts active speech */
-      queueAdvance(voiceOn ? Math.max(5200, ex.steps[state.step].say.length*88) : 4000);
-    } else if (voiceOn && sentIdx < sentQueue.length && 'speechSynthesis' in window && !speechSynthesis.speaking){
-      /* paused between sentences: pick the narration up at the next sentence */
-      setPlaying(true);
-      speakNext(speakGen);
-      queueAdvance(Math.max(5200, ex.steps[state.step].say.length*88));
-    } else if (state.step===ex.steps.length-1 && !speechSynthesis.speaking
-               && (!voiceOn || (sentQueue.length && sentIdx>=sentQueue.length))){
-      state.step=0;                                     /* finished example: replay from start */
-      setPlaying(true);
-      renderStep(true);
-    } else if (voiceOn && sentQueue.length && sentIdx>=sentQueue.length){
-      /* this step's narration already finished: continue forward */
-      setPlaying(true);
-      queueAdvance(1200);
-    } else {
-      /* step not yet narrated (fresh page load or manual browsing):
-         start it properly — animation AND voice from the first word */
-      setPlaying(true);
-      renderStep(true);
+    function label(c, x, y, txt, opt = {}){
+      const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
+        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        ...(opt.italic ? {'font-style':'italic'} : {}),
+        ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
+      t.textContent = txt;
+      return t;
     }
-  }
-};
-$('btnNext').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  const ex=EXAMPLES[state.ex];
-  if (state.step<ex.steps.length-1){ state.step++; renderStep(true); } };
-$('btnPrev').onclick = ()=>{ setPlaying(false); state.pendingNext=false;
-  if (state.step>0){ state.step--; renderStep(false); } };
-$('btnRestart').onclick = ()=>{ setPlaying(false); state.pendingNext=false; state.step=0; renderStep(true); };
-$('btnVoice').onclick = function(){
-  voiceOn=!voiceOn; this.classList.toggle('on',voiceOn);
-  this.innerHTML = voiceOn?'&#128266; Voice: on':'&#128266; Voice: off';
-  if(!voiceOn){ speakGen++; sentQueue=[]; sentIdx=0; speechSynthesis.cancel(); }
-};
-document.addEventListener('keydown',e=>{
-  if (e.key==='ArrowRight') $('btnNext').click();
-  if (e.key==='ArrowLeft') $('btnPrev').click();
-  if (e.key===' '){ e.preventDefault(); $('btnPlay').click(); }
-});
+    const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
+    function boxAt(c, x, y, w, h, opt = {}){
+      const {M} = c;
+      return el('rect',{x:M.X(x) - M.S(w)/2, y:M.Y(y) - M.S(h), width:M.S(w), height:M.S(h),
+        rx:3, fill:opt.fill || '#c98f52', stroke:opt.stroke || '#8a5a24','stroke-width':2}, c.svg);
+    }
+    function ground(c, x0, x1, y){
+      el('line',{x1:c.M.X(x0), y1:c.M.Y(y), x2:c.M.X(x1), y2:c.M.Y(y),
+        stroke:'#9fb4a3','stroke-width':2.5}, c.svg);
+    }
+    function circleAt(c, x, y, rWorld, opt = {}){
+      return el('circle',{cx:c.M.X(x), cy:c.M.Y(y), r:c.M.S(rWorld), fill:opt.fill || 'none',
+        stroke:opt.stroke || DIMC,'stroke-width':opt.w || 2,
+        ...(opt.dash ? {'stroke-dasharray':opt.dash} : {})}, c.svg);
+    }
+    function plotCurve(c, fn, t0, t1, opt = {}){
+      const {M, svg, instant} = c;
+      const N = 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
+        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+      tween(u => {
+        const n = Math.max(2, Math.round(u*(N + 1)));
+        poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
+      }, opt.dur || 1100, instant);
+    }
+    function axes2D(a, b, cArg, dArg){
+      /* accepts (ctx, world, opt) or legacy (svg, M, world, opt) */
+      let M, svg, w, opt;
+      if(a && a.svg){ svg = a.svg; M = a.M; w = b; opt = cArg || {}; }
+      else { svg = a; M = b; w = cArg; opt = dArg || {}; }
+      el('line',{x1:M.X(w.x0), y1:M.Y(0), x2:M.X(w.x1), y2:M.Y(0), stroke:DIMC,'stroke-width':2}, svg);
+      el('line',{x1:M.X(0), y1:M.Y(w.y0), x2:M.X(0), y2:M.Y(w.y1), stroke:DIMC,'stroke-width':2}, svg);
+      if(opt.xlab){ const t = el('text',{x:M.X(w.x1) - 4, y:M.Y(0) + 16, fill:DIMC,'font-size':14,
+        'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.xlab; }
+      if(opt.ylab){ const t = el('text',{x:M.X(0) + 7, y:M.Y(w.y1) + 13, fill:DIMC,'font-size':14,
+        'font-family':'Georgia,serif','font-style':'italic'}, svg); t.textContent = opt.ylab; }
+    }
+    /* oblique 3-D projection: world (x,y,z) → planar 2-D */
+    const proj = (x, y, z) => [ -0.6*x + y, -0.5*x + z ];
+    function axes3D(a, b, ext, opt){
+      let M, svg;
+      if(a && a.svg){ svg = a.svg; M = a.M; } else { svg = a; M = b; }
+      const g = el('g',{},svg);
+      for(const [x,y,z,name] of [[ext.x,0,0,'x'],[0,ext.y,0,'y'],[0,0,ext.z,'z']]){
+        const [px,py] = proj(x,y,z);
+        const X2 = M.X(px), Y2 = M.Y(py), X1 = M.X(0), Y1 = M.Y(0);
+        el('line',{x1:X1,y1:Y1,x2:X2,y2:Y2,stroke:DIMC,'stroke-width':1.8},g);
+        el('polygon',{points:headPts(X2,Y2,Math.atan2(Y2-Y1,X2-X1),9),fill:DIMC},g);
+        const t = el('text',{x:X2+9,y:Y2+5,fill:DIMC,'font-size':17,'font-style':'italic','font-family':'Georgia,serif'},g);
+        t.textContent = name;
+      }
+      return g;
+    }
 
-/* ================================================================
-   4B TUTORIAL 5 — CURRENT AND RESISTANCE
-   ================================================================ */
-const RED='#C0392B', BLUE='#2E6DA4', GREEN='#2E7D4F', PURPLE='#7B4FA0', GOLD='#B5793B';
+    /* ============================================================
+       LESSON CONTENT — Tutorial 5, reasoning-first structure
+       Each example: pathway chips + chapter steps.
+       board lines: {label?, tex? | text?, kind?: key|answer|warn|note, move?}
+       ============================================================ */
+    /* ---- tutorial-specific helpers (ported) ---- */
+    function wireDrift(c, x0,x1, yc, halfw, speedWU, dur){
+      const {M}=c;
+      el('line',{x1:M.X(x0),y1:M.Y(yc-halfw),x2:M.X(x1),y2:M.Y(yc-halfw),stroke:'#8A7D60','stroke-width':3},c.svg);
+      el('line',{x1:M.X(x0),y1:M.Y(yc+halfw),x2:M.X(x1),y2:M.Y(yc+halfw),stroke:'#8A7D60','stroke-width':3},c.svg);
+      const dots=[];
+      for(let i=0;i<14;i++){
+        const dx0 = x0+1 + ( (i*2.37) % (x1-x0-2) );
+        const dy = yc - halfw*0.6 + (i%4)*(halfw*0.4);
+        dots.push({d: el('circle',{cx:M.X(dx0),cy:M.Y(dy),r:4.5,fill:BLUE},c.svg), x:dx0, y:dy});
+      }
+      tween(u=>{ dots.forEach(o=>{ let nx = o.x + speedWU*u; const span=x1-x0-2;
+          nx = x0+1 + (((nx - (x0+1)) % span) + span) % span;
+          o.d.setAttribute('cx', c.M.X(nx)); }); }, dur, c.instant);
+      return dots;
+    }
 
-function textAt(c, x, y, txt, opt={}){
-  const t=el('text',{x:c.M.X(x)+(opt.dx||0),y:c.M.Y(y)+(opt.dy||0),fill:opt.color||'#8A7D60',
-    'font-size':opt.fs||13,'font-family':'Georgia,serif','text-anchor':opt.anchor||'start',
-    ...(opt.italic?{'font-style':'italic'}:{})},c.svg);
-  t.textContent=txt;
-  if(!c.instant){t.setAttribute('opacity',0);tween(u=>t.setAttribute('opacity',u),400,false);}
-  return t;
-}
-function plotCurve(c, fn, t0, t1, opt={}){
-  const {svg,M,instant}=c; const N=opt.N||120;
-  const pl=el('polyline',{fill:'none',stroke:opt.color||'#333','stroke-width':opt.w||3,
-    'stroke-linejoin':'round','stroke-linecap':'round',...(opt.dash?{'stroke-dasharray':opt.dash}:{})},svg);
-  const pts=[]; for(let i=0;i<=N;i++){const t=t0+(t1-t0)*i/N; const q=fn(t); pts.push(M.X(q[0])+','+M.Y(q[1]));}
-  tween(u=>pl.setAttribute('points', pts.slice(0, Math.max(2, Math.round(u*pts.length))).join(' ')), opt.dur||1100, instant);
-  return pl;
-}
-/* wire cross-section with drifting electron dots */
-function wireDrift(c, x0,x1, yc, halfw, speedWU, dur){
-  const {M}=c;
-  el('line',{x1:M.X(x0),y1:M.Y(yc-halfw),x2:M.X(x1),y2:M.Y(yc-halfw),stroke:'#8A7D60','stroke-width':3},c.svg);
-  el('line',{x1:M.X(x0),y1:M.Y(yc+halfw),x2:M.X(x1),y2:M.Y(yc+halfw),stroke:'#8A7D60','stroke-width':3},c.svg);
-  const dots=[];
-  for(let i=0;i<14;i++){
-    const dx0 = x0+1 + ( (i*2.37) % (x1-x0-2) );
-    const dy = yc - halfw*0.6 + (i%4)*(halfw*0.4);
-    dots.push({d: el('circle',{cx:M.X(dx0),cy:M.Y(dy),r:4.5,fill:BLUE},c.svg), x:dx0, y:dy});
-  }
-  tween(u=>{ dots.forEach(o=>{ let nx = o.x + speedWU*u; const span=x1-x0-2;
-      nx = x0+1 + (((nx - (x0+1)) % span) + span) % span;
-      o.d.setAttribute('cx', c.M.X(nx)); }); }, dur, c.instant);
-  return dots;
-}
+    const EXAMPLES = [
 
-const EXAMPLES = [
-{
-  title:'The big picture before the problems.', diff:'Review', tab:'Concept Review',
-  sim:{label:'drift velocity in a wire', url:'../Simulations/sim4B_08_interactive.html'},
-  prompt:'Professor Ahsan surveys the main principles: current, drift, resistivity and resistance, temperature, and power.',
-  world:{x0:-1, x1:11, y0:-1.2, y1:7},
-  setup(ctx,w){
+    {
+      tab:"Concept Review", diff:"Review",
+      title:"The big picture before the problems",
+      problem:"Professor Ahsan surveys the main principles: current, drift, resistivity and resistance, temperature, and power.",
+      goal:"Goal → the method",
+      sim:{label:"drift velocity in a wire", url:"../Simulations/sim4B_08_interactive.html"},
+      world:{"x0":-1,"x1":11,"y0":-1.2,"y1":7},
+      pathway:["Current","Drift","Resistance","Temperature","Perspective","Power"],
+      setup(ctx,w){
     const {svg,M}=ctx;
     el('line',{x1:M.X(0.5),y1:M.Y(4.4),x2:M.X(9.5),y2:M.Y(4.4),stroke:'#8A7D60','stroke-width':3},svg);
     el('line',{x1:M.X(0.5),y1:M.Y(1.6),x2:M.X(9.5),y2:M.Y(1.6),stroke:'#8A7D60','stroke-width':3},svg);
@@ -822,21 +698,32 @@ const EXAMPLES = [
     const t=el('text',{x:M.X(5),y:M.Y(0.5),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='a colossal crowd, shuffling: current';
   },
-  steps:[
-   { say:"CURRENT is charge past a checkpoint per second — one ampere, one coulomb per second — with conventional direction that of POSITIVE flow, opposite the actual electrons in a metal. Spread across the wire's cross-section it becomes the current DENSITY, J equals I over A, and microscopically J equals n q v-drift.",
-     pose:'talk',
-     board:['I = \\frac{dQ}{dt}, \\qquad J = \\frac{I}{A} = nqv_d'],
-     action(c){
+      steps:[
+        { map:0, title:"Charge past a checkpoint",
+          think:"Conventional current points which way relative to the electrons?",
+          model:"Opposite: I = dQ/dt, J = I/A = nqv_d.",
+          pose:"talk",
+          say:"CURRENT is charge past a checkpoint per second — one ampere, one coulomb per second — with conventional direction that of POSITIVE flow, opposite the actual electrons in a metal. Spread across the wire's cross-section it becomes the current DENSITY, J equals I over A, and microscopically J equals n q v-drift.",
+          board:[
+            {label:"The definitions", tex:"I = \\frac{dQ}{dt}, \\qquad J = \\frac{I}{A} = nqv_d", kind:"key"}
+          ],
+          action(c){
        dashLine(c, 5,1.4, 5,4.6, {color:RED});
        label(c, 4.3,0.95, 'checkpoint: count coulombs/second', {fs:11.5, color:RED, italic:true});
        arrow(c, 6.6,2.9, 5.4,2.9, {color:BLUE, w:2, head:7});
        label(c, 6.8,2.75, 'electrons drift ←', {fs:11.5, color:'#1D4568', italic:true});
        label(c, 1.0,6.3, 'conventional I: the + direction', {fs:11.5, color:'#8A3324', italic:true});
-     } },
-   { say:"And v-drift is the great anticlimax: with n around ten to the 29 per cubic metre, the electrons SHUFFLE at fractions of a millimetre per second while the signal races near light speed — the FIELD carries the news; the crowd barely moves. Keep the three speeds straight: signal, near c; thermal jiggle, a million metres per second; drift, ten to the minus four.",
-     pose:'point', solo:true,
-     board:[{t:'Drift ~0.1 mm/s; signal ~c; thermal ~10⁶ m/s (aimless). The field carries the message.'}],
-     action(c){
+     }
+        },
+        { map:1, title:"The great anticlimax",
+          think:"If electrons shuffle at 0.1 mm/s, why does the lamp light instantly?",
+          model:"The field carries the message; the corridor is already full.",
+          pose:"point", solo:true,
+          say:"And v-drift is the great anticlimax: with n around ten to the 29 per cubic metre, the electrons SHUFFLE at fractions of a millimetre per second while the signal races near light speed — the FIELD carries the news; the crowd barely moves. Keep the three speeds straight: signal, near c; thermal jiggle, a million metres per second; drift, ten to the minus four.",
+          board:[
+            {label:"Three speeds", text:"Drift ~0.1 mm/s; signal ~c; thermal ~10⁶ m/s (aimless). The field carries the message.", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        const bar=(y,len,col,name,val)=>{
          el('rect',{x:M.X(0.6), y:M.Y(y), width:len*M.s, height:26, rx:6, fill:col, opacity:.75},c.svg);
@@ -846,22 +733,33 @@ const EXAMPLES = [
        bar(4.4, 5.2, BLUE, 'thermal jiggle', '~10⁶ m/s (aimless)');
        bar(2.6, 0.35, RED, 'drift', '~10⁻⁴ m/s');
        label(c, 0.6,1.2, 'log scale — the messenger and the message travel at wildly different speeds', {fs:12, color:'#8A5A24', italic:true});
-     } },
-   { say:"Materials resist by RESISTIVITY, rho: E equals rho J, the microscopic Ohm's law. Geometry turns material into device: R equals rho L over A — long and thin resists, short and fat conducts — and the macroscopic Ohm's law reads V equals I R. Stretch a wire to double length at constant volume and R QUADRUPLES: L up, A down, both against you.",
-     solo:true, pose:'write',
-     board:['\\vec E = \\rho\\vec J, \\qquad R = \\frac{\\rho L}{A}, \\qquad V = IR'],
-     action(c){
+     }
+        },
+        { map:2, title:"Resistivity to resistance",
+          think:"How does geometry turn a material property into a device?",
+          model:"R = ρL/A: long and thin resists; V = IR.",
+          pose:"write", solo:true,
+          say:"Materials resist by RESISTIVITY, rho: E equals rho J, the microscopic Ohm's law. Geometry turns material into device: R equals rho L over A — long and thin resists, short and fat conducts — and the macroscopic Ohm's law reads V equals I R. Stretch a wire to double length at constant volume and R QUADRUPLES: L up, A down, both against you.",
+          board:[
+            {label:"Micro to macro", tex:"\\vec E = \\rho\\vec J, \\qquad R = \\frac{\\rho L}{A}, \\qquad V = IR", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        el('rect',{x:M.X(7.2),y:M.Y(6.4),width:M.X(10.4)-M.X(7.2),height:M.Y(5.2)-M.Y(6.4),fill:'#C98F52',opacity:.6,stroke:'#8A5A24','stroke-width':2,rx:3},c.svg);
        arrow(c, 7.5,5.8, 10.1,5.8, {color:GOLD, w:2.5, label:'I', fs:12});
        textAt(c, 8.8,4.75, 'R = ρL/A: long & thin resists most', {fs:11.5, italic:true, anchor:'middle'});
-     } },
-   { say:"Temperature moves the goalposts: resistivity climbs roughly linearly, rho equals rho-nought times one plus alpha delta T — hotter lattice, more scattering. Hence the light bulb's inrush drama and the thermometer you can build from a coil of platinum. Below a critical temperature, some materials quit resisting ENTIRELY: superconductors, rho exactly zero, currents that circulate for years.",
-     pose:'write',
-     board:['\\rho(T) = \\rho_0\\big[1+\\alpha(T-T_0)\\big]',
-            {t:'Superconductors: ρ = 0 below T_c — persistent currents (MRI magnets).'}],
-     solo:true,
-     action(c){
+     }
+        },
+        { map:3, title:"Temperature moves the goalposts",
+          think:"Why does a hotter metal resist more?",
+          model:"The lattice vibrates harder — more scattering: ρ = ρ₀(1+αΔT).",
+          pose:"write", solo:true,
+          say:"Temperature moves the goalposts: resistivity climbs roughly linearly, rho equals rho-nought times one plus alpha delta T — hotter lattice, more scattering. Hence the light bulb's inrush drama and the thermometer you can build from a coil of platinum. Below a critical temperature, some materials quit resisting ENTIRELY: superconductors, rho exactly zero, currents that circulate for years.",
+          board:[
+            {label:"The drift law", tex:"\\rho(T) = \\rho_0\\big[1+\\alpha(T-T_0)\\big]", kind:"key"},
+            {label:"The exception", text:"Superconductors: ρ = 0 below T_c — persistent currents (MRI magnets)."}
+          ],
+          action(c){
        const {M}=c;
        el('line',{x1:M.X(0.8),y1:M.Y(0.8),x2:M.X(10.2),y2:M.Y(0.8),stroke:'#B0A488','stroke-width':2},c.svg);
        el('line',{x1:M.X(1.2),y1:M.Y(0.4),x2:M.X(1.2),y2:M.Y(6.6),stroke:'#B0A488','stroke-width':2},c.svg);
@@ -871,24 +769,35 @@ const EXAMPLES = [
        label(c, 5.6,2.6, 'hotter lattice → more scattering', {fs:12.5, color:'#8A5A24', italic:true});
        el('line',{x1:M.X(1.2),y1:M.Y(0.8),x2:M.X(2.6),y2:M.Y(0.8),stroke:PURPLE,'stroke-width':4},c.svg);
        label(c, 1.3,1.5, 'superconductor: ρ = 0 below T_c', {fs:11.5, color:PURPLE, italic:true});
-     } },
-   { say:"Here is the joke buried in every wire: the electrons drift slower than a garden snail — a tenth of a millimetre per second — yet the lamp lights the instant you flick the switch. The electrons are not couriers; they are a crowd already filling the corridor, and the FIELD gives the order to shuffle. News travels fast because nobody has to travel far.",
-     pose:'think', solo:true,
-     board:[{t:'Drift speed: snail-like. Signal speed: near light. The wire is a corridor already full of messengers.'}],
-     action(c){
+     }
+        },
+        { map:4, title:"The snail and the light",
+          think:"How can a snail's-pace drift light an instant lamp?",
+          model:"A corridor already full of messengers.",
+          pose:"think", solo:true,
+          say:"Here is the joke buried in every wire: the electrons drift slower than a garden snail — a tenth of a millimetre per second — yet the lamp lights the instant you flick the switch. The electrons are not couriers; they are a crowd already filling the corridor, and the FIELD gives the order to shuffle. News travels fast because nobody has to travel far.",
+          board:[
+            {text:"Drift speed: snail-like. Signal speed: near light. The wire is a corridor already full of messengers.", kind:"note"}
+          ],
+          action(c){
        const {M}=c;
        el('line',{x1:M.X(0.4),y1:M.Y(4.6),x2:M.X(10.6),y2:M.Y(4.6),stroke:'#8A7D60','stroke-width':3},c.svg);
        el('line',{x1:M.X(0.4),y1:M.Y(2.2),x2:M.X(10.6),y2:M.Y(2.2),stroke:'#8A7D60','stroke-width':3},c.svg);
        for(let i=0;i<14;i++) el('circle',{cx:M.X(0.9+i*0.72), cy:M.Y(3.0+(i%3)*0.55), r:5, fill:BLUE},c.svg);
        arrow(c, 0.6,5.6, 10.4,5.6, {color:GOLD, w:3, label:'the field: the order to shuffle, at ~c', fs:12});
        label(c, 1.0,1.3, 'the crowd was already everywhere — nobody has to travel far', {fs:12.5, color:'#8A5A24', italic:true});
-     } },
-   { say:"POWER: charge falling through voltage delivers P equals I V — equal to I squared R or V squared over R; choose the form whose variables are actually fixed. The electric company bills the kilowatt-HOUR, an energy: 3.6 megajoules. Strategy: translate micro to macro with J equals n q v-d and E equals rho J; slice nonuniform conductors into series disks; convert to kWh only at the very end. To the examples.",
-     pose:'excited',
-     board:['P = IV = I^2R = \\frac{V^2}{R}, \\qquad 1\\ \\mathrm{kWh} = 3.6\\times10^{6}\\ \\mathrm J',
-            {t:'Strategy: micro ↔ macro dictionary · slice odd shapes into series disks · pick the power form with fixed variables.'}],
-     solo:true,
-     action(c){
+     }
+        },
+        { map:5, title:"Power, and the strategy",
+          think:"Which of P's three faces should you pick — and by what rule?",
+          model:"The one whose variables are actually fixed.",
+          pose:"excited", solo:true,
+          say:"POWER: charge falling through voltage delivers P equals I V — equal to I squared R or V squared over R; choose the form whose variables are actually fixed. The electric company bills the kilowatt-HOUR, an energy: 3.6 megajoules. Strategy: translate micro to macro with J equals n q v-d and E equals rho J; slice nonuniform conductors into series disks; convert to kWh only at the very end. To the examples.",
+          board:[
+            {label:"The three faces", tex:"P = IV = I^2R = \\frac{V^2}{R}, \\qquad 1\\ \\mathrm{kWh} = 3.6\\times10^{6}\\ \\mathrm J", kind:"key"},
+            {label:"The pathway", text:"Strategy: micro ↔ macro dictionary · slice odd shapes into series disks · pick the power form with fixed variables.", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('line',{x1:M.X(0.6),y1:M.Y(3.4),x2:M.X(2.4),y2:M.Y(3.4),stroke:'#5C4B30','stroke-width':3},c.svg);
        const zig=[]; zig.push(M.X(2.4)+','+M.Y(3.4));
@@ -902,60 +811,102 @@ const EXAMPLES = [
          el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2},c.svg); }
        label(c, 3.2,6.6, 'P = IV = I²R = V²/R, spent as heat', {fs:13, color:'#8A5A24', italic:true});
        label(c, 2.5,1.6, 'pick the form whose variables are actually fixed', {fs:12, color:'#7A5A28', italic:true});
-     } },
-  ]
-},
-
-
-/* ---------- Example 1: Counting charge [Basic] ---------- */
-{
-  title:'Counting charge.', diff:'Basic',
-  prompt:'A wire carries a steady 2.5 A. (a) How much charge passes a point in one minute? (b) How many electrons per second is that?',
-  world:{x0:-5, x1:55, y0:-16, y1:22},
-  setup(ctx,w){},
-  steps:[
-   { say:"Current — charge in motion, at last. The definition is bookkeeping at a tollbooth: I equals delta Q over delta t, the charge passing a chosen point each second. One ampere is one coulomb per second. Today's warm-up simply runs the tollbooth for a minute.",
-     pose:'talk',
-     board:[{t:'Steady I = 2.5 A. (a) Charge in one minute? (b) Electrons per second?'},
-            'I = \\frac{\\Delta Q}{\\Delta t} \\;\\Rightarrow\\; \\Delta Q = I\\,\\Delta t'] },
-   { say:"Watch the traffic stream past the checkpoint. Every second, 2.5 coulombs crosses the dashed line — steady, uniform, relentless. A current is defined at a cross-section, not in a volume — the dashed line is a turnstile, and the ampere is simply its click-rate in coulombs.",
-     pose:'point',
-     action(c){
+     }
+        },
+      ]
+    },
+    {
+diff:"Basic",
+      title:"Counting charge",
+      problem:"A wire carries a steady 2.5 A. (a) How much charge passes a point in one minute? (b) How many electrons per second is that?",
+      goal:"Goal → Q, then count",
+      world:{"x0":-5,"x1":55,"y0":-16,"y1":22},
+      pathway:["Read","Watch","Charge","Count","Moral"],
+      setup(ctx,w){},
+      steps:[
+        { map:0, title:"Read: tollbooth bookkeeping",
+          think:"What exactly does 2.5 A count per second?",
+          model:"2.5 coulombs past the checkpoint.",
+          pose:"talk",
+          say:"Current — charge in motion, at last. The definition is bookkeeping at a tollbooth: I equals delta Q over delta t, the charge passing a chosen point each second. One ampere is one coulomb per second. Today's warm-up simply runs the tollbooth for a minute.",
+          board:[
+            {label:"Given", text:"Steady I = 2.5 A. (a) Charge in one minute? (b) Electrons per second?"},
+            {label:"The definition", tex:"I = \\frac{\\Delta Q}{\\Delta t} \\;\\Rightarrow\\; \\Delta Q = I\\,\\Delta t", kind:"key"}
+          ]
+        },
+        { map:1, title:"Watch the traffic",
+          think:"Steady current means what at every cross-section?",
+          model:"The same relentless 2.5 C/s.",
+          pose:"point",
+          say:"Watch the traffic stream past the checkpoint. Every second, 2.5 coulombs crosses the dashed line — steady, uniform, relentless. A current is defined at a cross-section, not in a volume — the dashed line is a turnstile, and the ampere is simply its click-rate in coulombs.",
+          action(c){
        dashLine(c, 25,-8, 25,14, {color:RED});
        textAt(c, 22.5,16, 'checkpoint', {fs:12, italic:true, color:RED});
        wireDrift(c, 0,50, 3, 7, 16, 3200);
-     } },
-   { say:"Part a: charge is current times time — 2.5 amperes times 60 seconds — 150 coulombs. A minute of modest current moves a spectacular amount of charge. One hundred and fifty coulombs is a ferocious quantity of raw charge — enough, unseparated, to tear the room apart electrostatically — yet it slides through the wire in polite neutrality, positive lattice and negative traffic in exact balance.",
-     pose:'write',
-     board:['\\Delta Q = I\\,\\Delta t = (2.5)(60) = 1.5\\times10^{2}\\ \\mathrm C'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (a): one minute's charge",
+          think:"IΔt over sixty seconds accumulates how much?",
+          model:"150 C.",
+          pose:"write",
+          say:"Part a: charge is current times time — 2.5 amperes times 60 seconds — 150 coulombs. A minute of modest current moves a spectacular amount of charge. One hundred and fifty coulombs is a ferocious quantity of raw charge — enough, unseparated, to tear the room apart electrostatically — yet it slides through the wire in polite neutrality, positive lattice and negative traffic in exact balance.",
+          board:[
+            {label:"The charge", tex:"\\Delta Q = I\\,\\Delta t = (2.5)(60) = 1.5\\times10^{2}\\ \\mathrm C", kind:"answer"}
+          ],
+          action(c){
        textAt(c, 26,-12.5, 'tally: 2.5 C/s × 60 s = 150 C', {fs:12.5, italic:true, color:'#8A5A24'});
-     } },
-   { say:"Part b: divide the current by the charge per electron — 2.5 over 1.6 times ten to the minus 19 — 1.6 times ten to the NINETEENTH electrons every second. Sixteen quintillion, per second, through an ordinary wire. Numbers like sixteen quintillion per second are why electrical engineering works statistically: no one audits individual electrons, any more than a census counts heartbeats.",
-     pose:'write',
-     board:['\\frac{I}{e} = \\frac{2.5}{1.60\\times10^{-19}} = 1.6\\times10^{19}\\ \\text{electrons/s}'] },
-   { say:"The check is the moral itself: an enormous COUNT producing an ordinary current, because each electron carries almost nothing. Electricity is not a few charges moving grandly; it is an unimaginable crowd shuffling politely. Hold that picture — the next example measures the shuffle.",
-     pose:'excited',
-     board:[{t:'Sense check: huge count × tiny charge each = ordinary current. The crowd, not the sprinter.'}] },
-  ]
-},
-
-/* ---------- Example 2: Drift velocity [Intermediate] ---------- */
-{
-  title:'Drift velocity in a household wire.', diff:'Intermediate',
-  prompt:'A copper wire of diameter 2.05 mm carries I = 15 A. Copper has n = 8.5×10²⁸ electrons/m³ and ρ = 1.68×10⁻⁸ Ω·m. Find (a) J, (b) v_d, and (c) the field E inside the wire.',
-  world:{x0:-5, x1:55, y0:-16, y1:22},
-  setup(ctx,w){},
-  steps:[
-   { say:"Now the micro-to-macro bridge. Fifteen amperes in a household wire — how fast are the electrons actually MOVING? Prepare for the great anticlimax of electromagnetism. Three quantities link the scales: current density J, the current per unit cross-section; the carrier density n; and the drift speed v-d, through J equals n e v-d.",
-     pose:'talk',
-     board:[{t:'Copper, d = 2.05 mm, I = 15 A, n = 8.5×10²⁸ /m³, ρ = 1.68×10⁻⁸ Ω·m.'},
-            'J = \\frac{I}{A}, \\qquad J = n\\,e\\,v_d, \\qquad E = \\rho J'] },
-   { say:"Let us take part a. The cross-section: pi times the radius squared, radius 1.025 millimetres — 3.3 times ten to the minus 6 square metres. Then J: 15 amperes over that — 4.5 MILLION amperes per square metre. Sounds heroic. Wait for part b. Current density is the honest measure of how hard a wire is working — total current flatters thick wires, but J tells you what each square metre of copper actually endures.",
-     pose:'write',
-     board:['A = \\pi\\left(\\tfrac{d}{2}\\right)^2 = \\pi(1.025\\times10^{-3})^2 = 3.30\\times10^{-6}\\ \\mathrm{m^2}',
-            'J = \\frac{I}{A} = \\frac{15}{3.30\\times10^{-6}} = 4.5\\times10^{6}\\ \\mathrm{A/m^2}'],
-     action(c){
+     }
+        },
+        { map:3, title:"Part (b): the electron count",
+          think:"Dividing by e per electron yields what staggering rate?",
+          model:"1.6×10¹⁹ electrons every second.",
+          pose:"write",
+          say:"Part b: divide the current by the charge per electron — 2.5 over 1.6 times ten to the minus 19 — 1.6 times ten to the NINETEENTH electrons every second. Sixteen quintillion, per second, through an ordinary wire. Numbers like sixteen quintillion per second are why electrical engineering works statistically: no one audits individual electrons, any more than a census counts heartbeats.",
+          board:[
+            {label:"The count", tex:"\\frac{I}{e} = \\frac{2.5}{1.60\\times10^{-19}} = 1.6\\times10^{19}\\ \\text{electrons/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The moral is the check",
+          think:"Enormous count, ordinary current — what reconciles them?",
+          model:"Each electron carries almost nothing. The crowd, not the sprinter.",
+          pose:"excited",
+          say:"The check is the moral itself: an enormous COUNT producing an ordinary current, because each electron carries almost nothing. Electricity is not a few charges moving grandly; it is an unimaginable crowd shuffling politely. Hold that picture — the next example measures the shuffle.",
+          board:[
+            {label:"Sense check", text:"Sense check: huge count × tiny charge each = ordinary current. The crowd, not the sprinter.", kind:"key"},
+            {label:"Reusable method", text:"ΔQ = IΔt → divide by e for counts → reconcile the scales", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Drift velocity in a household wire",
+      problem:"A copper wire of diameter 2.05 mm carries I = 15 A. Copper has n = 8.5×10²⁸ electrons/m³ and ρ = 1.68×10⁻⁸ Ω·m. Find (a) J, (b) v_d, and (c) the field E inside the wire.",
+      goal:"Goal → J, v_d, E",
+      world:{"x0":-5,"x1":55,"y0":-16,"y1":22},
+      pathway:["Read","J","Drift","Field","Check"],
+      setup(ctx,w){},
+      steps:[
+        { map:0, title:"Read: the micro bridge",
+          think:"Which three formulas link I to J, v_d, and E?",
+          model:"J = I/A, J = nev_d, E = ρJ.",
+          pose:"talk",
+          say:"Now the micro-to-macro bridge. Fifteen amperes in a household wire — how fast are the electrons actually MOVING? Prepare for the great anticlimax of electromagnetism. Three quantities link the scales: current density J, the current per unit cross-section; the carrier density n; and the drift speed v-d, through J equals n e v-d.",
+          board:[
+            {label:"Given", text:"Copper, d = 2.05 mm, I = 15 A, n = 8.5×10²⁸ /m³, ρ = 1.68×10⁻⁸ Ω·m."},
+            {label:"The bridge", tex:"J = \\frac{I}{A}, \\qquad J = n\\,e\\,v_d, \\qquad E = \\rho J", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): current density",
+          think:"The cross-section first — then J is what?",
+          model:"A = 3.30×10⁻⁶ m²; J = 4.5×10⁶ A/m².",
+          pose:"write",
+          say:"Let us take part a. The cross-section: pi times the radius squared, radius 1.025 millimetres — 3.3 times ten to the minus 6 square metres. Then J: 15 amperes over that — 4.5 MILLION amperes per square metre. Sounds heroic. Wait for part b. Current density is the honest measure of how hard a wire is working — total current flatters thick wires, but J tells you what each square metre of copper actually endures.",
+          board:[
+            {label:"The area", tex:"A = \\pi\\left(\\tfrac{d}{2}\\right)^2 = \\pi(1.025\\times10^{-3})^2 = 3.30\\times10^{-6}\\ \\mathrm{m^2}"},
+            {label:"Current density", tex:"J = \\frac{I}{A} = \\frac{15}{3.30\\times10^{-6}} = 4.5\\times10^{6}\\ \\mathrm{A/m^2}", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        /* the wire and the cross-section disk that J divides by */
        el('line',{x1:M.X(0),y1:M.Y(-4),x2:M.X(50),y2:M.Y(-4),stroke:'#8A7D60','stroke-width':3},c.svg);
@@ -963,38 +914,70 @@ const EXAMPLES = [
        el('ellipse',{cx:M.X(25),cy:M.Y(3),rx:7,ry:Math.abs(M.Y(10)-M.Y(3)),
          fill:'rgba(46,109,164,.25)',stroke:BLUE,'stroke-width':2},c.svg);
        textAt(c, 27,11.5, 'cross-section A = 3.30×10⁻⁶ m²', {fs:12, italic:true, color:'#1D4568'});
-     } },
-   { say:"On we go to part b. Divide J by n e: 4.55 million, over 8.5 times ten to the 28 times the electron charge. The drift speed: 0.33 MILLIMETRES per second. Watch the stage — that is the actual pace. An electron needs nearly an HOUR to drift one metre. Your lamp lights instantly because the FIELD travels near light speed and sets the whole crowd shuffling at once — the marching order arrives instantly; the marchers barely move.",
-     pose:'point',
-     board:['v_d = \\frac{J}{ne} = \\frac{4.55\\times10^{6}}{(8.5\\times10^{28})(1.60\\times10^{-19})} = 3.3\\times10^{-4}\\ \\mathrm{m/s}'],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): the great shuffle",
+          think:"J/(ne) delivers what shockingly small speed?",
+          model:"0.33 mm/s — slower than a garden snail.",
+          pose:"point",
+          say:"On we go to part b. Divide J by n e: 4.55 million, over 8.5 times ten to the 28 times the electron charge. The drift speed: 0.33 MILLIMETRES per second. Watch the stage — that is the actual pace. An electron needs nearly an HOUR to drift one metre. Your lamp lights instantly because the FIELD travels near light speed and sets the whole crowd shuffling at once — the marching order arrives instantly; the marchers barely move.",
+          board:[
+            {label:"Drift speed", tex:"v_d = \\frac{J}{ne} = \\frac{4.55\\times10^{6}}{(8.5\\times10^{28})(1.60\\times10^{-19})} = 3.3\\times10^{-4}\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
        wireDrift(c, 0,50, 3, 7, 3.5, 4000);
        textAt(c, 8,13.5, 'v_d ≈ 0.33 mm/s — the great shuffle', {fs:13, italic:true});
-     } },
-   { say:"And now, part c. The field inside the wire, from the microscopic Ohm's law: E equals rho J — 1.68 times ten to the minus 8, times 4.55 million — 0.076 volts per metre. A field almost too small to mention, sustaining 15 amperes. THAT is what 'good conductor' means: copper turns a whisper of field into a flood of current.",
-     pose:'write',
-     board:['E = \\rho J = (1.68\\times10^{-8})(4.55\\times10^{6}) = 7.6\\times10^{-2}\\ \\mathrm{V/m}'] },
-   { say:"Now comes the check: multiply back. n e v-d A: 8.5 ten-to-the-28, times 1.6 ten-to-the-minus-19, times 3.3 ten-to-the-minus-4, times 3.3 ten-to-the-minus-6 — 15 amperes, recovered. And the trio of scales to remember: field, near light speed; drift, under a millimetre per second; thermal jiggling in between, a million metres per second of pure aimlessness. Electrons are busy; they are simply not going anywhere.",
-     pose:'excited',
-     board:[{t:'Check: I = nev_dA = 15 A ✓. Signal ~ c; thermal motion ~ 10⁶ m/s (random); drift ~ 10⁻⁴ m/s (net).'}] },
-  ]
-},
-
-/* ---------- Example 3: Light-bulb filament [Intermediate] ---------- */
-{
-  title:'Temperature dependence: a light-bulb filament.', diff:'Intermediate',
-  prompt:'A tungsten filament has R₀ = 1.1 Ω at 20 °C and α = 4.5×10⁻³ K⁻¹. (a) Find its resistance at the operating temperature 2600 °C. (b) Explain the inrush current at switch-on from 120 V.',
-  world:{x0:-350, x1:3000, y0:-2.2, y1:17, aniso:true},
-  setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'T (°C)', ylab:'R (Ω)'}); },
-  steps:[
-   { say:"Resistance is not a constant; it is a mood, and temperature sets it. In metals, hotter means worse: the ion lattice vibrates harder, the electrons scatter more, and R climbs roughly linearly — R equals R-nought times 1 plus alpha delta T. Tungsten in a light bulb goes from room temperature to 2600 degrees, so this is no small correction. It is a factor of thirteen.",
-     pose:'talk',
-     board:[{t:'Tungsten: R₀ = 1.1 Ω at 20 °C, α = 4.5×10⁻³ K⁻¹, operating at 2600 °C; V = 120 V.'},
-            'R = R_0\\big[1 + \\alpha(T - T_0)\\big]'] },
-   { say:"Let us take part a. Delta T is 2600 minus 20 — 2580 kelvin. Alpha times that: 11.6. Add the 1: a factor of 12.6. Times 1.1 ohms — 14 ohms hot. Watch the line climb across the whole graph. A factor of twelve between cold and glowing — the humble light bulb is a resistor with a fever, and its resistance rises with its temperature like any honest metal's.",
-     pose:'write',
-     board:['R = R_0\\big[1+\\alpha\\,\\Delta T\\big] = 1.1\\big[1 + (4.5\\times10^{-3})(2580)\\big] = 1.1(12.6) = 14\\ \\Omega'],
-     action(c){
+     }
+        },
+        { map:3, title:"Part (c): the field inside",
+          think:"What does microscopic Ohm's law E = ρJ report?",
+          model:"0.076 V/m — modest, and enough.",
+          pose:"write",
+          say:"And now, part c. The field inside the wire, from the microscopic Ohm's law: E equals rho J — 1.68 times ten to the minus 8, times 4.55 million — 0.076 volts per metre. A field almost too small to mention, sustaining 15 amperes. THAT is what 'good conductor' means: copper turns a whisper of field into a flood of current.",
+          board:[
+            {label:"The field", tex:"E = \\rho J = (1.68\\times10^{-8})(4.55\\times10^{6}) = 7.6\\times10^{-2}\\ \\mathrm{V/m}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Check by multiplying back",
+          think:"Does nev_dA reassemble the 15 A we started with?",
+          model:"Exactly ✓ — and mind the three speeds: drift, thermal, signal.",
+          pose:"excited",
+          say:"Now comes the check: multiply back. n e v-d A: 8.5 ten-to-the-28, times 1.6 ten-to-the-minus-19, times 3.3 ten-to-the-minus-4, times 3.3 ten-to-the-minus-6 — 15 amperes, recovered. And the trio of scales to remember: field, near light speed; drift, under a millimetre per second; thermal jiggling in between, a million metres per second of pure aimlessness. Electrons are busy; they are simply not going anywhere.",
+          board:[
+            {label:"Round trip", text:"Check: I = nev_dA = 15 A ✓. Signal ~ c; thermal motion ~ 10⁶ m/s (random); drift ~ 10⁻⁴ m/s (net).", kind:"key"},
+            {label:"Reusable method", text:"A → J → v_d = J/ne → E = ρJ → multiply back to close the loop", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Intermediate",
+      title:"Temperature dependence: a light-bulb filament",
+      problem:"A tungsten filament has R₀ = 1.1 Ω at 20 °C and α = 4.5×10⁻³ K⁻¹. (a) Find its resistance at the operating temperature 2600 °C. (b) Explain the inrush current at switch-on from 120 V.",
+      goal:"Goal → R hot, inrush",
+      world:{"x0":-350,"x1":3000,"y0":-2.2,"y1":17,"aniso":true},
+      pathway:["Read","Hot R","Inrush","Why bulbs die","Check"],
+      setup(ctx,w){ axes2D(ctx.svg, ctx.M, w, {xlab:'T (°C)', ylab:'R (Ω)'}); },
+      steps:[
+        { map:0, title:"Read: resistance is a mood",
+          think:"What does a hotter lattice do to the electrons' commute?",
+          model:"More scattering: R = R₀(1+αΔT).",
+          pose:"talk",
+          say:"Resistance is not a constant; it is a mood, and temperature sets it. In metals, hotter means worse: the ion lattice vibrates harder, the electrons scatter more, and R climbs roughly linearly — R equals R-nought times 1 plus alpha delta T. Tungsten in a light bulb goes from room temperature to 2600 degrees, so this is no small correction. It is a factor of thirteen.",
+          board:[
+            {label:"Given", text:"Tungsten: R₀ = 1.1 Ω at 20 °C, α = 4.5×10⁻³ K⁻¹, operating at 2600 °C; V = 120 V."},
+            {label:"The law", tex:"R = R_0\\big[1 + \\alpha(T - T_0)\\big]", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the hot filament",
+          think:"A ΔT of 2580 K multiplies R by what factor?",
+          model:"12.6: R = 14 Ω hot.",
+          pose:"write",
+          say:"Let us take part a. Delta T is 2600 minus 20 — 2580 kelvin. Alpha times that: 11.6. Add the 1: a factor of 12.6. Times 1.1 ohms — 14 ohms hot. Watch the line climb across the whole graph. A factor of twelve between cold and glowing — the humble light bulb is a resistor with a fever, and its resistance rises with its temperature like any honest metal's.",
+          board:[
+            {label:"Hot resistance", tex:"R = R_0\\big[1+\\alpha\\,\\Delta T\\big] = 1.1\\big[1 + (4.5\\times10^{-3})(2580)\\big] = 1.1(12.6) = 14\\ \\Omega", kind:"answer"}
+          ],
+          action(c){
        plotCurve(c, T=>[T, 1.1*(1+4.5e-3*(T-20))], 20, 2800, {color:GOLD, w:3.5, dur:1600});
        dashLine(c, 2600,0, 2600,13.9, {color:'#8A7D60'});
        dashLine(c, 0,13.9, 2600,13.9, {color:'#8A7D60'});
@@ -1002,30 +985,51 @@ const EXAMPLES = [
        textAt(c, 2100,15.2, '14 Ω at 2600 °C', {fs:13, color:RED});
        el('circle',{cx:c.M.X(20),cy:c.M.Y(1.1),r:5,fill:BLUE},c.svg);
        textAt(c, 100,2.3, '1.1 Ω cold', {fs:13, color:BLUE});
-     } },
-   { say:"Part b — the inrush. At the instant of switch-on the filament is COLD: 120 volts across 1.1 ohms — 110 amperes, momentarily. Once hot: 120 over 14 — about 8.7 amperes. A spike thirteen times the running current, every single time you flick the switch. The two labelled points on the curve are the whole story: same 120 volts, two very different resistances.",
-     pose:'write',
-     board:['I_{\\rm cold} = \\frac{120}{1.1} \\approx 110\\ \\mathrm A \\qquad\\text{vs}\\qquad I_{\\rm hot} = \\frac{120}{13.9} \\approx 8.7\\ \\mathrm A',
-            {t:'Inrush ≈ 13× the operating current — a brief but violent welcome.'}],
-     action(c){
+     }
+        },
+        { map:2, title:"Part (b): the inrush",
+          think:"At switch-on the filament is cold — what current surges?",
+          model:"110 A briefly, vs 8.7 A operating: a 13× welcome.",
+          pose:"write",
+          say:"Part b — the inrush. At the instant of switch-on the filament is COLD: 120 volts across 1.1 ohms — 110 amperes, momentarily. Once hot: 120 over 14 — about 8.7 amperes. A spike thirteen times the running current, every single time you flick the switch. The two labelled points on the curve are the whole story: same 120 volts, two very different resistances.",
+          board:[
+            {label:"Cold vs hot", tex:"I_{\\rm cold} = \\frac{120}{1.1} \\approx 110\\ \\mathrm A \\qquad\\text{vs}\\qquad I_{\\rm hot} = \\frac{120}{13.9} \\approx 8.7\\ \\mathrm A", kind:"key"},
+            {label:"The ratio", text:"Inrush ≈ 13× the operating current — a brief but violent welcome.", kind:"answer"}
+          ],
+          action(c){
        textAt(c, 180,4.6, 'switch-on: 120 V/1.1 Ω ≈ 110 A !', {fs:12.5, color:RED, italic:true});
        textAt(c, 1450,12.2, 'running: 120 V/13.9 Ω ≈ 8.7 A', {fs:12.5, color:GREEN, italic:true});
-     } },
-   { say:"And that spike is precisely why bulbs die at the flick of the switch rather than mid-evening: the cold surge stresses the filament's thinnest spot, which fails, theatrically, at breakfast. The physics of the dramatic pop. There is a small elegy in every blown bulb: it survived a thousand steady evenings and died of a single morning's inrush. Transients, not loads, are what kill hardware.",
-     pose:'think',
-     board:[{t:'The thin spot of the filament takes 13× current while cold → burnout happens at switch-on.'}] },
-   { say:"Now comes the check: is the linear law honest over a 2600 kelvin march? Not entirely — alpha itself drifts at such temperatures — but it delivers the right SCALE, a factor of ten to fifteen, which is what an engineer needs first. Know your formula's jurisdiction, and use it there with confidence.",
-     pose:'excited',
-     board:[{t:'Check: linear-in-T is a stretch over 2580 K, but the order of magnitude (×13) is right — and that is the story.'}] },
-  ]
-},
-
-/* ---------- Example 4: Truncated cone resistor [Challenging] ---------- */
-{
-  title:'Resistance of a truncated cone (integration).', diff:'Challenging',
-  prompt:'A carbon resistor (ρ = 3.5×10⁻⁵ Ω·m) is a truncated cone: length L = 2.0 cm, end radii a = 1.0 mm and b = 3.0 mm. Current flows along the axis. Derive R and evaluate.',
-  world:{x0:-7, x1:29, y0:-8.5, y1:10.5},
-  setup(ctx,w){
+     }
+        },
+        { map:3, title:"Why bulbs die at the flick",
+          think:"Where does the 13× surge concentrate its violence?",
+          model:"At the filament's thinnest spot — burnout happens at switch-on.",
+          pose:"think",
+          say:"And that spike is precisely why bulbs die at the flick of the switch rather than mid-evening: the cold surge stresses the filament's thinnest spot, which fails, theatrically, at breakfast. The physics of the dramatic pop. There is a small elegy in every blown bulb: it survived a thousand steady evenings and died of a single morning's inrush. Transients, not loads, are what kill hardware.",
+          board:[
+            {label:"The story", text:"The thin spot of the filament takes 13× current while cold → burnout happens at switch-on.", kind:"key"}
+          ]
+        },
+        { map:4, title:"Check the law's honesty",
+          think:"Is linear-in-T trustworthy over 2580 K?",
+          model:"Stretched — but the ×13 order of magnitude is the story, and it holds.",
+          pose:"excited",
+          say:"Now comes the check: is the linear law honest over a 2600 kelvin march? Not entirely — alpha itself drifts at such temperatures — but it delivers the right SCALE, a factor of ten to fifteen, which is what an engineer needs first. Know your formula's jurisdiction, and use it there with confidence.",
+          board:[
+            {label:"Honest limits", text:"Check: linear-in-T is a stretch over 2580 K, but the order of magnitude (×13) is right — and that is the story.", kind:"key"},
+            {label:"Reusable method", text:"R(T) linear law → cold vs hot currents → locate where the surge bites → audit the model's range", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Resistance of a truncated cone (integration)",
+      problem:"A carbon resistor (ρ = 3.5×10⁻⁵ Ω·m) is a truncated cone: length L = 2.0 cm, end radii a = 1.0 mm and b = 3.0 mm. Current flows along the axis. Derive R and evaluate.",
+      goal:"Goal → R of the cone",
+      world:{"x0":-7,"x1":29,"y0":-8.5,"y1":10.5},
+      pathway:["Read","Slice","Substitute","The miracle","Checks"],
+      setup(ctx,w){
     const {svg,M}=ctx;
     /* truncated cone (side view), a=1 → 2 world units, b=3 → 6 world units; L=20 units */
     el('polygon',{points:`${M.X(0)},${M.Y(2)} ${M.X(20)},${M.Y(6)} ${M.X(20)},${M.Y(-6)} ${M.X(0)},${M.Y(-2)}`,
@@ -1034,16 +1038,27 @@ const EXAMPLES = [
     const ta=el('text',{x:M.X(-1.2),y:M.Y(3.2),fill:'#5C4B30','font-size':13,'text-anchor':'middle','font-style':'italic','font-family':'Georgia,serif'},svg); ta.textContent='a';
     const tb=el('text',{x:M.X(21.3),y:M.Y(7),fill:'#5C4B30','font-size':13,'text-anchor':'middle','font-style':'italic','font-family':'Georgia,serif'},svg); tb.textContent='b';
   },
-  steps:[
-   { say:"A resistor that refuses to be a cylinder — a truncated cone, narrow end radius 1 millimetre, wide end 3, drawn to scale on the stage. R equals rho L over A is useless as it stands, because A keeps changing. The cure is the physicist's universal cure: SLICE it. Each thin slice IS a cylinder, and slices stacked along the current are resistors in SERIES — their little resistances simply add. Which is to say: integrate.",
-     pose:'talk',
-     board:[{t:'Carbon cone: ρ = 3.5×10⁻⁵ Ω·m, L = 2.0 cm, a = 1.0 mm → b = 3.0 mm.'},
-            'dR = \\frac{\\rho\\,dx}{\\pi\\,r(x)^2}\\quad(\\text{series slices add})'] },
-   { say:"The geometry first: the radius grows linearly from a to b, so r of x is a plus b minus a over L, times x. Watch the slice sweep down the cone, fattening as it goes — each position contributing rho d x over pi r squared. When geometry varies along the path, resistance must be assembled slice by slice — series addition taken to its logical, infinitesimal conclusion. The integral is just Ohm's law, retail.",
-     pose:'point',
-     board:['r(x) = a + \\frac{b-a}{L}\\,x',
-            'R = \\int_0^L \\frac{\\rho\\,dx}{\\pi\\left(a + \\frac{b-a}{L}x\\right)^{2}}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: not a cylinder",
+          think:"When R = ρL/A fails, what replaces A?",
+          model:"Series slices: dR = ρdx/πr(x)².",
+          pose:"talk",
+          say:"A resistor that refuses to be a cylinder — a truncated cone, narrow end radius 1 millimetre, wide end 3, drawn to scale on the stage. R equals rho L over A is useless as it stands, because A keeps changing. The cure is the physicist's universal cure: SLICE it. Each thin slice IS a cylinder, and slices stacked along the current are resistors in SERIES — their little resistances simply add. Which is to say: integrate.",
+          board:[
+            {label:"Given", text:"Carbon cone: ρ = 3.5×10⁻⁵ Ω·m, L = 2.0 cm, a = 1.0 mm → b = 3.0 mm."},
+            {label:"The slice law", tex:"dR = \\frac{\\rho\\,dx}{\\pi\\,r(x)^2}\\quad(\\text{series slices add})", kind:"key"}
+          ]
+        },
+        { map:1, title:"Geometry of the taper",
+          think:"How does r grow along the axis?",
+          model:"Linearly: r(x) = a + (b−a)x/L.",
+          pose:"point",
+          say:"The geometry first: the radius grows linearly from a to b, so r of x is a plus b minus a over L, times x. Watch the slice sweep down the cone, fattening as it goes — each position contributing rho d x over pi r squared. When geometry varies along the path, resistance must be assembled slice by slice — series addition taken to its logical, infinitesimal conclusion. The integral is just Ohm's law, retail.",
+          board:[
+            {label:"The taper", tex:"r(x) = a + \\frac{b-a}{L}\\,x"},
+            {label:"The integral", tex:"R = \\int_0^L \\frac{\\rho\\,dx}{\\pi\\left(a + \\frac{b-a}{L}x\\right)^{2}}", kind:"key"}
+          ],
+          action(c){
        const {M}=c;
        const sl=el('rect',{x:M.X(0)-3, y:M.Y(2), width:6, height:M.Y(-2)-M.Y(2), fill:BLUE, opacity:.55},c.svg);
        tween(u=>{ const x=20*u, r=2+4*u;
@@ -1051,33 +1066,54 @@ const EXAMPLES = [
          sl.setAttribute('height', M.Y(-r)-M.Y(r)); }, 2600, c.instant);
        textAt(c, 5,8.3, 'slice at x: radius r(x), thickness dx', {fs:12.5, italic:true, color:BLUE});
        arrow(c, -6,0, -1.2,0, {color:RED, w:3.5, label:'I', fs:14});
-     } },
-   { say:"Now the substitution, in full view: let u equal a plus b minus a over L x. Then d u is b minus a over L, d x — so d x is L over b minus a, d u. The limits transform too: x zero becomes u equals a; x equals L becomes u equals b. The integral collapses to d u over u squared.",
-     pose:'write',
-     board:['u = a + \\tfrac{b-a}{L}x, \\quad du = \\tfrac{b-a}{L}dx \\;\\Rightarrow\\; dx = \\tfrac{L}{b-a}\\,du',
-            'R = \\frac{\\rho}{\\pi}\\cdot\\frac{L}{b-a}\\int_a^b\\frac{du}{u^2} = \\frac{\\rho L}{\\pi(b-a)}\\Big[-\\frac1u\\Big]_a^b'] },
-   { say:"Evaluate: minus one over u, from a to b, is one over a minus one over b — which is b minus a over a b. And now the miracle: the b minus a cancels top and bottom, leaving the gloriously compact R equals rho L over pi a b. Now we put in the numbers: 0.074 ohms.",
-     pose:'write',
-     board:['R = \\frac{\\rho L}{\\pi(b-a)}\\cdot\\frac{b-a}{ab} = \\frac{\\rho L}{\\pi a b}',
-            'R = \\frac{(3.5\\times10^{-5})(0.020)}{\\pi(1.0\\times10^{-3})(3.0\\times10^{-3})} = 7.4\\times10^{-2}\\ \\Omega'] },
-   { say:"Two checks. Set b equal to a: rho L over pi a squared — the uniform cylinder, recovered. And notice WHERE the resistance lives: rho L over pi a b is the cylinder formula built on the GEOMETRIC mean root a b, not the average radius — the narrow end dominates the total, exactly as the thinnest lane dominates traffic. The formula knows where the bottleneck is.",
-     pose:'excited',
-     board:['b\\to a:\\ R \\to \\frac{\\rho L}{\\pi a^2}\\ \\checkmark\\qquad R = \\frac{\\rho L}{\\pi(\\sqrt{ab})^2}:\\ \\text{geometric mean — the narrow end rules}'],
-     action(c){
+     }
+        },
+        { map:2, title:"The substitution, in full view",
+          think:"What does u = r(x) do to the integral?",
+          model:"Reduces it to ∫du/u².",
+          pose:"write",
+          say:"Now the substitution, in full view: let u equal a plus b minus a over L x. Then d u is b minus a over L, d x — so d x is L over b minus a, d u. The limits transform too: x zero becomes u equals a; x equals L becomes u equals b. The integral collapses to d u over u squared.",
+          board:[
+            {label:"Substitute", tex:"u = a + \\tfrac{b-a}{L}x, \\quad du = \\tfrac{b-a}{L}dx \\;\\Rightarrow\\; dx = \\tfrac{L}{b-a}\\,du", move:"u-sub"},
+            {label:"Reduced", tex:"R = \\frac{\\rho}{\\pi}\\cdot\\frac{L}{b-a}\\int_a^b\\frac{du}{u^2} = \\frac{\\rho L}{\\pi(b-a)}\\Big[-\\frac1u\\Big]_a^b"}
+          ]
+        },
+        { map:3, title:"The miracle cancellation",
+          think:"Why does (b−a) vanish from the final formula?",
+          model:"1/a − 1/b = (b−a)/ab: R = ρL/πab = 7.4×10⁻² Ω.",
+          pose:"write",
+          say:"Evaluate: minus one over u, from a to b, is one over a minus one over b — which is b minus a over a b. And now the miracle: the b minus a cancels top and bottom, leaving the gloriously compact R equals rho L over pi a b. Now we put in the numbers: 0.074 ohms.",
+          board:[
+            {label:"The formula", tex:"R = \\frac{\\rho L}{\\pi(b-a)}\\cdot\\frac{b-a}{ab} = \\frac{\\rho L}{\\pi a b}", kind:"answer", move:"cancel (b−a)"},
+            {label:"Evaluated", tex:"R = \\frac{(3.5\\times10^{-5})(0.020)}{\\pi(1.0\\times10^{-3})(3.0\\times10^{-3})} = 7.4\\times10^{-2}\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Two checks",
+          think:"Set b = a — and where does the resistance really live?",
+          model:"Cylinder recovered ✓; πab = π(√ab)²: the narrow end dominates.",
+          pose:"excited",
+          say:"Two checks. Set b equal to a: rho L over pi a squared — the uniform cylinder, recovered. And notice WHERE the resistance lives: rho L over pi a b is the cylinder formula built on the GEOMETRIC mean root a b, not the average radius — the narrow end dominates the total, exactly as the thinnest lane dominates traffic. The formula knows where the bottleneck is.",
+          board:[
+            {label:"Limit + insight", tex:"b\\to a:\\ R \\to \\frac{\\rho L}{\\pi a^2}\\ \\checkmark\\qquad R = \\frac{\\rho L}{\\pi(\\sqrt{ab})^2}:\\ \\text{geometric mean — the narrow end rules}", kind:"key"},
+            {label:"Reusable method", text:"slice odd shapes into series disks → integrate → cylinder limit check → read where R concentrates", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        el('polygon',{points:`${M.X(0)},${M.Y(2)} ${M.X(5)},${M.Y(3)} ${M.X(5)},${M.Y(-3)} ${M.X(0)},${M.Y(-2)}`,
          fill:RED, opacity:.28},c.svg);
        textAt(c, 0,-7.3, 'the bottleneck: the narrow end contributes most of R', {fs:12, italic:true, color:RED});
-     } },
-  ]
-},
-
-/* ---------- Example 5: Electric kettle [Challenging] ---------- */
-{
-  title:'Power and energy: an electric kettle.', diff:'Challenging',
-  prompt:'A kettle is rated 1500 W at 120 V. (a) Find I and R. (b) Time to heat 0.50 L of water from 20 °C to 100 °C? (c) Cost at $0.30/kWh, one hour daily for a month? (d) Power on a 240 V outlet — and why is that dangerous?',
-  world:{x0:-10, x1:120, y0:-12, y1:75},
-  setup(ctx,w){
+     }
+        },
+      ]
+    },
+    {
+diff:"Challenging",
+      title:"Power and energy: an electric kettle",
+      problem:"A kettle is rated 1500 W at 120 V. (a) Find I and R. (b) Time to heat 0.50 L of water from 20 °C to 100 °C? (c) Cost at $0.30/kWh, one hour daily for a month? (d) Power on a 240 V outlet — and why is that dangerous?",
+      goal:"Goal → four answers",
+      world:{"x0":-10,"x1":120,"y0":-12,"y1":75},
+      pathway:["Read","I and R","Heating time","The invoice","240 V tale"],
+      setup(ctx,w){
     const {svg,M}=ctx;
     /* kettle: body + spout + handle */
     el('path',{d:`M ${M.X(20)} ${M.Y(0)} L ${M.X(20)} ${M.Y(38)} L ${M.X(60)} ${M.Y(38)} L ${M.X(60)} ${M.Y(0)} Z`,
@@ -1089,19 +1125,36 @@ const EXAMPLES = [
     const t=el('text',{x:M.X(40),y:M.Y(-6),fill:'#8A7D60','font-size':12,'text-anchor':'middle','font-family':'Georgia,serif','font-style':'italic'},svg);
     t.textContent='1500 W at 120 V';
   },
-  steps:[
-   { say:"We finish with the most practical object in physics: the kettle. Fifteen hundred watts at 120 volts, and four questions that tour the whole chapter — current, resistance, energy, money, and finally a cautionary tale about voltage ratings. Power comes in three equivalent costumes: P equals I V, equals I squared R, equals V squared over R. Choose the costume that wears your known quantities.",
-     pose:'talk',
-     board:[{t:'Kettle: 1500 W, 120 V. Find I, R; heating time for 0.5 L (20→100 °C); monthly cost; P at 240 V.'},
-            'P = IV = I^2R = \\frac{V^2}{R}'] },
-   { say:"Let us take part a. Current: P over V — 1500 over 120 — 12.5 amperes; call it 13 for the circuit breaker's benefit. Resistance: V squared over P — 9.6 ohms, hot. A kettle is just a resistor with ambitions. Note which formula we reached for: V squared over P, because voltage is what the wall guarantees. Choosing the power formula whose ingredients you actually possess is half of circuit fluency.",
-     pose:'write',
-     board:['I = \\frac{P}{V} = \\frac{1500}{120} = 12.5\\ \\mathrm A, \\qquad R = \\frac{V^2}{P} = \\frac{120^2}{1500} = 9.6\\ \\Omega'] },
-   { say:"On we go to part b. The water wants m c delta T: half a kilogram, times 4186, times 80 degrees of climb — 167 kilojoules. At 1500 joules per second: 111 seconds. Under two minutes, if every joule behaves — a few more in reality, since some heat absconds into the kettle and the kitchen.",
-     pose:'write',
-     board:['Q = mc_w\\Delta T = (0.50)(4186)(80) = 1.67\\times10^{5}\\ \\mathrm J',
-            't = \\frac{Q}{P} = \\frac{1.67\\times10^{5}}{1500} = 1.1\\times10^{2}\\ \\mathrm s \\approx 2\\ \\text{min}'],
-     action(c){
+      steps:[
+        { map:0, title:"Read: the practical finale",
+          think:"Which face of P = IV = I²R = V²/R serves each part?",
+          model:"Pick by what's fixed: ratings give P and V.",
+          pose:"talk",
+          say:"We finish with the most practical object in physics: the kettle. Fifteen hundred watts at 120 volts, and four questions that tour the whole chapter — current, resistance, energy, money, and finally a cautionary tale about voltage ratings. Power comes in three equivalent costumes: P equals I V, equals I squared R, equals V squared over R. Choose the costume that wears your known quantities.",
+          board:[
+            {label:"Given", text:"Kettle: 1500 W, 120 V. Find I, R; heating time for 0.5 L (20→100 °C); monthly cost; P at 240 V."},
+            {label:"The three faces", tex:"P = IV = I^2R = \\frac{V^2}{R}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): I and R",
+          think:"From 1500 W at 120 V, what current and element resistance?",
+          model:"12.5 A; R = V²/P = 9.6 Ω.",
+          pose:"write",
+          say:"Let us take part a. Current: P over V — 1500 over 120 — 12.5 amperes; call it 13 for the circuit breaker's benefit. Resistance: V squared over P — 9.6 ohms, hot. A kettle is just a resistor with ambitions. Note which formula we reached for: V squared over P, because voltage is what the wall guarantees. Choosing the power formula whose ingredients you actually possess is half of circuit fluency.",
+          board:[
+            {label:"Both", tex:"I = \\frac{P}{V} = \\frac{1500}{120} = 12.5\\ \\mathrm A, \\qquad R = \\frac{V^2}{P} = \\frac{120^2}{1500} = 9.6\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): the heating time",
+          think:"mcΔT for half a litre climbing 80 °C costs what?",
+          model:"167 kJ ÷ 1500 W ≈ 2 minutes.",
+          pose:"write",
+          say:"On we go to part b. The water wants m c delta T: half a kilogram, times 4186, times 80 degrees of climb — 167 kilojoules. At 1500 joules per second: 111 seconds. Under two minutes, if every joule behaves — a few more in reality, since some heat absconds into the kettle and the kitchen.",
+          board:[
+            {label:"The demand", tex:"Q = mc_w\\Delta T = (0.50)(4186)(80) = 1.67\\times10^{5}\\ \\mathrm J"},
+            {label:"The time", tex:"t = \\frac{Q}{P} = \\frac{1.67\\times10^{5}}{1500} = 1.1\\times10^{2}\\ \\mathrm s \\approx 2\\ \\text{min}", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        const wat=el('rect',{x:M.X(22.5),y:M.Y(2),width:M.X(57.5)-M.X(22.5),height:0,fill:'#9FBEDB',opacity:.7},c.svg);
        tween(u=>{ const h=33*u; wat.setAttribute('y',M.Y(2+h)); wat.setAttribute('height',M.Y(2)-M.Y(2+h)); }, 2200, c.instant);
@@ -1109,33 +1162,357 @@ const EXAMPLES = [
          const b=el('circle',{cx:M.X(30+i*10),cy:M.Y(6),r:3,fill:'#fff',opacity:0},c.svg);
          tween(u=>{ b.setAttribute('cy',M.Y(6+24*u)); b.setAttribute('opacity',(1-u)*.9); }, 1800+i*300, c.instant);
        }
-     } },
-   { say:"For part c, the invoice. One and a half kilowatts for one hour daily, thirty days: 45 kilowatt-hours. At 30 cents each: 13 dollars 50 a month — call it 14. The kilowatt-hour, note, is an ENERGY unit — power times time — and the only one the electric company has ever heard of.",
-     pose:'write',
-     board:['E = (1.5\\ \\mathrm{kW})(1\\ \\mathrm h)(30) = 45\\ \\mathrm{kWh} \\;\\Rightarrow\\; \\$0.30 \\times 45 = \\$13.50 \\approx \\$14/\\text{month}'] },
-   { say:"Part d, the cautionary tale. Plug this 120-volt kettle into a 240-volt outlet: the RESISTANCE stays 9.6 ohms — the element neither knows nor cares about your travel plans — so P equals V squared over R gives SIX thousand watts. Double the voltage, QUADRUPLE the power; V enters squared. The element glows, the cord cooks, and breakfast becomes an incident report. Now comes the check: 6000 is exactly 4 times 1500 ✓ — arithmetic confirming the danger. Respect the label on the box.",
-     pose:'excited',
-     board:['P_{240} = \\frac{V^2}{R} = \\frac{240^2}{9.6} = 6.0\\times10^{3}\\ \\mathrm W = 4P_{\\rm rated}',
-            {t:'Doubling V quadruples P (V enters squared) — this is why voltage ratings matter ✓'}],
-     action(c){
+     }
+        },
+        { map:3, title:"Part (c): the invoice",
+          think:"45 kWh at 30 cents comes to what?",
+          model:"$13.50 a month.",
+          pose:"write",
+          say:"For part c, the invoice. One and a half kilowatts for one hour daily, thirty days: 45 kilowatt-hours. At 30 cents each: 13 dollars 50 a month — call it 14. The kilowatt-hour, note, is an ENERGY unit — power times time — and the only one the electric company has ever heard of.",
+          board:[
+            {label:"The cost", tex:"E = (1.5\\ \\mathrm{kW})(1\\ \\mathrm h)(30) = 45\\ \\mathrm{kWh} \\;\\Rightarrow\\; \\$0.30 \\times 45 = \\$13.50 \\approx \\$14/\\text{month}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Part (d): the cautionary tale",
+          think:"Same 9.6 Ω on 240 V — why FOUR times the power?",
+          model:"V enters squared: 6000 W and a dead kettle.",
+          pose:"excited",
+          say:"Part d, the cautionary tale. Plug this 120-volt kettle into a 240-volt outlet: the RESISTANCE stays 9.6 ohms — the element neither knows nor cares about your travel plans — so P equals V squared over R gives SIX thousand watts. Double the voltage, QUADRUPLE the power; V enters squared. The element glows, the cord cooks, and breakfast becomes an incident report. Now comes the check: 6000 is exactly 4 times 1500 ✓ — arithmetic confirming the danger. Respect the label on the box.",
+          board:[
+            {label:"The surge", tex:"P_{240} = \\frac{V^2}{R} = \\frac{240^2}{9.6} = 6.0\\times10^{3}\\ \\mathrm W = 4P_{\\rm rated}", kind:"answer"},
+            {label:"The moral", text:"Doubling V quadruples P (V enters squared) — this is why voltage ratings matter ✓", kind:"warn"},
+            {label:"Reusable method", text:"choose P's face by fixed variables → energy = power × time → V² scaling explains ratings", kind:"answer"}
+          ],
+          action(c){
        const {M}=c;
        const gl=el('rect',{x:M.X(22.5),y:M.Y(8),width:M.X(57.5)-M.X(22.5),height:M.Y(2)-M.Y(8),
          fill:RED,opacity:0},c.svg);
        tween(u=>gl.setAttribute('opacity',.45*u), 1200, c.instant);
        textAt(c, 40,45, '240 V → 6.0 kW: 4× the design heat', {fs:12.5, color:RED, italic:true, anchor:'middle'});
-     } },
-  ]
-},
-];
+     }
+        },
+      ]
+    },
+    ];
 
-/* ---------------- init ---------------- */
-EXAMPLES.forEach((ex,i)=>{
-  const b=document.createElement('button');
-  b.textContent = ex.tab ? ex.tab : `${exLabel(i)} · ${ex.diff}`;
-  b.onclick = ()=>loadExample(i,true);   /* switching examples starts playback automatically */
-  $('tabs').appendChild(b);
-});
-loadExample(0,false);                     /* start paused — user clicks Play */
-</script>
+    /* ============================================================
+       PLAYER ENGINE
+       ============================================================ */
+    const refs = {
+      tabs:document.getElementById('exampleTabs'),
+      reasoningMap:document.getElementById('reasoningMap'),
+      equationStack:document.getElementById('equationStack'),
+      chapterNumber:document.getElementById('chapterNumber'),
+      chapterTitle:document.getElementById('chapterTitle'),
+      thinkingPrompt:document.getElementById('thinkingPrompt'),
+      modelNote:document.getElementById('modelNote'),
+      subtitle:document.getElementById('subtitle'),
+      professor2d:document.getElementById('professor2d'),
+      transcriptList:document.getElementById('transcriptList'),
+      stepAnnouncement:document.getElementById('stepAnnouncement'),
+      timeline:document.getElementById('timeline'),
+      timelineTitle:document.getElementById('timelineTitle'),
+      stepCount:document.getElementById('stepCount'),
+      playButton:document.getElementById('playButton'),
+      voiceButton:document.getElementById('voiceButton'),
+      problemCopy:document.getElementById('problemCopy'),
+      exampleTag:document.getElementById('exampleTag'),
+      goalChip:document.getElementById('goalChip'),
+      simChip:document.getElementById('simChip'),
+      formatBadge:document.getElementById('formatBadge')
+    };
+
+    let exIndex = 0, currentStep = 0;
+    let isPlaying = false, voiceOn = true, playToken = 0, advanceTimer = null;
+    let mapper = null;
+
+    /* ---------- example tabs ---------- */
+    EXAMPLES.forEach((ex,i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'diff-' + ex.diff.toLowerCase();
+      b.innerHTML = `<span class="diffdot"></span>${ex.tab || ('Example ' + i + ' · ' + ex.diff)}`;
+      if(!ex.tab) b.innerHTML = `<span class="diffdot"></span>Example ${i} · ${ex.diff}`;
+      b.addEventListener('click', () => loadExample(i));
+      refs.tabs.appendChild(b);
+    });
+
+    /* ---------- KaTeX board line ---------- */
+    function renderBoardLine(line){
+      const row = document.createElement('div');
+      row.className = `equation-line ${line.kind || ''}`;
+      let inner = line.label ? `<small>${line.label}</small>` : '';
+      row.innerHTML = inner;
+      if(line.tex !== undefined && window.katex){
+        const span = document.createElement('span');
+        try{ katex.render(line.tex, span, {throwOnError:false, macros:{'\\ihat':'\\hat{\\imath}','\\jhat':'\\hat{\\jmath}','\\khat':'\\hat{k}'}}); }
+        catch(e){ span.textContent = line.tex; }
+        row.appendChild(span);
+      }else if(line.text !== undefined){
+        const span = document.createElement('span');
+        span.textContent = line.text;
+        row.appendChild(span);
+      }
+      if(line.move){
+        const badge = document.createElement('span');
+        badge.className = 'key-move';
+        badge.textContent = line.move;
+        row.appendChild(badge);
+      }
+      return row;
+    }
+
+    /* ---------- sketch rendering (setup + accumulated actions) ---------- */
+    function drawSketch(uptoStep, animateLast){
+      cancelAnims();
+      sketchSvg.innerHTML = '';
+      const ex = EXAMPLES[exIndex];
+      mapper = makeMapper(ex.world);
+      /* find last solo at or before uptoStep — actions restart there.
+         A solo step stands alone: unrelated schematics are never overlaid,
+         so the setup backdrop is skipped while a solo step governs. */
+      let start = 0;
+      for(let i = 0; i <= uptoStep; i++) if(ex.steps[i].solo || ex.steps[i].fresh) start = i;
+      const soloGoverns = !!ex.steps[start].solo;
+      const ctxInstant = {svg:sketchSvg, M:mapper, instant:true};
+      if(ex.setup && !soloGoverns) ex.setup(ctxInstant, ex.world);
+      for(let i = start; i <= uptoStep; i++){
+        const st = ex.steps[i];
+        if(!st.action) continue;
+        const animate = animateLast && i === uptoStep;
+        st.action({svg:sketchSvg, M:mapper, instant:!animate});
+      }
+    }
+
+    /* ---------- transcript + timeline for current example ---------- */
+    function buildChrome(){
+      const ex = EXAMPLES[exIndex];
+      refs.timeline.innerHTML = '';
+      refs.timeline.style.gridTemplateColumns = `repeat(${ex.steps.length},1fr)`;
+      ex.steps.forEach((step,i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.title = `${i + 1}. ${step.title}`;
+        b.setAttribute('aria-label',`Go to step ${i + 1}: ${step.title}`);
+        b.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        refs.timeline.appendChild(b);
+      });
+      refs.transcriptList.innerHTML = '';
+      ex.steps.forEach((step,i) => {
+        const li = document.createElement('li');
+        li.className = 'transcript-entry';
+        const bt = document.createElement('button');
+        bt.type = 'button';
+        bt.textContent = `${i + 1}. ${step.title}`;
+        bt.addEventListener('click', () => { stopPlayback(); currentStep = i; renderStep(true); });
+        const p = document.createElement('p');
+        p.textContent = step.say;
+        li.append(bt,p);
+        refs.transcriptList.appendChild(li);
+      });
+      refs.reasoningMap.innerHTML = '';
+      refs.reasoningMap.style.gridTemplateColumns = `repeat(${ex.pathway.length},1fr)`;
+      ex.pathway.forEach((name,mi) => {
+        const d = document.createElement('div');
+        d.className = 'reason-step';
+        d.textContent = name;
+        d.style.cursor = 'pointer';
+        d.addEventListener('click', () => {
+          const target = ex.steps.findIndex(st => st.map === mi);
+          if(target >= 0){ stopPlayback(); currentStep = target; renderStep(true); }
+        });
+        refs.reasoningMap.appendChild(d);
+      });
+      /* header strip */
+      refs.exampleTag.textContent = ex.tab ? 'Review' : 'Problem';
+      refs.problemCopy.textContent = ex.problem;
+      refs.goalChip.textContent = ex.goal;
+      if(ex.sim){ refs.simChip.hidden = false; refs.simChip.href = ex.sim.url; refs.simChip.textContent = '🎛 ' + ex.sim.label + ' ▸'; }
+      else refs.simChip.hidden = true;
+      /* estimated duration badge (≈150 wpm + step pauses) */
+      const words = ex.steps.reduce((a,s) => a + s.say.split(/\s+/).length, 0);
+      const secs = Math.round(words/150*60 + ex.steps.length*1.4);
+      const mm = Math.floor(secs/60), ss = String(secs % 60).padStart(2,'0');
+      refs.formatBadge.textContent = `${ex.tab ? 'Concept review' : 'Worked example'} · ${mm}:${ss}`;
+    }
+
+    const poseClasses = ['pose-talk','pose-point','pose-write','pose-think','pose-excited'];
+    function setProfessorPose(pose){
+      refs.professor2d.classList.remove(...poseClasses);
+      refs.professor2d.classList.add('pose-' + (pose || 'talk'));
+    }
+    const setProfessorTalking = v => refs.professor2d.classList.toggle('talking', v);
+
+    function renderStep(animate){
+      const ex = EXAMPLES[exIndex];
+      const step = ex.steps[currentStep];
+      refs.chapterNumber.textContent = String(currentStep + 1).padStart(2,'0');
+      refs.chapterTitle.textContent = step.title;
+      refs.thinkingPrompt.textContent = step.think || '';
+      refs.modelNote.innerHTML = step.model ? `<strong>Model</strong>${step.model}` : '';
+      refs.subtitle.textContent = step.say;
+      refs.timelineTitle.textContent = step.title;
+      refs.stepCount.textContent = `Step ${currentStep + 1} of ${ex.steps.length}`;
+      refs.stepAnnouncement.textContent = `Step ${currentStep + 1}: ${step.title}. ${step.say}`;
+      setProfessorPose(step.pose);
+
+      [...refs.reasoningMap.children].forEach((node,i) => {
+        node.classList.toggle('done', i < step.map);
+        node.classList.toggle('active', i === step.map);
+      });
+      [...refs.timeline.children].forEach((node,i) => {
+        node.classList.toggle('done', i < currentStep);
+        node.classList.toggle('active', i === currentStep);
+      });
+      [...refs.transcriptList.children].forEach((node,i) => {
+        const active = i === currentStep;
+        node.classList.toggle('active', active);
+        const button = node.querySelector('button');
+        if(active) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current');
+      });
+
+      refs.equationStack.innerHTML = '';
+      (step.board || []).forEach((line,i) => {
+        const row = renderBoardLine(line);
+        refs.equationStack.appendChild(row);
+        window.setTimeout(() => row.classList.add('show'), animate ? 90 + i*140 : 0);
+      });
+
+      drawSketch(currentStep, animate);
+    }
+
+    function loadExample(i){
+      stopPlayback();
+      exIndex = i; currentStep = 0;
+      [...refs.tabs.children].forEach((b,j) => b.classList.toggle('active', j === i));
+      buildChrome();
+      renderStep(true);
+    }
+
+    /* ---------- voice: fluid single-utterance en-GB ---------- */
+    let britishVoice = null;
+    function loadVoices(){
+      if(!('speechSynthesis' in window)){
+        voiceOn = false;
+        refs.voiceButton.textContent = 'Voice unavailable';
+        refs.voiceButton.disabled = true;
+        return;
+      }
+      const voices = speechSynthesis.getVoices();
+      const gb = voices.filter(v => /^en-GB/i.test(v.lang));
+      const preferred = ['Daniel','Arthur','Serena','Oliver','Sonia','Libby','Ryan','Kate','Google UK English Male'];
+      britishVoice = preferred.map(name => gb.find(v => v.name.includes(name))).find(Boolean)
+                     || gb[0] || voices.find(v => /^en/i.test(v.lang)) || null;
+    }
+    loadVoices();
+    if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+
+    /* pronunciation layer: TTS only — captions show the original text */
+    function speechText(text){
+      const spoken = text
+        .replace(/[°]/g,' degrees ')
+        .replace(/\s*[—–]\s*/g,', ')
+        .replace(/\.\.\./g,',')
+        .replace(/\s*;\s*/g, ', ')
+        .replace(/\s*:\s+/g, ', ')
+        .replace(/\bg\b/g,'gee')
+        .replace(/(\d)\.(\d)/g,'$1 point $2');
+      return spoken
+        .replace(/\blives\b/g,'livz')
+        .replace(/\blive\b/g,'liv')
+        .replace(/\ba squared\b/g,'ay squared')
+        .replace(/\ba equals\b/g,'ay equals')
+        .replace(/\bequals a\b(?=[,.]| over| b\b| plus| minus)/g,'equals ay')
+        .replace(/\bover a\b(?=[,.]| is| minus| and)/g,'over ay')
+        .replace(/\bplus a\b(?=[,.]| t\b)/g,'plus ay')
+        .replace(/\bm a\b/g,'m ay')
+        .replace(/\ba is\b(?= \d)/g,'ay is')
+        .replace(/\ba becomes\b/g,'ay becomes');
+    }
+
+    function stopSpeech(){
+      playToken += 1;
+      window.clearTimeout(advanceTimer);
+      advanceTimer = null;
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+      setProfessorTalking(false);
+    }
+    function stopPlayback(){
+      isPlaying = false;
+      stopSpeech();
+      refs.playButton.textContent = '▶ Play';
+      refs.playButton.setAttribute('aria-label','Play lesson');
+    }
+    function scheduleNext(token, delay = 700){
+      advanceTimer = window.setTimeout(() => {
+        if(!isPlaying || token !== playToken) return;
+        const ex = EXAMPLES[exIndex];
+        if(currentStep < ex.steps.length - 1){
+          currentStep += 1;
+          renderStep(true);
+          speakCurrent();
+        }else stopPlayback();
+      }, delay);
+    }
+    function speakCurrent(){
+      stopSpeech();
+      const token = playToken;
+      const text = EXAMPLES[exIndex].steps[currentStep].say;
+      setProfessorTalking(true);
+      if(voiceOn && 'speechSynthesis' in window){
+        const u = new SpeechSynthesisUtterance(speechText(text));
+        u.lang = 'en-GB';
+        u.rate = 0.94;
+        u.pitch = 0.92;
+        if(britishVoice) u.voice = britishVoice;
+        u.onend = () => { setProfessorTalking(false); scheduleNext(token, 650); };
+        u.onerror = () => {
+          setProfessorTalking(false);
+          scheduleNext(token, Math.max(5200, text.split(/\s+/).length/145*60000));
+        };
+        speechSynthesis.speak(u);
+      }else{
+        const readingTime = Math.max(5200, text.split(/\s+/).length/145*60000);
+        advanceTimer = window.setTimeout(() => { setProfessorTalking(false); scheduleNext(token, 250); }, readingTime);
+      }
+    }
+    function startPlayback(){
+      isPlaying = true;
+      refs.playButton.textContent = 'Ⅱ Pause';
+      refs.playButton.setAttribute('aria-label','Pause lesson');
+      speakCurrent();
+    }
+
+    refs.playButton.addEventListener('click', () => { isPlaying ? stopPlayback() : startPlayback(); });
+    document.getElementById('nextButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep < EXAMPLES[exIndex].steps.length - 1) currentStep += 1;
+      renderStep(true);
+    });
+    document.getElementById('backButton').addEventListener('click', () => {
+      stopPlayback();
+      if(currentStep > 0) currentStep -= 1;
+      renderStep(true);
+    });
+    document.getElementById('restartButton').addEventListener('click', () => {
+      stopPlayback(); currentStep = 0; renderStep(true);
+    });
+    refs.voiceButton.addEventListener('click', () => {
+      voiceOn = !voiceOn;
+      refs.voiceButton.setAttribute('aria-pressed', String(voiceOn));
+      refs.voiceButton.textContent = voiceOn ? '◖)) Voice: on' : '◖× Voice: off';
+      if(isPlaying) speakCurrent();
+    });
+    document.addEventListener('keydown', event => {
+      if(event.target.matches('button,a,input,textarea')) return;
+      if(event.key === ' '){ event.preventDefault(); refs.playButton.click(); }
+      if(event.key === 'ArrowRight') document.getElementById('nextButton').click();
+      if(event.key === 'ArrowLeft') document.getElementById('backButton').click();
+    });
+
+    /* ---------- go ---------- */
+    loadExample(0);
+  })();
+  </script>
 </body>
 </html>
