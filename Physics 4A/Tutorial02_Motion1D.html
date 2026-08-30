@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -679,7 +696,7 @@
       const g=el('g',{},c.svg);
       el('circle',{cx:c.M.X(x),cy:c.M.Y(y),r:5,fill:opt.color||PURPLE},g);
       const t=el('text',{x:c.M.X(x)+(opt.dx??10),y:c.M.Y(y)+(opt.dy??-10),fill:opt.color||PURPLE,
-        'font-size':14,'font-family':'Georgia,serif','font-style':'italic'},g);
+        'font-size':17,'font-family':'Georgia,serif','font-style':'italic'},g);
       t.textContent=txt;
       if(!c.instant){g.setAttribute('opacity',0);tween(u=>g.setAttribute('opacity',u),500,false);}
       return g;
@@ -731,9 +748,9 @@
             {label:"The classic trap", text:"v = 0 does NOT mean a = 0 — the top of a throw.", kind:"warn"}
           ],
           action(c){
-       arrow(c, 1,7.6, 4.4,7.6, {color:GREEN, w:3, label:'Δx > 0', fs:12});
-       arrow(c, 8.6,7.6, 6.2,7.6, {color:RED, w:3, label:'Δx < 0', fs:12, side:-1});
-       textAt(c, 4.9,6.7, 'displacement carries a sign; distance never does', {fs:12, italic:true, anchor:'middle'});
+       arrow(c, 1,7.6, 4.4,7.6, {color:GREEN, w:3, label:'Δx > 0', fs:12, at:'mid'});
+       arrow(c, 8.6,7.6, 6.2,7.6, {color:RED, w:3, label:'Δx < 0', fs:12, side:-1, at:'mid'});
+       textAt(c, 5.1,-0.5, 'displacement carries a sign; distance never does', {fs:10, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"The constant-a toolkit",
@@ -753,7 +770,7 @@
        label(c, 4,1.0, 'v₀t', {fs:16, color:'#1D4568', anchor:'middle', italic:true});
        label(c, 6.4,3.6, '½at²', {fs:16, color:RED, anchor:'middle', italic:true});
        label(c, 0.15,2.25, 'v₀', {fs:13, color:'#8A5A24', italic:true});
-       label(c, 2.8,7.4, 'Δx = v₀t + ½at² — read it off the graph', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 3.35,6.85, 'Δx = v₀t + ½at² — read it off the graph', {fs:12, color:'#8A5A24', italic:true});
      }
         },
         { map:3, title:"Free fall: nature's constant a",
@@ -782,13 +799,13 @@
           action(c){
        el('circle',{cx:c.M.X(1.4), cy:c.M.Y(6.0), r:9, fill:RED},c.svg);
        arrow(c, 1.4,5.6, 1.4,4.2, {color:PURPLE, w:2.5, label:'g', fs:13});
-       label(c, 0.6,3.2, 'falling apple', {fs:13, color:'#7A5A28'});
+       label(c, 0.4,2.6, 'falling apple', {fs:10, color:'#7A5A28'});
        plotCurve ? plotCurve(c, t=>5.0+2.6*(t-5.2)-0.65*(t-5.2)*(t-5.2), 3.4, 7.6, {color:'#8A7D60', w:2, dash:'5,4'}) : 0;
        el('circle',{cx:c.M.X(5.2), cy:c.M.Y(7.6), r:6, fill:BLUE},c.svg);
-       label(c, 4.4,3.2, 'thrown stone', {fs:13, color:'#7A5A28'});
+       label(c, 4.4,3.2, 'thrown stone', {fs:10, color:'#7A5A28'});
        el('rect',{x:c.M.X(8.9), y:c.M.Y(6.2), width:34, height:14, rx:6, fill:'#7B4FA0'},c.svg);
        el('polygon',{points:`${c.M.X(8.9)},${c.M.Y(6.2)} ${c.M.X(8.9)},${c.M.Y(6.2)+14} ${c.M.X(8.9)-12},${c.M.Y(6.2)+7}`, fill:'#7B4FA0'},c.svg);
-       label(c, 8.7,3.2, 'coasting probe', {fs:13, color:'#7A5A28'});
+       label(c, 8.6,3.2, 'coasting probe', {fs:10, color:'#7A5A28'});
        label(c, 2.6,1.4, 'one constant-acceleration toolkit — the same three sentences', {fs:13, color:'#8A5A24', italic:true});
      }
         },
@@ -890,7 +907,7 @@ diff:"Basic",
             {label:"Reusable method", text:"signs from the axis → pick the equation missing the useless variable → solve → scale-check", kind:"answer"}
           ],
           action(c){
-       arrow(c, 0,27, 22.5,27, {color:BLUE, dash:'7,5', w:2, label:'at 15 m/s: 22.5 m', fs:12});
+       arrow(c, 0,27, 22.5,27, {color:BLUE, dash:'7,5', w:2, label:'at 15 m/s: 22.5 m', fs:12, at:'mid'});
        textAt(c, 46,27.6, '× 4 the road for × 2 the speed', {fs:12, italic:true, color:'#8A5A24'});
      }
         },
@@ -1024,8 +1041,8 @@ diff:"Intermediate",
             {label:"The rest instants", tex:"v = 0 \\;\\text{at}\\; t = 1.00\\ \\mathrm{s} \\;\\text{and}\\; t = 2.00\\ \\mathrm{s}", kind:"answer"}
           ],
           action(c){
-       markPoint(c, 1, 5, 't = 1 s', {color:PURPLE, dy:-12});
-       markPoint(c, 2, 4, 't = 2 s', {color:PURPLE, dy:16});
+       markPoint(c, 1, 5, 't = 1 s', {color:PURPLE, dx:-86, dy:-14});
+       markPoint(c, 2, 4, 't = 2 s', {color:PURPLE, dx:-96, dy:30});
      }
         },
         { map:3, title:"Part (b): a at those instants",
@@ -1141,7 +1158,7 @@ diff:"Intermediate",
           board:[
             {label:"Velocity, then speed", tex:"v = v_0 + at = 15.0 - (9.80)(4.066) = -24.8\\ \\mathrm{m/s} \\;\\Rightarrow\\; |v| = 24.8\\ \\mathrm{m/s}", kind:"answer"}
           ],
-          action(c){ arrow(c, 0.9,-13, 0.9,-19, {color:GREEN, label:'24.8 m/s', fs:14}); }
+          action(c){ arrow(c, 0.9,-13, 0.9,-19, {color:GREEN, label:'24.8 m/s', fs:14, at:'mid', loff:56}); }
         },
         { map:5, title:"Check by a second road",
           think:"Can v² = v₀² + 2aΔy reproduce the speed without touching time?",

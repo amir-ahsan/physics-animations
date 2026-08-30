@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -708,7 +725,8 @@
           ],
           action(c){
             arrow(c, 4.4,2.5, 4.4,0.4, {color:RED, label:'mg', fs:14, side:-1});
-            arrow(c, 4.4,2.5, 3.11,1.73, {color:RED, dash:'5,4', w:2, label:'mg sinθ', fs:11, loff:26});
+            arrow(c, 4.4,2.5, 3.11,1.73, {color:RED, dash:'5,4', w:2});
+            label(c, 0.35,0.5, 'mg sinθ', {fs:11, color:RED, italic:true});
             arrow(c, 4.4,2.5, 5.17,1.22, {color:RED, dash:'5,4', w:2, label:'mg cosθ', fs:11, loff:26});
             arc(c, 4.4,2.5, 1.0, 270, 301, {label:'θ'});
           } },
@@ -800,7 +818,7 @@
           ],
           action(c){
             boxAt(c, 5,0, 5,5, {});
-            textAt(c, 5,2.1, '10.0 kg', {fs:13, color:'#3a2c16', anchor:'middle'});
+            textAt(c, 6.6,1.2, '10.0 kg', {fs:13, color:'#3a2c16', anchor:'middle'});
             arrow(c, 0.5,2.5, 2.4,2.5, {color:RED, label:'20 N', fs:13, loff:-42, toff:20});
           } },
         { map:1, title:'Compute the ceiling first',
@@ -825,7 +843,7 @@
             {label:'The verdict', tex:'20.0\\ \\mathrm{N} < 29.4\\ \\mathrm{N} \\;\\Rightarrow\\; \\text{the crate does NOT move}', kind:'key'}
           ],
           action(c){
-            textAt(c, 4.5, 6.6, 'push 20 N < ceiling 29.4 N', {fs:12, color:GOLD, italic:true, anchor:'end'});
+            textAt(c, -3.8, 10.8, 'push 20 N < ceiling 29.4 N', {fs:12, color:GOLD, italic:true});
           } },
         { map:3, title:'Equilibrium sets the friction',
           think:'If it does not move, what equation does the friction have to satisfy?',
@@ -920,7 +938,7 @@
             {tex:'n = mg\\cos\\theta = (5.00)(9.80)\\cos 30.0^{\\circ} = 42.4\\ \\mathrm{N}', kind:'key'},
             {label:'Now friction', tex:'f_k = \\mu_k n = (0.250)(42.4) = 10.6\\ \\mathrm{N}'}
           ],
-          action(c){ textAt(c, 6.0,6.55, 'n = 42.4 N', {fs:12, color:BLUE, italic:true}); } },
+          action(c){ textAt(c, 6.9,6.2, 'n = 42.4 N', {fs:12, color:BLUE, italic:true}); } },
         { map:4, title:'Solve along the slope',
           think:'Write the symbols first; let the structure simplify before any number enters.',
           model:'Gravity’s component beats friction — and the mass cancels before numbers enter.',

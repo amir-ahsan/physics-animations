@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -683,8 +700,8 @@
       fill:'none',stroke:'#8A5A24','stroke-width':3},svg);
     el('rect',{x:M.X(1.15),y:M.Y(5.2),width:M.X(8.85)-M.X(1.15),height:M.Y(0)-M.Y(5.2),fill:'#9FBEDB',opacity:.55},svg);
     el('rect',{x:M.X(4.1),y:M.Y(5.85),width:M.X(5.9)-M.X(4.1),height:M.Y(4.5)-M.Y(5.85),fill:'#C98F52',stroke:'#8A5A24','stroke-width':2,rx:3},svg);
-    const t=el('text',{x:M.X(5),y:M.Y(6.9),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
-    t.textContent='floating: it displaces its own weight of fluid';
+    const t=el('text',{x:M.X(2.4),y:M.Y(7.15),fill:'#8A7D60','font-size':12,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
+    t.textContent='floating displaces its own weight';
   },
       steps:[
         { map:0, title:"Pressure and depth",
@@ -699,7 +716,7 @@
        arrow(c, 2.4,4.4, 1.35,4.4, {color:BLUE, w:2, side:-1});
        arrow(c, 2.9,2.8, 1.35,2.8, {color:BLUE, w:3, side:-1});
        arrow(c, 3.4,1.2, 1.35,1.2, {color:BLUE, w:4, side:-1});
-       label(c, 3.6,2.8, '← pressure grows with depth', {fs:12.5, color:'#1D4568', italic:true});
+       label(c, 3.6,2.8, '← pressure grows with depth', {fs:10, color:'#1D4568', italic:true});
        dashLine(c, 9.6,5.2, 9.6,1.2, {}); label(c, 9.8,3.2, 'h', {fs:15, color:'#7A5A28', italic:true});
      }
         },
@@ -712,9 +729,9 @@
             {label:"Buoyancy", tex:"B = \\rho_{\\rm fluid}V_{\\rm disp}\\,g, \\qquad \\text{floating: } \\frac{V_{\\rm sub}}{V} = \\frac{\\rho_{\\rm obj}}{\\rho_{\\rm fluid}}", kind:"key"}
           ],
           action(c){
-       arrow(c, 3.5,4.6, 3.5,6.3, {color:BLUE, w:3.5, label:'B', fs:14});
-       arrow(c, 6.5,6.3, 6.5,4.6, {color:RED, w:3.5, label:'w = B', fs:13, side:-1});
-       label(c, 6.3,3.9, 'submerged part: displaced fluid', {fs:12, color:'#1D4568', italic:true});
+       arrow(c, 3.5,4.6, 3.5,6.3, {color:BLUE, w:3.5, label:'B', fs:14, at:'mid', side:1});
+       arrow(c, 6.5,6.3, 6.5,4.6, {color:RED, w:3.5, label:'w = B', fs:13, side:-1, at:'mid', loff:34});
+       label(c, 7.3,2.3, 'submerged part: displaced fluid', {fs:9, color:'#1D4568', italic:true});
      }
         },
         { map:2, title:"The two flow commandments",
@@ -792,8 +809,8 @@
          const y=1.75+i*0.65;
          arrow(c, 2.0,y, 2.0+a[1]*3.2,y, {color:BLUE, w:2.5});
        });
-       label(c, 6.6,3.5, 'stuck at the walls,', {fs:13, color:'#1D4568', italic:true});
-       label(c, 6.6,2.9, 'fastest in the middle', {fs:13, color:'#1D4568', italic:true});
+       label(c, 6.7,4.35, 'stuck at the walls,', {fs:11, color:'#1D4568', italic:true});
+       label(c, 6.7,3.6, 'fastest in the middle', {fs:11, color:'#1D4568', italic:true});
        label(c, 1.4,0.5, 'viscosity: internal friction — and Q ∝ r⁴ (Poiseuille)', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -825,7 +842,7 @@ diff:"Basic",
             {label:"The principle", tex:"\\frac{F_1}{A_1} = \\frac{F_2}{A_2} \\quad \\text{(Pascal’s principle)}", kind:"key"}
           ],
           action(c){
-       textAt(c, -4.3,3.0, 'A₁ = 5.00 cm²', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, -6.6,4.15, 'A₁ = 5.00 cm²', {fs:12, italic:true, color:'#8A5A24'});
        textAt(c, 2.2,-0.35, 'A₂ = 500 cm²', {fs:12, italic:true, color:'#8A5A24', anchor:'middle'});
      }
         },
@@ -888,7 +905,7 @@ diff:"Basic",
     el('line',{x1:M.X(0),y1:M.Y(10.5),x2:M.X(6.2),y2:M.Y(10.5),stroke:'#5B82A6','stroke-width':2.5},svg);
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(0),y2:M.Y(10.8),stroke:'#8A7D60','stroke-width':5},svg);
     el('circle',{cx:M.X(0),cy:M.Y(0.5),r:0.55*M.s,fill:'rgba(245,241,230,.85)',stroke:'#5C4B30','stroke-width':3},svg);
-    textAt(ctx, 0.8,0.35, 'window', {fs:12, italic:true});
+    textAt(ctx, 1.35,0.35, 'window', {fs:12, italic:true});
   },
       steps:[
         { map:0, title:"Read: pressure grows with depth",
@@ -975,7 +992,7 @@ diff:"Intermediate",
        boxAt(c, 0,1.0, 1.1,0.8, {fill:'#9A8C6B', stroke:'#6E6248'});
        arrow(c, 0.9,1.4, 0.9,2.6, {color:BLUE, w:3.5, label:'B', fs:15});
        arrow(c, -0.9,1.4, -0.9,0.15, {color:RED, w:3.5, label:'w', fs:15, side:-1});
-       arrow(c, 0,2.4, 0,3.6, {color:GREEN, w:3, label:'T = 30 N', fs:13});
+       arrow(c, 0,2.4, 0,3.6, {color:GREEN, w:3, label:'T = 30 N', fs:13, at:'mid', loff:52});
      }
         },
         { map:2, title:"Volume, mass, density",

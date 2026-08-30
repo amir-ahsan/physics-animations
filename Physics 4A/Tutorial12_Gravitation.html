@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -694,7 +711,7 @@
     el('ellipse',{cx:M.X(0),cy:M.Y(0),rx:Math.abs(M.X(3.6)-M.X(0)),ry:Math.abs(M.Y(2.5)-M.Y(0)),
       fill:'none',stroke:'#8A7D60','stroke-width':2,'stroke-dasharray':'7,5'},svg);
     el('circle',{cx:M.X(-2.59),cy:M.Y(0),r:Math.abs(M.X(0.55)-M.X(0)),fill:'#B5793B',stroke:'#8A5A24','stroke-width':2},svg);
-    textAt(c, -2.59,-1.0, 'Sun at a focus', {fs:11.5, italic:true, anchor:'middle'});
+    textAt(c, -1.55,-0.8, 'Sun at a focus', {fs:10, italic:true, anchor:'middle'});
     el('circle',{cx:M.X(-3.6),cy:M.Y(0),r:6,fill:'#2E6DA4'},svg);
     textAt(c, -3.5,0.55, 'perihelion', {fs:11, italic:true, anchor:'start'});
     const t=el('text',{x:M.X(0),y:M.Y(-3.4),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
@@ -716,7 +733,7 @@
        el('circle',{cx:M.X(4.2), cy:M.Y(3.2), r:8, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2},c.svg);
        arrow(c, 1.95,3.2, 2.85,3.2, {color:RED, w:2.5, label:'F', fs:12});
        arrow(c, 3.85,3.2, 2.95,3.2, {color:RED, w:2.5, label:'F', fs:12, side:-1});
-       label(c, 1.3,1.9, 'equal pulls, both ways — always', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -4.1,1.9, 'equal pulls, both ways — always', {fs:12, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"Orbits: gravity plays centripetal",
@@ -732,7 +749,7 @@
        el('circle',{cx:c.M.X(3.6), cy:c.M.Y(0), r:7, fill:GOLD, stroke:'#8A5A24','stroke-width':1.5},c.svg);
        arrow(c, 3.6,0, 1.7,0, {color:PURPLE, w:3, label:'F_g = centripetal', fs:12, side:-1});
        arrow(c, 3.6,0.3, 3.6,1.8, {color:GREEN, w:3, label:'v', fs:13});
-       label(c, 1.4,-2.0, 'falling forever, missing forever', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -2.15,-1.63, 'falling, and missing, forever', {fs:12, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"Kepler's three laws",
@@ -758,8 +775,9 @@
        fan(-10.7*D, 10.7*D, '#B5793B');        /* far from the Sun: long thin sliver */
        /* the planet moves fast near the Sun, slow far away — arrows tangent to the orbit */
        arrow(c, a*Math.cos(230*D), b*Math.sin(230*D), a*Math.cos(230*D)+1.05*Math.sin(230*D)*a/3.6, b*Math.sin(230*D)-1.05*Math.cos(230*D)*b/2.0, {color:GREEN, w:2.5, label:'fast', fs:11});
-       arrow(c, a*Math.cos(-10.7*D), b*Math.sin(-10.7*D), a*Math.cos(-10.7*D)+0.45*Math.sin(-10.7*D)*a/3.6, b*Math.sin(-10.7*D)-0.45*Math.cos(-10.7*D)*b/2.0, {color:RED, w:2.5, label:'slow', fs:11, side:-1});
-       textAt(c, 0.4,3.0, 'equal areas, equal times: 100° near the Sun = 21° far away', {fs:11.5, italic:true, anchor:'middle'});
+       arrow(c, a*Math.cos(-10.7*D), b*Math.sin(-10.7*D), a*Math.cos(-10.7*D)+0.45*Math.sin(-10.7*D)*a/3.6, b*Math.sin(-10.7*D)-0.45*Math.cos(-10.7*D)*b/2.0, {color:RED, w:2.5});
+       label(c, 4.75,-1.45, 'slow', {fs:11, color:RED, italic:true});
+       textAt(c, 0.4,-2.7, 'equal areas, equal times: 100° near the Sun = 21° far away', {fs:11, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Energy, done properly",
@@ -820,7 +838,7 @@
        el('circle',{cx:M.X(4.0), cy:M.Y(0.4), r:12, fill:'#D9CDB4', stroke:'#8A7D60','stroke-width':2},c.svg);
        label(c, 3.7,-0.6, 'Moon', {fs:12, color:'#7A5A28'});
        arrow(c, 0.4,0.4, 2.2,0.4, {color:RED, w:3.5, label:'near side: pulled hardest', fs:11});
-       arrow(c, -3.2,0.4, -4.2,0.4, {color:BLUE, w:2.5, label:'far side: left behind', fs:11, side:-1});
+       arrow(c, -3.2,0.4, -4.2,0.4, {color:BLUE, w:2.5, label:'far side: left behind', fs:11, side:-1, at:'mid', loff:30});
        label(c, -3.6,-2.6, 'the DIFFERENCE stretches the ocean: two bulges, two tides a day', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -880,7 +898,7 @@ diff:"Basic",
           action(c){
        arrow(c, 2.6,-0.4, 2.6,-1.1, {color:'#C1653B', w:3, label:'261 N', fs:11, side:-1});
        arrow(c, 3.5,-0.4, 3.5,-2.24, {color:BLUE, w:3, label:'686 N', fs:11});
-       textAt(c, -3.9,-2.6, 'same 70 kg, two different arrangements with gravity', {fs:12, italic:true});
+       textAt(c, -3.9,-3.15, 'same 70 kg, two arrangements with gravity', {fs:10, italic:true});
      }
         },
       ]

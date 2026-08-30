@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -693,7 +710,7 @@
           action(c){
        el('circle',{cx:c.M.X(0.9), cy:c.M.Y(6.6), r:8, fill:'#2E6DA4'},c.svg);
        arrow(c, 1.4,6.6, 3.5,6.6, {color:GREEN, w:3, label:'v (constant)', fs:13});
-       label(c, 0.4,5.7, 'ΣF = 0: no force needed to keep moving', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.2,7.85, 'ΣF = 0: no force needed to keep moving', {fs:9, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"The second law: the engine",
@@ -707,7 +724,7 @@
           ],
           action(c){
        arrow(c, 7.2,6.6, 9.4,6.6, {color:PURPLE, w:3, dash:'6,4', label:'a = ΣF/m', fs:14});
-       label(c, 6.6,5.7, 'a points where the NET force points', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 6.9,-0.75, 'a follows the NET force', {fs:9, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"The third law: different bodies",
@@ -741,7 +758,7 @@
        el('circle',{cx:M.X(2.9), cy:M.Y(2.25), r:9, fill:'#C98F52', stroke:'#8A5A24','stroke-width':2},c.svg);
        arrow(c, 2.9,2.25, 1.9,3.95, {color:BLUE, w:3, label:'n ⊥ surface', fs:13, side:-1});
        arrow(c, 2.9,2.05, 2.9,0.35, {color:RED, w:3, label:'mg', fs:13});
-       label(c, 0.4,4.9, 'on a slope: n = mg cosθ ≠ mg', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 0.4,5.6, 'on a slope: n = mg cosθ ≠ mg', {fs:12, color:'#8A5A24', italic:true});
        el('line',{x1:M.X(6.8),y1:M.Y(7),x2:M.X(10.4),y2:M.Y(7),stroke:'#8A7D60','stroke-width':4},c.svg);
        el('line',{x1:M.X(8.6),y1:M.Y(7),x2:M.X(8.6),y2:M.Y(4.7),stroke:'#5C4B30','stroke-width':2},c.svg);
        boxAt ? boxAt(c, 8.6,3.6, 1.4,1.1, {fill:'#B5793B'}) : 0;
@@ -778,7 +795,7 @@
           action(c){
        el('ellipse',{cx:c.M.X(5.5), cy:c.M.Y(1.8), rx:4.6*c.M.s, ry:3.4*c.M.s, fill:'none',
          stroke:'#B5793B','stroke-width':2,'stroke-dasharray':'8,6'},c.svg);
-       label(c, 1.3,7.0, 'one body · only forces ON it · axes along a', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 1.3,7.55, 'one body · only forces ON it · axes along a', {fs:13, color:'#8A5A24', italic:true});
      }
         },
       ]
@@ -810,7 +827,7 @@ diff:"Basic",
           action(c){
        boxAt(c, 0,-4, 8,8, {});
        arrow(c, 4,0, 34,0, {color:RED, label:'30 N', fs:14, side:-1});
-       arrow(c, 0,4, 0,44, {color:BLUE, label:'40 N', fs:14});
+       arrow(c, 0,4, 0,44, {color:BLUE, label:'40 N', fs:14, at:'mid', side:1});
      }
         },
         { map:2, title:"Newton, one axis at a time",
@@ -877,8 +894,8 @@ diff:"Intermediate",
           say:"Here they are. The 50 newtons pushes m-one; m-one passes the message along to m-two by contact. And a confession about that message: it is NOT instantaneous. The push crosses the block as an elastic wave — a compression running through billions of tiny electromagnetic springs, molecule to molecule — at the speed of SOUND in the material, kilometres per second, far below the speed of light. Across a block this size that is a few microseconds, so for today's steady push we may TREAT it as instantaneous — but do know whom you are approximating.",
           action(c){
        boxAt(c, 6,0, 4,4, {fill:'#C98F52'});   textAt(c, 6,1.6, 'm₁', {anchor:'middle', fs:15, color:'#5C3A16'});
-       boxAt(c, 11,0, 6,6, {fill:'#B5793B'});  textAt(c, 11,2.6, 'm₂', {anchor:'middle', fs:15, color:'#4A2D10'});
-       arrow(c, -1,2, 3.8,2, {color:RED, label:'F = 50 N', fs:14});
+       boxAt(c, 11,0, 6,6, {fill:'#B5793B'});  textAt(c, 11,1.7, 'm₂', {anchor:'middle', fs:15, color:'#4A2D10'});
+       arrow(c, -1,2, 3.8,2, {color:RED, label:'F = 50 N', fs:14, at:'mid', loff:26});
      }
         },
         { map:2, title:"Part (a): zoom out",
@@ -913,7 +930,7 @@ diff:"Intermediate",
        textAt(c, 18.5,5.4, 'FBD of m₂', {anchor:'middle', fs:13, italic:true});
        arrow(c, 16.6,10, 18.1,10, {color:PURPLE, w:3, label:'P', fs:13});
        arrow(c, 18.5,11.6, 18.5,13.4, {color:BLUE, w:3, label:'n₂', fs:13, dy:26, dx:22});
-       arrow(c, 18.5,8.4, 18.5,6.6, {color:RED, w:3, label:'m₂g', fs:13, side:-1});
+       arrow(c, 18.5,8.4, 18.5,6.6, {color:RED, w:3, label:'m₂g', fs:13, side:-1, at:'mid', loff:34});
      }
         },
         { map:4, title:"Check via the third law",
@@ -989,7 +1006,7 @@ diff:"Intermediate",
        arrow(c, -1.6,4.9, -1.6,6.4, {color:BLUE, label:'T', fs:14});
        arrow(c, -1.6,4.3, -1.6,2.9, {color:RED, label:'m₁g', fs:13});
        arrow(c, 1.9,3.3, 1.9,4.8, {color:BLUE, label:'T', fs:14});
-       arrow(c, 1.9,2.6, 1.9,0.6, {color:RED, label:'m₂g', fs:13});
+       arrow(c, 1.9,2.6, 1.9,0.6, {color:RED, label:'m₂g', fs:13, at:'mid', side:-1, loff:34});
      }
         },
         { map:3, title:"Add — and T retires",
@@ -1079,7 +1096,7 @@ diff:"Basic",
           board:[
             {label:"Lighter", tex:"(b)\\; n = m(g + a_y) = 70.0(9.80 + (-2.00)) = 546\\ \\mathrm{N} \\quad (< mg)", kind:"answer"}
           ],
-          action(c){ arrow(c, 4.2,5.4, 4.2,3.0, {color:PURPLE, label:'a', fs:15});
+          action(c){ arrow(c, 4.2,5.4, 4.2,3.0, {color:PURPLE, label:'a', fs:15, at:'mid', loff:24});
                 textAt(c, 3.4,1.8, '(b) scale: 546 N', {fs:12, color:PURPLE}); }
         },
         { map:3, title:"Case (c): steady speed",

@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -667,7 +684,7 @@
       const g=el('g',{},c.svg);
       el('circle',{cx:c.M.X(x),cy:c.M.Y(y),r:5,fill:opt.color||PURPLE},g);
       const t=el('text',{x:c.M.X(x)+(opt.dx??10),y:c.M.Y(y)+(opt.dy??-10),fill:opt.color||PURPLE,
-        'font-size':14,'font-family':'Georgia,serif','font-style':'italic'},g);
+        'font-size':17,'font-family':'Georgia,serif','font-style':'italic'},g);
       t.textContent=txt;
       if(!c.instant){g.setAttribute('opacity',0);tween(u=>g.setAttribute('opacity',u),500,false);}
       return g;
@@ -755,9 +772,9 @@
        const pts=[]; for(let i=0;i<=40;i++){const u=i/40;
          pts.push(M.X(1.2+8.2*u)+','+M.Y(1.2+5.0*u+1.3*Math.sin(3*Math.PI*u)));}
        el('polyline',{points:pts.join(' '),fill:'none',stroke:RED,'stroke-width':2.5},c.svg);
-       label(c, 3.4,5.9, 'scenic route', {fs:12, color:RED, italic:true});
+       label(c, 2.3,4.7, 'scenic route', {fs:12, color:RED, italic:true});
        label(c, 5.4,2.2, 'direct route', {fs:12, color:GREEN, italic:true});
-       label(c, 1.0,7.2, 'gravity: same work either way · friction: charges by the metre', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 1.0,7.5, 'gravity: same work either way · friction: charges by the metre', {fs:12, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"The master equation",
@@ -807,10 +824,10 @@
        label(c, 1.2,7.0, 'book on a shelf: an IOU of mgh', {fs:13, color:'#8A5A24', italic:true});
        dashLine(c, 2.0,5.4, 2.0,0.8, {});
        arrow(c, 5.6,3.4, 7.4,3.4, {color:'#8A7D60', w:2.5});
-       label(c, 5.7,4.1, 'release', {fs:12, color:'#8A7D60', italic:true});
+       label(c, 5.5,3.7, 'release', {fs:11, color:'#8A7D60', italic:true});
        el('circle',{cx:M.X(8.7), cy:M.Y(1.3), r:9, fill:RED},c.svg);
        arrow(c, 8.7,2.6, 8.7,1.7, {color:GREEN, w:3, label:'v', fs:14});
-       label(c, 7.3,4.3, 'debt repaid in ½mv²', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 7.5,4.6, 'debt repaid in ½mv²', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:5, title:"The reusable method",
@@ -1148,7 +1165,7 @@ diff:"Challenging",
           ],
           action(c){
        arrow(c, 2,4, 2,3.1, {color:RED, label:'mg', fs:13});
-       arrow(c, 1.55,4, 1.55,3.5, {color:BLUE, w:2.5, label:'n → 0', fs:12, side:-1});
+       arrow(c, 1.55,4, 1.55,3.5, {color:BLUE, w:2.5, label:'n → 0', fs:12, at:'mid', side:-1, loff:30});
      }
         },
         { map:2, title:"The minimum crest speed",

@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -715,7 +732,7 @@
        arrow(c, 4.6,4.6, 8.6,4.6, {color:GREEN, w:3, label:'2v (top)', fs:13});
        el('circle',{cx:M.X(4.6), cy:M.Y(0.6), r:5, fill:RED},c.svg);
        label(c, 5.0,0.05, 'contact point: momentarily at REST', {fs:12, color:RED, italic:true});
-       label(c, 0.3,6.6, 'v = Rω ties the two motions together', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 0.3,7.15, 'v = Rω ties the two motions together', {fs:10, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"L about a point",
@@ -728,7 +745,7 @@
           ],
           action(c){
        arc(c, 8,5, 1.4, 180, 211, {color:'#888', label:'φ'});
-       label(c, 0.6,6.7, 'ℓ = r sinφ: fixed for a straight path → L never changes', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 0.6,6.35, 'ℓ = r sinφ: fixed for a straight path → L never changes', {fs:10, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"Fixed axis: L = Iω",
@@ -779,11 +796,11 @@
        const pts=[]; for(let i=0;i<=120;i++){const th=i/120*4.4*Math.PI;
          const r=0.09*th; pts.push(M.X(2.6+r*Math.cos(th))+','+M.Y(4.4+r*Math.sin(th)));}
        el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':2.5},c.svg);
-       label(c, 1.6,2.2, 'a galaxy: L with nowhere to go', {fs:13, color:'#7A5A28'});
+       label(c, 0.5,2.2, 'a galaxy: L conserved', {fs:10, color:'#7A5A28'});
        el('circle',{cx:M.X(8.0), cy:M.Y(4.4), r:6, fill:GOLD},c.svg);
        el('ellipse',{cx:M.X(8.0), cy:M.Y(4.4), rx:1.9*M.s, ry:0.55*M.s, fill:'none', stroke:'#8A7D60','stroke-dasharray':'5,4','stroke-width':2},c.svg);
        el('circle',{cx:M.X(9.9), cy:M.Y(4.4), r:4, fill:BLUE},c.svg);
-       label(c, 7.0,2.2, 'orbits flatten into a plane', {fs:13, color:'#7A5A28'});
+       label(c, 7.6,1.6, 'orbits flatten into a plane', {fs:10, color:'#7A5A28'});
      }
         },
         { map:5, title:"Precession, and the strategy",
@@ -804,7 +821,7 @@
        arrow(c, 7.2,4.4, 8.4,6.4, {color:PURPLE, w:3, label:'L', fs:14});
        el('ellipse',{cx:M.X(5), cy:M.Y(5.3), rx:2.3*M.s, ry:0.6*M.s, fill:'none', stroke:'#888','stroke-dasharray':'6,5','stroke-width':2},c.svg);
        arrow(c, 3.4,5.9, 2.7,5.25, {color:GOLD, w:2.5, label:'Ω = τ/L', fs:13, side:-1});
-       label(c, 0.6,2.0, 'torque redirects L — the axis sweeps a cone', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 0.15,0.35, 'torque redirects L — the axis sweeps a cone', {fs:10, color:'#8A5A24', italic:true});
      }
         },
       ]

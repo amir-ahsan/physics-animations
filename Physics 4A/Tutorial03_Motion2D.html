@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -672,7 +689,7 @@
       const g=el('g',{},c.svg);
       el('circle',{cx:c.M.X(x),cy:c.M.Y(y),r:5,fill:opt.color||PURPLE},g);
       const t=el('text',{x:c.M.X(x)+(opt.dx??10),y:c.M.Y(y)+(opt.dy??-10),fill:opt.color||PURPLE,
-        'font-size':14,'font-family':'Georgia,serif','font-style':'italic'},g);
+        'font-size':17,'font-family':'Georgia,serif','font-style':'italic'},g);
       t.textContent=txt;
       if(!c.instant){g.setAttribute('opacity',0);tween(u=>g.setAttribute('opacity',u),500,false);}
       return g;
@@ -708,7 +725,7 @@
           ],
           action(c){
        arrow(c, 2,4.16, 3.1,5.88, {color:GREEN, w:3, label:'v', fs:14});
-       label(c, 3.3,5.0, 'velocity: always tangent to the path', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 4.3,0.85, 'velocity: always tangent to the path', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"The projectile: two 1-D stories",
@@ -722,7 +739,7 @@
           ],
           action(c){
        dashLine(c, 0,6.5, 5,6.5, {});
-       label(c, 2.0,7.05, 'top: v_y = 0, v_x sails on', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 1.2,7.05, 'top: v_y = 0, v_x sails on', {fs:12, color:'#8A5A24', italic:true});
        label(c, 1.2,2.2, 'x: a_x = 0', {fs:13, color:GREEN, italic:true});
        label(c, 7.6,2.2, 'y: a_y = −g', {fs:13, color:PURPLE, italic:true});
      }
@@ -754,9 +771,9 @@
             {tex:"\\vec v_{A/B} = -\\vec v_{B/A}"}
           ],
           action(c){
-       arrow(c, 0.6,6.2, 3.0,6.2, {color:BLUE, w:3, label:'v_B/A', fs:12});
-       arrow(c, 3.0,6.2, 4.4,7.2, {color:GOLD, w:3, label:'v_P/B', fs:12});
-       arrow(c, 0.6,6.2, 4.4,7.2, {color:GREEN, w:3.5, label:'v_P/A', fs:12, side:-1});
+       arrow(c, 0.6,6.2, 3.0,6.2, {color:BLUE, w:3, label:'v_B/A', fs:12, at:'mid', side:-1, loff:26});
+       arrow(c, 3.0,6.2, 4.4,7.2, {color:GOLD, w:3, label:'v_P/B', fs:12, at:'mid', side:-1, loff:26});
+       arrow(c, 0.6,6.2, 4.4,7.2, {color:GREEN, w:3.5, label:'v_P/A', fs:12, at:'mid', loff:26});
      }
         },
         { map:4, title:"Gravity has no opinions",
@@ -831,8 +848,9 @@ diff:"Basic",
           ],
           action(c){
        arrow(c, 0,0, 15,20, {color:GOLD, w:4, label:'v₀', fs:17});
-       arrow(c, 0,0, 15,0, {color:RED, dash:'5,4', w:2.5, label:'v₀cosθ₀ = 18', fs:13, side:-1});
-       arrow(c, 15,0, 15,20, {color:BLUE, dash:'5,4', w:2.5, label:'v₀sinθ₀ = 24', fs:13});
+       arrow(c, 0,0, 15,0, {color:RED, dash:'5,4', w:2.5});
+       label(c, 16.5,4.0, 'v₀cosθ₀ = 18', {fs:13, color:RED, italic:true});
+       arrow(c, 15,0, 15,20, {color:BLUE, dash:'5,4', w:2.5, label:'v₀sinθ₀ = 24', fs:13, at:'mid', side:-1, loff:36});
        arc(c, 0,0, 7, 0, 53.1, {color:'#888', label:'θ₀'});
      }
         },
@@ -867,7 +885,7 @@ diff:"Basic",
           ],
           action(c){
        dashLine(c, 44.1,0, 44.1,29.4, {});
-       textAt(c, 20,13.5, '2.45 s up', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
+       textAt(c, 27,17, '2.45 s up', {fs:12, italic:true, color:'#7A5A28', anchor:'middle'});
        textAt(c, 68,13.5, '2.45 s down', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
      }
         },
@@ -930,8 +948,8 @@ diff:"Intermediate",
           ],
           action(c){
        arrow(c, 0,0, 16,12, {color:GOLD, w:3.5, label:'v₀', fs:15});
-       arrow(c, 0,0, 16,0, {color:RED, dash:'5,4', w:2, label:'v₀cosθ₀', fs:12, side:-1});
-       arrow(c, 16,0, 16,12, {color:BLUE, dash:'5,4', w:2, label:'v₀sinθ₀', fs:12});
+       arrow(c, 0,0, 16,0, {color:RED, dash:'5,4', w:2, label:'v₀cosθ₀', fs:12, side:-1, at:'mid', loff:26});
+       arrow(c, 16,0, 16,12, {color:BLUE, dash:'5,4', w:2, label:'v₀sinθ₀', fs:12, at:'mid', side:-1, loff:34});
        arc(c, 0,0, 9, 0, 36.9, {color:'#888', label:'θ₀'});
        plotCurve(c, t=>[20*t, 15*t-4.9*t*t], 0, 5.073, {color:'#D8B48A', w:2, dash:'4,4', dur:600});
        const b = ball(c, 0,0, 7);
@@ -956,7 +974,7 @@ diff:"Intermediate",
           board:[
             {label:"Distance from the base", tex:"x = v_{0x}\\,t = (20.0)(5.073) = 101\\ \\mathrm{m}", kind:"answer"}
           ],
-          action(c){ arrow(c, 0,-53, 101,-53, {color:GREEN, dash:'7,5', w:2, label:'101 m', fs:14, side:-1}); }
+          action(c){ arrow(c, 0,-53, 101,-53, {color:GREEN, dash:'7,5', w:2, label:'101 m', fs:14, side:-1, at:'mid'}); }
         },
         { map:4, title:"Part (c): reassemble at impact",
           think:"Which component survives untouched, and which must be recomputed?",
@@ -968,7 +986,7 @@ diff:"Intermediate",
             {label:"Impact speed", tex:"v = \\sqrt{v_x^2 + v_y^2} = \\sqrt{(20.0)^2 + (34.7)^2} = 40.1\\ \\mathrm{m/s}", kind:"answer"}
           ],
           action(c){
-       arrow(c, 101,-50, 101+9,-50-15.6, {color:GREEN, label:'40.1 m/s', fs:14});
+       arrow(c, 101,-50, 101+9,-50-15.6, {color:GREEN, label:'40.1 m/s', fs:14, at:'mid', side:-1, loff:40});
      }
         },
         { map:5, title:"Check by the timeless route",
@@ -1034,7 +1052,7 @@ diff:"Intermediate",
           board:[
             {label:"Landing offset", tex:"\\text{drift} = v_{W/E}\\,t = (2.00\\ \\mathrm{m/s})(30.0\\ \\mathrm{s}) = 60.0\\ \\mathrm{m\\ east}", kind:"answer"}
           ],
-          action(c){ arrow(c, 0,110, 60,110, {color:RED, dash:'6,4', w:2, label:'60 m drift', fs:14, side:-1}); }
+          action(c){ arrow(c, 0,110, 60,110, {color:RED, dash:'6,4', w:2, label:'60 m drift', fs:14, at:'mid', side:-1}); }
         },
         { map:3, title:"Part (b): aim upstream",
           think:"What must the westward part of your paddling cancel?",
@@ -1048,9 +1066,9 @@ diff:"Intermediate",
        /* velocity triangle drawn LARGE beside the crossing — true 30° shape:
           hypotenuse v_B/W = 4, legs v_W/E = 2 (east) and v_B/E = 2√3 ≈ 3.46 (north) */
        const S=16, ax=72, ay=6;
-       arrow(c, ax,ay, ax-2*S, ay+3.464*S, {color:GOLD, w:4, label:'v_B/W', fs:16, side:-1});
-       arrow(c, ax-2*S, ay+3.464*S, ax, ay+3.464*S, {color:BLUE, w:4, label:'v_W/E', fs:16});
-       arrow(c, ax,ay, ax, ay+3.464*S, {color:GREEN, dash:'7,5', w:3, label:'v_B/E', fs:16});
+       arrow(c, ax,ay, ax-2*S, ay+3.464*S, {color:GOLD, w:4, label:'v_B/W', fs:16, at:'mid', side:1, loff:34});
+       arrow(c, ax-2*S, ay+3.464*S, ax, ay+3.464*S, {color:BLUE, w:4, label:'v_W/E', fs:16, at:'mid', loff:26});
+       arrow(c, ax,ay, ax, ay+3.464*S, {color:GREEN, dash:'7,5', w:3, label:'v_B/E', fs:16, at:'mid', side:-1, loff:44});
        arc(c, ax,ay, 15, 90, 120, {color:'#888', label:'θ'});
      }
         },
@@ -1230,7 +1248,7 @@ diff:"Challenging",
           ],
           action(c){
        /* car's position at t = 11.55 s: θ = ½·a_tan·t²/R ≈ 0.500 rad ≈ 28.7° */
-       markPoint(c, 175.5, 95.9, 'a_rad = a_tan here', {color:GOLD, dx:-150, dy:-14});
+       markPoint(c, 175.5, 95.9, 'a_rad = a_tan here', {color:GOLD, dx:-200, dy:-2});
      }
         },
         { map:4, title:"Check — and the future",

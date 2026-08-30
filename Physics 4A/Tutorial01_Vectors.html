@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -690,9 +707,9 @@
             {label:'The first commandment', tex:'|\\vec A + \\vec B| \\ne A + B\\ \\text{(unless parallel!) — add tip-to-tail}', kind:'key'}
           ],
           action(c){
-            label(c, 0.0,-0.62, 'scalar: m = 70 kg (no direction)', {fs:13, color:'#7A5A28'});
+            label(c, 0.0,-0.62, 'scalar: m = 70 kg (no direction)', {fs:10, color:'#7A5A28'});
             arrow(c, 6.6,-0.62, 8.3,-0.62, {color:RED, w:2.5});
-            label(c, 6.4,-0.05, 'vector: 70 km/h north', {fs:13, color:RED});
+            label(c, 6.7,-0.10, 'vector: 70 km/h north', {fs:10, color:RED});
           } },
         { map:1, title:'Components do the arithmetic',
           think:'How do you turn geometry into algebra you can trust?',
@@ -707,7 +724,8 @@
           action(c){
             arrow(c, 1,1, 5.5,4.4, {color:GOLD, w:3.5, label:'A', fs:14});
             arrow(c, 1,1, 5.5,1, {color:RED, dash:'5,4', w:2, label:'Acosθ', fs:12, side:-1, at:'mid'});
-            arrow(c, 5.5,1, 5.5,4.4, {color:BLUE, dash:'5,4', w:2, label:'Asinθ', fs:12, at:'mid'});
+            arrow(c, 5.5,1, 5.5,4.4, {color:BLUE, dash:'5,4', w:2});
+            label(c, 4.15,2.4, 'Asinθ', {fs:12, color:BLUE, italic:true});
             arc(c, 1,1, 1.6, 0, 37, {label:'θ'});
           } },
         { map:2, title:'Unit vectors: tidy addresses',
@@ -753,13 +771,13 @@
           action(c){
             el('rect',{x:c.M.X(0.6), y:c.M.Y(5.4), width:c.M.S(1.4), height:c.M.S(1.0), fill:'#D8C9A3', stroke:'#8A7D60'},c.svg);
             arrow(c, 2.2,4.9, 3.9,4.9, {color:RED, w:3, label:'F', fs:14});
-            label(c, 0.6,3.5, 'every push', {fs:13, color:'#7A5A28'});
+            label(c, 0.6,3.5, 'every push', {fs:11, color:'#7A5A28'});
             el('ellipse',{cx:c.M.X(6.3), cy:c.M.Y(4.9), rx:c.M.S(1.5), ry:c.M.S(0.9), fill:'none', stroke:'#8A7D60', 'stroke-dasharray':'5,4'},c.svg);
             el('circle',{cx:c.M.X(6.3), cy:c.M.Y(4.9), r:c.M.S(0.32), fill:'#B5793B'},c.svg);
             arrow(c, 7.8,4.9, 7.8,6.2, {color:BLUE, w:3, label:'v', fs:14});
-            label(c, 5.5,3.5, 'every orbit', {fs:13, color:'#7A5A28'});
+            label(c, 5.3,3.5, 'every orbit', {fs:11, color:'#7A5A28'});
             for(let i=0;i<3;i++) arrow(c, 9.1,4.2+i*0.9, 10.7,4.2+i*0.9, {color:GREEN, w:2.5});
-            label(c, 9.1,3.5, 'every field', {fs:13, color:'#7A5A28'});
+            label(c, 9.2,3.5, 'every field', {fs:11, color:'#7A5A28'});
           } },
         { map:5, title:'The reusable method',
           think:'Could you recite the six moves from memory before the examples begin?',
@@ -952,7 +970,7 @@
             {label:'Magnitude', tex:'R = \\sqrt{R_x^2+R_y^2} = \\sqrt{(1.00)^2+(8.20)^2} = 8.26\\ \\mathrm{m}', kind:'answer'},
             {label:'Direction', tex:'\\theta = \\tan^{-1}\\!\\left(\\tfrac{8.20}{1.00}\\right) = 83.0^{\\circ}\\ \\text{above the } +x \\text{ axis}', kind:'answer'}
           ],
-          action(c){ arc(c, 0,0, 1.9, 0, 83, {color:GREEN, label:'83°', lr:22}); } },
+          action(c){ arc(c, 0,0, 1.9, 0, 83, {color:GREEN}); label(c, 2.5,0.5, '83°', {fs:12, color:GREEN, italic:true}); } },
         { map:5, title:'Check the quadrant — and the folly of 11',
           think:'Do the component signs agree with where the calculator put the angle?',
           model:'Rx > 0, Ry > 0 → quadrant I ✓. And 8.26 ≠ 11: magnitudes never simply add.',
@@ -1154,9 +1172,9 @@
             const poly = el('polygon',{points:`${c.M.X(P[0])},${c.M.Y(P[1])} ${c.M.X(Q[0])},${c.M.Y(Q[1])} ${c.M.X(R[0])},${c.M.Y(R[1])}`,
               fill:'rgba(181,121,59,.18)', stroke:GOLD,'stroke-width':2},c.svg);
             if(!c.instant){poly.setAttribute('opacity',0); tween(u=>poly.setAttribute('opacity',u),800,false);}
-            label(c, P[0],P[1],'P(1,0,0)',{dx:-8,dy:22,color:'#7A5A28',fs:14});
-            label(c, Q[0],Q[1],'Q(0,2,0)',{dx:8,dy:4,color:'#7A5A28',fs:14});
-            label(c, R[0],R[1],'R(0,0,3)',{dx:8,dy:-6,color:'#7A5A28',fs:14});
+            label(c, P[0],P[1],'P(1,0,0)',{dx:-26,dy:22,color:'#7A5A28',fs:14});
+            label(c, Q[0],Q[1],'Q(0,2,0)',{dx:12,dy:38,color:'#7A5A28',fs:14});
+            label(c, R[0],R[1],'R(0,0,3)',{dx:16,dy:8,color:'#7A5A28',fs:14});
           } },
         { map:2, title:'Build the sides: tip minus tail',
           think:'All business at P is conducted by which two vectors?',
@@ -1169,8 +1187,8 @@
           ],
           action(c){
             const P=proj(1,0,0), Q=proj(0,2,0), R=proj(0,0,3);
-            arrow(c, P[0],P[1], Q[0],Q[1], {color:RED, label:'PQ', dur:900});
-            arrow(c, P[0],P[1], R[0],R[1], {color:BLUE, label:'PR', dur:900});
+            arrow(c, P[0],P[1], Q[0],Q[1], {color:RED, label:'PQ', at:'mid', side:-1, dur:900});
+            arrow(c, P[0],P[1], R[0],R[1], {color:BLUE, label:'PR', at:'mid', dur:900});
           } },
         { map:3, title:'Part (a): the angle at P',
           think:'A dot product of 1 between vectors of size √5 and √10 — what does it whisper?',

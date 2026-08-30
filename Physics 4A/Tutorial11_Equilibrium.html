@@ -522,7 +522,7 @@
       return node;
     }
     function makeMapper(w){
-      const vw = 520, vh = 400;                    /* sketch viewBox */
+      const vw = 600, vh = 400;                    /* sketch viewBox */
       sketchSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
       const pad = 8;
       const sx = (vw - 2*pad)/(w.x1 - w.x0), sy = (vh - 2*pad)/(w.y1 - w.y0);
@@ -570,6 +570,14 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        try{ /* keep arrow labels inside the sketch pane */
+          const bb = t.getBBox();
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+          const b2 = t.getBBox();
+          if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+          else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+        }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
       return g;
@@ -596,10 +604,19 @@
     }
     function label(c, x, y, txt, opt = {}){
       const t = el('text',{x:c.M.X(x) + (opt.dx || 0), y:c.M.Y(y) + (opt.dy || 0), fill:opt.color || DIMC,
-        'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'font-family':'Georgia,serif',
+        'font-size':Math.round(((opt.fs || 12) + 3)*1.5),'font-family':'Georgia,serif',
         ...(opt.italic ? {'font-style':'italic'} : {}),
         ...(opt.anchor ? {'text-anchor':opt.anchor} : {})}, c.svg);
       t.textContent = txt;
+      try{ /* keep labels inside the sketch pane */
+        let bb = t.getBBox();
+        if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
+        const b2 = t.getBBox();
+        if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
+        else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+      }catch(e){}
       return t;
     }
     const textAt = (c,x,y,txt,opt={}) => label(c,x,y,txt,opt);
@@ -697,7 +714,7 @@
        arrow(c, 1.4,5.35, 1.4,6.35, {color:RED, w:3, label:'F', fs:12});
        arrow(c, 3.6,5.05, 3.6,4.05, {color:RED, w:3, label:'F', fs:12, side:-1});
        arc(c, 2.5,5.2, 1.5, 210, 330, {color:PURPLE, w:2.5});
-       label(c, 0.8,3.3, 'ΣF = 0, yet it spins: a couple. Both balances are mandatory.', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 0.3,-0.85, 'ΣF = 0, yet it spins: a couple. Both balances are mandatory.', {fs:10, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"'ANY axis' is a weapon",
@@ -711,7 +728,7 @@
           action(c){
        el('circle',{cx:c.M.X(5), cy:c.M.Y(2.3), r:16, fill:'none', stroke:GREEN,'stroke-width':3,'stroke-dasharray':'6,5'},c.svg);
        arrow(c, 6.8,4.6, 5.4,2.9, {color:GREEN, w:2.5});
-       label(c, 6.9,5.0, 'axis HERE: the pivot force loses its vote', {fs:12.5, color:GREEN, italic:true});
+       label(c, 7.0,4.95, 'axis HERE: pivot force loses its vote', {fs:10, color:GREEN, italic:true});
      }
         },
         { map:2, title:"Weight acts at the centre of gravity",
@@ -725,7 +742,7 @@
           action(c){
        el('circle',{cx:c.M.X(5), cy:c.M.Y(2.4), r:6, fill:'#2B2317'},c.svg);
        arrow(c, 5,2.25, 5,0.9, {color:RED, w:3.5, label:'Mg at the cg', fs:13});
-       label(c, 3.3,5.2, 'one arrow stands in for every gram', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 3.3,6.9, 'one arrow stands in for every gram', {fs:10, color:'#8A5A24', italic:true});
      }
         },
         { map:3, title:"Nothing is truly rigid",
@@ -777,12 +794,12 @@
        el('rect',{x:M.X(1.6), y:M.Y(5.2), width:1.8*M.s, height:1.8*M.s, fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
        arrow(c, 1.2,4.3, 1.55,4.3, {color:RED, w:2.5}); arrow(c, 4.2,4.3, 3.85,4.3, {color:RED, w:2.5});
        arrow(c, 2.7,6.1, 2.7,5.35, {color:RED, w:2.5}); arrow(c, 2.7,2.5, 2.7,3.25, {color:RED, w:2.5});
-       label(c, 1.5,1.6, 'bulk B: squeezed volume', {fs:13, color:'#7A5A28'});
+       label(c, 0.9,1.6, 'bulk B: squeezed volume', {fs:10, color:'#7A5A28'});
        el('polygon',{points:`${M.X(6.6)},${M.Y(3.4)} ${M.X(8.4)},${M.Y(3.4)} ${M.X(9.0)},${M.Y(5.2)} ${M.X(7.2)},${M.Y(5.2)}`,
          fill:'#D9C6A5', stroke:'#8A5A24','stroke-width':2.5},c.svg);
        arrow(c, 7.4,5.5, 9.0,5.5, {color:PURPLE, w:2.5, label:'F∥', fs:12});
        arrow(c, 8.2,3.1, 6.6,3.1, {color:PURPLE, w:2.5, side:-1});
-       label(c, 6.5,1.6, 'shear S: shifted shape', {fs:13, color:'#7A5A28'});
+       label(c, 6.8,1.6, 'shear S: shifted shape', {fs:10, color:'#7A5A28'});
      }
         },
       ]
@@ -850,8 +867,8 @@ diff:"Basic",
             {label:"Reusable method", text:"pivot as axis → weight × lever arm each side → cancel g → solve → verify both torques", kind:"answer"}
           ],
           action(c){
-       arc(c, -1.0,0.85, 0.55, -140, -40, {color:PURPLE, w:2.6, head:true, hs:9, label:'60 kg·m ↺', lr:24});
-       arc(c, 1.0,0.85, 0.55, 320, 220, {color:GREEN, w:2.6, head:true, hs:9, label:'60 kg·m ↻', lr:24});
+       arc(c, -1.0,0.85, 0.55, -140, -40, {color:PURPLE, w:2.6, head:true, hs:9, label:'60 kg·m ↺', lr:44});
+       arc(c, 1.0,0.85, 0.55, 320, 220, {color:GREEN, w:2.6, head:true, hs:9, label:'60 kg·m ↻', lr:44});
      }
         },
       ]
@@ -891,7 +908,7 @@ diff:"Intermediate",
        arrow(c, 0,0.7, 0,1.6, {color:BLUE, w:3.5, label:'N_A', fs:14});
        arrow(c, 4,0.7, 4,2.4, {color:GREEN, w:3.5, label:'N_B', fs:14});
        arrow(c, 2,0.6, 2,-0.35, {color:RED, w:3, label:'200 N', fs:13, side:-1});
-       arrow(c, 3,0.6, 3,-0.85, {color:PURPLE, w:3.5, label:'600 N', fs:13, side:-1});
+       arrow(c, 3,0.6, 3,-0.85, {color:PURPLE, w:3.5, label:'600 N', fs:13, side:-1, at:'mid', loff:40});
        boxAt(c, 3,0.72, 0.4,0.85, {fill:'#C98F52'});
      }
         },
@@ -907,7 +924,7 @@ diff:"Intermediate",
           action(c){
        dashLine(c, 0,2.62, 2,2.62, {color:RED}); textAt(c, 1.0,2.78, '2.00 m', {fs:11.5, italic:true, color:RED, anchor:'middle'});
        dashLine(c, 0,2.95, 3,2.95, {color:PURPLE}); textAt(c, 1.5,3.12, '3.00 m', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
-       dashLine(c, 0,-0.85, 4,-0.85, {color:GREEN}); textAt(c, 2.0,-1.0, '4.00 m (to N_B)', {fs:11.5, italic:true, color:GREEN, anchor:'middle'});
+       dashLine(c, 0,-0.85, 4,-0.85, {color:GREEN}); textAt(c, 2.0,-1.25, '4.00 m (to N_B)', {fs:11.5, italic:true, color:GREEN, anchor:'middle'});
      }
         },
         { map:3, title:"Force balance mops up",
@@ -988,7 +1005,7 @@ diff:"Intermediate",
           ],
           action(c){
        dashLine(c, 3,0.05, 3,4.0, {color:GOLD}); textAt(c, 3.12,3.4, 'L sinθ = 4.00 m', {fs:11.5, italic:true, color:'#8A5A24'});
-       dashLine(c, 1.5,0.12, 3,0.12, {color:RED}); textAt(c, 1.55,0.45, '(L/2)cosθ = 1.50 m', {fs:11.5, italic:true, color:RED});
+       dashLine(c, 1.5,0.12, 3,0.12, {color:RED}); textAt(c, 1.7,-0.28, '(L/2)cosθ = 1.50 m', {fs:11.5, italic:true, color:RED});
      }
         },
         { map:4, title:"The verdict on μ",
@@ -1107,7 +1124,7 @@ diff:"Challenging",
        arrow(c, 4,-0.55, 4,-1.55, {color:PURPLE, w:3, label:'392 N', fs:13, side:-1});
        boxAt(c, 4,-0.55, 0.85,0.5, {fill:'#4A4A3A', stroke:'#2E2E24'});
        arrow(c, 0,0.15, 0.9,0.15, {color:BLUE, w:3, label:'H_x', fs:13});
-       arrow(c, 0.15,0.3, 0.15,1.1, {color:GREEN, w:3, label:'H_y', fs:13});
+       arrow(c, 0.15,0.3, 0.15,1.1, {color:GREEN, w:3, label:'H_y', fs:13, at:'mid', side:-1, loff:34});
      }
         },
         { map:2, title:"Part (a): torques about the hinge",
@@ -1120,7 +1137,7 @@ diff:"Challenging",
           ],
           action(c){
        dashLine(c, 0,0, 1.0,1.73, {color:GOLD});
-       textAt(c, 0.35,1.55, 'ℓ_T = L sin30°', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, 0.9,1.85, 'ℓ_T = L sin30°', {fs:12, italic:true, color:'#8A5A24'});
      }
         },
         { map:3, title:"Part (b): the hinge confesses",
