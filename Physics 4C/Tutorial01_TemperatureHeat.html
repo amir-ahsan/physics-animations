@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -1010,7 +1014,7 @@ diff:"Intermediate",
     textAt({svg,M,instant:true}, 2.5,-10.5, 'foam', {fs:12.5, italic:true, anchor:'middle'});
     textAt({svg,M,instant:true}, 10,-10.5, 'brick', {fs:12.5, italic:true, anchor:'middle'});
     textAt({svg,M,instant:true}, -3.2,22, 'inside 20.0 °C', {fs:12, italic:true, anchor:'middle'});
-    textAt({svg,M,instant:true}, 18,-6.5, 'outside −5.0 °C', {fs:12, italic:true, anchor:'middle'});
+    textAt({svg,M,instant:true}, 17.5,-8.0, 'outside −5 °C', {fs:12, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Read: electrical déjà vu",
@@ -1187,7 +1191,7 @@ diff:"Challenging",
           action(c){
        plotCurve(c, t=>[t, 20+70*Math.exp(-0.0673*t)], 0, 40, {color:GOLD, w:3.5, dur:1800});
        dashLine(c, 0,20, 40,20, {color:'#B0A488', dash:'7,5'});
-       textAt(c, 33,24, 'Tₛ = 20 °C', {fs:12, color:'#8A7D60'});
+       textAt(c, 30,9, 'Tₛ = 20 °C', {fs:12, color:'#8A7D60'});
        el('circle',{cx:c.M.X(5),cy:c.M.Y(70),r:5,fill:GOLD},c.svg);
        textAt(c, 6,73, '70 °C at 5 min', {fs:12, color:'#8A5A24'});
      }

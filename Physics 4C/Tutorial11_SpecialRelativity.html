@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -1125,7 +1129,7 @@ diff:"Intermediate",
           ],
           action(c){
        plotCurve(c, b=>[b, 1+0.5*b*b], 0, 0.992, {color:GREEN, w:2.5, dash:'6,5', dur:900});
-       textAt(c, 0.56,2.05, 'Newton: 1 + β²/2 — faithful low, lost high', {fs:11, italic:true, color:'#2E5C3F'});
+       textAt(c, 0.5,0.55, 'Newton: 1 + β²/2 — faithful low', {fs:11, italic:true, color:'#2E5C3F'});
      }
         },
       ]
@@ -1202,7 +1206,7 @@ diff:"Challenging",
           ],
           action(c){
        const x0=1.6, sc=0.0038;
-       arrow(c, x0,0.3, x0+500*sc,0.3, {color:GOLD, w:3, label:'photon: pc = 500, same scale', fs:11.5, side:-1});
+       arrow(c, x0,0.3, x0+500*sc,0.3, {color:GOLD, w:3, label:'photon: pc = 500, same scale', fs:11.5, side:1});
      }
         },
       ]
@@ -1244,7 +1248,7 @@ diff:"Challenging",
           action(c){
        const {M}=c;
        plotCurve(c, t=>[t<0.5? 6*t : 6*(1-t), 10*t], 0, 1, {color:RED, w:3.5, dur:1400, N:60});
-       textAt(c, 1.75,4.6, 'out: 4 y (her clock)', {fs:11.5, italic:true, color:'#8A3324'});
+       textAt(c, 4.85,3.5, 'out: 4 y (her clock)', {fs:10.5, italic:true, color:'#8A3324', anchor:'end'});
        textAt(c, 1.75,8.0, 'back: 4 y', {fs:11.5, italic:true, color:'#8A3324'});
      }
         },
@@ -1265,7 +1269,7 @@ diff:"Challenging",
          else    { t=(6+k)/1.6; x=t-k; }          /* meets return leg  x=6−0.6t  */
          dashLine(c, 0,k, x,t, {color:GOLD});
        }
-       textAt(c, 2.45,2.3, 'greetings: sparse out, dense home', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 2.9,-0.45, 'greetings: sparse out, dense home', {fs:11, italic:true, anchor:'end'});
      }
         },
         { map:3, title:"Earth's inbox — the asymmetry",
@@ -1279,7 +1283,7 @@ diff:"Challenging",
           ],
           action(c){
        dashLine(c, 3,5, 0,8, {color:GOLD});
-       textAt(c, 1.95,7.0, 'turnaround image: arrives year 8', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 4.85,6.2, 'image arrives: year 8', {fs:10.5, italic:true, anchor:'end'});
      }
         },
         { map:4, title:"The verdict",

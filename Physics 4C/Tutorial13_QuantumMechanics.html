@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -748,7 +752,7 @@
             {label:"Uncertainty", tex:"\\Delta x\\,\\Delta p \\ge \\frac{\\hbar}{2}, \\qquad E_{\\rm zero{-}point} \\sim \\frac{\\hbar^2}{2mL^2}", kind:"key"}
           ],
           action(c){
-       plotCurve(c, t=>[11.6+2.4*t, 6.2+1.1*Math.exp(-14*(t-0.5)*(t-0.5))*Math.sin(2*Math.PI*9*t)], 0, 1, {color:PURPLE, w:2.2, dur:900, N:140});
+       plotCurve(c, t=>[11.6+2.4*t, 9.0+1.1*Math.exp(-14*(t-0.5)*(t-0.5))*Math.sin(2*Math.PI*9*t)], 0, 1, {color:PURPLE, w:2.2, dur:900, N:140});
        textAt(c, 12.8,2.45, 'narrow packet ⇒ many wavelengths inside', {fs:10.5, italic:true, anchor:'middle'});
      }
         },
@@ -803,7 +807,7 @@
        const out=[]; for(let i=0;i<=40;i++){const x=7.6+6.4*i/40;
          out.push(M.X(x)+','+M.Y(4.4+0.28*Math.sin(2.4*x)));}
        el('polyline',{points:out.join(' '),fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
-       label(c, 8.2,6.6, 'a whisper survives: T ≈ e^(−2κL)', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, 8.0,5.4, 'whisper: T ≈ e^(−2κL)', {fs:11.5, color:'#2E7D4F', italic:true});
        label(c, -1.9,1.4, 'the leak that lights the Sun, times 10⁵⁶ protons', {fs:12, color:'#8A5A24', italic:true});
      }
         },
@@ -867,7 +871,7 @@ diff:"Basic",
          const pts=[]; for(let i=0;i<=80;i++){const x=10*i/80;
            pts.push(M.X(x)+','+M.Y(e+3.4*Math.sin(n*Math.PI*x/10)));}
          el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2.6},c.svg);
-         textAt(c, 0.35,e+4.5, `E${n===1?'₁':n===2?'₂':'₃'} = ${e} eV`, {fs:11.5});
+         textAt(c, 0.35,e-4.6, `E${n===1?'₁':n===2?'₂':'₃'} = ${e} eV`, {fs:11.5});
        }
      }
         },
@@ -949,14 +953,14 @@ diff:"Challenging",
           action(c){
        plotCurve(c, x=>[x, 5.4+1.1*Math.sin(Math.PI*x/10)], 0, 10, {color:BLUE, w:2.4, dur:800});
        plotCurve(c, x=>[x, 5.4+1.1*Math.cos(Math.PI*x/10)], 0, 10, {color:RED, w:2.4, dash:'6,5', dur:800});
-       textAt(c, 0.4,7.6, 'cos: nonzero at the wall — doomed', {fs:11, italic:true, color:'#C0392B'});
-       textAt(c, 2.0,6.2, 'sin: can clamp at both ends', {fs:11, italic:true, color:'#1D4568'});
+       textAt(c, 0.4,7.9, 'cos: nonzero at the wall — doomed', {fs:11, italic:true, color:'#C0392B'});
+       textAt(c, 2.0,6.85, 'sin: can clamp at both ends', {fs:11, italic:true, color:'#1D4568'});
      }
         },
         { map:2, title:"Step 2: boundaries quantize",
           think:"Which term dies at x = 0, and what does x = L demand?",
           model:"The cosine; kL = nπ: E_n = n²h²/8mL².",
-          pose:"point",
+          pose:"point", fresh:true,
           say:"Step two, the boundaries do the quantizing. Psi of zero equals zero KILLS the cosine: B is zero. Psi of L equals zero then demands sine k L equals zero — k L must be a whole number of pi. n equals zero would erase the particle, so n runs one, two, three. There it is: quantization, appearing exactly as it did for the guitar string in Tutorial 5. The energies follow from k equals n pi over L: E-n equals n squared h squared over eight m L squared.",
           board:[
             {label:"The killings", tex:"\\psi(0)=0\\Rightarrow B=0; \\qquad \\psi(L)=0\\Rightarrow kL = n\\pi,\\ n=1,2,3,\\ldots", kind:"key"},
@@ -1234,8 +1238,8 @@ diff:"Intermediate",
        const {M}=c;
        for(let i=0;i<12;i++)
          el('circle',{cx:M.X(3.75+0.23*i),cy:M.Y(0.32)-7,r:3.5,fill:RED},c.svg);
-       textAt(c, 1.0,0.55, 'n = 0: everyone', {fs:11, italic:true});
-       textAt(c, 7.4,1.35, 'n = 1: <1 in a million', {fs:11, italic:true});
+       textAt(c, 7.5,0.55, 'n = 0: everyone', {fs:11, italic:true});
+       textAt(c, 5,2.3, 'n = 1: <1 in a million', {fs:11, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"Tutorial 2's puzzle dissolves",

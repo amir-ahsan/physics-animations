@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -981,13 +985,13 @@ diff:"Intermediate",
       title:"One pipe, two personalities",
       problem:"A pipe is L = 0.620 m long. Find its first three resonant frequencies when (a) both ends are open, and (b) one end is closed.",
       goal:"Goal → two spectra",
-      world:{"x0":-0.06,"x1":0.72,"y0":-2.6,"y1":2.6},
+      world:{"x0":-0.06,"x1":0.72,"y0":-2.6,"y1":2.6,"aniso":true},
       pathway:["Read","Open–open","Cork it","Odd only","Orchestra check"],
       setup(ctx,w){
     const {svg,M}=ctx;
     el('line',{x1:M.X(0),y1:M.Y(1.15),x2:M.X(0.62),y2:M.Y(1.15),stroke:'#8A7D60','stroke-width':3},svg);
     el('line',{x1:M.X(0),y1:M.Y(-1.15),x2:M.X(0.62),y2:M.Y(-1.15),stroke:'#8A7D60','stroke-width':3},svg);
-    textAt({svg,M,instant:true}, 0.31,-2.3, 'the same 0.620 m of pipe — two boundary conditions', {fs:12.5, italic:true, anchor:'middle'});
+    textAt({svg,M,instant:true}, 0.31,-2.4, 'the same 0.620 m of pipe — two boundary conditions', {fs:12.5, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Read: personality lives at the ends",
@@ -1025,7 +1029,7 @@ diff:"Intermediate",
        const {M}=c;
        el('rect',{x:M.X(-0.015),y:M.Y(-0.65),width:8,height:M.Y(-1.65)-M.Y(-0.65),fill:'#5C4B30'},c.svg);
        plotCurve(c, x=>[x, -1.15+0.9*Math.sin(Math.PI*x/(2*0.62))], 0, 0.62, {color:BLUE, w:3, dur:900});
-       textAt(c, 0.31,-1.55, 'open–closed: node at the cork, quarter wave', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 0.31,-1.95, 'open–closed: node at the cork, quarter wave', {fs:12, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"The thinned spectrum",
@@ -1037,8 +1041,8 @@ diff:"Intermediate",
             {label:"Odd only", tex:"f_3 = 3f_1 = 415\\ \\mathrm{Hz}, \\qquad f_5 = 5f_1 = 691\\ \\mathrm{Hz}\\quad(\\text{odd only!})", kind:"key"}
           ],
           action(c){
-       plotCurve(c, x=>[x, -1.15+0.5*Math.sin(3*Math.PI*x/(2*0.62))], 0, 0.62, {color:PURPLE, w:2.5, dash:'6,4', dur:900});
-       textAt(c, 0.44,-0.35, 'f₃ = 415 Hz: three quarter-waves', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
+       plotCurve(c, x=>[x, -1.15+0.4*Math.sin(3*Math.PI*x/(2*0.62))], 0, 0.62, {color:PURPLE, w:2.5, dash:'6,4', dur:900});
+       textAt(c, 0.44,-0.13, 'f₃ = 415 Hz: three quarter-waves', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
      }
         },
         { map:4, title:"Check in the orchestra",

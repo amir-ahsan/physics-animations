@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -684,8 +688,22 @@
       const {M}=c; const n=opt.n||9; const amp=opt.amp||0.16;
       const dx=x1-x0, dy=y1-y0, L=Math.hypot(dx,dy);
       const px=-dy/L, py=dx/L;
-      plotCurve(c, t=>[x0+dx*t+amp*Math.sin(2*Math.PI*n*t)*px, y0+dy*t+amp*Math.sin(2*Math.PI*n*t)*py], 0, 0.93, {color:opt.color||GOLD, w:opt.w||2.5, dur:opt.dur||700, N:120});
-      arrow(c, x0+dx*0.9,y0+dy*0.9, x1,y1, {color:opt.color||GOLD, w:opt.w||2.5, dur:200, label:opt.label, fs:opt.fs||12, side:opt.side});
+      plotCurve(c, t=>[x0+dx*t+amp*Math.sin(2*Math.PI*n*t)*px, y0+dy*t+amp*Math.sin(2*Math.PI*n*t)*py], 0, 0.93, {color:opt.color||GOLD, w:opt.w||2.5, dur:opt.dur||700});
+      arrow(c, x0+dx*0.9,y0+dy*0.9, x1,y1, {color:opt.color||GOLD, w:opt.w||2.5, dur:200});
+      if(opt.label){
+        /* label sits clear of the squiggle: offset along the screen-space normal */
+        const sx0=M.X(x0), sy0=M.Y(y0), sx1=M.X(x1), sy1=M.Y(y1);
+        const ddx=sx1-sx0, ddy=sy1-sy0, LL=Math.hypot(ddx,ddy)||1;
+        let nx=-ddy/LL, ny=ddx/LL; if(ny>0){ nx=-nx; ny=-ny; }
+        if(opt.side===-1){ nx=-nx; ny=-ny; }
+        const fpx=Math.round(((opt.fs||12)+3)*1.25);
+        const half=0.27*fpx*String(opt.label).length;
+        const ampPx=amp*Math.max(M.sx,M.sy);
+        const off=ampPx+10+Math.abs(ddy/(ddx||1))*Math.min(half, Math.abs(ddx)/2)+fpx*0.5;
+        const t=el('text',{x:(sx0+sx1)/2+nx*off, y:(sy0+sy1)/2+ny*off+fpx*0.35, fill:opt.color||GOLD,'font-size':fpx,
+          'font-family':'Georgia,serif','font-style':'italic','font-weight':600,'text-anchor':'middle'}, c.svg);
+        t.textContent=opt.label;
+      }
     }
 
     const EXAMPLES = [
@@ -740,7 +758,7 @@
         { map:1, title:"The photoelectric verdict",
           think:"What does the slope of K_max vs f measure — for every metal?",
           model:"h itself. Below threshold: silence at any brightness.",
-          pose:"write",
+          pose:"write", fresh:true,
           say:"Second, the PHOTOELECTRIC EFFECT — the plot on the stage. Light ejects electrons from a metal, but with a maximum energy that ignores intensity, a sharp frequency threshold, and no delay. Einstein’s reading: light ARRIVES as photons of energy h f, and one photon buys one electron out, paying the metal’s work function phi first. K-max equals h f minus phi. Intensity sets how MANY electrons; frequency sets how ENERGETIC. Below the threshold: nothing, at any brightness.",
           board:[
             {label:"Einstein's equation", tex:"K_{\\max} = hf - \\phi = \\frac{hc}{\\lambda} - \\phi, \\qquad eV_{\\rm stop} = K_{\\max}", kind:"key"},
@@ -869,7 +887,7 @@ diff:"Basic",
             {label:"Momentum", tex:"p = \\frac{E}{c} = \\frac{3.73\\times10^{-19}}{3.00\\times10^{8}} = 1.25\\times10^{-27}\\ \\mathrm{kg\\,m/s}", kind:"answer"}
           ],
           action(c){
-       photon(c, 2.3,5.9, 5.8,5.9, {color:GREEN, n:7, amp:0.12, label:'one photon: 2.33 eV', fs:11.5});
+       photon(c, 2.3,5.9, 5.8,5.9, {color:GREEN, n:7, amp:0.12, label:'one photon: 2.33 eV', fs:11.5, side:-1});
      }
         },
         { map:2, title:"Part (b): the photon count",
@@ -884,7 +902,7 @@ diff:"Basic",
        for(let i=0;i<5;i++){
          photon(c, 2.3,5.9, 4.6+1.3*i,5.9, {color:GOLD, n:6, amp:0.10, dur:500+150*i, w:2});
        }
-       textAt(c, 6.4,5.0, '10¹⁶ grains per second', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 6.4,4.6, '10¹⁶ grains per second', {fs:12, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Part (c): versus thermal jostling",
@@ -951,7 +969,7 @@ diff:"Intermediate",
           ],
           action(c){
        photon(c, 5.2,5.6, 2.1,4.6, {color:PURPLE, n:7, amp:0.12});
-       arrow(c, 2.1,4.6, 4.6,3.6, {color:BLUE, w:2.5, label:'e⁻: 0.82 eV', fs:12, at:'mid', side:1, loff:40, dur:600});
+       arrow(c, 2.1,4.6, 4.6,3.6, {color:BLUE, w:2.5, label:'e⁻: 0.82 eV', fs:12, at:'mid', side:-1, loff:14, dur:600});
      }
         },
         { map:2, title:"Part (b): the threshold",
@@ -995,7 +1013,7 @@ diff:"Intermediate",
           ],
           action(c){
        photon(c, 5.2,1.6, 2.1,1.4, {color:RED, n:5, amp:0.12});
-       textAt(c, 5.4,1.7, '700 nm: 1.77 eV — turned away', {fs:11.5, italic:true, color:'#C0392B'});
+       textAt(c, 5.4,1.7, '700 nm: 1.77 eV — refused', {fs:11.5, italic:true, color:'#C0392B'});
      }
         },
       ]
@@ -1044,7 +1062,7 @@ diff:"Intermediate",
        el('circle',{cx:c.M.X(400/300),cy:c.M.Y(1.48),r:6,fill:RED},c.svg);
        el('circle',{cx:c.M.X(1.0),cy:c.M.Y(0.33),r:6,fill:RED},c.svg);
        plotCurve(c, x=>[x, 1.48+(x-400/300)*(1.48-0.33)/(400/300-1.0)], 0.72, 1.55, {color:BLUE, w:2.5, dash:'6,5'});
-       textAt(c, 1.42,1.75, 'slope = hc', {fs:12, italic:true});
+       textAt(c, 1.6,1.5, 'slope = hc', {fs:12, italic:true});
      }
         },
         { map:3, title:"Then the work function",
@@ -1057,7 +1075,7 @@ diff:"Intermediate",
           ],
           action(c){
        el('circle',{cx:c.M.X(0.904),cy:c.M.Y(0),r:5.5,fill:GREEN},c.svg);
-       textAt(c, 0.88,-0.32, 'the line dies at f₀ = φ/h (λ₀ = 442 nm)', {fs:11, italic:true, anchor:'middle', color:'#2E5C3F'});
+       textAt(c, 2.6,-0.32, 'the line dies at f₀ = φ/h (λ₀ = 442 nm)', {fs:11, italic:true, anchor:'middle', color:'#2E5C3F'});
      }
         },
         { map:4, title:"The delicious history",
@@ -1287,7 +1305,7 @@ diff:"Challenging",
           ],
           action(c){
        arrow(c, 3.6,4.7, 6.6,6.2, {color:RED, w:2.5});
-       label(c, -0.2,4.0, 'β: born at the decay instant', {fs:11, color:RED, italic:true});
+       label(c, 2.6,1.3, 'β: born at the decay instant', {fs:11, color:RED, italic:true, anchor:'middle'});
      }
         },
       ]

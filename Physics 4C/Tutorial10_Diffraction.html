@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -697,7 +701,7 @@
     const pts=[]; for(let i=0;i<=240;i++){const x=-10.2+20.4*i/240;
       pts.push(ctx.M.X(x)+','+ctx.M.Y(sinc2(x)));}
     el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3,'stroke-linejoin':'round'},ctx.svg);
-    const t=el('text',{x:ctx.M.X(4.4),y:ctx.M.Y(0.62),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(4.4),y:ctx.M.Y(-0.135),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
     t.textContent='one slit: the sinc² profile — wide crown, dim shoulders';
   },
       steps:[
@@ -713,8 +717,9 @@
           action(c){
        dashLine(c, Math.PI,0, Math.PI,0.55, {color:RED});
        dashLine(c, -Math.PI,0, -Math.PI,0.55, {color:RED});
-       label(c, 3.3,0.5, 'first darkness: a sinθ = λ', {fs:12, color:RED, italic:true});
-       label(c, -9.9,0.9, 'squeeze the slit → the crown widens', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, 3.7,0.5, 'first dark: a sinθ = λ', {fs:11, color:RED, italic:true});
+       label(c, -10.3,0.62, 'squeeze the slit →', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -10.3,0.5, 'the crown widens', {fs:11.5, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"The sinc² portrait",
@@ -728,9 +733,9 @@
           action(c){
        arrow(c, -Math.PI,0.72, Math.PI,0.72, {color:GREEN, w:2, head:7});
        arrow(c, Math.PI,0.72, -Math.PI,0.72, {color:GREEN, w:2, head:7});
-       label(c, -1.7,0.78, 'double width', {fs:11.5, color:GREEN, italic:true});
+       label(c, 3.6,0.78, 'double width', {fs:11.5, color:GREEN, italic:true});
        dashLine(c, 3.5,0.045, 9.8,0.045, {color:PURPLE});
-       label(c, 5.4,0.14, 'shoulders: 4.5% of the peak', {fs:11.5, color:PURPLE, italic:true});
+       label(c, 4.4,0.24, 'shoulders: 4.5%', {fs:11.5, color:PURPLE, italic:true});
      }
         },
         { map:2, title:"Gratings: thousands of slits",
@@ -747,7 +752,7 @@
          plotCurve(c, t=>[x+0.28*Math.sin(Math.PI*t), h*t], 0, 1, {color:PURPLE, w:2.2, dur:500, N:40});
        }
        textAt(c, 7.0,1.02, 'many slits:', {fs:11.5, italic:true, anchor:'middle'});
-       textAt(c, 3.6,0.30, 'needles under envelope', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 7.0,0.9, 'needles under envelope', {fs:11.5, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Round holes: the Airy disc",
@@ -848,7 +853,7 @@ diff:"Basic",
           action(c){
        plotCurve(c, y=>[y, sinc2(Math.PI*y/3.64)], -10.2, 10.2, {color:GOLD, w:3, dur:1600});
        dashLine(c, -3.64,0, -3.64,0.35, {color:'#8A7D60'}); dashLine(c, 3.64,0, 3.64,0.35, {color:'#8A7D60'});
-       textAt(c, 2.9,0.75, 'central crown: 7.28 cm wide', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 5.6,0.75, 'central crown: 7.28 cm wide', {fs:12, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Part (b): the side fringes",

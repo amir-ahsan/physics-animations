@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -749,7 +753,7 @@
           action(c){
        arrow(c, -5.4,-2.1, -2.9,0, {color:RED, w:2.5, dur:600});
        arrow(c, -2.9,0, -0.4,-2.1, {color:RED, w:2.5, dur:600});
-       textAt(c, -5.6,-3.4, 'θ > θc: total internal reflection', {fs:9, italic:true, color:'#8A3324'});
+       textAt(c, -5.9,-2.5, 'θ > θc: total internal reflection', {fs:8.5, italic:true, color:'#8A3324'});
      }
         },
         { map:3, title:"Polarization",
@@ -885,7 +889,7 @@ diff:"Basic",
        arrow(c, 60,28, 60,44, {color:GREEN, w:3, label:'E₀', fs:13});
        el('circle',{cx:M.X(74),cy:M.Y(28),r:9,fill:'none',stroke:BLUE,'stroke-width':2.5},c.svg);
        el('circle',{cx:M.X(74),cy:M.Y(28),r:2.4,fill:BLUE},c.svg);
-       label(c, 74,17, 'B₀ (out of page)', {fs:11.5, color:BLUE, italic:true, anchor:'middle'});
+       label(c, 74,12, 'B₀ (out of page)', {fs:11.5, color:BLUE, italic:true, anchor:'middle'});
        arrow(c, 84,44, 98,44, {color:'#8A5A24', w:2.5, label:'c', fs:13});
      }
         },

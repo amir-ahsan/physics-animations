@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -707,7 +711,7 @@
     el('polyline',{points:pts2.join(' '),fill:'none',stroke:'#7B4FA0','stroke-width':2.5,'stroke-dasharray':'7,5'},ctx.svg);
     const t=el('text',{x:ctx.M.X(3.4),y:ctx.M.Y(160),fill:'#B5793B','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
     t.textContent='isotherm';
-    const t2=el('text',{x:ctx.M.X(2.7),y:ctx.M.Y(36),fill:'#7B4FA0','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
+    const t2=el('text',{x:ctx.M.X(1.0),y:ctx.M.Y(380),fill:'#7B4FA0','font-size':12.5,'font-family':'Georgia,serif','font-style':'italic'},ctx.svg);
     t2.textContent='adiabat: steeper';
   },
       steps:[
@@ -762,10 +766,10 @@
        el('line',{x1:M.X(0.5),y1:M.Y(310),x2:M.X(1.7),y2:M.Y(310),stroke:RED,'stroke-width':3.5},c.svg);
        label(c, 0.5,250, 'isobar: flat', {fs:12, color:RED, italic:true});
        el('line',{x1:M.X(2.5),y1:M.Y(370),x2:M.X(2.5),y2:M.Y(230),stroke:BLUE,'stroke-width':3.5},c.svg);
-       label(c, 2.2,190, 'isochor: W = 0', {fs:12, color:BLUE, italic:true});
+       label(c, 0.9,190, 'isochor: W = 0', {fs:12, color:BLUE, italic:true});
        const iso=[]; for(let i=0;i<=30;i++){const v=3.3+1.1*i/30; iso.push(M.X(v)+','+M.Y(1050/v-70));}
        el('polyline',{points:iso.join(' '),fill:'none',stroke:GOLD,'stroke-width':3.5},c.svg);
-       label(c, 3.4,140, 'isotherm: ΔE=0', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 4.2,60, 'isotherm: ΔE=0', {fs:12, color:'#8A5A24', italic:true});
        const ad=[]; for(let i=0;i<=30;i++){const v=3.3+1.1*i/30; ad.push(M.X(v)+','+M.Y(1050/Math.pow(v,1.67)*Math.pow(3.3,0.67)-70));}
        el('polyline',{points:ad.join(' '),fill:'none',stroke:PURPLE,'stroke-width':3,'stroke-dasharray':'6,5'},c.svg);
        label(c, 4.05,14, 'adiabat: Q = 0', {fs:11, color:PURPLE, italic:true});
@@ -782,7 +786,7 @@
           ],
           action(c){
        el('circle',{cx:c.M.X(1.0), cy:c.M.Y(350), r:6, fill:'#2B2317'},c.svg);
-       arrow(c, 2.6,135, 3.4,105, {color:'#B5793B', w:2.5, label:'same T', fs:11.5, side:-1});
+       arrow(c, 2.6,135, 3.4,105, {color:'#B5793B', w:2.5, label:'same T', fs:11.5, side:1});
        arrow(c, 1.9,50, 2.7,26, {color:PURPLE, w:2.5, label:'T falling — paying for W', fs:11.5, at:'mid', side:-1});
      }
         },
@@ -955,7 +959,7 @@ diff:"Intermediate",
             {label:"The heat", tex:"Q = \\Delta E_{\\rm int} + W = 0 + 6.05\\times10^{3} = 6.05\\times10^{3}\\ \\mathrm J", kind:"answer"}
           ],
           action(c){
-       textAt(c, 3.3, 200, 'T = 350 K all along the curve ⇒ ΔE_int = 0', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, 1.0, 22, 'T = 350 K all along the curve ⇒ ΔE_int = 0', {fs:12, italic:true, color:'#8A5A24'});
      }
         },
         { map:4, title:"The dangerous thought",
@@ -1112,7 +1116,7 @@ diff:"Challenging",
           action(c){
        el('circle',{cx:c.M.X(4.6),cy:c.M.Y(380/Math.pow(4.6,1.4)),r:5,fill:'#5C4B30'},c.svg);
        el('circle',{cx:c.M.X(1.05),cy:c.M.Y(380/Math.pow(1.05,1.4)),r:5,fill:RED},c.svg);
-       textAt(c, 4.5, 60, 'T_i = 300 K', {fs:11, italic:true});
+       textAt(c, 4.4, 150, 'T_i = 300 K', {fs:11, italic:true});
        textAt(c, 1.25, 395, 'T_f = 886 K', {fs:12, italic:true, color:RED});
        arrow(c, 3.6,120, 1.8,255, {color:RED, w:2.5, dash:'6,4', label:'compress ×15', fs:11.5});
      }

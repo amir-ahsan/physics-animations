@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -704,7 +708,7 @@
     axes2D(ctx.svg, ctx.M, w, {xlab:'x', ylab:'y'});
     const pts=[]; for(let i=0;i<=140;i++){const x=10.2*i/140; pts.push(ctx.M.X(x)+','+ctx.M.Y(1.7*Math.sin(1.3*x)));}
     el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3.5,'stroke-linejoin':'round'},ctx.svg);
-    const t=el('text',{x:ctx.M.X(7.9),y:ctx.M.Y(2.25),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(7.2),y:ctx.M.Y(2.25),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
     t.textContent='the pattern moves; the medium merely dances in place';
   },
       steps:[
@@ -744,10 +748,10 @@
        };
        string(0.8, 2.5, 7.4, GOLD);
        arrow(c, 8.2,2.35, 9.6,2.35, {color:GOLD, w:2, head:7});
-       label(c, 0.4,2.75, 'light string: fast (small μ)', {fs:10, color:'#8A5A24', italic:true});
+       label(c, 0.4,2.75, 'light string: fast', {fs:10, color:'#8A5A24', italic:true});
        string(-1.8, 5.5, 3.6, BLUE);
        arrow(c, 4.4,-0.25, 5.3,-0.25, {color:BLUE, w:2, head:7});
-       label(c, 1.0,-2.45, 'heavy rope: slow — same shaking hand, different medium', {fs:12, color:'#1D4568', italic:true});
+       label(c, 1.0,-2.45, 'heavy rope: slow', {fs:12, color:'#1D4568', italic:true});
      }
         },
         { map:2, title:"Two speeds, never confused",
@@ -759,11 +763,11 @@
             {label:"The distinction", tex:"v_y = \\frac{\\partial y}{\\partial t}, \\qquad v_{y,\\max} = \\omega A \\ne v\\ \\ (\\text{two different speeds!})", kind:"warn"}
           ],
           action(c){
-       arrow(c, 4.4,2.2, 7.0,2.2, {color:GOLD, w:3, label:'the PATTERN: v = ω/k', fs:12, at:'mid', side:-1, loff:30});
-       el('circle',{cx:c.M.X(2.42), cy:c.M.Y(0), r:6, fill:RED},c.svg);
-       arrow(c, 2.42,0.25, 2.42,1.35, {color:RED, w:2.5, head:7});
-       arrow(c, 2.42,-0.25, 2.42,-1.35, {color:RED, w:2.5, head:7});
-       label(c, 2.7,-1.0, 'the MATERIAL: bobs at ωA', {fs:12, color:RED, italic:true});
+       arrow(c, 4.4,2.2, 7.0,2.2, {color:GOLD, w:3, label:'the PATTERN: v = ω/k', fs:12, at:'mid', side:1, loff:30});
+       el('circle',{cx:c.M.X(7.25), cy:c.M.Y(0), r:6, fill:RED},c.svg);
+       arrow(c, 7.25,0.25, 7.25,1.35, {color:RED, w:2.5, head:7});
+       arrow(c, 7.25,-0.25, 7.25,-1.35, {color:RED, w:2.5, head:7});
+       label(c, 6.6,-2.3, 'MATERIAL: bobs at ωA', {fs:12, color:RED, italic:true});
      }
         },
         { map:3, title:"Energy in transit",
@@ -821,10 +825,10 @@
           ],
           action(c){
        const {M}=c;
-       plotCurve(c, x=>[x, -1.6+1.0*Math.sin(Math.PI*(x-6.4)/1.9)], 6.4, 10.2, {color:RED, w:2.5, dur:800});
-       plotCurve(c, x=>[x, -1.6-1.0*Math.sin(Math.PI*(x-6.4)/1.9)], 6.4, 10.2, {color:RED, w:2, dur:800});
+       plotCurve(c, x=>[x, -1.6+0.8*Math.sin(Math.PI*(x-6.4)/1.9)], 6.4, 10.2, {color:RED, w:2.5, dur:800});
+       plotCurve(c, x=>[x, -1.6-0.8*Math.sin(Math.PI*(x-6.4)/1.9)], 6.4, 10.2, {color:RED, w:2, dur:800});
        for(const x of [6.4,8.3,10.2]) el('circle',{cx:M.X(x),cy:M.Y(-1.6),r:4,fill:'#5C4B30'},c.svg);
-       textAt(c, 8.3,-2.45, 'nodes pinned; antinodes swing 2A', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 8.3,-2.95, 'nodes pinned; antinodes swing 2A', {fs:11, italic:true, anchor:'middle'});
      }
         },
       ]
@@ -886,7 +890,7 @@ diff:"Basic",
        el('circle',{cx:c.M.X(0.9),cy:c.M.Y(0),r:6,fill:RED},c.svg);
        arrow(c, 0.9,0.006, 0.9,0.030, {color:RED, w:2.5, head:7});
        arrow(c, 0.9,-0.006, 0.9,-0.030, {color:RED, w:2.5, head:7});
-       textAt(c, 1.25,-0.028, 'element bobs at ωA = 0.296 m/s', {fs:12, color:RED, italic:true});
+       textAt(c, 1.25,-0.05, 'element bobs at ωA = 0.296 m/s', {fs:12, color:RED, italic:true});
      }
         },
         { map:4, title:"Check the gentleness",
@@ -1081,7 +1085,7 @@ diff:"Challenging",
           action(c){
        plotCurve(c, x=>[x, -2.3+0.8*Math.pow(Math.cos(1.3*x),2)], 0.2, 10.2, {color:PURPLE, w:2.5, dur:1000});
        dashLine(c, 0.2,-1.9, 10.2,-1.9, {color:'#8A7D60'});
-       textAt(c, 9.0,-1.35, 'cos²: mean = ½', {fs:12, italic:true, color:PURPLE});
+       textAt(c, 0.2,1.95, 'cos²: mean = ½', {fs:12, italic:true, color:PURPLE});
      }
         },
         { map:2, title:"The equal partner",
@@ -1118,7 +1122,7 @@ diff:"Challenging",
           ],
           action(c){
        dashLine(c, 5.2,-2.1, 5.2,2.1, {color:GREEN, dash:'7,5'});
-       textAt(c, 5.45,-2.1, 'checkpoint: 5.95 J crosses each second', {fs:12, italic:true, color:'#2E7D4F'});
+       textAt(c, 5.45,-2.8, 'checkpoint: 5.95 J crosses each second', {fs:12, italic:true, color:'#2E7D4F'});
      }
         },
       ]
@@ -1197,8 +1201,8 @@ diff:"Challenging",
             {label:"Reusable method", text:"small slopes → difference of slopes = curvature → Newton per element → compare with the standard form", kind:"answer"}
           ],
           action(c){
-       plotCurve(c, x=>[x, -0.95+0.75*Math.exp(-Math.pow((x-2.6)/0.55,2))+0.45*Math.exp(-Math.pow((x-3.6)/0.35,2))], 0.4, 9.6, {color:GREEN, w:3, dur:1000});
-       arrow(c, 4.6,-0.45, 6.4,-0.45, {color:GREEN, w:2.5, label:'any f(x − vt), same v', fs:12, at:'mid', side:-1, loff:26});
+       plotCurve(c, x=>[x, -1.1+0.5*Math.exp(-Math.pow((x-2.6)/0.55,2))+0.3*Math.exp(-Math.pow((x-3.6)/0.35,2))], 0.4, 7.0, {color:GREEN, w:3, dur:1000});
+       arrow(c, 7.6,-0.45, 9.6,-0.45, {color:GREEN, w:2.5, label:'any f(x − vt), same v', fs:12, at:'mid', side:-1, loff:26});
      }
         },
       ]

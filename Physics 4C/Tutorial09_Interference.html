@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -948,7 +952,7 @@ diff:"Intermediate",
           ],
           action(c){
        plotCurve(c, x=>[x, 4*Math.pow(Math.cos(Math.PI*(x-0.019*x*x)/1.1),2)], 0, 10.2, {color:GOLD, w:2.5, dur:1400});
-       textAt(c, 0.4,4.35, 'flat screen: fringes SPREAD at large θ', {fs:12, italic:true});
+       textAt(c, 0.4,4.35, 'fringes SPREAD at large θ', {fs:12, italic:true});
      }
         },
         { map:3, title:"Retire the convenient formula",
@@ -962,7 +966,7 @@ diff:"Intermediate",
           ],
           action(c){
        dashLine(c, 8.6,0, 8.6,3.3, {color:GREEN});
-       label(c, 8.6,3.55, 'small-angle guess', {fs:11, color:GREEN, italic:true, anchor:'middle'});
+       label(c, 8.6,4.25, 'small-angle guess', {fs:11, color:GREEN, italic:true, anchor:'middle'});
        dashLine(c, 9.05,0, 9.05,2.6, {color:RED});
        label(c, 9.05,2.15, 'true fringe: 5% farther out', {fs:11, color:RED, italic:true, anchor:'middle'});
      }
@@ -1012,7 +1016,7 @@ diff:"Challenging",
        arrow(c, 6.6,3.1, 9.5,4.05, {color:GREEN, w:3});
        label(c, 7.6,2.6, 'E_R = 2E₀cos(φ/2)', {fs:12, color:GREEN, italic:true});
        arc(c, 8.2,3.1, 0.6, 0, 36, {color:'#888', label:'φ'});
-       label(c, 8.2,1.95, 'phasors: tip to tail, square at the end', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
+       label(c, 5.4,4.3, 'phasors: tip to tail, square at the end', {fs:11.5, color:'#8A5A24', italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Square for the comb",
@@ -1040,7 +1044,7 @@ diff:"Challenging",
           action(c){
        const {M}=c;
        for(const x of [0.5,1.5,2.5,3.5,4.5,5.5]) el('circle',{cx:M.X(x),cy:M.Y(2),r:5,fill:'none',stroke:RED,'stroke-width':2.2},c.svg);
-       label(c, 3.0,1.45, 'half-power points: φ = π/2, 3π/2, …', {fs:11.5, color:RED, italic:true, anchor:'middle'});
+       label(c, 3.0,-0.35, 'half-power points: φ = π/2, 3π/2, …', {fs:11.5, color:RED, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"The certifying audit",
