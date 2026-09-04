@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -800,7 +804,7 @@
        el('circle',{cx:c.M.X(1.4), cy:c.M.Y(6.0), r:9, fill:RED},c.svg);
        arrow(c, 1.4,5.6, 1.4,4.2, {color:PURPLE, w:2.5, label:'g', fs:13});
        label(c, 0.4,2.6, 'falling apple', {fs:10, color:'#7A5A28'});
-       plotCurve ? plotCurve(c, t=>5.0+2.6*(t-5.2)-0.65*(t-5.2)*(t-5.2), 3.4, 7.6, {color:'#8A7D60', w:2, dash:'5,4'}) : 0;
+       plotCurve(c, t=>7.6-0.65*(t-5.2)*(t-5.2), 3.4, 7.0, {color:'#8A7D60', w:2, dash:'5,4'});
        el('circle',{cx:c.M.X(5.2), cy:c.M.Y(7.6), r:6, fill:BLUE},c.svg);
        label(c, 4.4,3.2, 'thrown stone', {fs:10, color:'#7A5A28'});
        el('rect',{x:c.M.X(8.9), y:c.M.Y(6.2), width:34, height:14, rx:6, fill:'#7B4FA0'},c.svg);
@@ -1090,7 +1094,7 @@ diff:"Intermediate",
       title:"Free fall from a moving start",
       problem:"A ball is thrown straight up at 15.0 m/s from the roof of a building 20.0 m tall and falls to the street below. Take up as positive, origin at the roof. (a) How long is it in the air? (b) With what speed does it strike the street?",
       goal:"Goal → t and |v|",
-      world:{"x0":-2.6,"x1":4.6,"y0":-23,"y1":15},
+      world:{"x0":-2.6,"x1":4.6,"y0":-23,"y1":15,"aniso":true},
       pathway:["Read","Picture","Quadratic","Solve t","Speed","Check"],
       setup(ctx,w){
     const {svg,M}=ctx;
@@ -1103,7 +1107,7 @@ diff:"Intermediate",
     el('line',{x1:M.X(-2.6),y1:M.Y(-20),x2:M.X(4.6),y2:M.Y(-20),stroke:'#B0A488','stroke-width':3},svg);
     const t=el('text',{x:M.X(2.6),y:M.Y(-20)+18,fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif'},svg);
     t.textContent='street: y = −20.0 m';
-    const t2=el('text',{x:M.X(-2.1),y:M.Y(0)-8,fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif'},svg);
+    const t2=el('text',{x:M.X(-0.3),y:M.Y(0)-8,'text-anchor':'end',fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif'},svg);
     t2.textContent='roof: y = 0';
   },
       steps:[

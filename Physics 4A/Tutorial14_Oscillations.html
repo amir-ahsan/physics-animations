@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -811,7 +815,7 @@
           ],
           action(c){
        const {M}=c;
-       const pts=[]; for(let i=0;i<=90;i++){const x=0.4+7.0*i/90;
+       const pts=[]; for(let i=0;i<=90;i++){const x=0.4+6.0*i/90;
          pts.push(M.X(x)+','+M.Y(-2.9+2.2*Math.pow(x-3.4,2)*0.28+0.7*Math.sin(1.6*x)));}
        el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3},c.svg);
        el('circle',{cx:M.X(2.95), cy:M.Y(-3.15), r:26, fill:'none', stroke:GREEN,'stroke-width':2.5,'stroke-dasharray':'6,5'},c.svg);
@@ -820,7 +824,7 @@
        el('polyline',{points:par.join(' '),fill:'none',stroke:GREEN,'stroke-width':3},c.svg);
        arrow(c, 3.9,-2.4, 7.5,0.2, {color:'#8A7D60', w:2, dash:'5,4'});
        label(c, 7.0,-0.6, 'zoomed in: ½kx²', {fs:11, color:GREEN, italic:true});
-       label(c, 0.5,2.9, 'any smooth U(x), any minimum → SHM for small nudges', {fs:12.5, color:'#8A5A24', italic:true});
+       label(c, 1.2,3.0, 'any smooth minimum → SHM for small nudges', {fs:10, color:'#8A5A24', italic:true});
      }
         },
         { map:5, title:"Damping and resonance",
@@ -841,7 +845,7 @@
        peak(1.5,0.28,RED); peak(0.8,0.75,BLUE);
        dashLine(c, 8.5,-3.3, 8.5,-1.75, {});
        label(c, 8.4,-1.5, 'ω₀', {fs:12, color:'#7A5A28', italic:true, anchor:'middle'});
-       label(c, 9.65,-2.05, 'light damping', {fs:11, color:RED, italic:true});
+       label(c, 8.0,-1.75, 'light damping', {fs:11, color:RED, italic:true, anchor:'end'});
        label(c, 9.3,-2.9, 'heavy', {fs:11, color:BLUE, italic:true});
      }
         },
@@ -950,7 +954,7 @@ diff:"Basic",
           action(c){
        const {M}=c;
        el('circle',{cx:M.X(0.0785),cy:M.Y(0),r:5,fill:GREEN},c.svg);
-       textAt(c, 0.088,-0.03, 'v_max at x = 0', {fs:11.5, italic:true, color:'#2E7D4F'});
+       textAt(c, 0.088,0.035, 'v_max at x = 0', {fs:11.5, italic:true, color:'#2E7D4F'});
        el('circle',{cx:M.X(0.157),cy:M.Y(-0.05),r:5,fill:PURPLE},c.svg);
        textAt(c, 0.168,-0.06, 'a_max at x = ±A', {fs:11.5, italic:true, color:'#7B4FA0'});
      }

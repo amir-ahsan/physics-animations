@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -793,7 +797,7 @@
        el('polyline',{points:pts.join(' '),fill:'none',stroke:BLUE,'stroke-width':2,'stroke-dasharray':'5,4'},c.svg);
        el('circle',{cx:c.M.X(9.6), cy:c.M.Y(0.7), r:7, fill:BLUE},c.svg);
        label(c, 5.0,6.7, 'coin flung sideways', {fs:13, color:BLUE});
-       label(c, 4.3,1.4, 'both strike together — same y-clock', {fs:13, color:'#8A5A24', italic:true});
+       label(c, 0.3,-0.35, 'both strike together — same y-clock', {fs:13, color:'#8A5A24', italic:true});
      }
         },
         { map:5, title:"The reusable method",
@@ -886,7 +890,7 @@ diff:"Basic",
           action(c){
        dashLine(c, 44.1,0, 44.1,29.4, {});
        textAt(c, 27,17, '2.45 s up', {fs:12, italic:true, color:'#7A5A28', anchor:'middle'});
-       textAt(c, 68,13.5, '2.45 s down', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
+       textAt(c, 66,7, '2.45 s down', {fs:13, italic:true, color:'#7A5A28', anchor:'middle'});
      }
         },
         { map:4, title:"Part (c): the range",
@@ -897,7 +901,7 @@ diff:"Basic",
           board:[
             {label:"Range", tex:"R = v_{0x}\\,t = (18.0)(4.90) = 88.2\\ \\mathrm{m}", kind:"answer"}
           ],
-          action(c){ arrow(c, 0,1.8, 88.2,1.8, {color:GREEN, dash:'7,5', w:2, label:'R = 88.2 m', fs:14}); }
+          action(c){ arrow(c, 0,-3.6, 88.2,-3.6, {color:GREEN, dash:'7,5', w:2, label:'R = 88.2 m', fs:14, at:'mid', side:-1, loff:21}); }
         },
         { map:5, title:"Check: gravity refunds",
           think:"At landing, what speed and angle must return — and why?",
