@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -857,7 +861,7 @@ diff:"Basic",
        dashLine(c, 3.825,1.8, 3.825,-2.3, {color:'#B0A488'});
        arrow(c, 0.765,-2.15, 3.825,-2.15, {color:'#8A7D60', w:2, head:8});
        arrow(c, 3.825,-2.15, 0.765,-2.15, {color:'#8A7D60', w:2, head:8});
-       textAt(c, 2.3,-1.85, 'λ = 3.06 m', {fs:12.5, italic:true, anchor:'middle'});
+       textAt(c, 2.3,-2.45, 'λ = 3.06 m', {fs:12.5, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"Part (b): the magnetic partner",
@@ -880,7 +884,7 @@ diff:"Basic",
           ],
           action(c){
        plotCurve(c, x=>[x, 0.9*Math.sin(2*Math.PI*x/3.06)], 0, 7.2, {color:BLUE, w:2.5, dash:'6,5', dur:1800});
-       textAt(c, 4.6,-1.35, 'B (⊥ page, drawn to own scale)', {fs:12, italic:true, color:BLUE});
+       textAt(c, 3.6,2.15, 'B (⊥ page, own scale)', {fs:12, italic:true, color:BLUE});
        arrow(c, 5.6,2.0, 7.1,2.0, {color:GREEN, w:3.5, label:'c', fs:14});
      }
         },

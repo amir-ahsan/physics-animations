@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -694,7 +698,7 @@
     const pts=[]; for(let i=0;i<=80;i++){const t=10.6*i/80; pts.push(ctx.M.X(t)+','+ctx.M.Y(2.8*Math.sin(1.5*t)));}
     el('polyline',{points:pts.join(' '),fill:'none',stroke:'#B5793B','stroke-width':3,'stroke-linecap':'round'},ctx.svg);
     dashLine(ctx, 0,1.98, 10.6,1.98, {color:'#2E7D4F'});
-    const t=el('text',{x:ctx.M.X(8.9),y:ctx.M.Y(2.45),fill:'#2E7D4F','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
+    const t=el('text',{x:ctx.M.X(7.3),y:ctx.M.Y(2.2),fill:'#2E7D4F','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},ctx.svg);
     t.textContent='rms = peak/√2';
   },
       steps:[
@@ -711,7 +715,7 @@
        label(c, 0.4,3.25, 'peak V₀', {fs:12, color:'#8A7D60', italic:true});
        arrow(c, 3.2,0.1, 3.2,1.9, {color:GREEN, w:2, head:7});
        arrow(c, 3.2,1.9, 3.2,0.1, {color:GREEN, w:2, head:7});
-       label(c, 3.5,1.0, 'rms: the DC-equivalent heater', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, 3.2,3.05, 'rms: the DC-equivalent heater', {fs:11.5, color:'#2E7D4F', italic:true});
      }
         },
         { map:1, title:"Each element's style",
@@ -788,7 +792,7 @@
        [1.8,3.3,6.0,8.2,9.4].forEach(x=>el('circle',{cx:M.X(0.6+x), cy:M.Y(-2.95), r:4, fill:'#8A7D60'},c.svg));
        el('circle',{cx:M.X(6.0), cy:M.Y(-2.95), r:5, fill:GREEN},c.svg);
        label(c, 5.0,3.1, 'your station', {fs:12.5, color:GREEN, italic:true});
-       label(c, 7.6,-1.9, 'everyone else, snubbed', {fs:11.5, color:'#8A7D60', italic:true});
+       label(c, 8.0,-1.95, 'others: snubbed', {fs:11.5, color:'#8A7D60', italic:true});
      }
         },
         { map:5, title:"Resonance and transformers",
@@ -839,7 +843,7 @@ diff:"Basic",
        plotCurve(c, t=>[t, 170*Math.sin(377*t)], 0, 0.04, {color:GOLD, w:3.5, dur:2200});
        dashLine(c, 0,120, 0.04,120, {color:GREEN, dash:'7,5'});
        dashLine(c, 0,170, 0.04,170, {color:'#B0A488', dash:'3,5'});
-       textAt(c, 0.0335,135, 'V_rms = 120 V', {fs:12.5, color:GREEN});
+       textAt(c, 0.0175,190, 'V_rms = 120 V', {fs:12.5, color:GREEN});
        textAt(c, 0.034,185, 'peak 170 V', {fs:12, color:'#8A7D60'});
      }
         },
@@ -854,7 +858,7 @@ diff:"Basic",
           action(c){
        /* current in phase with v — drawn to its own scale so it is visible on the volt axis */
        plotCurve(c, t=>[t, 60*Math.sin(377*t)], 0, 0.04, {color:BLUE, w:2.5, dash:'7,5', dur:1800});
-       textAt(c, 0.0065,-80, 'i(t) — in phase with v (own scale)', {fs:12, color:BLUE, italic:true});
+       textAt(c, 0.0065,-205, 'i(t) — in phase with v (own scale)', {fs:12, color:BLUE, italic:true});
      }
         },
         { map:3, title:"Part (c): the power",
@@ -910,7 +914,7 @@ diff:"Intermediate",
        plotCurve(c, t=>[t, 1.6*Math.sin(377*t)], 0, 0.04, {color:'#8A7D60', w:2.5, dash:'6,5', dur:1800});
        plotCurve(c, t=>[t, 1.0*Math.sin(377*t+Math.PI/2)], 0, 0.04, {color:BLUE, w:3, dur:1800});
        textAt(c, 0.0335,1.85, 'v(t)', {fs:12.5, italic:true, color:'#8A7D60'});
-       textAt(c, 0.0005,1.35, 'I_C leads', {fs:12.5, italic:true, color:BLUE});
+       textAt(c, 0.0055,1.8, 'I_C leads', {fs:12.5, italic:true, color:BLUE});
      }
         },
         { map:2, title:"Part (b): ELI",
@@ -924,7 +928,7 @@ diff:"Intermediate",
           ],
           action(c){
        plotCurve(c, t=>[t, 1.0*Math.sin(377*t-Math.PI/2)], 0, 0.04, {color:PURPLE, w:3, dur:1800});
-       textAt(c, 0.0075,-1.75, 'I_L lags', {fs:12.5, italic:true, color:PURPLE});
+       textAt(c, 0.0135,-1.95, 'I_L lags', {fs:12.5, italic:true, color:PURPLE});
      }
         },
         { map:3, title:"Part (c): turn the f knob",
@@ -1064,7 +1068,7 @@ diff:"Intermediate",
        el('circle',{cx:c.M.X(102.7),cy:c.M.Y(2),r:5,fill:RED},c.svg);
        textAt(c, 112,2.15, 'f₀ = 103 Hz: I = 2.0 A', {fs:12.5, color:RED});
        el('circle',{cx:c.M.X(60),cy:c.M.Y(0.53),r:4,fill:BLUE},c.svg);
-       textAt(c, 33,0.75, '60 Hz: 0.53 A (Ex. 3)', {fs:12, color:BLUE});
+       textAt(c, 30,-0.28, '60 Hz: 0.53 A', {fs:12, color:BLUE});
      }
         },
         { map:3, title:"Part (c): the internal shock",

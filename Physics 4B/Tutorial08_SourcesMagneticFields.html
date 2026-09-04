@@ -532,7 +532,8 @@
       return {
         X: x => vw/2 + (x - cx)*SX,
         Y: y => vh/2 - (y - cy)*SY,
-        S: v => v*SX
+        S: v => v*SX,
+        s: SX, sx: SX, sy: SY
       };
     }
     function headPts(x, y, ang, s){
@@ -572,7 +573,7 @@
         t.textContent = opt.label;
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
-          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+          if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
           else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -611,7 +612,7 @@
       try{ /* keep labels inside the sketch pane */
         let bb = t.getBBox();
         if(bb.width > 588){ t.setAttribute('font-size', Math.max(13, Math.floor((+t.getAttribute('font-size')) * 588/bb.width))); bb = t.getBBox(); }
-        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 516));
+        if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
         else if(bb.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - bb.x));
         const b2 = t.getBBox();
         if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
@@ -636,10 +637,13 @@
     }
     function plotCurve(c, fn, t0, t1, opt = {}){
       const {M, svg, instant} = c;
-      const N = 60, pts = [];
-      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; pts.push([M.X(t), M.Y(fn(t))]); }
+      const N = opt.N || 60, pts = [];
+      for(let i = 0; i <= N; i++){ const t = t0 + (t1 - t0)*i/N; const r = fn(t);
+        const xy = Array.isArray(r) ? r : [t, r]; pts.push([M.X(xy[0]), M.Y(xy[1])]); }
       const poly = el('polyline',{points:'', fill:'none', stroke:opt.color || BLUE,
-        'stroke-width':opt.w || 3,'stroke-linecap':'round'}, svg);
+        'stroke-width':opt.w || 3,'stroke-linecap':'round','stroke-linejoin':'round'}, svg);
+      if(opt.dash) poly.setAttribute('stroke-dasharray', opt.dash);
+      if(opt.opacity != null) poly.setAttribute('opacity', opt.opacity);
       tween(u => {
         const n = Math.max(2, Math.round(u*(N + 1)));
         poly.setAttribute('points', pts.slice(0,n).map(p => p.join(',')).join(' '));
@@ -933,8 +937,8 @@ diff:"Intermediate",
     const {svg,M}=ctx;
     el('line',{x1:M.X(0),y1:M.Y(12),x2:M.X(44),y2:M.Y(12),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},svg);
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(44),y2:M.Y(0),stroke:'#5C4B30','stroke-width':4,'stroke-linecap':'round'},svg);
-    const t=el('text',{x:M.X(-2.5),y:M.Y(12)+5,fill:'#5C4B30','font-size':13,'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'},svg); t.textContent='I₁ = 15 A';
-    const t2=el('text',{x:M.X(-2.5),y:M.Y(0)+5,fill:'#5C4B30','font-size':13,'text-anchor':'end','font-family':'Georgia,serif','font-style':'italic'},svg); t2.textContent='I₂ = 10 A';
+    const t=el('text',{x:M.X(-6)+2,y:M.Y(12)+5,fill:'#5C4B30','font-size':12,'text-anchor':'start','font-family':'Georgia,serif','font-style':'italic'},svg); t.textContent='I₁ = 15 A';
+    const t2=el('text',{x:M.X(-6)+2,y:M.Y(0)+5,fill:'#5C4B30','font-size':12,'text-anchor':'start','font-family':'Georgia,serif','font-style':'italic'},svg); t2.textContent='I₂ = 10 A';
   },
       steps:[
         { map:0, title:"Read: the two-step",
@@ -1017,7 +1021,7 @@ diff:"Intermediate",
        el('circle',{cx:M.X(0),cy:M.Y(0),r:3,fill:'#8A7D60'},c.svg);
        textAt(c, 0.5,0.7, 'C', {fs:15, italic:true});
        dashLine(c, 0,0, 4.24,4.24, {color:'#B0A488'});
-       textAt(c, 1.5,3.4, 'R = 6.0 cm', {fs:12, italic:true});
+       textAt(c, 1.5,0.75, 'R = 6.0 cm', {fs:10, italic:true});
      }
         },
         { map:1, title:"Claim the freebie",
@@ -1059,7 +1063,7 @@ diff:"Intermediate",
        const {M}=c;
        el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:9,fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
        el('circle',{cx:M.X(2.5),cy:M.Y(2.5),r:2.6,fill:GREEN},c.svg);
-       textAt(c, 5.4,1.9, 'B out of page', {fs:11, italic:true, color:GREEN});
+       textAt(c, -2.4,4.3, 'B out of page', {fs:11, italic:true, color:GREEN});
      }
         },
         { map:4, title:"Check by completion",
