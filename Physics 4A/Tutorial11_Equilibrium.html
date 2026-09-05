@@ -72,7 +72,7 @@
       overflow:hidden;
       isolation:isolate;
       background:
-        linear-gradient(90deg,transparent 0 82%,rgba(8,17,13,.38) 82%),
+        linear-gradient(90deg,transparent 0 80%,rgba(8,17,13,.38) 80%),
         radial-gradient(circle at 53% 32%,rgba(93,135,107,.2),transparent 42%),
         #27352c;
     }
@@ -87,7 +87,7 @@
     .format-badge{border:1px solid rgba(240,234,216,.3);border-radius:999px;padding:5px 9px;letter-spacing:.1em}
     .board{
       position:absolute;z-index:1;left:3.6%;top:7.6%;
-      width:79%;height:85.5%;
+      width:76%;height:85.5%;
       border:clamp(6px,1vw,13px) solid #735336;
       border-radius:7px;
       background:
@@ -104,7 +104,7 @@
     }
     .board-content{
       position:absolute;z-index:3;left:5.4%;top:10.4%;
-      width:75.5%;height:79%;
+      width:72.5%;height:79%;
       color:var(--chalk);
       display:grid;grid-template-rows:auto auto 1fr;
       gap:clamp(5px,.75vw,11px);
@@ -174,17 +174,19 @@
       color:var(--green);
       font-size:clamp(.6rem,.88vw,.88rem);font-weight:700;line-height:1.35;
     }
-    .equation-stack{display:flex;flex-direction:column;gap:clamp(3px,.5vw,8px);min-height:0;overflow:hidden}
+    .equation-stack{flex:1 1 auto;display:flex;flex-direction:column;gap:clamp(3px,.5vw,8px);min-height:0;overflow:hidden}
     .equation-line{
       position:relative;opacity:0;transform:translateY(7px);
       padding:clamp(3px,.42vw,6px) clamp(5px,.7vw,10px);
       border-left:2px solid transparent;
       color:#dce6db;
-      font-size:clamp(.72rem,1.18vw,1.16rem);
+      font-size:calc(clamp(.72rem,1.18vw,1.16rem) * var(--boardScale,2));
       line-height:1.3;
       transition:opacity .45s ease,transform .45s ease,background .45s ease;
     }
-    .equation-line .katex{font-size:1em}
+    .equation-line .katex{font-size:1em;white-space:nowrap}
+    .equation-stack.wrap-ok .katex{white-space:normal}
+    .equation-stack.wrap-ok .katex .base{white-space:normal;width:auto}
     .equation-line.show{opacity:1;transform:none}
     .equation-line small{
       display:block;margin-bottom:1px;
@@ -194,7 +196,7 @@
     .equation-line.key{border-color:var(--amber);background:linear-gradient(90deg,rgba(232,172,86,.13),transparent 85%);color:#fff8df}
     .equation-line.answer{border:1px solid rgba(142,210,155,.55);border-radius:5px;background:rgba(142,210,155,.1);color:#dcffe4}
     .equation-line.warn{border-color:var(--coral);background:linear-gradient(90deg,rgba(239,128,111,.12),transparent);color:#ffe3dd}
-    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:clamp(.66rem,1vw,.98rem)}
+    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:calc(clamp(.66rem,1vw,.98rem) * var(--boardScale,2))}
     .key-move{
       display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;
       background:var(--amber);color:#17241d;
@@ -203,8 +205,8 @@
     }
     /* ---- professor ---- */
     .professor-2d{
-      position:absolute;z-index:4;right:5.4%;bottom:2.5%;
-      width:21%;height:76%;
+      position:absolute;z-index:4;right:1%;bottom:2%;
+      width:15%;height:84%;
       display:flex;align-items:flex-end;justify-content:center;
       pointer-events:none;
       filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
@@ -227,8 +229,18 @@
     @keyframes prof-blink{0%,95.5%,100%{transform:scaleY(0)}97.5%{transform:scaleY(1)}}
     .professor-2d #hairG{animation:prof-sway 5s ease-in-out infinite;transform-origin:110px 70px}
     @keyframes prof-sway{0%,100%{transform:rotate(-.6deg)}50%{transform:rotate(.6deg)}}
+    /* stroll: legs swing, hands clasped behind the back */
+    .professor-2d #legL,.professor-2d #legR{transform-box:fill-box;transform-origin:50% 0}
+    .professor-2d #armL,.professor-2d #armR,.professor-2d #armsBack{transition:opacity .35s}
+    .professor-2d.walking #armL,.professor-2d.walking #armR{opacity:0}
+    .professor-2d.walking #armsBack{opacity:1}
+    .professor-2d.walking #legL{animation:prof-step .46s ease-in-out infinite alternate}
+    .professor-2d.walking #legR{animation:prof-step .46s ease-in-out infinite alternate;animation-delay:-.46s}
+    .professor-2d.walking svg{animation:prof-bob .46s ease-in-out infinite alternate}
+    @keyframes prof-step{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+    @keyframes prof-bob{from{transform:translateY(0)}to{transform:translateY(-3px)}}
     .professor-id{
-      position:absolute;z-index:5;right:.8%;top:12%;width:16%;
+      position:absolute;z-index:5;right:.8%;top:12%;width:18.4%;
       color:#eee5d4;text-align:center;text-shadow:0 2px 8px #000;pointer-events:none;
     }
     .professor-id strong{display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(.68rem,1.05vw,1rem);font-weight:500}
@@ -313,11 +325,11 @@
       .masthead{align-items:start;flex-direction:column;gap:5px}
       .lecture-note{text-align:left}
       .lecture-stage{min-height:340px}
-      .board{left:2%;width:84%}
-      .board-content{left:4%;width:80%}
+      .board{left:2%;width:78%}
+      .board-content{left:4%;width:74%}
       .work-area{grid-template-columns:33% 67%}
       .professor-id{display:none}
-      .professor-2d{right:2.5%;width:22%;height:70%;bottom:2.5%}
+      .professor-2d{right:1%;width:15%;height:75%;bottom:2%}
       .subtitle-box{grid-template-columns:1fr;gap:7px}
       .controls{grid-template-columns:1fr auto}
       .timeline-wrap{grid-column:1/-1;grid-row:1}
@@ -386,7 +398,7 @@
         </section>
 
         <div class="professor-2d pose-talk" id="professor2d" aria-hidden="true">
-          <svg id="prof" viewBox="0 0 220 290" focusable="false">
+          <svg id="prof" viewBox="0 0 220 400" focusable="false">
             <g id="slim" transform="translate(22 0) scale(0.8 1)">
               <g id="headG" transform="translate(0 16)">
                 <g id="hairG" fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
@@ -429,9 +441,29 @@
               <path d="M97,162 L123,162 L123,206 L97,206 Z" fill="#A0682C"/>
               <path d="M97,174 q13,6 26,0" fill="none" stroke="#8A5626" stroke-width="1.4" opacity=".5"/>
               <g id="bodyG" transform="translate(22 0) scale(0.8 1)">
-                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290 Z" fill="#6E5A3A"/>
-                <path d="M46,290 Q44,206 78,186 L142,186 Q176,206 174,290" fill="none" stroke="#57462B" stroke-width="2"/>
-                <path d="M93,186 L127,186 L123,290 L97,290 Z" fill="#7B3B2E"/>
+                <g id="armsBack" opacity="0" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5">
+                  <rect x="38" y="212" width="16" height="46" rx="8"/>
+                  <rect x="166" y="212" width="16" height="46" rx="8"/>
+                </g>
+                <g id="legL">
+                    <path d="M63,366 L103,366 L104,392 Q104,399 96,399 L64,399 Q57,399 58,392 Z" fill="#5A1E26" stroke="#3E1219" stroke-width="1.5"/>
+                    <ellipse cx="83" cy="391" rx="18" ry="6" fill="#6E2830"/>
+                    <path d="M60,395 L104,395" fill="none" stroke="#D9B44A" stroke-width="1.6" stroke-dasharray="2 2.2"/>
+                    <path d="M58,397 L106,397 L106,400 L58,400 Z" fill="#1a1a1a"/>
+                    <path d="M75,374 L91,379 M91,374 L75,379 M75,380 L91,385 M91,380 L75,385" fill="none" stroke="#E9DDC0" stroke-width="1.6"/>
+                  <path d="M60,256 L106,256 L102,374 Q83,378 64,374 Z" fill="#6E5A3A" stroke="#57462B" stroke-width="2"/>
+                </g>
+                <g id="legR">
+                    <path d="M117,366 L157,366 L158,392 Q158,399 150,399 L118,399 Q111,399 112,392 Z" fill="#5A1E26" stroke="#3E1219" stroke-width="1.5"/>
+                    <ellipse cx="137" cy="391" rx="18" ry="6" fill="#6E2830"/>
+                    <path d="M114,395 L158,395" fill="none" stroke="#D9B44A" stroke-width="1.6" stroke-dasharray="2 2.2"/>
+                    <path d="M112,397 L160,397 L160,400 L112,400 Z" fill="#1a1a1a"/>
+                    <path d="M129,374 L145,379 M145,374 L129,379 M129,380 L145,385 M145,380 L129,385" fill="none" stroke="#E9DDC0" stroke-width="1.6"/>
+                  <path d="M114,256 L160,256 L156,374 Q137,378 118,374 Z" fill="#6E5A3A" stroke="#57462B" stroke-width="2"/>
+                </g>
+                <path d="M50,262 Q44,206 78,186 L142,186 Q176,206 170,262 Z" fill="#6E5A3A"/>
+                <path d="M50,262 Q44,206 78,186 L142,186 Q176,206 170,262" fill="none" stroke="#57462B" stroke-width="2"/>
+                <path d="M93,186 L127,186 L123,262 L97,262 Z" fill="#7B3B2E"/>
                 <path d="M101,186 L119,186 L110,208 Z" fill="#F5F1E6"/>
                 <circle cx="110" cy="220" r="2.2" fill="#4A2318"/>
                 <circle cx="110" cy="238" r="2.2" fill="#4A2318"/>
@@ -1350,6 +1382,7 @@ diff:"Challenging",
         refs.equationStack.appendChild(row);
         window.setTimeout(() => row.classList.add('show'), animate ? 90 + i*140 : 0);
       });
+      fitBoard(); window.setTimeout(fitBoard, 350);
 
       drawSketch(currentStep, animate);
     }
@@ -1373,9 +1406,17 @@ diff:"Challenging",
       }
       const voices = speechSynthesis.getVoices();
       const gb = voices.filter(v => /^en-GB/i.test(v.lang));
-      const preferred = ['Daniel','Arthur','Serena','Oliver','Sonia','Libby','Ryan','Kate','Google UK English Male'];
-      britishVoice = preferred.map(name => gb.find(v => v.name.includes(name))).find(Boolean)
-                     || gb[0] || voices.find(v => /^en/i.test(v.lang)) || null;
+      /* prefer the most natural British male voice the browser offers (neural/online voices first) */
+      const score = v => {
+        let s = 0;
+        if(/^en[-_]GB/i.test(v.lang)) s += 100; else if(/^en/i.test(v.lang)) s += 10; else return -1;
+        if(/Natural|Neural|Premium|Enhanced|Online/i.test(v.name)) s += 40;
+        if(/Google UK English Male/i.test(v.name)) s += 34;
+        if(/Ryan|Daniel|Arthur|Oliver|George|Thomas|Alfie|Brian/i.test(v.name)) s += 20;
+        if(/Female|Sonia|Libby|Kate|Serena|Maisie|Mia|Hazel|Susan|Abbi|Bella|Hollie|Olivia|Google UK English Female/i.test(v.name)) s -= 15;
+        return s;
+      };
+      britishVoice = voices.filter(v => score(v) >= 0).sort((a,b) => score(b) - score(a))[0] || gb[0] || null;
     }
     loadVoices();
     if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
@@ -1435,8 +1476,8 @@ diff:"Challenging",
       if(voiceOn && 'speechSynthesis' in window){
         const u = new SpeechSynthesisUtterance(speechText(text));
         u.lang = 'en-GB';
-        u.rate = 0.94;
-        u.pitch = 0.92;
+        u.rate = 0.99;
+        u.pitch = 0.94;
         if(britishVoice) u.voice = britishVoice;
         u.onend = () => { setProfessorTalking(false); scheduleNext(token, 650); };
         u.onerror = () => {
@@ -1482,6 +1523,51 @@ diff:"Challenging",
       if(event.key === 'ArrowRight') document.getElementById('nextButton').click();
       if(event.key === 'ArrowLeft') document.getElementById('backButton').click();
     });
+
+    /* ---------- chalkboard auto-fit: start at 2x and shrink only if the work would spill ---------- */
+    function fitBoard(){
+      const stack = refs.equationStack; if(!stack) return;
+      const rows = [...stack.children];
+      const spills = () => stack.scrollHeight > stack.clientHeight + 1 || rows.some(r => r.scrollWidth > stack.clientWidth + 1);
+      const run = () => { let sc = 2.0; stack.style.setProperty('--boardScale', sc);
+        while(sc > 1.0 && spills()){ sc = Math.round((sc - 0.1)*10)/10; stack.style.setProperty('--boardScale', sc); } return sc; };
+      /* pass 1: formulas unbroken; if that forces a small font, pass 2 lets long formulas wrap at operators */
+      stack.classList.remove('wrap-ok');
+      const tight = run();
+      if(tight < 1.5){ stack.classList.add('wrap-ok'); const loose = run(); if(loose <= tight){ stack.classList.remove('wrap-ok'); run(); } }
+    }
+    let fitTimer = null;
+    window.addEventListener('resize', () => { window.clearTimeout(fitTimer); fitTimer = window.setTimeout(fitBoard, 120); });
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.setTimeout(fitBoard, 50));
+
+    /* ---------- occasional stroll along the green panel, hands behind the back ---------- */
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let strolling = false, strollTimer = null, strollAnims = [];
+    function stroll(){
+      if(strolling || reduceMotion || document.hidden) return;
+      const el = refs.professor2d, stage = document.getElementById('lectureStage');
+      const room = Math.floor(el.offsetLeft - stage.clientWidth*0.805);
+      if(room < 14) return;
+      strolling = true;
+      const dur = 2400 + room*9;
+      const go = (from, to, done) => {
+        el.classList.add('walking');
+        const a = el.animate([{transform:`translateX(${from}px)`},{transform:`translateX(${to}px)`}], {duration:dur, easing:'ease-in-out', fill:'forwards'});
+        strollAnims.push(a);
+        a.onfinish = () => { el.classList.remove('walking'); done(); };
+      };
+      go(0, -room, () => {
+        window.setTimeout(() => go(-room, 0, () => {
+          strollAnims.forEach(a => a.cancel()); strollAnims = []; strolling = false;
+        }), 1600 + Math.random()*2400);
+      });
+    }
+    function scheduleStroll(){
+      window.clearTimeout(strollTimer);
+      strollTimer = window.setTimeout(() => { stroll(); scheduleStroll(); }, 26000 + Math.random()*34000);
+    }
+    scheduleStroll();
+    window.__stroll = stroll;
 
     /* ---------- go ---------- */
     loadExample(0);
