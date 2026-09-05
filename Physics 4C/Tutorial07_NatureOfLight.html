@@ -72,7 +72,7 @@
       overflow:hidden;
       isolation:isolate;
       background:
-        linear-gradient(90deg,transparent 0 80%,rgba(8,17,13,.38) 80%),
+        linear-gradient(90deg,transparent 0 77.5%,rgba(8,17,13,.38) 77.5%),
         radial-gradient(circle at 53% 32%,rgba(93,135,107,.2),transparent 42%),
         #27352c;
     }
@@ -87,7 +87,7 @@
     .format-badge{border:1px solid rgba(240,234,216,.3);border-radius:999px;padding:5px 9px;letter-spacing:.1em}
     .board{
       position:absolute;z-index:1;left:3.6%;top:7.6%;
-      width:76%;height:85.5%;
+      width:73.5%;height:85.5%;
       border:clamp(6px,1vw,13px) solid #735336;
       border-radius:7px;
       background:
@@ -104,7 +104,7 @@
     }
     .board-content{
       position:absolute;z-index:3;left:5.4%;top:10.4%;
-      width:72.5%;height:79%;
+      width:70.1%;height:79%;
       color:var(--chalk);
       display:grid;grid-template-rows:auto auto 1fr;
       gap:clamp(5px,.75vw,11px);
@@ -205,8 +205,8 @@
     }
     /* ---- professor ---- */
     .professor-2d{
-      position:absolute;z-index:4;right:1%;bottom:2%;
-      width:13%;height:84%;
+      position:absolute;z-index:4;right:.75%;bottom:2%;
+      width:16.5%;height:84%;
       display:flex;align-items:flex-end;justify-content:center;
       pointer-events:none;
       filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
@@ -248,6 +248,10 @@
     .professor-2d.walking #sLegF{animation:prof-stride .46s ease-in-out infinite alternate}
     .professor-2d.walking #sLegB{animation:prof-stride .46s ease-in-out infinite alternate;animation-delay:-.46s}
     @keyframes prof-stride{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+    .professor-2d #sArmF,.professor-2d #sArmB{transform-box:fill-box;transform-origin:50% 5%}
+    .professor-2d.walking #sArmF{animation:prof-swing .46s ease-in-out infinite alternate;animation-delay:-.46s}
+    .professor-2d.walking #sArmB{animation:prof-swing .46s ease-in-out infinite alternate}
+    @keyframes prof-swing{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
     .professor-2d #mouthS{transform-box:fill-box;transform-origin:center}
     .professor-2d.talking #mouthS{animation:prof-talk .28s infinite alternate}
     .professor-id{
@@ -340,7 +344,7 @@
       .board-content{left:4%;width:74%}
       .work-area{grid-template-columns:33% 67%}
       .professor-id{display:none}
-      .professor-2d{right:1%;width:15%;height:75%;bottom:2%}
+      .professor-2d{right:.75%;width:18%;height:75%;bottom:2%}
       .subtitle-box{grid-template-columns:1fr;gap:7px}
       .controls{grid-template-columns:1fr auto}
       .timeline-wrap{grid-column:1/-1;grid-row:1}
@@ -516,11 +520,11 @@
               </g>
               <path d="M100,162 L124,162 L124,206 L100,206 Z" fill="#A0682C"/>
               <g transform="translate(22 0) scale(0.8 1)">
-                <!-- arm behind the back -->
-                <g fill="#6E5A3A" stroke="#57462B" stroke-width="1.5">
-                  <rect x="58" y="196" width="17" height="62" rx="8.5" transform="rotate(8 66 200)"/>
+                <!-- far arm, swinging at the side (behind the jacket) -->
+                <g id="sArmB">
+                  <rect x="96" y="198" width="15" height="60" rx="7.5" fill="#5E4C30" stroke="#4A3B24" stroke-width="1.5"/>
+                  <circle cx="103.5" cy="262" r="8" fill="#A0682C"/>
                 </g>
-                <circle cx="62" cy="262" r="9" fill="#B5793B"/>
                 <!-- back leg -->
                 <g id="sLegB">
                   <path d="M92,366 L130,366 L132,378 Q148,382 150,392 Q150,399 142,399 L94,399 Q88,399 88,392 Z" fill="#4A1820" stroke="#3E1219" stroke-width="1.5"/>
@@ -541,6 +545,12 @@
                   <path d="M94,397 L160,397 L160,400 L94,400 Z" fill="#1a1a1a"/>
                   <path d="M128,374 L138,378 M128,379 L138,383 M128,384 L138,388" fill="none" stroke="#E9DDC0" stroke-width="1.5"/>
                   <path d="M98,256 L140,256 L136,374 Q118,378 102,374 Z" fill="#6E5A3A" stroke="#57462B" stroke-width="2"/>
+                </g>
+                <!-- near arm, swinging at the side -->
+                <g id="sArmF">
+                  <rect x="106" y="198" width="17" height="64" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
+                  <path d="M108,204 L121,204" stroke="#57462B" stroke-width="1.2" opacity=".6"/>
+                  <circle cx="114.5" cy="266" r="9" fill="#B5793B"/>
                 </g>
               </g>
             </g>
@@ -1651,6 +1661,7 @@ diff:"Challenging",
         .replace(/\bg\b/g,'gee')
         .replace(/(\d)\.(\d)/g,'$1 point $2');
       return spoken
+        .replace(/\badiabat(s?)\b/gi,'ay-dee-uh-bat$1')
         .replace(/\blives\b/g,'livz')
         .replace(/\blive\b/g,'liv')
         .replace(/\ba squared\b/g,'ay squared')
@@ -1765,7 +1776,7 @@ diff:"Challenging",
     function stroll(){
       if(strolling || reduceMotion || document.hidden) return;
       const el = refs.professor2d, stage = document.getElementById('lectureStage');
-      const room = Math.floor(el.offsetLeft - stage.clientWidth*0.79);
+      const room = Math.floor(el.offsetLeft - stage.clientWidth*0.775);
       if(room < 14) return;
       strolling = true;
       const dur = 2400 + room*9;
