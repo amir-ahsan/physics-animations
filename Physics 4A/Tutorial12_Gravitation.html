@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -811,9 +845,9 @@
     el('ellipse',{cx:M.X(0),cy:M.Y(0),rx:Math.abs(M.X(3.6)-M.X(0)),ry:Math.abs(M.Y(2.5)-M.Y(0)),
       fill:'none',stroke:'#8A7D60','stroke-width':2,'stroke-dasharray':'7,5'},svg);
     el('circle',{cx:M.X(-2.59),cy:M.Y(0),r:Math.abs(M.X(0.55)-M.X(0)),fill:'#B5793B',stroke:'#8A5A24','stroke-width':2},svg);
-    textAt(c, -1.55,-0.8, 'Sun at a focus', {fs:10, italic:true, anchor:'middle'});
+    textAt(c, -4.6,1.3, 'Sun at a focus', {fs:10, italic:true, anchor:'middle'});
     el('circle',{cx:M.X(-3.6),cy:M.Y(0),r:6,fill:'#2E6DA4'},svg);
-    textAt(c, -3.5,0.55, 'perihelion', {fs:11, italic:true, anchor:'start'});
+    textAt(c, -3.75,-0.95, 'perihelion', {fs:10, italic:true, anchor:'end'});
     const t=el('text',{x:M.X(0),y:M.Y(-3.4),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='ellipses, equal areas, and the inverse square';
   },
@@ -833,7 +867,7 @@
        el('circle',{cx:M.X(4.2), cy:M.Y(3.2), r:8, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2},c.svg);
        arrow(c, 1.95,3.2, 2.85,3.2, {color:RED, w:2.5, label:'F', fs:12});
        arrow(c, 3.85,3.2, 2.95,3.2, {color:RED, w:2.5, label:'F', fs:12, side:-1});
-       label(c, -4.1,1.9, 'equal pulls, both ways — always', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -5.3,3.35, 'equal pulls, both ways — always', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:1, title:"Orbits: gravity plays centripetal",
@@ -847,9 +881,9 @@
           ],
           action(c){
        el('circle',{cx:c.M.X(3.6), cy:c.M.Y(0), r:7, fill:GOLD, stroke:'#8A5A24','stroke-width':1.5},c.svg);
-       arrow(c, 3.6,0, 1.7,0, {color:PURPLE, w:3, label:'F_g = centripetal', fs:12, side:-1});
+       arrow(c, 3.6,0, 1.7,0, {color:PURPLE, w:3, label:'F_g', fs:12, at:'mid', side:-1});
        arrow(c, 3.6,0.3, 3.6,1.8, {color:GREEN, w:3, label:'v', fs:13});
-       label(c, -2.15,-1.63, 'falling, and missing, forever', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -2.2,-1.25, 'falling, and missing, forever', {fs:10.5, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"Kepler's three laws",
@@ -874,10 +908,10 @@
        fan(130*D, 230*D, '#B5793B');           /* near the Sun: short fat sector   */
        fan(-10.7*D, 10.7*D, '#B5793B');        /* far from the Sun: long thin sliver */
        /* the planet moves fast near the Sun, slow far away — arrows tangent to the orbit */
-       arrow(c, a*Math.cos(230*D), b*Math.sin(230*D), a*Math.cos(230*D)+1.05*Math.sin(230*D)*a/3.6, b*Math.sin(230*D)-1.05*Math.cos(230*D)*b/2.0, {color:GREEN, w:2.5, label:'fast', fs:11});
+       arrow(c, a*Math.cos(230*D), b*Math.sin(230*D), a*Math.cos(230*D)+1.05*Math.sin(230*D)*a/3.6, b*Math.sin(230*D)-1.05*Math.cos(230*D)*b/2.0, {color:GREEN, w:2.5, label:'fast', fs:11, at:'mid', side:1});
        arrow(c, a*Math.cos(-10.7*D), b*Math.sin(-10.7*D), a*Math.cos(-10.7*D)+0.45*Math.sin(-10.7*D)*a/3.6, b*Math.sin(-10.7*D)-0.45*Math.cos(-10.7*D)*b/2.0, {color:RED, w:2.5});
        label(c, 4.75,-1.45, 'slow', {fs:11, color:RED, italic:true});
-       textAt(c, 0.4,-2.7, 'equal areas, equal times: 100° near the Sun = 21° far away', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 0.4,-3.05, 'equal areas, equal times: 100° near the Sun = 21° far away', {fs:10, italic:true, anchor:'middle'});
      }
         },
         { map:3, title:"Energy, done properly",
@@ -899,7 +933,7 @@
        label(c, 3.5,2.95, 'E = 0: free', {fs:12, color:GREEN, italic:true});
        dashLine(c, -3.4,0.6, 4.6,0.6, {color:RED});
        label(c, 2.9,0.15, 'E < 0: bound', {fs:12, color:RED, italic:true});
-       label(c, -4.3,-3.3, 'U = −GMm/r', {fs:13, color:'#8A5A24', italic:true});
+       label(c, -2.9,-3.3, 'U = −GMm/r', {fs:13, color:'#8A5A24', italic:true});
        label(c, 4.5,2.25, 'r', {fs:13, color:'#8A7D60', italic:true});
      }
         },
@@ -936,9 +970,9 @@
        el('ellipse',{cx:M.X(-1.4), cy:M.Y(0.4), rx:1.75*M.s, ry:1.3*M.s, fill:'#9FBEDB', stroke:'#1D4568','stroke-width':2.5},c.svg);
        label(c, -1.75,0.3, 'Earth', {fs:13, color:'#1D4568'});
        el('circle',{cx:M.X(4.0), cy:M.Y(0.4), r:12, fill:'#D9CDB4', stroke:'#8A7D60','stroke-width':2},c.svg);
-       label(c, 3.7,-0.6, 'Moon', {fs:12, color:'#7A5A28'});
-       arrow(c, 0.4,0.4, 2.2,0.4, {color:RED, w:3.5, label:'near side: pulled hardest', fs:11});
-       arrow(c, -3.2,0.4, -4.2,0.4, {color:BLUE, w:2.5, label:'far side: left behind', fs:11, side:-1, at:'mid', loff:30});
+       label(c, 3.5,-0.95, 'Moon', {fs:12, color:'#7A5A28'});
+       arrow(c, 0.4,0.4, 2.2,0.4, {color:RED, w:3.5}); textAt(c, 0.6,-0.35, 'near side: pulled hardest', {fs:10, italic:true, color:RED});
+       arrow(c, -3.2,0.4, -4.2,0.4, {color:BLUE, w:2.5}); textAt(c, -5.45,2.0, 'far side: left behind', {fs:10, italic:true, color:BLUE});
        label(c, -3.6,-2.6, 'the DIFFERENCE stretches the ocean: two bulges, two tides a day', {fs:12.5, color:'#8A5A24', italic:true});
      }
         },
@@ -1097,7 +1131,7 @@ diff:"Intermediate",
        orbitRing(c, 0,0, 0.62, {color:'#C9BFA8', w:1.5, dash:'3,4'});
        textAt(c, 0.35,0.75, 'LEO', {fs:11});
        orbitRing(c, 0,0, 2.78, {});
-       textAt(c, 1.7,2.45, 'geosynchronous (6.6 R_E)', {fs:12, italic:true});
+       textAt(c, 2.9,-2.5, 'geosynchronous', {fs:10.5, italic:true}); textAt(c, 2.9,-2.9, '(6.6 R_E)', {fs:10.5, italic:true});
        orbiter(c, 0,0, 2.78, 3000, {turns:1, fill:GOLD});
      }
         },
@@ -1112,7 +1146,7 @@ diff:"Intermediate",
           action(c){
        arc(c, 0,0, 0.58, 20, 320, {color:BLUE, w:2.2, head:true, hs:8});
        arc(c, 0,0, 3.02, 20, 130, {color:GOLD, w:2.2, head:true, hs:9});
-       textAt(c, -4.3,-2.6, 'one spin below = one lap above: the satellite hovers', {fs:12, italic:true});
+       textAt(c, -4.4,3.05, 'one spin below = one lap above: it hovers', {fs:11, italic:true});
      }
         },
         { map:3, title:"Check by Kepler scaling",

@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -811,7 +845,7 @@
     el('line',{x1:M.X(0),y1:M.Y(0),x2:M.X(1.85),y2:M.Y(-1.85),stroke:'#8A7D60','stroke-width':2.5},svg);
     arrow(ctx, 1.85,-1.85, 3.1,-0.6, {color:'#B5793B', w:3, label:'v = rω', fs:13});
     arc(ctx, 0,0, 3.3, 12, 96, {color:'#7B4FA0', label:'ω', head:true, w:2.6, hs:11});
-    const t=el('text',{x:M.X(0),y:M.Y(-3.5),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
+    const t=el('text',{x:M.X(1.4),y:M.Y(-3.5),fill:'#8A7D60','font-size':13,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='kinematics returns, wearing Greek';
   },
       steps:[
@@ -828,7 +862,7 @@
        label(c, -5.2,3.3, 'x ↔ θ', {fs:15, color:'#7A5A28', italic:true});
        label(c, -5.2,2.5, 'v ↔ ω', {fs:15, color:'#7A5A28', italic:true});
        label(c, -5.2,1.7, 'a ↔ α', {fs:15, color:'#7A5A28', italic:true});
-       label(c, -5.2,0.7, '(radians only!)', {fs:12, color:RED, italic:true});
+       label(c, -5.35,1.0, '(radians only!)', {fs:10, color:RED, italic:true});
      }
         },
         { map:1, title:"The linear–angular dictionary",
@@ -842,8 +876,8 @@
           action(c){
        el('circle',{cx:c.M.X(0.92), cy:c.M.Y(-0.92), r:4, fill:RED},c.svg);
        arrow(c, 0.92,-0.92, 1.55,-0.29, {color:RED, w:2.5, label:'v = rω', fs:11, side:-1});
-       label(c, -5.2,-2.0, 'same ω for every point;', {fs:12, color:'#8A5A24', italic:true});
-       label(c, -5.2,-2.72, 'smaller r → smaller v', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -5.3,-2.95, 'same ω for every point;', {fs:11.5, color:'#8A5A24', italic:true});
+       label(c, -5.3,-3.5, 'smaller r → smaller v', {fs:11.5, color:'#8A5A24', italic:true});
      }
         },
         { map:2, title:"Inertia with a memory for geometry",
@@ -902,13 +936,13 @@
        el('circle',{cx:M.X(-3.2), cy:M.Y(0.6), r:8, fill:GOLD},c.svg);
        el('circle',{cx:M.X(-2.0), cy:M.Y(0.6), r:8, fill:GOLD},c.svg);
        arc(c, -2.6,0.6, 1.5, 20, 300, {color:PURPLE, w:3, label:'ω large'});
-       label(c, -4.2,-1.7, 'mass tucked in: small I', {fs:10, color:'#7A5A28'});
+       label(c, -4.4,-2.5, 'mass tucked in: small I', {fs:10, color:'#7A5A28'});
        el('circle',{cx:M.X(2.6), cy:M.Y(0.6), r:4, fill:'#2B2317'},c.svg);
        el('circle',{cx:M.X(0.8), cy:M.Y(0.6), r:8, fill:BLUE},c.svg);
        el('circle',{cx:M.X(4.4), cy:M.Y(0.6), r:8, fill:BLUE},c.svg);
        el('line',{x1:M.X(0.8),y1:M.Y(0.6),x2:M.X(4.4),y2:M.Y(0.6),stroke:'#8A7D60','stroke-width':2},c.svg);
        arc(c, 2.6,0.6, 0.75, 30, 150, {color:PURPLE, w:2.5, label:'ω small'});
-       label(c, 2.0,-1.7, 'arms out: large I', {fs:10, color:'#7A5A28'});
+       label(c, 1.6,-2.5, 'arms out: large I', {fs:10, color:'#7A5A28'});
      }
         },
         { map:5, title:"Rolling: two energies, one speed",
@@ -926,7 +960,7 @@
          const x0=-4.2, W=6.4;
          el('rect',{x:M.X(x0), y:M.Y(y), width:W*fT*M.s, height:26, fill:'rgba(46,125,79,.55)', stroke:GREEN,'stroke-width':1.5},c.svg);
          el('rect',{x:M.X(x0)+W*fT*M.s, y:M.Y(y), width:W*(1-fT)*M.s, height:26, fill:'rgba(123,79,160,.5)', stroke:PURPLE,'stroke-width':1.5},c.svg);
-         label(c, x0+6.7, y-0.35, name, {fs:13, color:'#7A5A28'});
+         label(c, x0, y+0.45, name, {fs:13, color:'#7A5A28'});
        };
        bar(2.6, 5/7, 'sphere: 5/7 forward');
        bar(1.0, 2/3, 'disk: 2/3 forward');
@@ -1041,7 +1075,7 @@ diff:"Basic",
           board:[
             {label:"Radial acceleration", tex:"a_{\\rm rad} = \\omega^2 r = (12.0)^2(0.200) = 28.8\\ \\mathrm{m/s^2} \\;(\\approx 3g)", kind:"answer"}
           ],
-          action(c){ arrow(c, 1.8,0, 0.5,0, {color:PURPLE, w:3.5, label:'a_rad', fs:15, side:-1}); }
+          action(c){ arrow(c, 1.8,0, 0.5,0, {color:PURPLE, w:3.5, label:'a_rad', fs:15, at:'mid', side:1}); }
         },
         { map:4, title:"Compare the two components",
           think:"Why does the radial term dwarf the tangential at speed?",
@@ -1165,7 +1199,7 @@ diff:"Intermediate",
        /* the cord stays attached to the block's top and lengthens as it unwinds */
        tween(u=>{ const topY=-1.6-0.8*u*u; b.setAttribute('y', c.M.Y(topY)); cord.setAttribute('y2', c.M.Y(topY)); }, 1800, c.instant);
        arrow(c, 1.35,-1.9, 1.35,-1.0, {color:BLUE, label:'T', fs:15});
-       arrow(c, 1.35,-2.4, 1.35,-3.2, {color:RED, label:'mg', fs:14, side:-1});
+       arrow(c, 1.35,-2.4, 1.35,-3.2, {color:RED, label:'mg', fs:14, at:'mid', side:1});
      }
         },
         { map:2, title:"The disk's ledger",
@@ -1178,7 +1212,7 @@ diff:"Intermediate",
           ],
           action(c){
        arrow(c, 0,0, 0.6,0, {color:GREEN, w:2.5, label:'R', fs:13, dash:'5,4', head:7});
-       arc(c, 0,0, 0.42, 140, 40, {color:PURPLE, w:2.4, label:'α', head:true, hs:8, lr:14});
+       arc(c, 0,0, 0.42, 230, 130, {color:PURPLE, w:2.4, label:'α', head:true, hs:8, lr:26});
      }
         },
         { map:3, title:"Combine and solve",
@@ -1215,7 +1249,7 @@ diff:"Challenging",
     el('polygon',{points:`${M.X(0)},${M.Y(1.7)} ${M.X(0)},${M.Y(0)} ${M.X(2.94)},${M.Y(0)}`,
       fill:'#E8DCC0',stroke:'#8A7D60','stroke-width':2},svg);
     ground(ctx, -0.6, 3.6, 0);
-    const t=el('text',{x:M.X(2.2),y:M.Y(0.35),fill:'#8A7D60','font-size':14,'font-family':'Georgia,serif','font-style':'italic'},svg);
+    const t=el('text',{x:M.X(2.3),y:M.Y(0.08),fill:'#8A7D60','font-size':14,'font-family':'Georgia,serif','font-style':'italic'},svg);
     t.textContent='30°';
   },
       steps:[

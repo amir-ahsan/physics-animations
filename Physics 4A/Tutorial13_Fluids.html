@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -816,7 +850,7 @@
        arrow(c, 2.4,4.4, 1.35,4.4, {color:BLUE, w:2, side:-1});
        arrow(c, 2.9,2.8, 1.35,2.8, {color:BLUE, w:3, side:-1});
        arrow(c, 3.4,1.2, 1.35,1.2, {color:BLUE, w:4, side:-1});
-       label(c, 3.6,2.8, '← pressure grows with depth', {fs:10, color:'#1D4568', italic:true});
+       label(c, 3.2,2.8, '← pressure grows with depth', {fs:9, color:'#1D4568', italic:true});
        dashLine(c, 9.6,5.2, 9.6,1.2, {}); label(c, 9.8,3.2, 'h', {fs:15, color:'#7A5A28', italic:true});
      }
         },
@@ -830,8 +864,8 @@
           ],
           action(c){
        arrow(c, 3.5,4.6, 3.5,6.3, {color:BLUE, w:3.5, label:'B', fs:14, at:'mid', side:1});
-       arrow(c, 6.5,6.3, 6.5,4.6, {color:RED, w:3.5, label:'w = B', fs:13, side:-1, at:'mid', loff:34});
-       label(c, 7.3,2.3, 'submerged part: displaced fluid', {fs:9, color:'#1D4568', italic:true});
+       arrow(c, 6.5,6.3, 6.5,4.6, {color:RED, w:3.5, label:'w = B', fs:13, side:1, at:'mid', loff:34});
+       label(c, 3.4,3.9, 'submerged part: displaced fluid', {fs:8, color:'#1D4568', italic:true});
      }
         },
         { map:2, title:"The two flow commandments",
@@ -972,8 +1006,7 @@ diff:"Basic",
             {label:"The lift", tex:"F_2 = F_1\\,\\frac{A_2}{A_1} = (100)\\frac{500}{5.00} = 1.00\\times10^{4}\\ \\mathrm{N}", kind:"answer"}
           ],
           action(c){
-       arrow(c, 2.2,1.0, 2.2,2.0, {color:GREEN, w:5, label:'F₂ = 10⁴ N', fs:13});
-       [1.4,3.0].forEach(x=>arrow(c, x,0.7, x,1.3, {color:BLUE, w:2, head:7}));
+       arrow(c, 2.2,1.0, 2.2,2.0, {color:GREEN, w:5}); textAt(c, 2.2,0.55, 'F₂ = 10⁴ N', {fs:12, italic:true, color:GREEN, anchor:'middle'});
      }
         },
         { map:3, title:"Check: no free lunch",
@@ -986,7 +1019,7 @@ diff:"Basic",
             {label:"Reusable method", text:"pressure is the messenger → F scales with A → volume bookkeeping keeps work honest", kind:"answer"}
           ],
           action(c){
-       arrow(c, -3.7,3.4, -3.7,2.4, {color:RED, w:2.5, label:'d₁ big', fs:11.5, side:-1});
+       arrow(c, -3.7,3.4, -3.7,2.4, {color:RED, w:2.5}); textAt(c, -4.35,3.75, 'd₁ big', {fs:11, italic:true, color:RED});
        arrow(c, 3.8,2.35, 3.8,2.85, {color:GREEN, w:2.5, label:'d₂ tiny', fs:11.5});
      }
         },
@@ -1027,7 +1060,7 @@ diff:"Basic",
             {label:"Gauge", tex:"p_{\\rm gauge} = \\rho gh = (1.00\\times10^{3})(9.80)(10.0) = 9.80\\times10^{4}\\ \\mathrm{Pa}", kind:"answer"},
             {label:"Absolute", tex:"p_{\\rm abs} = 1.013\\times10^{5} + 0.980\\times10^{5} = 1.99\\times10^{5}\\ \\mathrm{Pa}", kind:"answer"}
           ],
-          action(c){ dashLine(c, 3.1,0.5, 3.1,10.5, {}); textAt(c, 3.3,5.3, 'h = 10.0 m', {fs:14, italic:true}); }
+          action(c){ dashLine(c, 3.1,0.5, 3.1,10.5, {}); textAt(c, 3.3,5.3, 'h = 10.0 m', {fs:10.5, italic:true}); }
         },
         { map:2, title:"Part (b): the net push",
           think:"Why does the inside air cancel the atmospheric share?",
@@ -1106,7 +1139,7 @@ diff:"Intermediate",
             {label:"Density", tex:"\\rho = \\frac{m}{V} = \\frac{5.00}{1.94\\times10^{-3}} = 2.58\\times10^{3}\\ \\mathrm{kg/m^3}", kind:"answer"}
           ],
           action(c){
-       textAt(c, 1.15,0.3, 'B = 19.0 N → V = 1.94 L', {fs:12, italic:true, color:'#1D4568'});
+       textAt(c, 0.5,0.3, 'B = 19.0 N → V = 1.94 L', {fs:10, italic:true, color:'#1D4568'});
      }
         },
         { map:3, title:"The verdict",
@@ -1213,8 +1246,8 @@ diff:"Challenging",
     el('rect',{x:M.X(0),y:M.Y(5.0),width:M.X(2.2)-M.X(0),height:M.Y(1.0)-M.Y(5.0),fill:'rgba(91,130,166,.30)'},svg);
     el('line',{x1:M.X(0),y1:M.Y(5.0),x2:M.X(2.2),y2:M.Y(5.0),stroke:'#5B82A6','stroke-width':2},svg);
     ground(ctx, -0.8, 7.4, 0);
-    dashLine({svg,M,instant:true}, 2.55,1.175, 2.55,5.0, {}); textAt(ctx, 2.7,2.3, 'h = 4.00 m', {fs:13, italic:true});
-    dashLine({svg,M,instant:true}, 1.6,0, 1.6,1.0, {}); textAt(ctx, 0.25,0.42, 'd = 1.00 m', {fs:12, italic:true});
+    dashLine({svg,M,instant:true}, 2.55,1.175, 2.55,5.0, {}); textAt(ctx, 2.7,1.7, 'h = 4.00 m', {fs:13, italic:true});
+    dashLine({svg,M,instant:true}, 1.6,0, 1.6,1.0, {}); textAt(ctx, 1.45,0.42, 'd = 1.00 m', {fs:10, italic:true, anchor:'end'});
   },
       steps:[
         { map:0, title:"Read: two problems, one costume",
@@ -1250,8 +1283,8 @@ diff:"Challenging",
        const b=el('circle',{cx:M.X(2.3),cy:M.Y(1.05),r:5,fill:BLUE},c.svg);
        tween(u=>{ const t=0.452*u;
          b.setAttribute('cx',M.X(2.28+8.85*t)); b.setAttribute('cy',M.Y(1.05-4.9*t*t)); }, 1400, c.instant);
-       dashLine(c, 2.2,-0.35, 6.28,-0.35, {color:GREEN});
-       textAt(c, 3.9,-0.28, 'x = 4.00 m', {fs:13, italic:true, color:'#2E7D4F'});
+       dashLine(c, 2.2,-0.15, 6.28,-0.15, {color:GREEN});
+       textAt(c, 3.9,-0.55, 'x = 4.00 m', {fs:11, italic:true, color:'#2E7D4F'});
      }
         },
         { map:3, title:"The jewel: a symmetric theorem",

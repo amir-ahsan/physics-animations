@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -841,7 +875,7 @@
           ],
           action(c){
        el('circle',{cx:c.M.X(5), cy:c.M.Y(2.4), r:6, fill:'#2B2317'},c.svg);
-       arrow(c, 5,2.25, 5,0.9, {color:RED, w:3.5, label:'Mg at the cg', fs:13});
+       arrow(c, 5,2.25, 5,0.9, {color:RED, w:3.5}); textAt(c, 5.4,1.35, 'Mg at the cg', {fs:12, italic:true, color:RED});
        label(c, 3.3,6.9, 'one arrow stands in for every gram', {fs:10, color:'#8A5A24', italic:true});
      }
         },
@@ -967,8 +1001,8 @@ diff:"Basic",
             {label:"Reusable method", text:"pivot as axis → weight × lever arm each side → cancel g → solve → verify both torques", kind:"answer"}
           ],
           action(c){
-       arc(c, -1.0,0.85, 0.55, -140, -40, {color:PURPLE, w:2.6, head:true, hs:9, label:'60 kg·m ↺', lr:44});
-       arc(c, 1.0,0.85, 0.55, 320, 220, {color:GREEN, w:2.6, head:true, hs:9, label:'60 kg·m ↻', lr:44});
+       arc(c, -1.0,0.85, 0.35, -140, -40, {color:PURPLE, w:2.6, head:true, hs:9, label:'60 kg·m ↺', lr:62});
+       arc(c, 1.0,0.85, 0.35, 320, 220, {color:GREEN, w:2.6, head:true, hs:9, label:'60 kg·m ↻', lr:62});
      }
         },
       ]
@@ -1008,7 +1042,7 @@ diff:"Intermediate",
        arrow(c, 0,0.7, 0,1.6, {color:BLUE, w:3.5, label:'N_A', fs:14});
        arrow(c, 4,0.7, 4,2.4, {color:GREEN, w:3.5, label:'N_B', fs:14});
        arrow(c, 2,0.6, 2,-0.35, {color:RED, w:3, label:'200 N', fs:13, side:-1});
-       arrow(c, 3,0.6, 3,-0.85, {color:PURPLE, w:3.5, label:'600 N', fs:13, side:-1, at:'mid', loff:40});
+       arrow(c, 3,0.6, 3,-0.85, {color:PURPLE, w:3.5}); textAt(c, 3.22,-0.62, '600 N', {fs:10, italic:true, color:PURPLE});
        boxAt(c, 3,0.72, 0.4,0.85, {fill:'#C98F52'});
      }
         },
@@ -1022,7 +1056,7 @@ diff:"Intermediate",
             {label:"Support B", tex:"N_B = \\frac{(200)(2.00)+(600)(3.00)}{4.00} = \\frac{2200}{4.00} = 550\\ \\mathrm{N}", kind:"answer"}
           ],
           action(c){
-       dashLine(c, 0,2.62, 2,2.62, {color:RED}); textAt(c, 1.0,2.78, '2.00 m', {fs:11.5, italic:true, color:RED, anchor:'middle'});
+       dashLine(c, 0,2.45, 2,2.45, {color:RED}); textAt(c, 1.0,2.58, '2.00 m', {fs:11.5, italic:true, color:RED, anchor:'middle'});
        dashLine(c, 0,2.95, 3,2.95, {color:PURPLE}); textAt(c, 1.5,3.12, '3.00 m', {fs:11.5, italic:true, color:PURPLE, anchor:'middle'});
        dashLine(c, 0,-0.85, 4,-0.85, {color:GREEN}); textAt(c, 2.0,-1.25, '4.00 m (to N_B)', {fs:11.5, italic:true, color:GREEN, anchor:'middle'});
      }
@@ -1105,7 +1139,7 @@ diff:"Intermediate",
           ],
           action(c){
        dashLine(c, 3,0.05, 3,4.0, {color:GOLD}); textAt(c, 3.12,3.4, 'L sinθ = 4.00 m', {fs:11.5, italic:true, color:'#8A5A24'});
-       dashLine(c, 1.5,0.12, 3,0.12, {color:RED}); textAt(c, 1.7,-0.28, '(L/2)cosθ = 1.50 m', {fs:11.5, italic:true, color:RED});
+       dashLine(c, 1.5,-0.15, 3,-0.15, {color:RED}); textAt(c, 1.7,-0.5, '(L/2)cosθ = 1.50 m', {fs:11.5, italic:true, color:RED});
      }
         },
         { map:4, title:"The verdict on μ",
@@ -1155,7 +1189,7 @@ diff:"Basic",
        const {M}=c;
        const wl=el('line',{x1:M.X(0),y1:M.Y(3.2),x2:M.X(0),y2:M.Y(1.0),stroke:'#5C4B30','stroke-width':2.5},c.svg);
        const w=boxAt(c, 0,0.3, 0.9,0.7, {fill:'#6E5A3A', stroke:'#4A3826'});
-       textAt(c, 0,0.62, '500 N', {anchor:'middle', fs:13, color:'#F5F1E6'});
+       textAt(c, 0,0.33, '500 N', {anchor:'middle', fs:12, color:'#F5F1E6'});
        tween(u=>{ w.setAttribute('y', c.M.Y(0.3+0.7-0.25*u));
                   wl.setAttribute('y2', c.M.Y(1.0-0.25*u)); }, 1400, c.instant);
      }
@@ -1224,7 +1258,7 @@ diff:"Challenging",
        arrow(c, 4,-0.55, 4,-1.55, {color:PURPLE, w:3, label:'392 N', fs:13, side:-1});
        boxAt(c, 4,-0.55, 0.85,0.5, {fill:'#4A4A3A', stroke:'#2E2E24'});
        arrow(c, 0,0.15, 0.9,0.15, {color:BLUE, w:3, label:'H_x', fs:13});
-       arrow(c, 0.15,0.3, 0.15,1.1, {color:GREEN, w:3, label:'H_y', fs:13, at:'mid', side:-1, loff:34});
+       arrow(c, 0.15,0.3, 0.15,1.1, {color:GREEN, w:3, label:'H_y', fs:13});
      }
         },
         { map:2, title:"Part (a): torques about the hinge",

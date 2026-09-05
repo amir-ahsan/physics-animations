@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -814,7 +848,7 @@
         { map:1, title:'Components do the arithmetic',
           think:'How do you turn geometry into algebra you can trust?',
           model:'Resolve with cos and sin from the +x axis; reassemble with Pythagoras and arctangent.',
-          pose:'write', fresh:true,
+          pose:'write', solo:true,
           say:"The reliable way to compute with vectors: COMPONENTS. Resolve along axes with cosine and sine of the angle from the plus-x axis; reassemble with Pythagoras and the arctangent. One standing caution: the calculator's arctangent only answers for two quadrants — always sketch the vector and check which quadrant it actually lives in.",
           board:[
             {label:'Resolve', tex:'A_x = A\\cos\\theta, \\quad A_y = A\\sin\\theta', kind:'key'},
@@ -890,7 +924,7 @@
           action(c){
             const flow=['sketch the situation','choose flattering axes','resolve into components','algebra on components only','reassemble: magnitude + direction','check against the sketch'];
             flow.forEach((s,i)=>{
-              label(c, 3.4, 7.0 - i*1.5, (i+1)+'. '+s, {fs:15, color:GOLD});
+              label(c, 3.4, 7.0 - i*1.5, (i+1)+'. '+s, {fs:13, color:GOLD});
               if(i<5) arrow(c, 2.7, 6.65 - i*1.5, 2.7, 5.95 - i*1.5, {color:DIMC, w:2, head:7, dur:300});
             });
           } },
@@ -1012,9 +1046,9 @@
             {label:'Forecast from the sketch', text:'θ_B = 120° > 90° → B_x < 0. Note it BEFORE computing.', kind:'warn'}
           ],
           action(c){ arrow(c, 0,0, 4,3, {color:RED, label:'A', at:'mid', dur:900});
-                     arc(c, 0,0, 1.1, 0, 36.9, {color:RED, label:'36.9°', lr:26});
+                     arc(c, 0,0, 1.1, 0, 36.9, {color:RED, label:'36.9°', lr:62});
                      arrow(c, 0,0, -3,5.196, {color:BLUE, label:'B', at:'mid', dur:900});
-                     arc(c, 0,0, 0.85, 0, 120, {color:BLUE, label:'120°', lr:22}); } },
+                     arc(c, 0,0, 0.85, 0, 120, {color:BLUE, label:'120°', lr:36}); } },
         { map:1, title:'Tip-to-tail preview',
           think:'What should the final answer look like, roughly, before we compute it?',
           model:'Slide B to the head of A; R runs origin → final tip. Long and steep. Our alibi for later.',
@@ -1058,7 +1092,7 @@
           action(c){
             dashLine(c, 1,0, 1,8.196, {color:GREEN});
             dashLine(c, 0,8.196, 1,8.196, {color:GREEN});
-            label(c, 0.55,-0.55, 'Rx = 1.00 m', {color:GREEN, fs:12, anchor:'middle'});
+            label(c, 1.15,-0.8, 'Rx = 1.00 m', {color:GREEN, fs:12});
             label(c, -1.7,8.55, 'Ry = 8.20 m', {color:GREEN, fs:12, anchor:'middle'});
           } },
         { map:4, title:'Reassemble the vector',
@@ -1070,7 +1104,7 @@
             {label:'Magnitude', tex:'R = \\sqrt{R_x^2+R_y^2} = \\sqrt{(1.00)^2+(8.20)^2} = 8.26\\ \\mathrm{m}', kind:'answer'},
             {label:'Direction', tex:'\\theta = \\tan^{-1}\\!\\left(\\tfrac{8.20}{1.00}\\right) = 83.0^{\\circ}\\ \\text{above the } +x \\text{ axis}', kind:'answer'}
           ],
-          action(c){ arc(c, 0,0, 1.9, 0, 83, {color:GREEN}); label(c, 2.5,0.5, '83°', {fs:12, color:GREEN, italic:true}); } },
+          action(c){ arc(c, 0,0, 1.3, 0, 83, {color:GREEN}); label(c, 2.57,0.36, '83°', {fs:12, color:GREEN, italic:true, anchor:'middle'}); } },
         { map:5, title:'Check the quadrant — and the folly of 11',
           think:'Do the component signs agree with where the calculator put the angle?',
           model:'Rx > 0, Ry > 0 → quadrant I ✓. And 8.26 ≠ 11: magnitudes never simply add.',
@@ -1224,7 +1258,7 @@
             const ring = el('circle',{cx:X,cy:Y,r:0,fill:'none',stroke:PURPLE,'stroke-width':3},g);
             const dot  = el('circle',{cx:X,cy:Y,r:0,fill:PURPLE},g);
             tween(u=>{ring.setAttribute('r',16*u); dot.setAttribute('r',4.5*u);},700,c.instant);
-            label(c, 2.6,3.9,'A × B  (out of page)',{dx:24,dy:5,color:PURPLE,fs:15});
+            label(c, 2.6,3.9,'A × B  (out of page)',{dx:24,dy:-24,color:PURPLE,fs:13});
           } },
         { map:5, title:'Check by AB sin φ — and a grudge',
           think:'Can a second, independent route reproduce 11.0?',
@@ -1272,9 +1306,9 @@
             const poly = el('polygon',{points:`${c.M.X(P[0])},${c.M.Y(P[1])} ${c.M.X(Q[0])},${c.M.Y(Q[1])} ${c.M.X(R[0])},${c.M.Y(R[1])}`,
               fill:'rgba(181,121,59,.18)', stroke:GOLD,'stroke-width':2},c.svg);
             if(!c.instant){poly.setAttribute('opacity',0); tween(u=>poly.setAttribute('opacity',u),800,false);}
-            label(c, P[0],P[1],'P(1,0,0)',{dx:-26,dy:22,color:'#7A5A28',fs:14});
+            label(c, P[0],P[1],'P(1,0,0)',{dx:14,dy:34,color:'#7A5A28',fs:14});
             label(c, Q[0],Q[1],'Q(0,2,0)',{dx:12,dy:38,color:'#7A5A28',fs:14});
-            label(c, R[0],R[1],'R(0,0,3)',{dx:16,dy:8,color:'#7A5A28',fs:14});
+            label(c, R[0],R[1],'R(0,0,3)',{dx:-12,dy:-6,color:'#7A5A28',fs:14, anchor:'end'});
           } },
         { map:2, title:'Build the sides: tip minus tail',
           think:'All business at P is conducted by which two vectors?',

@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -832,9 +866,9 @@
           ],
           action(c){
        dashLine(c, 4,4.4, 6,4.4, {}); dashLine(c, 6,4.4, 6,5.6, {});
-       label(c, 5.0,4.05, 'dt', {fs:13, color:'#7A5A28', anchor:'middle', italic:true});
+       label(c, 5.0,3.75, 'dt', {fs:13, color:'#7A5A28', anchor:'middle', italic:true});
        label(c, 6.15,5.0, 'dv', {fs:13, color:'#7A5A28', italic:true});
-       label(c, 6.9,4.35, 'slope = dv/dt = a', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 8.25,3.6, 'slope = a', {fs:12, color:'#8A5A24', italic:true});
        label(c, 3.2,0.8, 'area = ∫v dt = Δx', {fs:12, color:'#8A5A24', italic:true, anchor:'middle'});
      }
         },
@@ -850,7 +884,7 @@
           action(c){
        arrow(c, 1,7.6, 4.4,7.6, {color:GREEN, w:3, label:'Δx > 0', fs:12, at:'mid'});
        arrow(c, 8.6,7.6, 6.2,7.6, {color:RED, w:3, label:'Δx < 0', fs:12, side:-1, at:'mid'});
-       textAt(c, 5.1,-0.5, 'displacement carries a sign; distance never does', {fs:10, italic:true, anchor:'middle'});
+       textAt(c, 5.6,-0.5, 'displacement carries a sign; distance never does', {fs:9.5, italic:true, anchor:'middle'});
      }
         },
         { map:2, title:"The constant-a toolkit",
@@ -921,7 +955,7 @@
        const flow=['choose origin + positive direction','list knowns and the target','constant a? pick the equation','a(t) given? integrate / differentiate','multi-stage? split at the joins','check both roots, check the signs'];
        flow.forEach((s,i)=>{
          const y = 7.6 - i*1.6;
-         label(c, 3.4, y, (i+1)+'. '+s, {fs:15, color:'#7A5A28'});
+         label(c, 3.4, y, (i+1)+'. '+s, {fs:12.5, color:'#7A5A28'});
          if(i<5) arrow(c, 2.7, y-0.4, 2.7, y-1.15, {color:GOLD, w:2, head:7});
        });
      }
@@ -993,7 +1027,7 @@ diff:"Basic",
           ],
           action(c){
        dashLine(c, 0,22, 90,22, {color:GREEN});
-       arrow(c, 0,22, 90,22, {color:GREEN, dash:'7,5', w:2, label:'90.0 m', fs:15});
+       arrow(c, 0,22, 90,22, {color:GREEN, dash:'7,5', w:2, label:'90.0 m', fs:15, at:'mid', side:-1});
        dashLine(c, 90,0, 90,22, {});
      }
         },
@@ -1332,7 +1366,7 @@ diff:"Challenging",
           board:[
             {label:"Stop condition", tex:"v = 0: \\; t^2 - 6.00t - 2.00 = 0 \\Rightarrow t = 3.00+\\sqrt{11.0} = 6.32\\ \\mathrm{s}", kind:"answer"}
           ],
-          action(c){ markPoint(c, 6.32, 0, 't = 6.32 s', {color:RED, dy:-14, dx:-30}); }
+          action(c){ markPoint(c, 6.32, 0, 't = 6.32 s', {color:RED, dy:-12, dx:-80}); }
         },
         { map:5, title:"Position at the stop — and the moral",
           think:"What must you check BEFORE reaching for the toolkit next time?",
