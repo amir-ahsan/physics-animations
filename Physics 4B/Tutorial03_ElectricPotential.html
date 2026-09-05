@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -813,7 +847,7 @@
       setup(ctx,w){
     const {svg,M}=ctx;
     el('circle',{cx:M.X(0),cy:M.Y(0),r:11,fill:'#C0392B',stroke:'#7A2015','stroke-width':2},svg);
-    for(const r of [1.3,2.2,3.1]) el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(r)-M.X(0)),fill:'none',stroke:'#B0A488','stroke-width':1.5},svg);
+    for(const r of [1.1,1.9,2.7]) el('circle',{cx:M.X(0),cy:M.Y(0),r:Math.abs(M.X(r)-M.X(0)),fill:'none',stroke:'#B0A488','stroke-width':1.5},svg);
     arrow(ctx, 0.95,0.95, 2.6,2.6, {color:'#B5793B', w:3, label:'E', fs:14});
     const t=el('text',{x:M.X(-0.6),y:M.Y(-3.85),fill:'#8A7D60','font-size':12,'font-family':'Georgia,serif','font-style':'italic','text-anchor':'middle'},svg);
     t.textContent='equipotentials: E ⊥ the contour lines, downhill';
@@ -831,9 +865,9 @@
           action(c){
        const {M}=c;
        el('circle',{cx:M.X(0), cy:M.Y(-2.2), r:7, fill:RED},c.svg);
-       arrow(c, 0,-2.45, 0,-3.5, {color:RED, w:2.5, label:'+q: downhill', fs:11, at:'mid', side:1});
-       el('circle',{cx:M.X(2.2), cy:M.Y(0), r:7, fill:BLUE},c.svg);
-       arrow(c, 1.95,0, 1.05,0, {color:BLUE, w:2.5, label:'−q: uphill', fs:11});
+       arrow(c, 0,-2.45, 0,-3.25, {color:RED, w:2.5}); textAt(c, 0.3,-3.3, '+q: downhill', {fs:10, italic:true, color:RED});
+       el('circle',{cx:M.X(3.4), cy:M.Y(0), r:7, fill:BLUE},c.svg);
+       arrow(c, 3.15,0, 2.25,0, {color:BLUE, w:2.5}); textAt(c, 3.7,0.25, '−q: uphill', {fs:10, italic:true, color:BLUE});
        textAt(c, -5.3,3.5, 'same map, opposite readings', {fs:12, italic:true});
      }
         },
@@ -852,7 +886,7 @@
          t.textContent=sgn>0?'+':'−'; };
        q(-3.4,2.2,+1); q(3.2,2.6,-1); q(-0.6,-2.6,+1);
        el('circle',{cx:M.X(0), cy:M.Y(0.4), r:5, fill:'#5C4B30'},c.svg);
-       textAt(c, 0.3,0.7, 'P', {fs:15, italic:true});
+       textAt(c, -0.8,0.1, 'P', {fs:15, italic:true});
        dashLine(c, -3.4,2.2, 0,0.4, {}); dashLine(c, 3.2,2.6, 0,0.4, {}); dashLine(c, -0.6,-2.6, 0,0.4, {});
        textAt(c, -4.9,-3.5, 'V_P = +135 − 225 + 60 = −30 V: arithmetic, not geometry', {fs:12.5, italic:true});
      }
@@ -872,7 +906,7 @@
          pts.push(M.X(x)+','+M.Y(-3.0+5.6/(1+Math.exp(x))));}
        el('polyline',{points:pts.join(' '),fill:'none',stroke:GOLD,'stroke-width':3},c.svg);
        label(c, -4.5,3.2, 'V(x): the hill', {fs:13, color:'#8A5A24', italic:true});
-       arrow(c, 0,0.1, 1.8,0.1, {color:GREEN, w:3.5, label:'E: downhill, ∝ steepness', fs:12, side:-1});
+       arrow(c, 0,0.1, 1.8,0.1, {color:GREEN, w:3.5}); textAt(c, 1.4,0.45, 'E: downhill, ∝ steepness', {fs:10, italic:true, color:GREEN});
        dashLine(c, -0.6,-0.06, 0.6,-0.62, {color:'#888'});
        label(c, 1.0,-1.1, 'slope = −E', {fs:12, color:'#8A7D60', italic:true});
      }
@@ -930,7 +964,7 @@
        const {M}=c;
        for(const r of [0.8,1.4,2.0]) el('circle',{cx:M.X(2.9),cy:M.Y(-2.0),r:Math.abs(M.X(r)-M.X(0)),fill:'none',stroke:'#8A7D60','stroke-width':1.6,'stroke-dasharray':'5,5'},c.svg);
        el('circle',{cx:M.X(2.9),cy:M.Y(-2.0),r:5,fill:RED},c.svg);
-       arrow(c, 3.6,-2.0, 5.2,-2.0, {color:GOLD, w:2.5, label:'E ⟂ equipotentials', fs:11});
+       arrow(c, 3.6,-2.0, 5.2,-2.0, {color:GOLD, w:2.5}); textAt(c, 2.4,0.35, 'E ⟂ equipotentials', {fs:10, italic:true, color:GOLD});
      }
         },
       ]
