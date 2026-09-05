@@ -1203,7 +1203,7 @@ diff:"Challenging",
     plotCurve(c, v=>[v, 380*Math.pow(2,0.67)/Math.pow(v,1.67)], 2, 3.6, {color:PURPLE, w:2.5, dash:'6,4'});
     plotCurve(c, v=>[v, 380*Math.pow(2,0.67)*Math.pow(3.6,-0.67)/v], 3.6, 1.8, {color:BLUE, w:3});
     plotCurve(c, v=>[v, 380*Math.pow(1,0.67)/Math.pow(v,1.67)], 1.8, 1, {color:PURPLE, w:2.5, dash:'6,4'});
-    textAt(c, 1.35,330, '1→2 at T_H', {fs:12, color:RED});
+    textAt(c, 1.5,385, '1→2 at T_H', {fs:12, color:RED});
     textAt(c, 2.1,38, '3→4 at T_C', {fs:10, color:BLUE});
   },
       steps:[
@@ -1232,8 +1232,8 @@ diff:"Challenging",
             {label:"The two heats", tex:"Q_H = nRT_H\\ln\\frac{V_2}{V_1}, \\qquad Q_C = nRT_C\\ln\\frac{V_3}{V_4}", kind:"key"}
           ],
           action(c){
-       arrow(c, 0.35,315, 1.15,290, {color:RED, w:3});
-       textAt(c, 0.05,262, 'Q_H in', {fs:12, italic:true, color:RED});
+       arrow(c, 2.3,330, 1.62,250, {color:RED, w:3});
+       textAt(c, 2.38,322, 'Q_H in', {fs:12, italic:true, color:RED});
        arrow(c, 2.95,80, 3.7,32, {color:BLUE, w:3});
        textAt(c, 3.9,22, 'Q_C out', {fs:12, italic:true, color:BLUE});
      }
@@ -1275,7 +1275,7 @@ diff:"Challenging",
             {label:"Reusable method", text:"heat only on isotherms → adiabat passports align the volume ratios → logs cancel → temperatures alone remain", kind:"answer"}
           ],
           action(c){
-       textAt(c, 2.5, 398, 'entropy in = entropy out', {fs:11, italic:true, color:'#8A5A24'});
+       textAt(c, 3.4, 325, 'entropy in = entropy out', {fs:11, italic:true, color:'#8A5A24'});
      }
         },
       ]
