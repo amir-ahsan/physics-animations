@@ -180,7 +180,7 @@
       padding:clamp(3px,.42vw,6px) clamp(5px,.7vw,10px);
       border-left:2px solid transparent;
       color:#dce6db;
-      font-size:calc(clamp(.72rem,1.18vw,1.16rem) * var(--boardScale,2));
+      font-size:calc(clamp(.72rem,1.18vw,1.16rem) * var(--boardScale,1.5));
       line-height:1.3;
       transition:opacity .45s ease,transform .45s ease,background .45s ease;
     }
@@ -196,7 +196,7 @@
     .equation-line.key{border-color:var(--amber);background:linear-gradient(90deg,rgba(232,172,86,.13),transparent 85%);color:#fff8df}
     .equation-line.answer{border:1px solid rgba(142,210,155,.55);border-radius:5px;background:rgba(142,210,155,.1);color:#dcffe4}
     .equation-line.warn{border-color:var(--coral);background:linear-gradient(90deg,rgba(239,128,111,.12),transparent);color:#ffe3dd}
-    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:calc(clamp(.66rem,1vw,.98rem) * var(--boardScale,2))}
+    .equation-line.note{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:#c9d8c5;font-size:calc(clamp(.66rem,1vw,.98rem) * var(--boardScale,1.5))}
     .key-move{
       display:inline-block;margin-left:8px;padding:2px 6px;border-radius:999px;
       background:var(--amber);color:#17241d;
@@ -206,7 +206,7 @@
     /* ---- professor ---- */
     .professor-2d{
       position:absolute;z-index:4;right:1%;bottom:2%;
-      width:15%;height:84%;
+      width:13%;height:84%;
       display:flex;align-items:flex-end;justify-content:center;
       pointer-events:none;
       filter:drop-shadow(0 13px 11px rgba(0,0,0,.35));
@@ -239,6 +239,17 @@
     .professor-2d.walking svg{animation:prof-bob .46s ease-in-out infinite alternate}
     @keyframes prof-step{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
     @keyframes prof-bob{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+    /* side view while strolling: faces the direction of travel */
+    .professor-2d #profSide{display:none;transform-box:view-box;transform-origin:50% 50%}
+    .professor-2d.walking #slim{display:none}
+    .professor-2d.walking #profSide{display:block}
+    .professor-2d.walking.face-left #profSide{transform:scaleX(-1)}
+    .professor-2d #sLegF,.professor-2d #sLegB{transform-box:fill-box;transform-origin:50% 0}
+    .professor-2d.walking #sLegF{animation:prof-stride .46s ease-in-out infinite alternate}
+    .professor-2d.walking #sLegB{animation:prof-stride .46s ease-in-out infinite alternate;animation-delay:-.46s}
+    @keyframes prof-stride{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+    .professor-2d #mouthS{transform-box:fill-box;transform-origin:center}
+    .professor-2d.talking #mouthS{animation:prof-talk .28s infinite alternate}
     .professor-id{
       position:absolute;z-index:5;right:.8%;top:12%;width:18.4%;
       color:#eee5d4;text-align:center;text-shadow:0 2px 8px #000;pointer-events:none;
@@ -477,6 +488,59 @@
                   <rect x="145" y="194" width="17" height="66" rx="8.5" fill="#6E5A3A" stroke="#57462B" stroke-width="1.5"/>
                   <circle cx="154" cy="264" r="9" fill="#B5793B"/>
                   <rect x="150" y="266" width="8" height="16" rx="3" fill="#fff" transform="rotate(-30 154 272)"/>
+                </g>
+              </g>
+            </g>
+            <g id="profSide">
+              <g transform="translate(0 16)">
+                <g fill="#ECE8E1" stroke="#CFC9BE" stroke-width="1.5">
+                  <circle cx="76" cy="60" r="27"/><circle cx="100" cy="42" r="30"/>
+                  <circle cx="128" cy="46" r="27"/><circle cx="66" cy="88" r="24"/>
+                  <circle cx="70" cy="114" r="18"/><circle cx="148" cy="62" r="18"/>
+                </g>
+                <ellipse cx="82" cy="112" rx="8" ry="12" fill="#B5793B"/>
+                <ellipse cx="112" cy="106" rx="36" ry="47" fill="#B5793B"/>
+                <path d="M146,92 q17,10 2,28 Z" fill="#B5793B" stroke="#A0682C" stroke-width="1.2"/>
+                <ellipse cx="128" cy="124" rx="8" ry="5" fill="#C98F52" opacity=".55"/>
+                <path d="M122,87 q12,-7 22,-1" stroke="#E8E4DC" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <ellipse cx="134" cy="101" rx="7" ry="6.5" fill="#fff"/>
+                <circle cx="137" cy="102" r="3.2" fill="#3A2A18"/>
+                <g stroke="#151515" stroke-width="4.2" fill="rgba(255,255,255,.07)">
+                  <circle cx="134" cy="101" r="13"/>
+                  <path d="M121,101 L84,105" fill="none"/>
+                </g>
+                <g fill="#E8E4DC" stroke="#CFC9BE" stroke-width="1.3">
+                  <path d="M126,131 Q140,124 154,132 Q148,143 128,140 Q124,136 126,131 Z"/>
+                </g>
+                <path id="mouthS" d="M134,148 Q142,152 150,147 Q142,150 134,148 Z" fill="#5A3222"/>
+              </g>
+              <path d="M100,162 L124,162 L124,206 L100,206 Z" fill="#A0682C"/>
+              <g transform="translate(22 0) scale(0.8 1)">
+                <!-- arm behind the back -->
+                <g fill="#6E5A3A" stroke="#57462B" stroke-width="1.5">
+                  <rect x="58" y="196" width="17" height="62" rx="8.5" transform="rotate(8 66 200)"/>
+                </g>
+                <circle cx="62" cy="262" r="9" fill="#B5793B"/>
+                <!-- back leg -->
+                <g id="sLegB">
+                  <path d="M92,366 L130,366 L132,378 Q148,382 150,392 Q150,399 142,399 L94,399 Q88,399 88,392 Z" fill="#4A1820" stroke="#3E1219" stroke-width="1.5"/>
+                  <path d="M88,395 L148,395" fill="none" stroke="#B8963E" stroke-width="1.6" stroke-dasharray="2 2.2"/>
+                  <path d="M86,397 L152,397 L152,400 L86,400 Z" fill="#1a1a1a"/>
+                  <path d="M90,256 L132,256 L128,374 Q110,378 94,374 Z" fill="#5E4C30" stroke="#4A3B24" stroke-width="2"/>
+                </g>
+                <!-- jacket -->
+                <path d="M72,262 Q64,206 92,186 L134,186 Q162,206 156,262 Z" fill="#6E5A3A"/>
+                <path d="M72,262 Q64,206 92,186 L134,186 Q162,206 156,262" fill="none" stroke="#57462B" stroke-width="2"/>
+                <path d="M138,190 L140,262" fill="none" stroke="#57462B" stroke-width="1.6" opacity=".7"/>
+                <path d="M122,186 L134,186 L128,212 Z" fill="#F5F1E6"/>
+                <!-- front leg -->
+                <g id="sLegF">
+                  <path d="M100,366 L138,366 L140,378 Q156,382 158,392 Q158,399 150,399 L102,399 Q96,399 96,392 Z" fill="#5A1E26" stroke="#3E1219" stroke-width="1.5"/>
+                  <ellipse cx="146" cy="390" rx="10" ry="5" fill="#6E2830"/>
+                  <path d="M96,395 L156,395" fill="none" stroke="#D9B44A" stroke-width="1.6" stroke-dasharray="2 2.2"/>
+                  <path d="M94,397 L160,397 L160,400 L94,400 Z" fill="#1a1a1a"/>
+                  <path d="M128,374 L138,378 M128,379 L138,383 M128,384 L138,388" fill="none" stroke="#E9DDC0" stroke-width="1.5"/>
+                  <path d="M98,256 L140,256 L136,374 Q118,378 102,374 Z" fill="#6E5A3A" stroke="#57462B" stroke-width="2"/>
                 </g>
               </g>
             </g>
@@ -1461,17 +1525,9 @@ diff:"Challenging",
       }
       const voices = speechSynthesis.getVoices();
       const gb = voices.filter(v => /^en-GB/i.test(v.lang));
-      /* prefer the most natural British male voice the browser offers (neural/online voices first) */
-      const score = v => {
-        let s = 0;
-        if(/^en[-_]GB/i.test(v.lang)) s += 100; else if(/^en/i.test(v.lang)) s += 10; else return -1;
-        if(/Natural|Neural|Premium|Enhanced|Online/i.test(v.name)) s += 40;
-        if(/Google UK English Male/i.test(v.name)) s += 34;
-        if(/Ryan|Daniel|Arthur|Oliver|George|Thomas|Alfie|Brian/i.test(v.name)) s += 20;
-        if(/Female|Sonia|Libby|Kate|Serena|Maisie|Mia|Hazel|Susan|Abbi|Bella|Hollie|Olivia|Google UK English Female/i.test(v.name)) s -= 15;
-        return s;
-      };
-      britishVoice = voices.filter(v => score(v) >= 0).sort((a,b) => score(b) - score(a))[0] || gb[0] || null;
+      const preferred = ['Daniel','Arthur','Serena','Oliver','Sonia','Libby','Ryan','Kate','Google UK English Male'];
+      britishVoice = preferred.map(name => gb.find(v => v.name.includes(name))).find(Boolean)
+                     || gb[0] || voices.find(v => /^en/i.test(v.lang)) || null;
     }
     loadVoices();
     if('speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
@@ -1579,17 +1635,17 @@ diff:"Challenging",
       if(event.key === 'ArrowLeft') document.getElementById('backButton').click();
     });
 
-    /* ---------- chalkboard auto-fit: start at 2x and shrink only if the work would spill ---------- */
+    /* ---------- chalkboard auto-fit: start at 1.5x and shrink only if the work would spill ---------- */
     function fitBoard(){
       const stack = refs.equationStack; if(!stack) return;
       const rows = [...stack.children];
       const spills = () => stack.scrollHeight > stack.clientHeight + 1 || rows.some(r => r.scrollWidth > stack.clientWidth + 1);
-      const run = () => { let sc = 2.0; stack.style.setProperty('--boardScale', sc);
+      const run = () => { let sc = 1.5; stack.style.setProperty('--boardScale', sc);
         while(sc > 1.0 && spills()){ sc = Math.round((sc - 0.1)*10)/10; stack.style.setProperty('--boardScale', sc); } return sc; };
       /* pass 1: formulas unbroken; if that forces a small font, pass 2 lets long formulas wrap at operators */
       stack.classList.remove('wrap-ok');
       const tight = run();
-      if(tight < 1.5){ stack.classList.add('wrap-ok'); const loose = run(); if(loose <= tight){ stack.classList.remove('wrap-ok'); run(); } }
+      if(tight < 1.15){ stack.classList.add('wrap-ok'); const loose = run(); if(loose <= tight){ stack.classList.remove('wrap-ok'); run(); } }
     }
     let fitTimer = null;
     window.addEventListener('resize', () => { window.clearTimeout(fitTimer); fitTimer = window.setTimeout(fitBoard, 120); });
@@ -1601,12 +1657,12 @@ diff:"Challenging",
     function stroll(){
       if(strolling || reduceMotion || document.hidden) return;
       const el = refs.professor2d, stage = document.getElementById('lectureStage');
-      const room = Math.floor(el.offsetLeft - stage.clientWidth*0.805);
+      const room = Math.floor(el.offsetLeft - stage.clientWidth*0.79);
       if(room < 14) return;
       strolling = true;
       const dur = 2400 + room*9;
       const go = (from, to, done) => {
-        el.classList.add('walking');
+        el.classList.add('walking'); el.classList.toggle('face-left', to < from);
         const a = el.animate([{transform:`translateX(${from}px)`},{transform:`translateX(${to}px)`}], {duration:dur, easing:'ease-in-out', fill:'forwards'});
         strollAnims.push(a);
         a.onfinish = () => { el.classList.remove('walking'); done(); };
