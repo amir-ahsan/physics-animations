@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -802,9 +836,9 @@
       pathway:["Speed","Decibels","Pipes","Doppler","Perspective","Asymmetry"],
       setup(ctx,w){
     const c={svg:ctx.svg, M:ctx.M, instant:true};
-    for(const r of [1.1,2.2,3.3,4.2]) el('circle',{cx:ctx.M.X(3.4),cy:ctx.M.Y(0),r:Math.abs(ctx.M.X(r)-ctx.M.X(0)),fill:'none',stroke:'#B5793B','stroke-width':2,opacity:.75},ctx.svg);
+    for(const r of [0.9,1.8,2.7,3.5]) el('circle',{cx:ctx.M.X(3.4),cy:ctx.M.Y(0),r:Math.abs(ctx.M.X(r)-ctx.M.X(0)),fill:'none',stroke:'#B5793B','stroke-width':2,opacity:.75},ctx.svg);
     el('circle',{cx:ctx.M.X(3.4),cy:ctx.M.Y(0),r:6,fill:'#5C4B30'},ctx.svg);
-    textAt(c, 3.4,-4.1, 'pressure ripples, spreading at v', {fs:12.5, italic:true, anchor:'middle'});
+    textAt(c, 3.4,-4.25, 'pressure ripples, spreading at v', {fs:12.5, italic:true, anchor:'middle'});
   },
       steps:[
         { map:0, title:"Sound rides the gas",
@@ -820,7 +854,7 @@
        for(const pt of [[7.6,2.2],[8.4,1.4],[9.3,2.6],[8.9,0.6],[7.9,-0.4],[9.6,1.6]])
          el('circle',{cx:M.X(pt[0]), cy:M.Y(pt[1]), r:4, fill:BLUE},c.svg);
        label(c, 7.4,3.4, 'carried by collisions:', {fs:12, color:'#1D4568', italic:true});
-       label(c, 7.4,-1.4, 'hotter → livelier → faster (∝√T)', {fs:12, color:'#8A5A24', italic:true});
+       label(c, 8.2,-1.4, 'hotter → livelier', {fs:10, color:'#8A5A24', italic:true}); label(c, 8.2,-1.95, '→ faster (∝√T)', {fs:10, color:'#8A5A24', italic:true});
        arrow(c, 4.6,0, 6.4,0, {color:GOLD, w:2.5, label:'v', fs:13});
      }
         },
@@ -881,8 +915,8 @@
        }
        el('circle',{cx:M.X(4.6), cy:M.Y(0.4), r:7, fill:'#5C4B30'},c.svg);
        arrow(c, 4.9,0.4, 6.2,0.4, {color:GOLD, w:2.5, label:'v_s', fs:12});
-       label(c, 6.9,2.9, 'ahead: crests bunched → higher f', {fs:12, color:RED, italic:true});
-       label(c, 0.3,-3.3, 'behind: stretched → lower f', {fs:12, color:BLUE, italic:true});
+       label(c, 7.6,3.9, 'ahead: bunched → higher f', {fs:10, color:RED, italic:true});
+       label(c, -0.9,-4.2, 'behind: stretched → lower f', {fs:10, color:BLUE, italic:true});
      }
         },
         { map:4, title:"Respect the hardware",
@@ -972,7 +1006,7 @@ diff:"Basic",
           ],
           action(c){
        arrow(c, 0.5,1.5, 6.57,1.5, {color:RED, w:3, label:'352 m/s at 308 K', fs:12, side:-1});
-       textAt(c, 1.1,0.65, '√T: a 5% warm-up buys 2.5% of speed', {fs:11, italic:true, color:'#8A5A24'});
+       textAt(c, 4.2,0.65, '√T: 5% warmer buys 2.5% faster', {fs:10, italic:true, color:'#8A5A24'});
      }
         },
         { map:3, title:"Part (b): the storm",
@@ -1187,7 +1221,7 @@ diff:"Intermediate",
           action(c){
        wavefronts(c, 1.2, 0, 0.9, 5, 3000);
        arrow(c, 1.2,-2.6, 3.4,-2.6, {color:RED, w:3, label:'v_s', fs:13});
-       textAt(c, 6.9,3.1, 'wavefronts bunch ahead → higher pitch', {fs:12, italic:true, anchor:'middle'});
+       textAt(c, 5.6,3.6, 'fronts bunch ahead → higher pitch', {fs:10, italic:true});
      }
         },
         { map:2, title:"Part (b): after it passes",
@@ -1200,7 +1234,7 @@ diff:"Intermediate",
             {label:"The drive-by", text:"The drive-by: 940 → 775 Hz, ≈ 3 semitones."}
           ],
           action(c){
-       arrow(c, 1.0,-1.6, -0.6,-1.6, {color:BLUE, w:2.5, label:'behind: stretched → 775 Hz', fs:11.5});
+       arrow(c, 1.0,-1.6, -0.6,-1.6, {color:BLUE, w:2.5}); textAt(c, 5.2,-4.15, 'behind: stretched → 775 Hz', {fs:11, italic:true, color:BLUE});
      }
         },
         { map:3, title:"Part (c): both in motion",

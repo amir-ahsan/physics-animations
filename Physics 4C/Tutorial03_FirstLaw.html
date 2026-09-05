@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -844,7 +878,7 @@
        el('rect',{x:M.X(1.9), y:M.Y(300), width:M.X(3.7)-M.X(1.9), height:M.Y(90)-M.Y(300), rx:10, fill:'rgba(201,143,82,.25)', stroke:'#8A5A24','stroke-width':3},c.svg);
        label(c, 2.25,200, 'E_int', {fs:16, color:'#5C3A16', italic:true});
        label(c, 2.05,155, '(the tank)', {fs:11.5, color:'#7A5A28', italic:true});
-       arrow(c, 0.4,240, 1.8,240, {color:RED, w:3.5, label:'Q in', fs:13});
+       arrow(c, 0.4,240, 1.8,240, {color:RED, w:3.5, label:'Q in', fs:13, at:'mid', side:1});
        arrow(c, 3.8,150, 5.2,150, {color:GREEN, w:3.5, label:'W out', fs:13});
        label(c, 0.6,20, 'ΔE_int = Q − W: what stays is what came in, minus what left', {fs:12.5, color:'#8A5A24', italic:true});
      }
@@ -908,7 +942,7 @@
         { map:5, title:"The accounting habits",
           think:"Why does warming at constant p cost more than at constant V?",
           model:"Some heat leaks out as work: C_p = C_V + R. Cycles: Q_net = W_net = enclosed area.",
-          pose:"excited",
+          pose:"excited", fresh:true,
           say:"And the accounting habits that make the chapter easy. C-p equals C-V plus R — at constant pressure some heat leaks out as work, so warming costs more. Around any closed CYCLE, delta E-int is zero, so the net heat equals the net work, which is the AREA enclosed by the loop — clockwise positive. Strategy: draw the diagram first, compute leg by leg, and let the state function check your arithmetic at the end. To the examples.",
           board:[
             {label:"The habits", tex:"C_p = C_V + R, \\qquad \\text{cycle: } \\Delta E_{\\rm int} = 0 \\Rightarrow Q_{\\rm net} = W_{\\rm net} = \\text{enclosed area}", kind:"key"},
@@ -919,8 +953,8 @@
        el('rect',{x:M.X(3.4), y:M.Y(310), width:M.X(4.9)-M.X(3.4), height:M.Y(200)-M.Y(310), fill:'rgba(46,125,79,.25)', stroke:GREEN,'stroke-width':2.5},c.svg);
        arrow(c, 3.55,310, 4.7,310, {color:GREEN, w:2, head:7});
        arrow(c, 4.75,200, 3.6,200, {color:GREEN, w:2, head:7});
-       label(c, 3.65,250, 'W_net = area', {fs:12, color:'#2E7D4F', italic:true});
-       label(c, 3.35,155, 'clockwise: an engine', {fs:11.5, color:'#2E7D4F', italic:true});
+       label(c, 3.55,250, 'W_net = area', {fs:10, color:'#2E7D4F', italic:true});
+       label(c, 3.45,125, 'clockwise: an engine', {fs:10, color:'#2E7D4F', italic:true});
      }
         },
       ]
@@ -983,7 +1017,7 @@ diff:"Basic",
           action(c){
        const {M}=c;
        el('rect',{x:M.X(0.016),y:M.Y(2.15e5),width:M.X(0.028)-M.X(0.016),height:M.Y(1.72e5)-M.Y(2.15e5),rx:8,fill:'rgba(201,143,82,.25)',stroke:'#8A5A24','stroke-width':2},c.svg);
-       textAt(c, 0.019, 1.80e5, 'ΔE = +3375 J', {fs:11.5, italic:true, color:'#5C3A16', anchor:'middle'});
+       textAt(c, 0.022, 1.80e5, 'ΔE = +3375 J', {fs:9.5, italic:true, color:'#5C3A16', anchor:'middle'});
        arrow(c, 0.003,1.93e5, 0.015,1.93e5, {color:RED, w:3, label:'Q = 5625 J', fs:11.5, at:'mid', side:-1});
        arrow(c, 0.029,1.93e5, 0.0415,1.93e5, {color:GREEN, w:3, label:'W = 2250 J', fs:11.5, at:'mid', side:-1});
      }
@@ -1055,7 +1089,7 @@ diff:"Intermediate",
             {label:"The heat", tex:"Q = \\Delta E_{\\rm int} + W = 0 + 6.05\\times10^{3} = 6.05\\times10^{3}\\ \\mathrm J", kind:"answer"}
           ],
           action(c){
-       textAt(c, 1.0, 22, 'T = 350 K all along the curve ⇒ ΔE_int = 0', {fs:12, italic:true, color:'#8A5A24'});
+       textAt(c, 2.1, 335, 'T = 350 K throughout ⇒ ΔE_int = 0', {fs:10.5, italic:true, color:'#8A5A24'});
      }
         },
         { map:4, title:"The dangerous thought",
@@ -1150,7 +1184,7 @@ diff:"Intermediate",
        arrow(c, 4,365, 4,315, {color:RED, w:2.5, label:'+3000 J', fs:11.5});
        arrow(c, 0.6,200, 1.7,200, {color:GREEN, w:2.5, label:'+600 J', fs:11.5, at:'mid'});
        arrow(c, 6.3,200, 7.3,200, {color:BLUE, w:2.5, label:'−1800 J', fs:11.5});
-       arrow(c, 4,85, 4,30, {color:PURPLE, w:2.5, label:'−1000 J', fs:11.5});
+       arrow(c, 4,85, 4,30, {color:PURPLE, w:2.5, label:'−1000 J', fs:11.5, at:'mid', side:1});
      }
         },
       ]
@@ -1214,7 +1248,7 @@ diff:"Challenging",
        el('circle',{cx:c.M.X(1.05),cy:c.M.Y(380/Math.pow(1.05,1.4)),r:5,fill:RED},c.svg);
        textAt(c, 4.4, 150, 'T_i = 300 K', {fs:11, italic:true});
        textAt(c, 1.25, 395, 'T_f = 886 K', {fs:12, italic:true, color:RED});
-       arrow(c, 3.6,120, 1.8,255, {color:RED, w:2.5, dash:'6,4', label:'compress ×15', fs:11.5});
+       arrow(c, 3.6,120, 1.8,255, {color:RED, w:2.5, dash:'6,4'}); textAt(c, 2.9,260, 'compress ×15', {fs:11.5, italic:true, color:RED});
      }
         },
         { map:4, title:"The work of ignition",
@@ -1281,7 +1315,7 @@ diff:"Challenging",
        plotCurve(c, v=>[v, 100/Math.pow(v,1.25)], 0.25, 1.25, {color:GOLD, w:3.5, dur:1300});
        el('circle',{cx:c.M.X(1),cy:c.M.Y(100),r:5,fill:'#5C4B30'},c.svg);
        el('circle',{cx:c.M.X(0.25),cy:c.M.Y(566),r:5,fill:RED},c.svg);
-       textAt(c, 0.9,150, 'start', {fs:12, italic:true}); textAt(c, 0.31,590, 'finish: 566 kPa', {fs:12, italic:true, color:RED});
+       textAt(c, 1.03,120, 'start', {fs:12, italic:true}); textAt(c, 0.31,590, 'finish: 566 kPa', {fs:12, italic:true, color:RED});
      }
         },
         { map:4, title:"Part (c): the reunion",

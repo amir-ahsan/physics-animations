@@ -667,6 +667,20 @@
           fill:opt.color || CHALKC,'font-size':Math.round(((opt.fs || 13) + 3)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic','font-weight':600}, g);
         t.textContent = opt.label;
+        if(opt.at === 'mid'){ try{ /* guarantee the label clears its own shaft on the chosen side */
+          const bb0 = t.getBBox();
+          const need = Math.abs(nx)*bb0.width/2 + Math.abs(ny)*bb0.height/2 + 5;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2, mx = (X1 + X2)/2, my = (Y1 + Y2)/2;
+          const d = ((cx0 - mx)*nx + (cy0 - my)*ny)*side;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + nx*push*side); t.setAttribute('y', (+t.getAttribute('y')) + ny*push*side); }
+        }catch(e){} }
+        else if(!(opt.loff < 0)){ try{ /* tip labels: keep the whole label beyond the arrowhead along the arrow's direction */
+          const bb0 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+          const need = Math.abs(ux)*bb0.width/2 + Math.abs(uy)*bb0.height/2 + 4;
+          const cx0 = bb0.x + bb0.width/2, cy0 = bb0.y + bb0.height/2;
+          const d = (cx0 - X2)*ux + (cy0 - Y2)*uy;
+          if(d < need){ const push = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*push); t.setAttribute('y', (+t.getAttribute('y')) + uy*push); }
+        }catch(e){} }
         try{ /* keep arrow labels inside the sketch pane */
           const bb = t.getBBox();
           if(bb.x + bb.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (bb.x + bb.width - 596));
@@ -674,6 +688,20 @@
           const b2 = t.getBBox();
           if(b2.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b2.y));
           else if(b2.y + b2.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b2.y + b2.height - 398));
+          if(opt.at !== 'mid' && !(opt.loff < 0)){ /* if the pane clamp dragged a tip label back onto the arrowhead, park it beside the tip instead */
+            const b3 = t.getBBox(), ux = Math.cos(ang), uy = Math.sin(ang);
+            const cx3 = b3.x + b3.width/2, cy3 = b3.y + b3.height/2;
+            const along = (cx3 - X2)*ux + (cy3 - Y2)*uy, needA = Math.abs(ux)*b3.width/2 + Math.abs(uy)*b3.height/2 - 2;
+            if(along < needA){
+              const off = Math.abs(nx)*b3.width/2 + Math.abs(ny)*b3.height/2 + 8;
+              const tx = X2 + nx*off*side - ux*6, ty = Y2 + ny*off*side - uy*6;
+              t.setAttribute('x', (+t.getAttribute('x')) + (tx - cx3)); t.setAttribute('y', (+t.getAttribute('y')) + (ty - cy3));
+              const b4 = t.getBBox();
+              if(b4.x + b4.width > 596) t.setAttribute('x', (+t.getAttribute('x')) - (b4.x + b4.width - 596)); else if(b4.x < 4) t.setAttribute('x', (+t.getAttribute('x')) + (4 - b4.x));
+              const b5 = t.getBBox();
+              if(b5.y < 4) t.setAttribute('y', (+t.getAttribute('y')) + (4 - b5.y)); else if(b5.y + b5.height > 398) t.setAttribute('y', (+t.getAttribute('y')) - (b5.y + b5.height - 398));
+            }
+          }
         }catch(e){}
         if(!instant){ t.setAttribute('opacity',0); tween(u => t.setAttribute('opacity',u), 420, false); }
       }
@@ -697,6 +725,12 @@
           fill:opt.color || DIMC,'font-size':Math.round(((opt.fs || 12) + 2)*1.25),'text-anchor':'middle',
           'font-family':'Georgia,serif','font-style':'italic'}, svg);
         t.textContent = opt.label;
+        if(!(opt.lr < 0)){ try{ /* push the label radially until its box clears the arc */
+          const bb = t.getBBox(), ux = Math.cos(mid), uy = -Math.sin(mid);
+          const need = Math.abs(ux)*bb.width/2 + Math.abs(uy)*bb.height/2 + 4;
+          const d = (bb.x + bb.width/2 - M.X(cx))*ux + (bb.y + bb.height/2 - M.Y(cy))*uy - R;
+          if(d < need){ const p = need - d; t.setAttribute('x', (+t.getAttribute('x')) + ux*p); t.setAttribute('y', (+t.getAttribute('y')) + uy*p); }
+        }catch(e){} }
       }
     }
     function label(c, x, y, txt, opt = {}){
@@ -904,7 +938,7 @@
          out.push(M.X(x)+','+M.Y(4.4+0.28*Math.sin(2.4*x)));}
        el('polyline',{points:out.join(' '),fill:'none',stroke:GREEN,'stroke-width':2.5},c.svg);
        label(c, 8.0,5.4, 'whisper: T ≈ e^(−2κL)', {fs:11.5, color:'#2E7D4F', italic:true});
-       label(c, -1.9,1.4, 'the leak that lights the Sun, times 10⁵⁶ protons', {fs:12, color:'#8A5A24', italic:true});
+       label(c, -1.9,-0.95, 'the leak that lights the Sun, times 10⁵⁶ protons', {fs:11, color:'#8A5A24', italic:true});
      }
         },
         { map:5, title:"Tunneling, quantified",
@@ -921,7 +955,7 @@
        el('rect',{x:c.M.X(4.0),y:c.M.Y(8.1),width:c.M.X(5.6)-c.M.X(4.0),height:c.M.Y(5.1)-c.M.Y(8.1),fill:'#8A7D60',opacity:.30},c.svg);
        plotCurve(c, t=>[4.0+1.6*t, 6.6+0.75*Math.exp(-2.2*t)], 0, 1, {color:GOLD, w:2.4, dur:400, N:40});
        plotCurve(c, t=>[5.6+3.0*t, 6.6+0.16*Math.sin(2*Math.PI*4*t)], 0, 1, {color:GOLD, w:2.4, dur:500, N:80});
-       textAt(c, 4.8,8.6, 'oscillates — decays — leaks through!', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 4.8,9.3, 'oscillates — decays — leaks through!', {fs:11, italic:true, anchor:'middle'});
      }
         },
       ]
@@ -1154,7 +1188,7 @@ diff:"Challenging",
           ],
           action(c){
        shade(c, x=>2.0*Math.pow(Math.sin(Math.PI*x/10),2), 0, 2.5, {color:RED, op:0.4});
-       textAt(c, 1.25,0.5, '9.1%', {fs:13, anchor:'middle', color:'#8A3324'});
+       textAt(c, 1.25,0.75, '9.1%', {fs:13, anchor:'middle', color:'#8A3324'});
      }
         },
         { map:3, title:"Symmetry finishes",
@@ -1253,7 +1287,7 @@ diff:"Challenging",
             {label:"Reusable method", text:"symmetry for ⟨x⟩ → parts for ⟨x²⟩ → Δx → multiply by Δp → compare with ℏ/2", kind:"answer"}
           ],
           action(c){
-       arrow(c, 5-1.808,1.0, 5+1.808,1.0, {color:PURPLE, w:2.5, label:'⟨x⟩ ± Δx,  Δx = 0.18 L', fs:11.5});
+       arrow(c, 5-1.808,1.0, 5+1.808,1.0, {color:PURPLE, w:2.5, label:'⟨x⟩ ± Δx,  Δx = 0.18 L', fs:11.5, at:'mid', side:-1});
      }
         },
         { map:0, title:"Step 6",
@@ -1335,7 +1369,7 @@ diff:"Intermediate",
        for(let i=0;i<12;i++)
          el('circle',{cx:M.X(3.75+0.23*i),cy:M.Y(0.32)-7,r:3.5,fill:RED},c.svg);
        textAt(c, 7.5,0.55, 'n = 0: everyone', {fs:11, italic:true});
-       textAt(c, 5,2.3, 'n = 1: <1 in a million', {fs:11, italic:true, anchor:'middle'});
+       textAt(c, 5,2.55, 'n = 1: <1 in a million', {fs:11, italic:true, anchor:'middle'});
      }
         },
         { map:4, title:"Tutorial 2's puzzle dissolves",
@@ -1386,7 +1420,7 @@ diff:"Challenging",
           action(c){
        plotCurve(c, t=>[4.2+1.8*t, 0.9*Math.exp(-2.07*t)], 0, 1, {color:GOLD, w:2.5, dur:700});
        plotCurve(c, t=>[6.0+4.4*t, 0.10*Math.sin(2*Math.PI*5*t)], 0, 1, {color:GOLD, w:2.5, dur:700, N:90});
-       textAt(c, 7.9,-1.0, 'small, but alive: T ≈ e^(−2κL)', {fs:11.5, italic:true, anchor:'middle'});
+       textAt(c, 6.6,-0.8, 'small, but alive:', {fs:11, italic:true}); textAt(c, 6.6,-1.3, 'T ≈ e^(−2κL)', {fs:11, italic:true});
      }
         },
         { map:2, title:"Two gap widths",
@@ -1411,7 +1445,7 @@ diff:"Challenging",
           action(c){
        const {M}=c;
        el('rect',{x:M.X(6.0),y:M.Y(1.9),width:M.X(6.36)-M.X(6.0),height:M.Y(-1.9)-M.Y(1.9),fill:'none',stroke:RED,'stroke-width':2,'stroke-dasharray':'5,4'},c.svg);
-       textAt(c, 7.6,-2.15, 'tip retreats 0.1 nm → current ÷ 10', {fs:11.5, italic:true, anchor:'middle', color:'#8A3324'});
+       textAt(c, 7.6,-2.35, 'tip retreats 0.1 nm → current ÷ 10', {fs:11.5, italic:true, anchor:'middle', color:'#8A3324'});
      }
         },
         { map:4, title:"Part (c): your chair",
