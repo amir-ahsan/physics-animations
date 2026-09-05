@@ -1583,6 +1583,7 @@ diff:"Challenging",
         .replace(/(\d)\.(\d)/g,'$1 point $2');
       return spoken
         .replace(/\badiabat(s?)\b/gi,'aydeeabat$1')
+        .replace(/(nano|micro|milli|pico)?coulomb/gi,(m,p)=>(p? p+' ':'')+'koolom')
         .replace(/\blives\b/g,'livz')
         .replace(/\blive\b/g,'liv')
         .replace(/\ba squared\b/g,'ay squared')
