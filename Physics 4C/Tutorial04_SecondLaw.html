@@ -263,7 +263,7 @@
       padding:13px clamp(14px,2vw,28px);
       border-top:1px solid rgba(255,255,255,.07);
       background:#0b110d;color:#f8f4e8;
-      font-size:clamp(.75rem,1vw,.95rem);font-weight:560;line-height:1.5;text-align:left;
+      font-size:clamp(1.05rem,1.4vw,1.33rem);font-weight:560;line-height:1.5;text-align:left;
     }
     .caption-speaker{
       margin-top:2px;padding:4px 8px;border-radius:999px;
@@ -921,10 +921,10 @@
           ],
           action(c){
        const {M}=c;
-       el('path',{d:`M ${M.X(3.2)} ${M.Y(1.2)} L ${M.X(3.2)} ${M.Y(6.4)} Q ${M.X(3.2)} ${M.Y(8.4)} ${M.X(5.2)} ${M.Y(8.4)} Q ${M.X(7.2)} ${M.Y(8.4)} ${M.X(7.2)} ${M.Y(6.4)} L ${M.X(7.2)} ${M.Y(1.2)} Z`,
+       el('path',{d:`M ${M.X(2.5)} ${M.Y(1.2)} L ${M.X(2.5)} ${M.Y(6.4)} Q ${M.X(2.5)} ${M.Y(8.7)} ${M.X(5.2)} ${M.Y(8.7)} Q ${M.X(7.9)} ${M.Y(8.7)} ${M.X(7.9)} ${M.Y(6.4)} L ${M.X(7.9)} ${M.Y(1.2)} Z`,
          fill:'#D9CDB4', stroke:'#8A7D60','stroke-width':3},c.svg);
-       label(c, 4.35,6.7, 'S = k log W', {fs:16, color:'#5C4B30'});
-       label(c, 4.0,5.6, 'L. BOLTZMANN', {fs:12, color:'#7A5A28'});
+       label(c, 5.2,6.5, 'S = k ln W', {fs:11, color:'#5C4B30', anchor:'middle'});
+       label(c, 5.2,5.2, 'LUDWIG BOLTZMANN', {fs:6.8, color:'#7A5A28', anchor:'middle'});
        el('line',{x1:M.X(2.4),y1:M.Y(1.2),x2:M.X(8.0),y2:M.Y(1.2),stroke:'#8A7D60','stroke-width':4},c.svg);
        label(c, 1.2,0.3, 'entropy counts arrangements — the universe drifts toward the numerous', {fs:12, color:'#8A5A24', italic:true});
      }
