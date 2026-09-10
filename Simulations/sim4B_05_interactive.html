@@ -131,10 +131,12 @@
     {id:'Vf',latex:'V(x,y)=k_e\\left(\\frac{q_1}{d_1(x,y)}+\\frac{q_2}{d_2(x,y)}\\right)', hidden:true, secret:true},
     {id:'Exf',latex:'E_x(x,y)=k_e\\left(\\frac{q_1(x-x_1)}{d_1(x,y)^3}+\\frac{q_2(x-x_2)}{d_2(x,y)^3}\\right)', hidden:true, secret:true},
     {id:'Eyf',latex:'E_y(x,y)=k_e\\left(\\frac{q_1 y}{d_1(x,y)^3}+\\frac{q_2 y}{d_2(x,y)^3}\\right)', hidden:true, secret:true},
-    {id:'eq1',latex:'V(x,y)=V_0', color:'#2e8b57', lineWidth:2},
-    {id:'eq2',latex:'V(x,y)=2V_0', color:'#2e8b57', lineWidth:1.4},
-    {id:'eq3',latex:'V(x,y)=-V_0', color:'#2f6fb0', lineWidth:2},
-    {id:'eq4',latex:'V(x,y)=-2V_0', color:'#2f6fb0', lineWidth:1.4},
+    /* NOTE: Desmos will not draw implicit curves that call user-defined functions
+       (V(x,y)=V_0 renders nothing, silently) — the potential must be written out inline. */
+    {id:'eq1',latex:'k_e\\left(\\frac{q_1}{\\sqrt{(x-x_1)^2+y^2+c^2}}+\\frac{q_2}{\\sqrt{(x-x_2)^2+y^2+c^2}}\\right)=V_0', color:'#2e8b57', lineWidth:2},
+    {id:'eq2',latex:'k_e\\left(\\frac{q_1}{\\sqrt{(x-x_1)^2+y^2+c^2}}+\\frac{q_2}{\\sqrt{(x-x_2)^2+y^2+c^2}}\\right)=2V_0', color:'#2e8b57', lineWidth:1.4},
+    {id:'eq3',latex:'k_e\\left(\\frac{q_1}{\\sqrt{(x-x_1)^2+y^2+c^2}}+\\frac{q_2}{\\sqrt{(x-x_2)^2+y^2+c^2}}\\right)=-V_0', color:'#2f6fb0', lineWidth:2},
+    {id:'eq4',latex:'k_e\\left(\\frac{q_1}{\\sqrt{(x-x_1)^2+y^2+c^2}}+\\frac{q_2}{\\sqrt{(x-x_2)^2+y^2+c^2}}\\right)=-2V_0', color:'#2f6fb0', lineWidth:1.4},
     {id:'vecShaft',latex:'\\operatorname{polygon}((0,0),(0,0))', color:'#8a5a24', lineWidth:3.5},
     {id:'vecHead',latex:'\\operatorname{polygon}((0,0),(0,0),(0,0))', color:'#8a5a24', fillOpacity:1, lineWidth:1},
     {id:'Sp',latex:'(x_s,y_s)', color:'#333333', showLabel:true, label:'S', labelSize:'small'},
