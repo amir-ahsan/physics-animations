@@ -1388,6 +1388,608 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Electric versus gravitational force in a hydrogen atom",
+      problem:"In a hydrogen atom the electron and proton are about 5.29×10⁻¹¹ m apart. Compare the electric and gravitational forces between them.",
+      goal:"Goal → F_e/F_g",
+      world:{"x0":-5,"x1":5,"y0":-3.5,"y1":3.8},
+      pathway:["Two laws","Electric","Gravitational","The ratio"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.35, {stroke:RED, w:3});
+    circleAt(ctx, 0,0, 2.6, {stroke:DIMC, w:1.5, dash:'5,4'});
+    circleAt(ctx, 2.6,0, 0.16, {stroke:BLUE, w:3});
+    label(ctx, -0.9,-1.0, 'proton', {fs:10, color:RED});
+    label(ctx, 2.9,0.4, 'electron', {fs:10, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"Two inverse-square rivals",
+          think:"Both forces fall as 1/r². What does that mean for their RATIO?",
+          model:"F_e = ke²/r², F_g = Gm_em_p/r²: the ratio is r-independent.",
+          pose:"talk",
+          say:"Electron and proton attract each other twice over — by charge and by mass — and both laws fall as one over r squared. So their RATIO is the same at any distance: a single number comparing electricity and gravity, once and for all, for this pair. Let us compute it and be permanently astonished.",
+          board:[
+            {label:"The rivals", tex:"F_e = \\frac{ke^2}{r^2}, \\qquad F_g = \\frac{Gm_em_p}{r^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The electric force",
+          think:"ke²/r² at the Bohr radius: evaluate.",
+          model:"F_e = 8.24×10⁻⁸ N.",
+          pose:"write",
+          say:"Coulomb: nine times ten to the nine, times the elementary charge squared, over the Bohr radius squared — eight point two four times ten to the minus eight newtons. Tiny by human standards; formidable at atomic scale, where masses are next to nothing.",
+          board:[
+            {tex:"F_e = (8.99\\times10^{9})\\frac{(1.602\\times10^{-19})^2}{(5.29\\times10^{-11})^2} = 8.24\\times10^{-8}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The gravitational force",
+          think:"Same r, masses instead of charges: expect how many orders smaller?",
+          model:"F_g = 3.63×10⁻⁴⁷ N.",
+          pose:"write",
+          say:"Gravity, same separation: G times the electron and proton masses over r squared — three point six three times ten to the minus FORTY SEVEN newtons. A number so small it borders on theological.",
+          board:[
+            {tex:"F_g = G\\frac{m_em_p}{r^2} = 3.63\\times10^{-47}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Thirty-nine orders of magnitude",
+          think:"If electricity is 10³⁹ times stronger, why does gravity run the cosmos?",
+          model:"F_e/F_g = 2.3×10³⁹. Matter is neutral in bulk; gravity never cancels.",
+          pose:"excited",
+          say:"The ratio: two point three times ten to the THIRTY NINE. Written out, a two and a three followed by thirty-eight zeros. Inside atoms, gravity is not a minor correction; it is a rounding error on a rounding error. Yet the planets obey gravity, not Coulomb — because bulk matter is exquisitely NEUTRAL, its electric fury cancelled charge by charge, while gravity, having no negative mass, keeps every vote it ever casts. The weakest force wins the universe by never cancelling.",
+          board:[
+            {label:"The ratio", tex:"\\frac{F_e}{F_g} = 2.3\\times10^{39}", kind:"answer"},
+            {label:"Reusable method", text:"same r-dependence ⇒ compare via the ratio → electricity rules atoms; neutrality hands the cosmos to gravity", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Field of a point charge, then the force on a second charge",
+      problem:"A point charge q = +4.00 μC sits at the origin. (a) Find the electric field 0.500 m away. (b) Find the force on a −2.00 nC charge placed there.",
+      goal:"Goal → E, then F = qE",
+      world:{"x0":-1,"x1":9,"y0":-3.5,"y1":3.8},
+      pathway:["Field first","Evaluate E","Force from field","Field vs force"],
+      setup(ctx,w){
+    circleAt(ctx, 2,0, 0.4, {stroke:RED, w:3});
+    label(ctx, 1.6,0.85, '+4 μC', {fs:11, color:RED});
+    circleAt(ctx, 6.5,0, 0.2, {stroke:BLUE, w:3});
+    label(ctx, 6.2,0.65, '−2 nC', {fs:11, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"The field exists first",
+          think:"Does the +4 μC charge care whether a test charge is present?",
+          model:"E = kq/r² fills space regardless; a second charge merely reads it.",
+          pose:"talk",
+          say:"The two-step doctrine of electrostatics: a charge fills the surrounding space with a FIELD, present whether or not anyone is there to feel it; a second charge then reads the field at its own location and converts it to force. Source, field, response — three words that organise this entire course.",
+          board:[
+            {label:"Doctrine", tex:"\\text{source } q \\to \\vec E\\ \\text{everywhere} \\to \\vec F = q_2\\vec E\\ \\text{on any visitor}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the field",
+          think:"E = k|q|/r², direction from the SIGN of the source.",
+          model:"E = 1.44×10⁵ N/C, radially outward.",
+          pose:"write",
+          say:"The field at half a metre: nine times ten to the nine times four microcoulombs over a quarter — one point four four times ten to the five newtons per coulomb, pointing radially AWAY, as positive sources insist.",
+          board:[
+            {tex:"E = \\frac{k|q|}{r^2} = \\frac{(8.99\\times10^{9})(4.00\\times10^{-6})}{(0.500)^2} = 1.44\\times10^{5}\\ \\mathrm{N/C}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 2.5,0, 4.4,0, {color:GOLD, w:2.5, label:'E', fs:12, side:-1});
+       arrow(c, 2.35,0.9, 3.6,1.85, {color:GOLD, w:2});
+       arrow(c, 2.35,-0.9, 3.6,-1.85, {color:GOLD, w:2});
+     }
+        },
+        { map:2, title:"Part (b): the visitor responds",
+          think:"F = qE with q negative: magnitude and direction?",
+          model:"F = 2.88×10⁻⁴ N, TOWARD the origin (opposite E).",
+          pose:"write",
+          say:"Now place the minus two nanocoulomb visitor: force equals charge times field — two point eight eight times ten to the minus four newtons. But the visitor is NEGATIVE, so it feels the field backwards: pulled toward the origin. Attraction, expressed as a sign flip on E.",
+          board:[
+            {tex:"F = |q_2|E = (2.00\\times10^{-9})(1.44\\times10^{5}) = 2.88\\times10^{-4}\\ \\mathrm{N}\\ \\text{(toward the origin)}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 6.3,0, 4.4,0, {color:BLUE, w:3, label:'F on −q', fs:11, at:'mid'});
+     }
+        },
+        { map:3, title:"Why bother with fields?",
+          think:"Couldn't Coulomb's law alone have answered (b)? What does the field add?",
+          model:"Fields localize the interaction and survive when sources are complicated — or when news travels at c.",
+          pose:"excited",
+          say:"A skeptic asks: Coulomb's law alone would give part b — why the middleman? Three answers, in ascending profundity. Bookkeeping: with many sources, compute E once and bill every visitor. Locality: each charge responds only to the field AT ITS OWN LOCATION — no spooky reaching across space. And prophecy: when charges accelerate, the field carries the news outward at the speed of light — becoming, in Tutorial twelve, light itself. The middleman, it turns out, is the star.",
+          board:[
+            {label:"Why fields", text:"One computation serves all visitors; interactions become local; and the field itself will become light.", kind:"key"},
+            {label:"Reusable method", text:"compute E from sources → F = qE with sign-aware direction → think source → field → response", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Counting electrons",
+      problem:"A rubbed plastic rod carries a charge of −8.00 μC. How many excess electrons is that, and how much mass did the rod gain?",
+      goal:"Goal → N and Δm",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Quantization","Count","Weigh","Perspective"],
+      setup(ctx,w){
+    boxAt(ctx, 5,2.5, 7,1.2, {fill:'#8a5a24', stroke:'#5a3a14'});
+    label(ctx, 3.4,4.3, 'rubbed rod, −8 μC', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Charge comes in atoms",
+          think:"What is the smallest parcel of charge nature trades in?",
+          model:"Q = Ne: every charge is an integer count of e = 1.602×10⁻¹⁹ C.",
+          pose:"talk",
+          say:"Charge is not a fluid but a CENSUS: every charge in nature is a whole number of elementary charges, e, one point six zero two times ten to the minus nineteen coulombs. Our rubbed rod's minus eight microcoulombs is therefore a headcount waiting to be taken.",
+          board:[
+            {label:"Quantization", tex:"Q = Ne, \\quad e = 1.602\\times10^{-19}\\ \\mathrm{C}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Take the census",
+          think:"N = Q/e: how many electrons rubbed off the wool?",
+          model:"N = 8.00×10⁻⁶/1.602×10⁻¹⁹ = 4.99×10¹³ electrons.",
+          pose:"write",
+          say:"Divide: eight microcoulombs over e — four point nine nine times ten to the THIRTEEN electrons. Fifty trillion passengers, boarded during one careless rub against a sweater.",
+          board:[
+            {tex:"N = \\frac{8.00\\times10^{-6}}{1.602\\times10^{-19}} = 4.99\\times10^{13}\\ \\text{electrons}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Weigh the cargo",
+          think:"Each electron weighs 9.11×10⁻³¹ kg. Total gain?",
+          model:"Δm = Nm_e = 4.5×10⁻¹⁷ kg.",
+          pose:"write",
+          say:"Their combined mass: fifty trillion times nine point one one ten to the minus thirty one — four and a half times ten to the minus SEVENTEEN kilograms. No balance on Earth would blink. Charge is detectable in quantities whose mass is pure fiction.",
+          board:[
+            {tex:"\\Delta m = Nm_e = (4.99\\times10^{13})(9.11\\times10^{-31}) = 4.5\\times10^{-17}\\ \\mathrm{kg}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"A whisper on a roaring background",
+          think:"Compare 5×10¹³ with the electron count in a gram of plastic (~10²³). What fraction moved?",
+          model:"~10⁻¹⁰ of the rod's electrons: static electricity is a trace imbalance on a neutral sea.",
+          pose:"excited",
+          say:"And the perspective that tames all of electrostatics: a gram of plastic holds some ten to the twenty-three electrons, so our mighty fifty trillion is a fraction of order ten to the MINUS TEN of the rod's holdings — one electron in ten billion, reassigned. Every crackling sock, every lightning bolt, every Van de Graaff spark is a trace imbalance whispering on an ocean of neutrality. Matter is almost perfectly balanced; 'almost' is this course.",
+          board:[
+            {label:"Perspective", text:"~10⁻¹⁰ of the electrons moved. All electrostatics rides on trace imbalances of a neutral sea.", kind:"key"},
+            {label:"Reusable method", text:"N = Q/e → Δm = Nm_e → compare with the neutral background to calibrate awe", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Where is the field zero?",
+      problem:"Charges q₁ = +4.00 μC at x = 0 and q₂ = +9.00 μC at x = 0.500 m. Find the point where the net electric field vanishes.",
+      goal:"Goal → the null point",
+      world:{"x0":-0.15,"x1":0.72,"y0":-0.18,"y1":0.22},
+      pathway:["Where possible","Set equal","Solve","Check side"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.02, {stroke:RED, w:3});
+    circleAt(ctx, 0.5,0, 0.027, {stroke:RED, w:3});
+    label(ctx, -0.045,0.055, '+4 μC', {fs:11, color:RED});
+    label(ctx, 0.45,0.065, '+9 μC', {fs:11, color:RED});
+    ground(ctx, -0.1, 0.65, -0.1);
+  },
+      steps:[
+        { map:0, title:"Hunt by direction first",
+          think:"Sketch E from each charge in the three regions. Where CAN they cancel?",
+          model:"Outside the pair both fields agree in direction — only BETWEEN like charges can they oppose.",
+          pose:"talk",
+          say:"Before algebra, scout by direction. To the left of both charges, both fields point left; to the right, both point right — no cancellation possible where allies agree. Only BETWEEN two like charges do the fields face off. The null point, if it exists, lives in the gap; algebra need only find its address.",
+          board:[
+            {label:"Direction survey", text:"Like charges: fields oppose only BETWEEN them. Search there and nowhere else.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0.06,0, 0.14,0, {color:GOLD, w:2, label:'E₁', fs:10, side:-1});
+       arrow(c, 0.44,0, 0.36,0, {color:PURPLE, w:2, label:'E₂', fs:10, side:-1});
+     }
+        },
+        { map:1, title:"Set the magnitudes equal",
+          think:"At distance x from q₁, 0.5−x from q₂: write the equality, cancel k.",
+          model:"4/x² = 9/(0.5−x)².",
+          pose:"write",
+          say:"At distance x from the four, and the remainder from the nine: k four over x squared equals k nine over point five minus x squared. The constant k, present on both sides, withdraws immediately.",
+          board:[
+            {tex:"\\frac{k(4.00)}{x^2} = \\frac{k(9.00)}{(0.500-x)^2}", kind:"key", move:"cancel k"}
+          ]
+        },
+        { map:2, title:"Square roots simplify",
+          think:"Take the root: 2/x = 3/(0.5−x). Solve.",
+          model:"1 − 2x = 3x... wait: 2(0.5−x) = 3x → x = 0.200 m.",
+          pose:"write",
+          say:"Take square roots — two over x equals three over point five minus x — and cross-multiply: one minus two x equals three x, so x is zero point two zero zero metres. Twenty centimetres from the four microcoulomb charge, thirty from the nine.",
+          board:[
+            {tex:"\\frac{2.00}{x} = \\frac{3.00}{0.500-x} \\;\\Rightarrow\\; x = 0.200\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0.2,0, 0.012, {stroke:GOLD, w:4});
+       label(c, 0.15,-0.075, 'E = 0 here', {fs:11, color:GOLD});
+     }
+        },
+        { map:3, title:"Closer to the weakling — and the discarded root",
+          think:"Why nearer the smaller charge? And what did taking the root quietly throw away?",
+          model:"Balance demands proximity to the weaker source. The negative root fails the geometry — check it. Unlike charges: null OUTSIDE, beyond the smaller.",
+          pose:"excited",
+          say:"Sense-check the address: the null sits CLOSER to the smaller charge — the weakling needs home-field advantage to match the heavyweight's reach. And a confession of the algebra: taking square roots discarded a second root, which would place the point outside the segment where, as our direction survey proved, cancellation is impossible — discarded legitimately, but check such discards ALWAYS. For UNLIKE charges the whole story flips: the null moves outside the pair, beyond the smaller charge. Directions first, algebra second: the permanent order of operations.",
+          board:[
+            {label:"Checks", text:"Null nearer the weaker charge ✓; discarded root fails geometry ✓; unlike charges → null outside, past the smaller.", kind:"key"},
+            {label:"Reusable method", text:"survey directions region by region → equate magnitudes where opposition exists → root, solve, and audit the discarded root", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Torque and energy of a dipole",
+      problem:"Charges ±2.00 nC separated by 1.00 mm form a dipole in a uniform field E = 5.00×10⁴ N/C, at 30.0° to the field. Find p, τ, U, and the work to rotate to 90°.",
+      goal:"Goal → p, τ, U, W",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["p","Torque","Energy","Work","No net force"],
+      setup(ctx,w){
+    for(let y=1;y<=6;y+=1.2){ arrow(ctx, 0.3,y, 2.1,y, {color:DIMC, w:1.5}); }
+    label(ctx, 0.4,6.6, 'uniform E', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The dipole moment",
+          think:"p = qd, pointing from − to +. Evaluate.",
+          model:"p = 2.00×10⁻¹² C·m, from −q toward +q.",
+          pose:"talk",
+          say:"A dipole's résumé is one vector: p equals charge times separation, aimed from minus to plus. Two nanocoulombs across a millimetre: two times ten to the minus twelve coulomb metres. Small — and yet this is the handle by which fields seize molecules.",
+          board:[
+            {tex:"p = qd = (2.00\\times10^{-9})(1.00\\times10^{-3}) = 2.00\\times10^{-12}\\ \\mathrm{C\\cdot m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 5.5,2.6, 0.22, {stroke:BLUE, w:3});
+       circleAt(c, 6.9,4.0, 0.22, {stroke:RED, w:3});
+       arrow(c, 5.5,2.6, 6.9,4.0, {color:GOLD, w:3, label:'p', fs:13, side:-1});
+       label(c, 7.4,3.1, '30° to E', {fs:10, color:GOLD});
+     }
+        },
+        { map:1, title:"The torque",
+          think:"τ = pE sinθ at 30°: evaluate, and note which way it turns.",
+          model:"τ = 5.00×10⁻⁸ N·m, turning p toward E.",
+          pose:"write",
+          say:"The field grips the two charges oppositely — plus downstream, minus upstream — and the pair twists: tau equals p E sine theta. Five times ten to the minus eight newton metres, turning the dipole INTO alignment. Fields tidy up dipoles the way rivers align driftwood.",
+          board:[
+            {tex:"\\tau = pE\\sin\\theta = (2.00\\times10^{-12})(5.00\\times10^{4})\\sin30^{\\circ} = 5.00\\times10^{-8}\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The energy",
+          think:"U = −pE cosθ: where is it lowest? Evaluate at 30°.",
+          model:"U = −8.66×10⁻⁸ J; minimum at alignment (θ = 0).",
+          pose:"write",
+          say:"The energy of orientation: U equals minus p E cosine theta — minus eight point six six times ten to the minus eight joules at thirty degrees. Deepest at perfect alignment, highest when anti-aligned: a pendulum in an abstract sense, with the field for gravity.",
+          board:[
+            {tex:"U = -pE\\cos\\theta = -8.66\\times10^{-8}\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Work to reach 90°",
+          think:"W = ΔU from 30° to 90°: sign and size?",
+          model:"W = U(90°) − U(30°) = 0 − (−8.66×10⁻⁸) = +8.66×10⁻⁸ J.",
+          pose:"write",
+          say:"To rotate the dipole to ninety degrees — perpendicular, U equal zero — someone must PAY the energy difference: plus eight point six six times ten to the minus eight joules of work, done against the field's tidying torque. Microwave ovens run this transaction in reverse, billions of times a second, on water.",
+          board:[
+            {tex:"W = U(90^{\\circ}) - U(30^{\\circ}) = 0 - (-8.66\\times10^{-8}) = +8.66\\times10^{-8}\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Torque yes, force no",
+          think:"In a UNIFORM field, what is the net force on the dipole — and when would it be nonzero?",
+          model:"F_net = qE − qE = 0: uniform fields only twist. Gradients are needed to pull.",
+          pose:"excited",
+          say:"The closing subtlety: the net FORCE on our dipole is exactly zero — the field pulls plus and minus with equal and opposite vigour. Uniform fields twist but never tug. Only a NON-uniform field, stronger at one charge than the other, can drag a neutral molecule bodily — which is precisely how a rubbed balloon lifts neutral paper scraps. Torque from uniformity, force from gradient: keep the two gifts distinct.",
+          board:[
+            {label:"The distinction", text:"Uniform field: τ = pE sinθ, F = 0. Only field GRADIENTS pull neutral dipoles.", kind:"key"},
+            {label:"Reusable method", text:"p = qd (− to +) → τ = pE sinθ → U = −pE cosθ → W = ΔU; uniform ⇒ no net force", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Electron deflected between parallel plates",
+      problem:"An electron enters between horizontal plates at 3.00×10⁶ m/s, parallel to them. The field is 1000 N/C downward; the plates are 4.00 cm long. Find the vertical deflection and exit direction. (Neglect gravity.)",
+      goal:"Goal → y and θ at exit",
+      world:{"x0":-1,"x1":7,"y0":-1,"y1":5},
+      pathway:["Projectile again","a and t","Deflection","Exit angle","Gravity's alibi"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(4.2),x2:ctx.M.X(5),y2:ctx.M.Y(4.2),stroke:CHALKC,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(0.6),x2:ctx.M.X(5),y2:ctx.M.Y(0.6),stroke:CHALKC,'stroke-width':4},ctx.svg);
+    label(ctx, 1.2,4.6, '− − − − −', {fs:11, color:BLUE});
+    label(ctx, 1.2,-0.1, '+ + + + +', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"A projectile in electric dress",
+          think:"Constant force ⊥ initial velocity: which old problem is this exactly?",
+          model:"Uniform E on e⁻ = projectile motion with a = eE/m replacing g (and pointing UP here).",
+          pose:"talk",
+          say:"An electron gliding into a uniform field is Tutorial three's projectile, re-costumed: constant force perpendicular to the entry velocity — the horizontal motion untouched, the vertical uniformly accelerated. One wrinkle: the electron is negative, so with E pointing down, the force — and the deflection — point UP. Sign first, then kinematics.",
+          board:[
+            {label:"The mapping", text:"Uniform field ⇒ projectile motion with a = eE/m_e in place of g. Negative charge: force opposite E (up).", kind:"key"}
+          ]
+        },
+        { map:1, title:"Acceleration and transit time",
+          think:"a = eE/m_e; t = L/v₀. Evaluate both — expect outrageous numbers.",
+          model:"a = 1.76×10¹⁴ m/s²; t = 13.3 ns.",
+          pose:"write",
+          say:"The acceleration: e E over the electron's flyweight mass — one point seven six times ten to the FOURTEEN metres per second squared, thirteen orders beyond gravity's reach. The residence time between the plates: four centimetres at three million metres per second — thirteen nanoseconds. Vast acceleration, vanishing tenure.",
+          board:[
+            {tex:"a = \\frac{eE}{m_e} = \\frac{(1.602\\times10^{-19})(1000)}{9.11\\times10^{-31}} = 1.76\\times10^{14}\\ \\mathrm{m/s^2}", kind:"key"},
+            {tex:"t = \\frac{0.0400}{3.00\\times10^{6}} = 1.33\\times10^{-8}\\ \\mathrm{s}", kind:"key"}
+          ]
+        },
+        { map:2, title:"The deflection",
+          think:"y = ½at²: how far up in 13 ns?",
+          model:"y = ½(1.76×10¹⁴)(1.33×10⁻⁸)² = 1.56 cm.",
+          pose:"write",
+          say:"Half a t squared: one point five six centimetres of upward drift by the exit — a visible swerve, earned in thirteen billionths of a second. Monstrous accelerations and tiny times conspire to human-scale effects.",
+          board:[
+            {tex:"y = \\tfrac12at^2 = 1.56\\times10^{-2}\\ \\mathrm{m} = 1.56\\ \\mathrm{cm}\\ \\text{(up)}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, x=>[1+4*x, 1.6+2.2*x*x], 0, 1, {color:GOLD, w:2.5, N:40});
+       arrow(c, 5,3.8, 6.5,4.95, {color:GOLD, w:2.5});
+     }
+        },
+        { map:3, title:"The exit direction",
+          think:"v_y = at; tanθ = v_y/v₀. Evaluate.",
+          model:"v_y = 2.34×10⁶ m/s; θ = 38.0° above the entry line.",
+          pose:"write",
+          say:"Exit velocity: v y equals a t — two point three four million metres per second of acquired climb, against three million of original glide. Tangent theta: point seven eight two — thirty eight degrees above the entry line. Thus did every pre-flatscreen television steer its electrons, one deflection at a time.",
+          board:[
+            {tex:"v_y = at = 2.34\\times10^{6}\\ \\mathrm{m/s}; \\quad \\theta = \\tan^{-1}(0.782) = 38.0^{\\circ}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Gravity's watertight alibi",
+          think:"Estimate ½gt² over 13 ns. Was neglecting gravity justified?",
+          model:"½gt² ~ 10⁻¹⁵ m — sub-atomic. Utterly negligible, quantitatively certified.",
+          pose:"excited",
+          say:"And the promised audit of our 'neglect gravity': in thirteen nanoseconds, gravity drops the electron half g t squared — about ten to the minus FIFTEEN metres, a thousandth of an atomic radius. The neglect is not laziness but arithmetic, thirteen orders deep. Approximations in physics are debts; always show the receipts.",
+          board:[
+            {label:"The receipt", tex:"\\tfrac12gt^2 \\sim 10^{-15}\\ \\mathrm{m}\\ \\text{— gravity's contribution is sub-atomic}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"a = qE/m (mind the sign) → t from the untouched horizontal motion → y = ½at², tanθ = at/v₀ → audit neglected forces", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Field of a water molecule's dipole",
+      problem:"A water molecule has dipole moment p = 6.2×10⁻³⁰ C·m. Find the field 1.00 nm away (a) on the dipole axis and (b) on the perpendicular bisector.",
+      goal:"Goal → E_axis and E_bisector",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Far field","Axis","Broadside","1/r³ and chemistry"],
+      setup(ctx,w){
+    circleAt(ctx, -0.5,0, 0.3, {stroke:BLUE, w:3});
+    circleAt(ctx, 0.5,0, 0.3, {stroke:RED, w:3});
+    arrow(ctx, -0.5,0, 0.5,0, {color:GOLD, w:2.5});
+    label(ctx, -0.4,0.7, 'p', {fs:12, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"The far-field dipole formulas",
+          think:"1 nm vs the 10⁻¹¹ m charge separation: is the far-field limit safe?",
+          model:"r ≫ d by a factor ~100: use E_axis = 2kp/r³, E_bisector = kp/r³.",
+          pose:"talk",
+          say:"At one nanometre we stand a hundred times farther from the molecule than its internal charge separation — comfortably in the FAR field, where a dipole's messy pair of Coulomb fields collapses into two clean formulas: twice k p over r cubed on the axis, k p over r cubed broadside. Note the cube; it is the story's hinge.",
+          board:[
+            {label:"Far field", tex:"E_{\\rm axis} = \\frac{2kp}{r^3}, \\qquad E_{\\rm bisector} = \\frac{kp}{r^3}", kind:"key"}
+          ]
+        },
+        { map:1, title:"On the axis",
+          think:"Evaluate 2kp/r³ at 1 nm.",
+          model:"E_axis = 1.1×10⁸ N/C, parallel to p.",
+          pose:"write",
+          say:"On axis: two times nine ten to the nine times six point two ten to the minus thirty, over ten to the minus twenty seven — one point one times ten to the EIGHT newtons per coulomb, aligned with p. A hundred million newtons per coulomb: molecular neighbourhoods are electrically ferocious places.",
+          board:[
+            {tex:"E_{\\rm axis} = \\frac{2(8.99\\times10^{9})(6.2\\times10^{-30})}{(10^{-9})^3} = 1.1\\times10^{8}\\ \\mathrm{N/C}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3.2,0, 4.8,0, {color:GOLD, w:2.5, label:'E axis', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Broadside",
+          think:"Half the axial value — and note the DIRECTION on the bisector.",
+          model:"E_bisector = 5.6×10⁷ N/C, ANTI-parallel to p.",
+          pose:"write",
+          say:"Broadside — on the perpendicular bisector — the field is exactly half: five point six times ten to the seven, and pointing BACKWARDS, antiparallel to p, as the near charge's pull outvotes the far charge's push. Same molecule, two very different weathers, one radius apart in angle.",
+          board:[
+            {tex:"E_{\\rm bisector} = \\frac{kp}{r^3} = 5.6\\times10^{7}\\ \\mathrm{N/C}\\ \\text{(antiparallel to } p)", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,3.2, -1.6,3.2, {color:PURPLE, w:2.5, label:'E broadside', fs:10, at:'mid'});
+     }
+        },
+        { map:3, title:"Why 1/r³ — and why salt dissolves",
+          think:"Why does a dipole's field die faster than a point charge's? What does this field do to neighbors?",
+          model:"The ± fields nearly cancel: 1/r³. These fields grab ions — water's solvent power is dipole reach.",
+          pose:"excited",
+          say:"Why the cube? Because from afar the plus and minus nearly erase each other; what survives is the residue of imperfect cancellation, one power of r weaker than a bare charge. And the punchline sits in every kitchen: those hundred-million-newton-per-coulomb fields grip the ions of a salt crystal, pry sodium from chloride, and carry them off hydrated — water dissolves salt BECAUSE of today's two formulas. Chemistry is electrostatics with better marketing.",
+          board:[
+            {label:"The moral", text:"Near-cancellation ⇒ 1/r³. These are the fields that dissolve salt and bind neighbors — water's superpower.", kind:"key"},
+            {label:"Reusable method", text:"check r ≫ d → axis: 2kp/r³ (∥p); bisector: kp/r³ (anti-∥) → read the chemistry in the magnitudes", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Field at the center of a charged semicircle",
+      problem:"A thin rod bent into a semicircle of radius R = 10.0 cm carries Q = +5.00 nC uniformly. Find the electric field at the center of curvature.",
+      goal:"Goal → E at the center",
+      world:{"x0":-2.2,"x1":2.2,"y0":-1.4,"y1":2.1},
+      pathway:["Slice","Symmetry","Integrate","Compare"],
+      setup(ctx,w){
+    arc(ctx, 0,0, 1.5, 0, 180, {color:RED, w:3});
+    circleAt(ctx, 0,0, 0.05, {stroke:GOLD, w:3});
+    label(ctx, 0.15,-0.35, 'center', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Slice the arc",
+          think:"dq = λR dθ: write the element and its field's direction at the center.",
+          model:"Each dq gives dE = k dq/R² pointing AWAY from dq — direction varies with θ.",
+          pose:"talk",
+          say:"A continuous charge is an infinity of point charges holding hands; we interview them one at a time. An element at angle theta carries d q equals lambda R d theta, and its field at the centre — magnitude k d q over R squared, the same for all — points away from ITS position: the magnitudes agree, the directions disagree, and the disagreement is the whole problem.",
+          board:[
+            {label:"The element", tex:"dq = \\lambda R\\,d\\theta, \\quad dE = \\frac{k\\,dq}{R^2}\\ \\text{along } (-\\cos\\theta,-\\sin\\theta)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Let symmetry do half the integral",
+          think:"Pair each element with its mirror across the y-axis. Which components survive?",
+          model:"x-components cancel in mirror pairs; only Σ(dE_y) remains.",
+          pose:"point",
+          say:"Before integrating, let symmetry vote: every element on the left has a mirror twin on the right, and their HORIZONTAL field components cancel exactly. Only the downward components — perpendicular to the arc's diameter — accumulate. Half the integral has been done by pure thought.",
+          board:[
+            {label:"Symmetry", text:"Mirror pairs kill E_x. Only E_y (away from the arc) survives the sum.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, -0.55,-0.55, {color:DIMC, w:1.5, dash:'4,3'});
+       arrow(c, 0,0, 0.55,-0.55, {color:DIMC, w:1.5, dash:'4,3'});
+       arrow(c, 0,-0.1, 0,-1.1, {color:GOLD, w:3, label:'E net', fs:11});
+     }
+        },
+        { map:2, title:"Integrate the survivors",
+          think:"∫₀^π sinθ dθ = 2: assemble E = 2kλ/R.",
+          model:"E = 2kλ/R with λ = Q/πR = 1.59×10⁻⁸ C/m → E = 2.86×10³ N/C.",
+          pose:"write",
+          say:"The surviving components carry sine theta; the integral of sine from nought to pi is exactly two. E equals two k lambda over R. With lambda equal Q over pi R — one point five nine times ten to the minus eight coulombs per metre — the field is two point eight six times ten to the three newtons per coulomb, aimed straight away from the arc.",
+          board:[
+            {tex:"E = \\frac{k\\lambda}{R}\\int_0^{\\pi}\\sin\\theta\\,d\\theta = \\frac{2k\\lambda}{R} = \\frac{2(8.99\\times10^{9})(1.59\\times10^{-8})}{0.100} = 2.86\\times10^{3}\\ \\mathrm{N/C}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The cost of spreading out",
+          think:"Compare with all of Q at one point on the arc: kQ/R². What factor did spreading cost?",
+          model:"kQ/R² = 4.5×10³ N/C; the arc gives 2/π of that — directions partially cancel.",
+          pose:"excited",
+          say:"Compare against a lazier universe where all five nanocoulombs sat at one point of the arc: k Q over R squared — four and a half thousand. Our spread-out arc delivers only two-over-pi of that, about sixty four percent, because the elements' directions partially cancel one another. Distributing charge always discounts the field; the geometry sets the discount rate. Two over pi is the semicircle's signature — worth recognising on sight.",
+          board:[
+            {label:"Comparison", tex:"E_{\\rm arc} = \\frac{2}{\\pi}\\cdot\\frac{kQ}{R^2}\\ \\text{— spreading over 180° costs a factor } 2/\\pi", kind:"key"},
+            {label:"Reusable method", text:"slice → let symmetry kill components → integrate the survivors → compare with the point-charge benchmark", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Finite rod: field on its own axis",
+      problem:"A rod of length L = 0.500 m carries Q = +2.00 μC uniformly. Find the field at P on the rod's axis, 0.250 m beyond one end, and compare with treating the rod as a point charge at its center.",
+      goal:"Goal → E at P; point-charge error",
+      world:{"x0":-0.15,"x1":0.95,"y0":-0.25,"y1":0.3},
+      pathway:["Set up","Integrate","Evaluate","Why the estimate fails","Far limit"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0.25),y1:ctx.M.Y(0),x2:ctx.M.X(0.75),y2:ctx.M.Y(0),stroke:RED,'stroke-width':5,'stroke-linecap':'round'},ctx.svg);
+    circleAt(ctx, 0,0, 0.012, {stroke:GOLD, w:3});
+    label(ctx, -0.04,0.06, 'P', {fs:12, color:GOLD});
+    label(ctx, 0.42,0.08, 'rod, +2 μC', {fs:10, color:RED});
+  },
+      steps:[
+        { map:0, title:"Geometry without symmetry's help",
+          think:"On the axis, every element's field points the same way. What does that buy?",
+          model:"P at origin, rod from a to a+L: all dE along −x; a scalar integral suffices.",
+          pose:"talk",
+          say:"Put P at the origin, the rod stretching from a to a plus L beyond it. Today symmetry offers no cancellations — but geometry offers alignment: every element pushes P in the SAME direction, straight away along the axis. No components to resolve; one honest scalar integral.",
+          board:[
+            {label:"Setup", tex:"E = \\int_a^{a+L}\\frac{k\\lambda\\,dx}{x^2}\\ \\text{— all elements agree in direction}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate 1/x²",
+          think:"The antiderivative of 1/x² gives what clean closed form?",
+          model:"E = kλ(1/a − 1/(a+L)) = kQ/[a(a+L)].",
+          pose:"write",
+          say:"The integral of one over x squared is minus one over x: E equals k lambda times one over a minus one over a plus L — which tidies beautifully to k Q over a times a plus L. The field of a finite rod, in one compact product.",
+          board:[
+            {tex:"E = k\\lambda\\left[\\frac{1}{a}-\\frac{1}{a+L}\\right] = \\frac{kQ}{a(a+L)}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate",
+          think:"a = 0.25, a+L = 0.75: compute.",
+          model:"E = kQ/(0.25·0.75) = 9.59×10⁴ N/C.",
+          pose:"write",
+          say:"Numbers: nine ten to the nine times two microcoulombs, over point two five times point seven five — nine point five nine times ten to the four newtons per coulomb, pointing away from the rod's positive charge.",
+          board:[
+            {tex:"E = \\frac{(8.99\\times10^{9})(2.00\\times10^{-6})}{(0.250)(0.750)} = 9.59\\times10^{4}\\ \\mathrm{N/C}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The center-point estimate, indicted",
+          think:"kQ/(a+L/2)²: compute and explain WHY it's low.",
+          model:"7.19×10⁴ N/C — 25% low: 1/x² overweights the NEAR half of the rod.",
+          pose:"think",
+          say:"The tempting shortcut — all charge at the rod's centre, half a metre out — yields seven point one nine times ten to the four: twenty five percent LOW. Why low? The inverse square law is not democratic: the near half of the rod, inside the average distance, contributes disproportionately, and the centre-point fiction silences exactly those loudest voices. Concentrated-at-the-centre works only for spheres — and only outside them.",
+          board:[
+            {tex:"\\frac{kQ}{(0.500)^2} = 7.19\\times10^{4}\\ \\mathrm{N/C}\\ \\text{— } 25\\%\\ \\text{low: near charge dominates}", kind:"warn"}
+          ]
+        },
+        { map:4, title:"The far limit redeems it",
+          think:"Let a ≫ L in kQ/[a(a+L)]. What must appear?",
+          model:"→ kQ/a²: every blob is a point charge from far enough away ✓.",
+          pose:"excited",
+          say:"And the limit that closes every field integral: march P far away, a much greater than L, and our formula melts into k Q over a squared — the point charge, restored. From across the room, every rod, ring, and rhinoceros of charge is a point. An integral that honours its far limit has passed the profession's oldest sanity check.",
+          board:[
+            {label:"Far limit", tex:"a\\gg L: \\ \\frac{kQ}{a(a+L)}\\to\\frac{kQ}{a^2}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"axis alignment → ∫kλdx/x² → kQ/[a(a+L)] → know why center-point fails → verify the far limit", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Charged disk: from sheet to point charge",
+      problem:"A disk of radius R = 10.0 cm carries σ = 2.00 μC/m². Find the field on its axis at z = 5.00 cm, and check the limits z ≪ R and z ≫ R.",
+      goal:"Goal → E(z) and both limits",
+      world:{"x0":-2.6,"x1":3.4,"y0":-2.2,"y1":2.6},
+      pathway:["Rings","Integrate","Evaluate","Sheet limit","Point limit"],
+      setup(ctx,w){
+    el('ellipse',{cx:ctx.M.X(-0.8),cy:ctx.M.Y(0),rx:22,ry:60,fill:'rgba(232,106,90,.2)',stroke:RED,'stroke-width':2.5},ctx.svg);
+    dashLine(ctx, -0.8,0, 3,0, {});
+    circleAt(ctx, 1.2,0, 0.05, {stroke:GOLD, w:3});
+    label(ctx, 1.1,0.35, 'P at z', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"A disk is nested rings",
+          think:"Why rings? What do we already know about a ring's axial field?",
+          model:"dE = kz dq/(z²+r²)^{3/2} per ring of charge dq = σ2πr dr.",
+          pose:"talk",
+          say:"Slice the disk into nested RINGS — because the ring's axial field is already on our shelf from an earlier example: k z d q over z squared plus r squared to the three halves. Each ring of radius r and width d r carries sigma two pi r d r. Integration is the art of slicing along solved problems.",
+          board:[
+            {label:"The slices", tex:"dq = \\sigma\\,2\\pi r\\,dr, \\quad dE = \\frac{kz\\,dq}{(z^2+r^2)^{3/2}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate over the rings",
+          think:"Substitute u = z² + r². What closed form appears?",
+          model:"E = (σ/2ε₀)[1 − z/√(z²+R²)].",
+          pose:"write",
+          say:"Substitute u equals z squared plus r squared and the integral unrolls: E equals sigma over two epsilon nought, times one minus z over root z squared plus R squared. A formula with two personalities — and we shall interview both.",
+          board:[
+            {tex:"E = 2\\pi k\\sigma z\\int_0^R\\frac{r\\,dr}{(z^2+r^2)^{3/2}} = \\frac{\\sigma}{2\\varepsilon_0}\\left[1 - \\frac{z}{\\sqrt{z^2+R^2}}\\right]", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate at z = 5 cm",
+          think:"σ/2ε₀ = 1.13×10⁵; the bracket at z = 0.05, R = 0.1?",
+          model:"bracket = 1 − 0.05/0.1118 = 0.553 → E = 6.24×10⁴ N/C.",
+          pose:"write",
+          say:"Numbers: sigma over two epsilon nought is one point one three times ten to the five; the bracket, one minus point four four seven — point five five three. E equals six point two four times ten to the four newtons per coulomb at five centimetres.",
+          board:[
+            {tex:"E = (1.13\\times10^{5})(0.553) = 6.24\\times10^{4}\\ \\mathrm{N/C}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Limit one: hug the disk",
+          think:"z ≪ R: the bracket → 1. What famous field appears?",
+          model:"E → σ/2ε₀, independent of z: the infinite sheet.",
+          pose:"write",
+          say:"Hug the disk — z much less than R — and the bracket tends to one: E becomes sigma over two epsilon nought, INDEPENDENT of distance. From up close, any disk is an infinite sheet, and sheet fields famously do not fade. Limit one: passed, with a classic recovered.",
+          board:[
+            {tex:"z\\ll R: \\ E\\to\\frac{\\sigma}{2\\varepsilon_0} = 1.13\\times10^{5}\\ \\mathrm{N/C}\\ \\text{— the infinite sheet}\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:4, title:"Limit two: back away",
+          think:"z ≫ R: expand the bracket. What must emerge — and how fast?",
+          model:"bracket ≈ R²/2z² → E → kQ/z². At z = 1 m: 560 vs 565 N/C — 1% already.",
+          pose:"excited",
+          say:"Back away — z much greater than R — and a binomial expansion whittles the bracket to R squared over two z squared, turning E into k Q over z squared: the point charge, again. At one metre the exact and point formulas differ by less than a percent already. One integral, three fields — sheet, disk, point — smoothly joined. This is what a GOOD formula looks like: its limits contain its ancestors.",
+          board:[
+            {tex:"z\\gg R: \\ E\\to\\frac{k(\\sigma\\pi R^2)}{z^2} = \\frac{kQ}{z^2}\\;\\checkmark\\ \\ (560\\ \\text{vs}\\ 565\\ \\mathrm{N/C\\ at\\ 1\\ m})", kind:"key"},
+            {label:"Reusable method", text:"slice along solved problems (rings) → integrate → interrogate BOTH limits: near = sheet, far = point", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

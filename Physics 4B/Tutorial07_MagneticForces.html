@@ -847,6 +847,21 @@
       return g;
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+    function crossField(c, x1,y1, x2,y2, opt = {}){
+      const step = opt.step || 1.2, col = opt.color || DIMC, fs = opt.fs || 13;
+      for(let gx = Math.min(x1,x2) + step/2; gx < Math.max(x1,x2); gx += step){
+        for(let gy = Math.min(y1,y2) + step/2; gy < Math.max(y1,y2); gy += step){
+          const t = el('text',{x:c.M.X(gx), y:c.M.Y(gy), fill:col, 'font-size':fs,
+            'text-anchor':'middle','dominant-baseline':'middle','font-family':'Georgia,serif'}, c.svg);
+          t.textContent = '\u00d7';
+        }
+      }
+    }
+
     const EXAMPLES = [
 
     {
@@ -1379,6 +1394,530 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Magnetic force and acceleration of a proton",
+      problem:"A proton moves at 2.00×10⁶ m/s through a 0.500 T field. Find the force and acceleration when v is (a) perpendicular to B and (b) at 30.0° to B.",
+      goal:"Goal → F and a, both angles",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The law","Perpendicular","At 30°","Speed never changes"],
+      setup(ctx,w){
+    crossField(ctx, 1,0.5, 10,6.5, {});
+  },
+      steps:[
+        { map:0, title:"The magnetic force law",
+          think:"F = qvB sinθ, direction from v × B. What kind of geometry does this force love?",
+          model:"Always ⊥ to both v and B; zero along the field; right-hand rule (flip for negative q).",
+          pose:"talk",
+          say:"The magnetic force is geometry's favourite: q v B sine theta in magnitude, direction perpendicular to BOTH velocity and field, by the right hand — curl v into B, thumb speaks. Along the field, nothing; across it, everything. Keep the hand loose; it will be busy all tutorial.",
+          board:[
+            {label:"The law", tex:"\\vec F = q\\vec v\\times\\vec B: \\ F = qvB\\sin\\theta", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Perpendicular entry",
+          think:"Evaluate F and a = F/m_p — brace for the acceleration.",
+          model:"F = 1.60×10⁻¹³ N; a = 9.58×10¹³ m/s² — ten trillion g.",
+          pose:"write",
+          say:"Perpendicular: F equals q v B — one point six times ten to the minus thirteen newtons. Divided by the proton's flyweight mass: nine point six times ten to the THIRTEEN metres per second squared — ten trillion g, endured serenely and continuously by every proton in every accelerator on the planet.",
+          board:[
+            {tex:"F = qvB = 1.60\\times10^{-13}\\ \\mathrm N; \\quad a = \\frac{F}{m_p} = 9.58\\times10^{13}\\ \\mathrm{m/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) At thirty degrees",
+          think:"Only the perpendicular component of v is deflected. F now?",
+          model:"F = qvB sin30° = 8.01×10⁻¹⁴ N — half the maximum.",
+          pose:"write",
+          say:"At thirty degrees, the sine halves the force: eight point zero one times ten to the minus fourteen newtons. The velocity component ALONG the field glides untouched; only the crossways component pays. The field is a toll collector who charges by the crossing, never by the mileage along.",
+          board:[
+            {tex:"F = qvB\\sin30.0^{\\circ} = 8.01\\times10^{-14}\\ \\mathrm N", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The force that never does work",
+          think:"F ⊥ v always: what does that mean for the proton's SPEED? Its kinetic energy?",
+          model:"W = 0 always: B redirects, never speeds nor slows. Steering, not propulsion.",
+          pose:"excited",
+          say:"And the profound fine print: being forever perpendicular to the velocity, the magnetic force does NO WORK — ever, on anything. Ten trillion g of acceleration, and the speedometer never flickers; kinetic energy is untouchable. Magnetic fields are the universe's steering wheels — all direction, no throttle. Every circle, helix, and cycloid to come is this one sentence, drawn.",
+          board:[
+            {label:"No work", text:"F ⊥ v ⇒ W = 0 always: B changes direction, never speed. Steering, not propulsion.", kind:"key"},
+            {label:"Reusable method", text:"F = qvB sinθ, right-hand rule (flip for −q) → only v⊥ is deflected → speed is invariant", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Force on a current-carrying wire",
+      problem:"A straight wire 2.00 m long carries 10.0 A in a uniform 0.300 T field. Find the force (a) perpendicular and (b) at 45.0° to the field.",
+      goal:"Goal → F both ways",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["From q to I","Perpendicular","At 45°","Motor seed"],
+      setup(ctx,w){
+    crossField(ctx, 1,0.5, 10,6.5, {});
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(3.5),x2:ctx.M.X(9),y2:ctx.M.Y(3.5),stroke:'#c9b98a','stroke-width':4},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"A wire is moving charge in bulk",
+          think:"Why does F = IℓB sinθ follow directly from qvB?",
+          model:"Sum qv×B over all drifting carriers: the macroscopic Iℓ×B.",
+          pose:"talk",
+          say:"A current-carrying wire is a procession of drifting charges, each feeling its own q v cross B; sum the procession and the bookkeeping collapses to I ell cross B. Nothing new under the field — just the microscopic law, bought wholesale.",
+          board:[
+            {label:"Wholesale", tex:"\\vec F = I\\vec\\ell\\times\\vec B\\ \\text{— } q\\vec v\\times\\vec B\\ \\text{summed over the carriers}", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Perpendicular",
+          think:"IℓB with the given numbers.",
+          model:"F = (10)(2)(0.3) = 6.00 N.",
+          pose:"write",
+          say:"Perpendicular: ten amperes, two metres, point three tesla — six newtons, perpendicular to both wire and field. A palpable shove from an invisible agency; hold a jumper cable near a strong magnet and you can feel this equation.",
+          board:[
+            {tex:"F = I\\ell B = (10.0)(2.00)(0.300) = 6.00\\ \\mathrm N", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) At forty-five degrees",
+          think:"The sine discounts. And a wire ALONG the field feels...?",
+          model:"F = 6.00 sin45° = 4.24 N; along the field: exactly zero.",
+          pose:"write",
+          say:"At forty five degrees: six newtons times sine forty five — four point two four. And lay the wire ALONG the field: nothing at all, however mighty the current. The angle is not a correction; it is the physics.",
+          board:[
+            {tex:"F = I\\ell B\\sin45.0^{\\circ} = 4.24\\ \\mathrm N; \\quad \\theta = 0: F = 0", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The seed of every motor",
+          think:"A loop in a field: opposite sides carry opposite currents. What does the pair of forces produce?",
+          model:"Equal and opposite forces on opposite sides = a couple = torque: the motor's first turn.",
+          pose:"excited",
+          say:"Now bend the wire into a loop and watch the industry it founds: opposite sides carry current in opposite directions, so the field pushes one side up and the other down — a couple, a TORQUE, a shaft begging to spin. Every electric motor from a phone's vibrator to a locomotive is I ell cross B, arranged in a circle and encouraged to persist. The next examples will do exactly that arranging.",
+          board:[
+            {label:"The seed", text:"Loop in a field: opposite forces on opposite sides ⇒ torque. Motors are this force, choreographed.", kind:"key"},
+            {label:"Reusable method", text:"F = IℓB sinθ, ⊥ to wire and field → zero along B → loops turn forces into torque", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"An electron's circular orbit",
+      problem:"An electron at 5.00×10⁶ m/s enters a 2.00 mT field perpendicularly. Find the radius and period of its circular path.",
+      goal:"Goal → r and T",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Circle logic","Radius","Period","Speed-blind clock"],
+      setup(ctx,w){
+    crossField(ctx, 1,0.5, 10,6.5, {});
+    circleAt(ctx, 5.5,3.5, 2.2, {stroke:GOLD, w:2.5, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"Why a circle",
+          think:"Constant-magnitude force, always ⊥ v: which motion must result?",
+          model:"qvB plays centripetal: qvB = mv²/r. Uniform circular motion.",
+          pose:"talk",
+          say:"A steady force of constant size, forever perpendicular to the motion — nature has exactly one answer to that specification: the circle. The magnetic force applies for the centripetal job and is hired on the spot: q v B equals m v squared over r.",
+          board:[
+            {tex:"qvB = \\frac{mv^2}{r}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The radius",
+          think:"r = mv/qB: evaluate for the electron.",
+          model:"r = 1.42 cm — momentum over charge-times-field.",
+          pose:"write",
+          say:"Solve: r equals m v over q B — the particle's MOMENTUM over its charge times the field. For our electron: one point four two centimetres, a tidy loop you could draw on a fingernail.",
+          board:[
+            {tex:"r = \\frac{m_ev}{eB} = \\frac{(9.11\\times10^{-31})(5.00\\times10^{6})}{(1.602\\times10^{-19})(2.00\\times10^{-3})} = 1.42\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The period",
+          think:"T = 2πr/v: substitute r and watch v vanish.",
+          model:"T = 2πm/eB = 17.9 ns — speed-independent.",
+          pose:"write",
+          say:"The lap time: two pi r over v — and substituting r, the SPEED CANCELS: T equals two pi m over q B, seventeen point nine nanoseconds for any electron in this field, fast or slow. Faster electrons ride proportionally bigger circles and finish in a dead heat.",
+          board:[
+            {tex:"T = \\frac{2\\pi m_e}{eB} = 1.79\\times10^{-8}\\ \\mathrm s\\ \\text{— independent of } v", kind:"answer", move:"cancel v"}
+          ]
+        },
+        { map:3, title:"The cyclotron property",
+          think:"A speed-blind clock: what machine does this invariance make possible?",
+          model:"Fixed-frequency kicks stay synchronized with EVERY orbit: the cyclotron (Example ahead).",
+          pose:"excited",
+          say:"That speed-blind lap time is the CYCLOTRON PROPERTY, and it is worth a fortune: if all orbits take the same time, a voltage oscillating at one fixed frequency can kick the particle every half lap, forever in step, while the spiral grows. Lawrence built exactly that machine in nineteen thirty and accelerated protons on a tabletop; we shall design one ourselves before this tutorial ends. A cancelled v, a Nobel prize.",
+          board:[
+            {label:"The property", tex:"T = \\frac{2\\pi m}{qB}\\ \\text{for all speeds — the cyclotron's enabling fact}", kind:"key"},
+            {label:"Reusable method", text:"qvB = mv²/r → r = mv/qB (momentum!) → T = 2πm/qB, speed-free → remember why cyclotrons work", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Velocity selector, then a magnetic bend",
+      problem:"Protons pass undeflected through crossed E = 5.00×10⁴ V/m and B = 0.100 T, then enter a region with only B. Find the selected speed and the bend radius.",
+      goal:"Goal → v, then r",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The stalemate","v = E/B","The bend","Spectrometer"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(5.5),x2:ctx.M.X(5),y2:ctx.M.Y(5.5),stroke:RED,'stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(1.5),x2:ctx.M.X(5),y2:ctx.M.Y(1.5),stroke:BLUE,'stroke-width':3},ctx.svg);
+    crossField(ctx, 5.5,0.5, 10.5,6.5, {});
+    arrow(ctx, 1,3.5, 4.5,3.5, {color:GOLD, w:2.5});
+  },
+      steps:[
+        { map:0, title:"Arrange a stalemate",
+          think:"Electric force one way, magnetic the other. When do they cancel — for which particles?",
+          model:"qE = qvB at one special speed; charge and mass cancel from the condition.",
+          pose:"talk",
+          say:"Cross an electric field with a magnetic one and aim a beam through both: the electric force pushes one way, the magnetic — proportional to speed — the other. At exactly one speed the two cancel and the particle sails straight. Note who is absent from that condition: the charge cancels, the mass never appears. The gate reads ONLY speed.",
+          board:[
+            {label:"The stalemate", tex:"qE = qvB \\;\\Rightarrow\\; v = \\frac{E}{B}\\ \\text{— any charge, any mass}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The selected speed",
+          think:"E/B with our numbers.",
+          model:"v = 5.00×10⁵ m/s.",
+          pose:"write",
+          say:"Our gate passes five times ten to the four over point one: five hundred kilometres per second. Faster particles bend one way and strike the wall; slower, the other. What emerges is a beam of ONE speed — velocity, selected.",
+          board:[
+            {tex:"v = \\frac{E}{B} = \\frac{5.00\\times10^{4}}{0.100} = 5.00\\times10^{5}\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Then the bend",
+          think:"E off, B alone: the proton's radius?",
+          model:"r = m_pv/eB = 5.22 cm. (An electron: 1836× smaller.)",
+          pose:"write",
+          say:"Past the gate, the electric field ends and the magnetic field alone commands: the proton curls onto a circle of m v over q B — five point two two centimetres. An electron at the SAME speed would circle eighteen hundred thirty six times tighter — twenty eight microns — for the radius carries the MASS.",
+          board:[
+            {tex:"r = \\frac{m_pv}{eB} = \\frac{(1.673\\times10^{-27})(5.00\\times10^{5})}{(1.602\\times10^{-19})(0.100)} = 5.22\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"You have built a mass spectrometer",
+          think:"Same v for all, r ∝ m: what does the landing position measure?",
+          model:"Select v, then bend: radius reads mass directly. The workhorse of chemistry labs.",
+          pose:"excited",
+          say:"Assemble the two stages and behold the instrument: the selector hands every species the SAME speed; the bending field then sorts them by radius, which — at fixed v and q — reads MASS, pure and simple. Ions land on the detector in order of their atomic weight. This is the mass spectrometer: how Aston found isotopes, how labs identify molecules, how anti-doping agencies catch cheaters. Two fields in sequence, and matter confesses its weight.",
+          board:[
+            {label:"The instrument", text:"Stage 1: v = E/B for all. Stage 2: r = mv/qB sorts by mass. The mass spectrometer.", kind:"key"},
+            {label:"Reusable method", text:"crossed fields gate one speed → magnetic region converts m to r → landing position = mass readout", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Separating neon isotopes",
+      problem:"Singly ionized ²⁰Ne and ²²Ne (20.0 u, 22.0 u) enter a 0.500 T field at 2.00×10⁵ m/s. Find each radius and the separation after a half circle.",
+      goal:"Goal → r₂₀, r₂₂, separation",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["r ∝ m","Both radii","The gap","Resolution"],
+      setup(ctx,w){
+    crossField(ctx, 1,0.5, 10,6.5, {});
+    arc(ctx, 5.5,1, 2.1, 0, 180, {color:GOLD, w:2});
+    arc(ctx, 5.5,1, 2.5, 0, 180, {color:PURPLE, w:2});
+  },
+      steps:[
+        { map:0, title:"Identical speed, different mass",
+          think:"After the selector, what alone distinguishes the isotopes' paths?",
+          model:"r = mv/qB with common v, q, B: radius is proportional to mass.",
+          pose:"talk",
+          say:"Two neon isotopes — chemically indistinguishable twins, two atomic units apart in weight — enter the field at the same speed and charge. The radius formula, m v over q B, holds everything constant BUT the mass: the paths differ purely by the ratio twenty-two to twenty. Chemistry cannot tell them apart; geometry is about to.",
+          board:[
+            {tex:"r \\propto m\\ \\text{at fixed } v, q, B: \\ \\frac{r_{22}}{r_{20}} = \\frac{22.0}{20.0}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Both radii",
+          think:"Evaluate r₂₀ from scratch; scale for r₂₂.",
+          model:"r₂₀ = 8.29 cm; r₂₂ = 9.12 cm.",
+          pose:"write",
+          say:"The light twin: twenty atomic units at our speed and field — eight point two nine centimetres. The heavy twin, by pure ratio: nine point one two. Less than a centimetre apart in radius — but the geometry is about to double it.",
+          board:[
+            {tex:"r_{20} = \\frac{(20.0\\,\\mathrm u)(2.00\\times10^{5})}{(1.602\\times10^{-19})(0.500)} = 8.29\\ \\mathrm{cm}; \\quad r_{22} = 9.12\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The half-circle trick",
+          think:"After 180°, each ion lands 2r from the slit. Separation?",
+          model:"Δ = 2(r₂₂ − r₂₀) = 1.66 cm — the diameter doubles the difference.",
+          pose:"write",
+          say:"Let each ion swing a half circle and return to the detector plane: it lands a full DIAMETER from the entrance slit. The separation between isotopes is twice the radius difference — one point six six centimetres, generous space for two collector cups. The one-eighty geometry is the spectrometrist's free amplifier.",
+          board:[
+            {tex:"\\Delta = 2(r_{22}-r_{20}) = 2(0.83\\ \\mathrm{cm}) = 1.66\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"How fine can it split?",
+          think:"r ∝ m linearly: what mass resolution can careful collimation achieve — and who used it first?",
+          model:"Parts in 10⁴ routinely: Aston's isotopes, uranium separation, modern proteomics.",
+          pose:"excited",
+          say:"Because radius scales LINEARLY with mass, resolution is limited only by how sharp the slits and how uniform the field: parts in ten thousand are routine, parts in a billion for the heroic. Aston mapped the isotopes with this geometry and collected the nineteen twenty two Nobel; wartime Calutrons scaled it to separate uranium; today's biology labs weigh entire proteins with its descendants. Two centimetres of arithmetic, a century of consequences.",
+          board:[
+            {label:"The reach", text:"Linear m → r: routine 10⁻⁴ resolution. Aston's isotopes → Calutrons → modern mass spec.", kind:"key"},
+            {label:"Reusable method", text:"common v, q, B ⇒ r ∝ m → half-circle doubles the gap → collimation sets the resolution", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Torque on a current loop",
+      problem:"A 50-turn coil, 4.00 cm × 5.00 cm, carries 2.00 A in a 0.300 T field. Find μ and the torque at (a) 90° and (b) 60° between the normal and B. What about 0°?",
+      goal:"Goal → μ, τ(90°), τ(60°), τ(0°)",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["μ = NIA","Max torque","At 60°","Zero — and motors"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(3.4),y:ctx.M.Y(5.4),width:ctx.M.X(7.6)-ctx.M.X(3.4),height:ctx.M.Y(1.6)-ctx.M.Y(5.4),fill:'none',stroke:GOLD,'stroke-width':3},ctx.svg);
+    arrow(ctx, 5.5,3.5, 8.3,5.2, {color:PURPLE, w:2.5, label:'μ (normal)', fs:11});
+    arrow(ctx, 0.7,3.5, 2.7,3.5, {color:DIMC, w:2, label:'B', fs:11, side:-1});
+  },
+      steps:[
+        { map:0, title:"The loop's magnetic identity",
+          think:"μ = NIA: assemble it, and note its direction convention.",
+          model:"μ = (50)(2.00)(0.002 m²) = 0.200 A·m², along the coil's normal (right-hand from the current).",
+          pose:"talk",
+          say:"A current loop's entire magnetic personality compresses into one vector: mu equals N I A, pointing along the normal by the right hand curled with the current. Fifty turns, two amperes, twenty square centimetres: zero point two ampere metre squared. From here on, the coil IS this arrow.",
+          board:[
+            {tex:"\\mu = NIA = (50)(2.00)(2.00\\times10^{-3}) = 0.200\\ \\mathrm{A\\cdot m^2}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"(a) Maximum torque",
+          think:"τ = μB sinθ at θ = 90°: which loop ORIENTATION is this?",
+          model:"τ = 0.0600 N·m, with the loop's PLANE parallel to B.",
+          pose:"write",
+          say:"Torque: mu B sine theta. At ninety degrees — the normal perpendicular to the field, hence the loop's PLANE lying along it — the sine is one: zero point zero six newton metres, the maximum on offer. Note the orientation bookkeeping: torque peaks when the FLAT of the coil faces along the field lines.",
+          board:[
+            {tex:"\\tau_{\\max} = \\mu B = (0.200)(0.300) = 0.0600\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) At sixty degrees",
+          think:"Scale by sin60°.",
+          model:"τ = 0.0520 N·m; U = −μB cos60° meanwhile.",
+          pose:"write",
+          say:"At sixty degrees: sine sixty trims it to zero point zero five two. The torque wanes as the arrow swings toward the field — the loop is a compass needle in slow, forceful agreement.",
+          board:[
+            {tex:"\\tau = \\mu B\\sin60.0^{\\circ} = 0.0520\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Zero torque — and the motor's trick",
+          think:"At alignment, τ = 0 and U = −μB. How does a motor refuse to stop there?",
+          model:"Stable rest at μ ∥ B. Motors REVERSE the current each half turn (commutator): torque never dies.",
+          pose:"excited",
+          say:"At zero degrees the torque dies and the energy — minus mu B — bottoms out: stable equilibrium, journey's end for any compass. But a MOTOR cannot afford contentment: at the very instant of alignment, a split-ring commutator REVERSES the current, flipping mu and turning the resting place into the most frustrated orientation there is. The coil lunges onward, and the trick repeats every half turn. Every DC motor is a compass needle perpetually denied its rest — the most productive frustration in engineering.",
+          board:[
+            {tex:"\\theta = 0: \\ \\tau = 0, \\ U = -\\mu B = -0.0600\\ \\mathrm J\\ \\text{(stable)}", kind:"answer"},
+            {label:"Reusable method", text:"μ = NIA (right hand) → τ = μB sinθ, U = −μB cosθ → motors commutate at alignment to keep τ alive", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Helical motion",
+      problem:"An electron at 3.00×10⁶ m/s moves at 30.0° to a 0.0500 T field. Find the radius, period, and pitch of its helical path.",
+      goal:"Goal → r, T, pitch",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Decompose","Circle part","Slide part","Auroras"],
+      setup(ctx,w){
+    plotCurve(ctx, t=>[1+t*1.4, 3.5+1.3*Math.sin(t*4.2)], 0, 6.6, {color:GOLD, w:2.5, N:90});
+    arrow(ctx, 1,1, 10,1, {color:DIMC, w:2, label:'B', fs:11});
+  },
+      steps:[
+        { map:0, title:"Split the velocity",
+          think:"v∥ feels nothing; v⊥ circles. Compute both components.",
+          model:"v⊥ = v sin30° = 1.50×10⁶; v∥ = v cos30° = 2.60×10⁶ m/s.",
+          pose:"talk",
+          say:"A velocity oblique to the field leads two lives at once: its component ALONG B — cosine's share — feels no force whatsoever and coasts; its component ACROSS — sine's share — is bent into the familiar circle. Decompose, solve each life separately, and recombine into the only curve that does both: a helix.",
+          board:[
+            {tex:"v_{\\perp} = 1.50\\times10^{6}, \\quad v_{\\parallel} = 2.60\\times10^{6}\\ \\mathrm{m/s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The circular thread",
+          think:"r from v⊥; T from the mass and field alone.",
+          model:"r = 0.171 mm; T = 2πm/eB = 0.715 ns.",
+          pose:"write",
+          say:"The circling life: radius m v perpendicular over e B — a hair's breadth, zero point one seven millimetres — completed every two pi m over e B: seven tenths of a nanosecond, speed-blind as always.",
+          board:[
+            {tex:"r = \\frac{m_ev_{\\perp}}{eB} = 1.71\\times10^{-4}\\ \\mathrm m; \\quad T = \\frac{2\\pi m_e}{eB} = 7.15\\times10^{-10}\\ \\mathrm s", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The advance per turn",
+          think:"Pitch = v∥ × T: how far along B per loop?",
+          model:"pitch = 1.86 mm: a stretched spring of trajectory.",
+          pose:"write",
+          say:"Meanwhile the coasting life advances v parallel times T per revolution: one point eight six millimetres of progress along the field for every zero point one seven millimetre loop — a finely stretched corkscrew, threading itself along the field line like wire on a spool.",
+          board:[
+            {tex:"\\text{pitch} = v_{\\parallel}T = (2.60\\times10^{6})(7.15\\times10^{-10}) = 1.86\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Field lines as highways",
+          think:"Charged particles spiral ALONG field lines. Where does Earth's field send them — and what glows?",
+          model:"Trapped particles spiral pole-to-pole; funneled into the atmosphere they excite the auroras.",
+          pose:"excited",
+          say:"Now scale the picture up by a planet: charged particles from the Sun, caught by Earth's field, spiral along its lines exactly thus — guided as if on rails toward the magnetic poles, where the converging field funnels them down into the upper air. There they slam into oxygen and nitrogen, and the sky itself fluoresces green and crimson: the AURORA, a helix formula painted across the arctic night. Field lines are the highways of every plasma in the universe; the toll is zero and the exits are at the poles.",
+          board:[
+            {label:"The payoff", text:"Particles spiral along field lines → funneled to the poles → auroras. Helices write on the sky.", kind:"key"},
+            {label:"Reusable method", text:"split v into ∥ (coast) and ⊥ (circle) → r from v⊥, T speed-free → pitch = v∥T", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Designing a cyclotron",
+      problem:"A cyclotron accelerates protons in a 1.50 T field with maximum radius 0.500 m. Find the oscillator frequency and the maximum kinetic energy (MeV). Is the classical treatment justified?",
+      goal:"Goal → f, K_max, validity",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The principle","Frequency","Energy","Relativity's knock"],
+      setup(ctx,w){
+    circleAt(ctx, 5.5,3.5, 2.8, {stroke:DIMC, w:2});
+    plotCurve(ctx, t=>[5.5+0.28*t*Math.cos(6*t), 3.5+0.28*t*Math.sin(6*t)], 0.3, 9.6, {color:GOLD, w:2, N:150});
+  },
+      steps:[
+        { map:0, title:"The machine in one sentence",
+          think:"Why can ONE fixed frequency kick a proton whose speed keeps growing?",
+          model:"T = 2πm/qB is speed-independent: the kicks stay in step as the spiral grows.",
+          pose:"talk",
+          say:"The cyclotron's entire genius is the speed-blind period: however fast the proton grows, its half-lap always takes the same time, so a modest voltage oscillating at ONE fixed frequency can kick it at every crossing, in step forever, while the orbit spirals outward. A particle accelerator built from a cancelled variable.",
+          board:[
+            {label:"The principle", text:"Speed-free period ⇒ fixed-frequency kicks stay synchronized while the spiral grows.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The oscillator frequency",
+          think:"f = qB/2πm for protons at 1.50 T.",
+          model:"f = 22.9 MHz — a radio transmitter's job.",
+          pose:"write",
+          say:"The dance tempo: q B over two pi m — twenty two point nine megahertz, squarely in the radio band; the machine is driven, fittingly, by what amounts to a shortwave transmitter with delusions of grandeur.",
+          board:[
+            {tex:"f = \\frac{qB}{2\\pi m_p} = \\frac{(1.602\\times10^{-19})(1.50)}{2\\pi(1.673\\times10^{-27})} = 22.9\\ \\mathrm{MHz}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The exit energy",
+          think:"v = qBr/m at the rim; K = (qBr)²/2m in MeV.",
+          model:"K = 4.31×10⁻¹² J = 26.9 MeV.",
+          pose:"write",
+          say:"At the rim the speed is q B r over m, so the kinetic energy is q B r squared over two m: four point three times ten to the minus twelve joules — twenty six point nine M e V. Nuclear-physics money, minted half a volt-kick at a time, thousands of laps deep.",
+          board:[
+            {tex:"K = \\frac{(qBr)^2}{2m_p} = 4.31\\times10^{-12}\\ \\mathrm J = 26.9\\ \\mathrm{MeV}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Relativity knocks at 3%",
+          think:"Compare K with m_pc² = 938 MeV. What drifts, and what machine fixes it?",
+          model:"K/mc² ≈ 2.9%: mass grows ~3%, frequency drifts out of step. Synchrocyclotrons vary f; synchrotrons vary B.",
+          pose:"excited",
+          say:"And the honest epilogue: twenty seven M e V is three percent of the proton's rest energy, so its relativistic mass has grown three percent and its orbital tempo has slipped that much behind our fixed oscillator — tolerable here, fatal much beyond. The classical cyclotron thus tops out; its heirs adapt — the synchrocyclotron sweeps its frequency downward as the protons fatten, the synchrotron ramps the FIELD instead. Every accelerator since is a negotiation with the same three percent. Know where your formula's jurisdiction ends; that is where the next machine begins.",
+          board:[
+            {tex:"\\frac{K}{m_pc^2} = \\frac{26.9}{938} = 2.9\\%\\ \\text{— the classical limit announces itself}", kind:"warn"},
+            {label:"Reusable method", text:"f = qB/2πm → K = (qBr)²/2m → compare K to mc²; past a few %, hand off to synchro-machines", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Force on a wire in a nonuniform field",
+      problem:"A wire along x from 0 to L = 0.400 m carries I = 5.00 A in +x. The field is B = bx k̂ with b = 2.00 T/m. Find the total force.",
+      goal:"Goal → F by integration",
+      world:{"x0":-0.05,"x1":0.5,"y0":-0.6,"y1":0.5},
+      pathway:["Slice","Integrate","Average-field view","When averaging fails"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(0),x2:ctx.M.X(0.4),y2:ctx.M.Y(0),stroke:'#c9b98a','stroke-width':4},ctx.svg);
+    label(ctx, 0.02,0.09, 'I →', {fs:11, color:GOLD});
+    label(ctx, 0.28,0.35, 'B = bx (out of page)', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Slice where the field varies",
+          think:"dF = I dx (bx)(î × k̂): evaluate the cross product's direction.",
+          model:"î × k̂ = −ĵ: each slice feels −Ibx dx ĵ, stronger toward the far end.",
+          pose:"talk",
+          say:"The field strengthens along the wire, so no single B serves; slice. Each element d x at position x feels I d x times b x, directed by i-hat cross k-hat — which the right hand renders as MINUS j-hat. Every slice pushes the same way, harder with distance; the integral merely totals a chorus in unison.",
+          board:[
+            {tex:"d\\vec F = I\\,dx\\,(bx)(\\ihat\\times\\khat) = -Ibx\\,dx\\,\\jhat", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate",
+          think:"∫₀ᴸ x dx = L²/2: assemble the total.",
+          model:"F = −IbL²/2 ĵ = −0.800 ĵ N.",
+          pose:"write",
+          say:"Integrate x from zero to L: L squared over two. The force: minus I b L squared over two, j-hat — minus zero point eight newtons, downward in our convention. The far half of the wire, bathed in the stronger field, contributed three quarters of it.",
+          board:[
+            {tex:"\\vec F = -Ib\\,\\jhat\\int_0^Lx\\,dx = -\\frac{IbL^2}{2}\\,\\jhat = -0.800\\,\\jhat\\ \\mathrm N", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The average-field shortcut",
+          think:"B̄ = bL/2 = 0.400 T: does F = ILB̄ reproduce the integral?",
+          model:"F = (5)(0.4)(0.4) = 0.800 N ✓ — legitimate because B is LINEAR in x.",
+          pose:"write",
+          say:"A pleasing cross-check: the field averaged over the wire is b L over two — point four tesla — and I L times that average gives point eight newtons, spot on. The shortcut is honest here ONLY because the field varies LINEARLY, and the average of a straight line is its midpoint. Averages and integrals agree exactly when the integrand is linear; that is a theorem, not a coincidence.",
+          board:[
+            {tex:"\\bar B = \\frac{bL}{2} = 0.400\\ \\mathrm T: \\ F = IL\\bar B = 0.800\\ \\mathrm N\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"When the shortcut lies",
+          think:"For B ∝ x², would the midpoint average still work? What is the general rule?",
+          model:"No: only the length-weighted integral is always right. Averages serve linear fields only.",
+          pose:"excited",
+          say:"But do not promote the shortcut beyond its rank: were the field quadratic in x, the naive midpoint average would UNDERBILL the strong end and miss the answer. The integral is the law; the average is a plea bargain available only to linear fields. When in doubt — and 'in doubt' means 'not linear' — slice and integrate. The five-minute discipline that separates the licensed from the lucky.",
+          board:[
+            {label:"The rule", text:"F = ∫I dℓ × B always; F = ILB̄ only for linear B. Nonlinear fields demand the integral.", kind:"warn"},
+            {label:"Reusable method", text:"slice → cross product per slice (all same direction here) → integrate → averaged-field check iff linear", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Starting from rest in crossed fields: the cycloid",
+      problem:"A proton starts from rest in E = 1.00×10⁴ ĵ V/m and B = 0.100 k̂ T. Describe the motion; find the drift velocity, maximum speed, and maximum height.",
+      goal:"Goal → v_d, v_max, h_max",
+      world:{"x0":-0.005,"x1":0.075,"y0":-0.005,"y1":0.035},
+      pathway:["The clever frame","Drift","The cycloid","Extremes","Plasma moral"],
+      setup(ctx,w){
+    plotCurve(ctx, t=>[0.0104*(t-Math.sin(t)), 0.0104*(1-Math.cos(t))], 0, 6.4, {color:GOLD, w:2.5, N:90});
+    ground(ctx, -0.003, 0.072, 0);
+  },
+      steps:[
+        { map:0, title:"Ride the drift frame",
+          think:"In a frame moving at v_d = E×B/B², what happens to the electric force?",
+          model:"The magnetic force on the drifting charge cancels E exactly: only a circle remains there.",
+          pose:"talk",
+          say:"Crossed fields, particle from rest — a mess head-on, a gift in the right frame. Board a frame gliding at E cross B over B squared: there, the magnetic force on any co-drifting charge exactly cancels the electric one, and the leftover physics is a bare magnetic field with a proton circling at the cyclotron rate. Choose the frame where the problem is old news.",
+          board:[
+            {label:"The frame", tex:"\\vec v_d = \\frac{\\vec E\\times\\vec B}{B^2}\\ \\text{— in that frame, only a circle}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The drift speed and radius",
+          think:"v_d = E/B; the circle's radius from m v_d/qB.",
+          model:"v_d = 1.00×10⁵ m/s; r = 1.04 cm.",
+          pose:"write",
+          say:"The frame glides at E over B — one hundred kilometres per second, along x, perpendicular to BOTH fields. In it, our proton — initially moving backward at v d — circles with radius m v d over q B: one point zero four centimetres.",
+          board:[
+            {tex:"v_d = \\frac{E}{B} = 1.00\\times10^{5}\\ \\mathrm{m/s}; \\quad r = \\frac{m_pE}{qB^2} = 1.04\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Back in the lab: a rolling wheel",
+          think:"Circle + uniform glide = which classic curve?",
+          model:"A cycloid — the path of a point on a rolling wheel's rim, cusps on the floor.",
+          pose:"write",
+          say:"Step back to the laboratory and superpose: a circle riding a uniform glide — the CYCLOID, the very curve traced by a pebble stuck in a rolling tyre. The proton hops along in arches, kissing the ground at each cusp, precisely as if an invisible wheel of radius one centimetre rolled through the field.",
+          board:[
+            {label:"The path", text:"Lab motion = circle + drift = cycloid: arches with cusps, a rolling wheel's rim point.", kind:"key"}
+          ]
+        },
+        { map:3, title:"The extremes",
+          think:"At a cusp, lab speed = ? At an arch top? Max height?",
+          model:"0 and 2v_d = 2.00×10⁵ m/s; h_max = 2r = 2.09 cm.",
+          pose:"write",
+          say:"The extremes read straight off the wheel: at each cusp the circular and drift velocities cancel — the proton momentarily STOPS, as it began; atop each arch they add — twice v d, two hundred kilometres per second. The height of the arch: a full diameter, two point zero nine centimetres. All this fine structure from two uniform, featureless fields.",
+          board:[
+            {tex:"v: 0 \\leftrightarrow 2v_d = 2.00\\times10^{5}\\ \\mathrm{m/s}; \\quad h_{\\max} = 2r = 2.09\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The drift that carries no current",
+          think:"v_d = E×B/B² has no q, no m. What happens to a NEUTRAL plasma in crossed fields?",
+          model:"Electrons and ions drift TOGETHER: no net current. The E×B drift rules fusion devices and magnetospheres.",
+          pose:"excited",
+          say:"And the property that runs half of plasma physics: the drift velocity contains neither charge nor mass. Electrons arch one way and ions the other in their private circles, but both DRIFT identically — a neutral plasma migrates wholesale, carrying no net current whatsoever. Tokamak designers fight this drift, magnetospheres are sculpted by it, and it fell out of one clever change of reference frame. Choose the frame first; the physics often finishes itself.",
+          board:[
+            {label:"The moral", tex:"\\vec v_d = \\frac{\\vec E\\times\\vec B}{B^2}: \\ \\text{sign- and mass-free — whole plasmas drift together}", kind:"key"},
+            {label:"Reusable method", text:"ride E×B/B² → bare circle there → lab = cycloid → extremes 0 and 2v_d, height 2r", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

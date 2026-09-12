@@ -1353,6 +1353,569 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Net flux depends only on the enclosed charge",
+      problem:"A closed surface of irregular shape encloses +3.00 μC and −1.00 μC; a +7.00 μC charge sits just outside. Find the net electric flux through the surface.",
+      goal:"Goal → Φ_E",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The law","Count inside","The outsider","Power"],
+      setup(ctx,w){
+    el('path',{d:`M ${ctx.M.X(2)} ${ctx.M.Y(3)} Q ${ctx.M.X(2.5)} ${ctx.M.Y(6.2)} ${ctx.M.X(5.5)} ${ctx.M.Y(5.7)} Q ${ctx.M.X(8.5)} ${ctx.M.Y(5.2)} ${ctx.M.X(7.5)} ${ctx.M.Y(2.2)} Q ${ctx.M.X(6.5)} ${ctx.M.Y(0.2)} ${ctx.M.X(4)} ${ctx.M.Y(1)} Q ${ctx.M.X(1.7)} ${ctx.M.Y(1.6)} ${ctx.M.X(2)} ${ctx.M.Y(3)}`,fill:'none',stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'7,5'},ctx.svg);
+    circleAt(ctx, 4,3.6, 0.25, {stroke:RED, w:3});
+    circleAt(ctx, 6,2.8, 0.2, {stroke:BLUE, w:3});
+    circleAt(ctx, 9.5,4.5, 0.3, {stroke:RED, w:3});
+    label(ctx, 3.2,4.2, '+3', {fs:11, color:RED});
+    label(ctx, 5.6,2.0, '−1', {fs:11, color:BLUE});
+    label(ctx, 9.0,5.3, '+7 outside', {fs:10, color:RED});
+  },
+      steps:[
+        { map:0, title:"Gauss's law is bookkeeping",
+          think:"Φ = q_enc/ε₀: which charges get counted?",
+          model:"Only the ENCLOSED charge matters — shape and outsiders don't.",
+          pose:"talk",
+          say:"Gauss's law is celestial bookkeeping: the net flux through ANY closed surface equals the enclosed charge over epsilon nought. Not the nearby charge, not the surface's shape, not the arrangement inside — only the enclosed TOTAL. An accountant's law, and like all good accounting, ruthlessly indifferent to appearances.",
+          board:[
+            {label:"Gauss", tex:"\\Phi_E = \\oint\\vec E\\cdot d\\vec A = \\frac{q_{\\rm enc}}{\\varepsilon_0}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Count the interior",
+          think:"+3 and −1 inside: net?",
+          model:"q_enc = +2.00 μC → Φ = 2.26×10⁵ N·m²/C.",
+          pose:"write",
+          say:"Inside the surface: plus three and minus one — net plus two microcoulombs. Flux: two microcoulombs over epsilon nought — two point two six times ten to the five newton metre squared per coulomb. Done, before the outsider is even acknowledged.",
+          board:[
+            {tex:"\\Phi_E = \\frac{2.00\\times10^{-6}}{8.854\\times10^{-12}} = 2.26\\times10^{5}\\ \\mathrm{N\\cdot m^2/C}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The outsider's alibi",
+          think:"The +7 μC changes E on the surface. Why doesn't it change Φ?",
+          model:"Every line it sends IN comes OUT: net contribution exactly zero.",
+          pose:"point",
+          say:"But surely the seven microcoulombs outside matters? It DOES change the field at every point of our surface — yet its net flux contribution is exactly zero, because every field line it threads INTO the volume must thread OUT again; nothing outside can be a source or sink within. In, out, cancelled: the outsider has a perfect alibi.",
+          board:[
+            {label:"The alibi", text:"External charge: every entering line exits. ΔΦ = 0, though E itself changes everywhere.", kind:"key"}
+          ],
+          action(c){
+       plotCurve(c, t=>[9.5-6*t, 4.5-2.2*t], 0.12, 0.95, {color:DIMC, w:1.8, dash:'5,4', N:30});
+       arrow(c, 5.5,3.05, 4.3,2.75, {color:DIMC, w:1.8});
+     }
+        },
+        { map:3, title:"Why this is power, not trivia",
+          think:"The flux integral over an irregular blob would be hopeless directly. What did Gauss spare us?",
+          model:"A hopeless surface integral became one division. Symmetry cases will exploit this mercilessly.",
+          pose:"excited",
+          say:"Appreciate what just happened: the direct flux integral over that lumpy surface — three charges, arbitrary geometry — is hopeless by brute force. Gauss reduced it to one subtraction and one division. And this is merely the law as ACCOUNTANT; in the next examples it turns ENGINEER, extracting entire field formulas from symmetry in three lines. The blob was the warm-up; the power tools are coming.",
+          board:[
+            {label:"The power", text:"Shape-independence turns impossible integrals into arithmetic — and (next) symmetry into field formulas.", kind:"key"},
+            {label:"Reusable method", text:"net the ENCLOSED charge only → divide by ε₀ → outsiders alibi out (in = out)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Field of a long charged wire",
+      problem:"A very long straight wire carries λ = 5.00 μC/m. Find the field 20.0 cm from the wire.",
+      goal:"Goal → E(r)",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Symmetry","Gaussian cylinder","Solve","1/r"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(3),x2:ctx.M.X(10.5),y2:ctx.M.Y(3),stroke:RED,'stroke-width':4},ctx.svg);
+    el('ellipse',{cx:ctx.M.X(3.5),cy:ctx.M.Y(3),rx:12,ry:46,fill:'none',stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'6,4'},ctx.svg);
+    el('ellipse',{cx:ctx.M.X(6.5),cy:ctx.M.Y(3),rx:12,ry:46,fill:'none',stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'6,4'},ctx.svg);
+    el('line',{x1:ctx.M.X(3.5),y1:ctx.M.Y(3)-46,x2:ctx.M.X(6.5),y2:ctx.M.Y(3)-46,stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'6,4'},ctx.svg);
+    el('line',{x1:ctx.M.X(3.5),y1:ctx.M.Y(3)+46,x2:ctx.M.X(6.5),y2:ctx.M.Y(3)+46,stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'6,4'},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Let symmetry design the surface",
+          think:"An infinite wire: which way can E possibly point, and on what can it depend?",
+          model:"E is radial, depending only on r — so choose a coaxial cylinder.",
+          pose:"talk",
+          say:"Gauss's law becomes a field-finding machine the moment symmetry cooperates. An infinite wire cannot prefer left over right, nor up over around: its field must point RADIALLY outward, with a strength depending only on distance. The Gaussian surface that honours this is a coaxial cylinder — flat caps, curved side — chosen so the field is either parallel to the surface or constant across it.",
+          board:[
+            {label:"Symmetry", text:"E radial, E(r) only ⇒ Gaussian surface: coaxial cylinder of radius r, length L.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Flux through the cylinder",
+          think:"Caps: E ∥ surface. Side: E ⊥ surface, constant. Total flux?",
+          model:"Φ = E·2πrL (side only); q_enc = λL.",
+          pose:"write",
+          say:"Tally the flux: through the end caps, the radial field skims parallel — zero. Through the curved side, it punches straight out at constant strength: E times the side's area, two pi r L. Enclosed charge: lambda L. The law is ready to be solved.",
+          board:[
+            {tex:"E(2\\pi rL) = \\frac{\\lambda L}{\\varepsilon_0}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve and evaluate",
+          think:"L cancels — why must it? Then evaluate at 20 cm.",
+          model:"E = 2kλ/r = 4.50×10⁵ N/C.",
+          pose:"write",
+          say:"L cancels — as it must, since an infinite wire cannot care how long our imaginary cylinder is — leaving E equals lambda over two pi epsilon nought r, or two k lambda over r. At twenty centimetres: four point five times ten to the five newtons per coulomb.",
+          board:[
+            {tex:"E = \\frac{2k\\lambda}{r} = \\frac{2(8.99\\times10^{9})(5.00\\times10^{-6})}{0.200} = 4.50\\times10^{5}\\ \\mathrm{N/C}", kind:"answer", move:"cancel L"}
+          ]
+        },
+        { map:3, title:"Why 1/r, not 1/r²",
+          think:"Field lines from a wire spread over cylinders, not spheres. What follows?",
+          model:"Line charge: lines dilute over 2πrL ∝ r → E ∝ 1/r. Geometry sets the exponent.",
+          pose:"excited",
+          say:"And read the exponent as geometry: a point charge's lines dilute over spheres — area r squared — hence one over r squared. A LINE's field lines fan out over cylinders — area proportional to r — hence one over r, a gentler fading. Next example, a sheet: lines that spread not at all, and a field that never fades. Source dimension writes the distance law; memorise the trio as a family portrait.",
+          board:[
+            {label:"The family", text:"Point: 1/r². Line: 1/r. Sheet: constant. The source's dimensionality sets the fall-off.", kind:"key"},
+            {label:"Reusable method", text:"symmetry names E's direction/dependence → matching Gaussian surface → flux only where E ⊥ surface → solve", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"One sheet, then two",
+      problem:"(a) Find the field of a large sheet with σ = 1.00 μC/m². (b) A parallel sheet carries −1.00 μC/m². Find the field between and outside the sheets.",
+      goal:"Goal → E alone, then the pair",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Pillbox","One sheet","Superpose","The capacitor"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(3.5),y1:ctx.M.Y(0.3),x2:ctx.M.X(3.5),y2:ctx.M.Y(6.7),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(7.5),y1:ctx.M.Y(0.3),x2:ctx.M.X(7.5),y2:ctx.M.Y(6.7),stroke:BLUE,'stroke-width':4},ctx.svg);
+    label(ctx, 3.0,6.9, '+σ', {fs:12, color:RED});
+    label(ctx, 7.2,6.9, '−σ', {fs:12, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"The pillbox argument",
+          think:"A box straddling the sheet: which faces carry flux, and what charge is enclosed?",
+          model:"Φ = 2EA (both caps); q_enc = σA → E = σ/2ε₀, distance-independent.",
+          pose:"talk",
+          say:"For a sheet, the Gaussian surface of honour is a PILLBOX straddling it: the field, perpendicular to the sheet by symmetry, exits through BOTH end caps — flux two E A — while the box swallows sigma A of charge. E equals sigma over TWO epsilon nought, with no distance anywhere in it: the sheet's field simply does not fade.",
+          board:[
+            {tex:"2EA = \\frac{\\sigma A}{\\varepsilon_0} \\;\\Rightarrow\\; E = \\frac{\\sigma}{2\\varepsilon_0} = 5.65\\times10^{4}\\ \\mathrm{N/C}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Add the negative sheet: between",
+          think:"Between the sheets, which way does each field point?",
+          model:"Away from +, toward −: they AGREE between → E = σ/ε₀ = 1.13×10⁵ N/C.",
+          pose:"write",
+          say:"Now the negative partner, and superposition earns its keep. BETWEEN the sheets: the positive sheet pushes away from itself, the negative pulls toward itself — the same direction. Two half-fields agree and add: sigma over epsilon nought, one point one three times ten to the five, uniform everywhere in the gap.",
+          board:[
+            {tex:"\\text{between: } E = \\frac{\\sigma}{2\\varepsilon_0}+\\frac{\\sigma}{2\\varepsilon_0} = \\frac{\\sigma}{\\varepsilon_0} = 1.13\\times10^{5}\\ \\mathrm{N/C}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 4.4,3.5, 6.6,3.5, {color:GOLD, w:3, label:'E = σ/ε₀', fs:11});
+     }
+        },
+        { map:2, title:"Outside: perfect cancellation",
+          think:"Outside the pair, the two half-fields point how?",
+          model:"Opposite directions, equal strength: E = 0 outside.",
+          pose:"write",
+          say:"OUTSIDE the pair, the two half-fields face off — away from plus, toward minus now means opposite arrows — and, being equal, annihilate: zero field outside, on either flank. The pair keeps its entire electric fortune in the gap between them.",
+          board:[
+            {tex:"\\text{outside: } E = \\frac{\\sigma}{2\\varepsilon_0}-\\frac{\\sigma}{2\\varepsilon_0} = 0", kind:"answer"}
+          ],
+          action(c){
+       label(c, 0.6,3.6, 'E = 0', {fs:12, color:DIMC});
+       label(c, 9.2,3.6, 'E = 0', {fs:12, color:DIMC});
+     }
+        },
+        { map:3, title:"You have built a capacitor",
+          think:"Uniform field inside, zero outside: which device is this the blueprint of?",
+          model:"The ideal parallel-plate capacitor: all field (and energy) confined to the gap.",
+          pose:"excited",
+          say:"Step back and admire the accident: uniform field inside, silence outside — you have just derived the ideal PARALLEL-PLATE CAPACITOR, two tutorials early. Every capacitor in every circuit is this pair of sheets, its field neatly imprisoned in the gap, storing energy where no outsider can feel it. Superposition of two humble half-fields, and an industry falls out.",
+          board:[
+            {label:"The device", text:"σ/ε₀ inside, 0 outside = the parallel-plate capacitor. Tutorial 4 will bill this page.", kind:"key"},
+            {label:"Reusable method", text:"pillbox → σ/2ε₀ per sheet, fade-free → superpose: add between, cancel outside", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Flux through one face of a cube",
+      problem:"A 2.00 nC point charge sits at the center of a cube. Find the flux through one face. What if the charge is moved to a corner?",
+      goal:"Goal → Φ_face, both cases",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Total flux","Divide by 6","The corner","Divide by 24"],
+      setup(ctx,w){
+    const P=(x,y,z)=>[2.2 + 3.2*(x + 0.45*z), 1.2 + 3.2*(y + 0.32*z)];
+    const E=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]];
+    const edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    edges.forEach(e=>{ const a=P(...E[e[0]]), b=P(...E[e[1]]);
+      el('line',{x1:ctx.M.X(a[0]),y1:ctx.M.Y(a[1]),x2:ctx.M.X(b[0]),y2:ctx.M.Y(b[1]),stroke:'#9fb4a3','stroke-width':1.6,opacity:.85},ctx.svg); });
+    circleAt(ctx, 4.55,2.95, 0.18, {stroke:RED, w:3});
+  },
+      steps:[
+        { map:0, title:"Total first",
+          think:"The whole cube's flux is fixed by Gauss. Compute it.",
+          model:"Φ_total = q/ε₀ = 226 N·m²/C, however the surface is shaped.",
+          pose:"talk",
+          say:"The cube as a whole is easy prey: total flux q over epsilon nought — two nanocoulombs over eight point eight five four ten to the minus twelve — two hundred twenty six units. Gauss neither knows nor cares that the surface has corners. The delicacy is dividing that total among the six faces.",
+          board:[
+            {tex:"\\Phi_{\\rm cube} = \\frac{q}{\\varepsilon_0} = \\frac{2.00\\times10^{-9}}{8.854\\times10^{-12}} = 226\\ \\mathrm{N\\cdot m^2/C}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Center: symmetry divides by six",
+          think:"Why do all six faces receive identical flux from a central charge?",
+          model:"By symmetry each face is equivalent: Φ_face = q/6ε₀ = 37.6 N·m²/C.",
+          pose:"write",
+          say:"With the charge at the CENTRE, no face can claim privilege — rotate the cube and they trade places without anything changing. Six identical claimants split the estate evenly: thirty seven point six per face. The direct integral over a square face, for comparison, is an afternoon of trigonometric grief; symmetry did it by division.",
+          board:[
+            {tex:"\\Phi_{\\rm face} = \\frac{q}{6\\varepsilon_0} = 37.6\\ \\mathrm{N\\cdot m^2/C}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The corner: three faces starve",
+          think:"For the faces TOUCHING the corner charge, how does E meet the surface?",
+          model:"E is parallel to the adjacent faces: their flux is zero.",
+          pose:"point",
+          say:"Slide the charge to a CORNER, and first note the three faces that touch it: the field, radiating from a charge in their own plane, SKIMS along them — parallel, never through. Those three faces receive precisely nothing. The whole outflow belongs to the three far faces — but how much?",
+          board:[
+            {label:"Adjacent faces", text:"E ∥ surface on the three touching faces: their flux = 0.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Build the eight-cube trick",
+          think:"Surround the corner with 8 cubes: how many far faces share q/ε₀ equally?",
+          model:"24 equivalent far faces → each gets q/24ε₀ = 9.41 N·m²/C.",
+          pose:"excited",
+          say:"Now the beloved construction: surround the corner charge with EIGHT cubes, ours among them, making the charge interior to the cluster. Its full q over epsilon nought flows out through the cluster's twenty four far faces — three per cube — all equivalent by symmetry. Each carries a twenty-fourth: nine point four one units, for each of our cube's three far faces. When your surface lacks symmetry, BUILD a bigger one that has it — the physicist's version of solving a puzzle by embedding it in an easier puzzle.",
+          board:[
+            {tex:"\\Phi_{\\rm far\\ face} = \\frac{q}{24\\varepsilon_0} = 9.41\\ \\mathrm{N\\cdot m^2/C}", kind:"answer"},
+            {label:"Reusable method", text:"total = q/ε₀ → symmetry divides (6 at center) → corner: 3 faces get 0; embed in 8 cubes → ÷24", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Charged conducting sphere",
+      problem:"A solid conducting sphere of radius 10.0 cm carries Q = +4.00 nC. Find E at (a) r = 5.00 cm, (b) just outside the surface, (c) r = 30.0 cm. (d) Find the surface charge density.",
+      goal:"Goal → E inside/at/outside, σ",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Conductor rules","Inside","Outside","σ and the exit rule"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.4, {stroke:GOLD, w:3});
+    circleAt(ctx, 0,0, 3.6, {stroke:DIMC, w:1.5, dash:'6,5'});
+    label(ctx, -1.5,-3.0, 'conductor', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"What equilibrium enforces",
+          think:"If E ≠ 0 inside a conductor, what would the free electrons do?",
+          model:"E = 0 inside the metal; all excess charge migrates to the surface.",
+          pose:"talk",
+          say:"A conductor in electrostatic equilibrium has struck an internal truce: were any field left inside, free electrons would still be drifting — not equilibrium. So E is ZERO throughout the metal, and Gauss then forces every scrap of excess charge to the SURFACE. Two rules, both consequences of electrons' mobility and impatience.",
+          board:[
+            {label:"Conductor rules", text:"Equilibrium ⇒ E = 0 in the metal ⇒ all excess charge on the surface.", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Inside: zero, certified by Gauss",
+          think:"A Gaussian sphere at r = 5 cm encloses what?",
+          model:"q_enc = 0 (all charge is at R = 10 cm): E = 0.",
+          pose:"write",
+          say:"At five centimetres — inside the metal — a Gaussian sphere encloses nothing, every nanocoulomb having emigrated to the surface: E equals zero, by law and by physics both.",
+          board:[
+            {tex:"r = 5.00\\ \\mathrm{cm}: \\ q_{\\rm enc} = 0 \\Rightarrow E = 0", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b), (c) Outside: a point charge in disguise",
+          think:"Beyond the surface, the sphere is indistinguishable from what?",
+          model:"E = kQ/r²: 3.60×10³ N/C at the surface; 400 N/C at 30 cm.",
+          pose:"write",
+          say:"Outside, spherical symmetry hands the whole charge to Gauss at once: E equals k Q over r squared, exactly a point charge's field. Just outside the skin: thirty six hundred newtons per coulomb. At thirty centimetres: four hundred. From anywhere outside, the sphere is a point charge wearing a costume.",
+          board:[
+            {tex:"E_{\\rm surface} = \\frac{kQ}{R^2} = 3.60\\times10^{3}\\ \\mathrm{N/C}; \\quad E(0.30) = 400\\ \\mathrm{N/C}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"(d) σ, and the universal exit rule",
+          think:"σ = Q/4πR². Then check E_surface against σ/ε₀.",
+          model:"σ = 3.18×10⁻⁸ C/m²; E = σ/ε₀ just outside ANY conductor ✓.",
+          pose:"excited",
+          say:"The surface density: Q over four pi R squared — three point one eight times ten to the minus eight coulombs per square metre. And the elegant cross-check: sigma over epsilon nought gives thirty six hundred — precisely our surface field. That relation, E equals sigma over epsilon nought just outside the skin, holds for EVERY conductor of every shape: the local field reads the local charge density, an honest doorman announcing exactly who stands behind the door.",
+          board:[
+            {tex:"\\sigma = \\frac{Q}{4\\pi R^2} = 3.18\\times10^{-8}\\ \\mathrm{C/m^2}; \\quad E_{\\rm just\\ outside} = \\frac{\\sigma}{\\varepsilon_0}\\;\\checkmark", kind:"answer"},
+            {label:"Reusable method", text:"metal ⇒ E = 0 inside, charge on the skin → outside = point charge → E = σ/ε₀ at any conductor's surface", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Two concentric charged shells",
+      problem:"A shell of radius 5.00 cm carries +2.00 nC; a concentric shell of radius 10.0 cm carries −5.00 nC. Find E at r = 3.00, 7.00, and 15.0 cm.",
+      goal:"Goal → E in three regions",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Onion strategy","Innermost","Between","Outside"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 1.5, {stroke:RED, w:3});
+    circleAt(ctx, 0,0, 3, {stroke:BLUE, w:3});
+    label(ctx, 1.0,1.8, '+2 nC', {fs:10, color:RED});
+    label(ctx, 2.0,3.3, '−5 nC', {fs:10, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"One formula, three regions",
+          think:"With spherical symmetry, what single recipe answers every radius?",
+          model:"E = kq_enc/r²: only the charge INSIDE radius r votes.",
+          pose:"talk",
+          say:"Nested shells are an onion, and Gauss peels it with one recipe: at any radius, E equals k times the charge ENCLOSED, over r squared. Charge outside your radius — however loud — casts no vote. The problem is three applications of a single counting exercise.",
+          board:[
+            {label:"The recipe", tex:"E(r) = \\frac{kq_{\\rm enc}(r)}{r^2}\\ \\text{— count only what's inside}", kind:"key"}
+          ]
+        },
+        { map:1, title:"r = 3 cm: inside everything",
+          think:"What charge lies within 3 cm?",
+          model:"q_enc = 0 → E = 0.",
+          pose:"write",
+          say:"At three centimetres, inside the inner shell: nothing enclosed, E is zero. A hollow shell's interior is field-free — the same theorem that made Newton's tunnel work, wearing electric dress.",
+          board:[
+            {tex:"r = 3.00\\ \\mathrm{cm}: \\ q_{\\rm enc} = 0, \\ E = 0", kind:"answer"}
+          ]
+        },
+        { map:2, title:"r = 7 cm: between the shells",
+          think:"Only the inner +2 nC is enclosed. E and direction?",
+          model:"E = k(2 nC)/(0.07)² = 3.67×10³ N/C, outward.",
+          pose:"write",
+          say:"At seven centimetres, between the shells: the inner plus two nanocoulombs is enclosed; the outer shell, not yet crossed, is invisible. E equals three point six seven times ten to the three, pointing OUTWARD. The minus five, waiting three centimetres away, might as well not exist.",
+          board:[
+            {tex:"r = 7.00\\ \\mathrm{cm}: \\ E = \\frac{k(2.00\\times10^{-9})}{(0.0700)^2} = 3.67\\times10^{3}\\ \\mathrm{N/C\\ (outward)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"r = 15 cm: outside the pair",
+          think:"Net enclosed = +2 − 5 = −3 nC. Magnitude AND direction?",
+          model:"E = k(3 nC)/(0.15)² = 1.20×10³ N/C, INWARD — the pair acts as −3 nC.",
+          pose:"excited",
+          say:"At fifteen centimetres, outside all: the census reads plus two minus five — net MINUS three nanocoulombs. E is one point two times ten to the three, pointing INWARD, toward the negative net. From outside, the whole elaborate onion collapses to a single minus-three point charge. Walk inward through any nested system and watch the field flip and vanish as each shell drops off the census — Gauss as a radial passport control.",
+          board:[
+            {tex:"r = 15.0\\ \\mathrm{cm}: \\ q_{\\rm enc} = -3.00\\ \\mathrm{nC}, \\ E = 1.20\\times10^{3}\\ \\mathrm{N/C\\ (inward)}", kind:"answer"},
+            {label:"Reusable method", text:"E = kq_enc/r² per region → recount the census at each radius → sign of q_enc sets the direction", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Field inside and outside a charged slab",
+      problem:"An infinite slab of thickness d = 2.00 cm carries uniform ρ = 1.00 μC/m³. Find E as a function of distance x from the midplane, inside and outside.",
+      goal:"Goal → E(x), both regimes",
+      world:{"x0":-0.045,"x1":0.045,"y0":-200,"y1":1500},
+      pathway:["Symmetry","Inside","Outside","Match at the skin"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'E (N/C)'});
+    dashLine(ctx, -0.01,-100, -0.01,1350, {});
+    dashLine(ctx, 0.01,-100, 0.01,1350, {});
+    label(ctx, -0.0085,1420, 'slab: −d/2 to d/2', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The midplane is sacred",
+          think:"By symmetry, what is E at x = 0, and which way does it point elsewhere?",
+          model:"E = 0 at the midplane; points away from it on both sides; pillbox from −x to +x.",
+          pose:"talk",
+          say:"An infinite slab's symmetry appoints the MIDPLANE as the quiet centre: there, by pure mirror argument, E vanishes; on either side it points away. The right Gaussian pillbox therefore straddles the midplane symmetrically, from minus x to plus x, catching equal flux E A through each cap.",
+          board:[
+            {label:"Symmetry", text:"E = 0 at the midplane; symmetric pillbox −x to +x has flux 2EA.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Inside: the linear ramp",
+          think:"q_enc = ρA(2x): solve for E within the slab.",
+          model:"E = ρx/ε₀ — growing linearly from the midplane.",
+          pose:"write",
+          say:"While the pillbox stays inside the slab, deeper means more charge: rho A times two x enclosed. Two E A equals that over epsilon nought: E equals rho x over epsilon nought — a linear ramp, zero at the centre, climbing to the skin. Every layer you cross adds its push.",
+          board:[
+            {tex:"|x|<\\tfrac d2: \\ 2EA = \\frac{\\rho A(2x)}{\\varepsilon_0} \\Rightarrow E = \\frac{\\rho x}{\\varepsilon_0}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, x=>x>-0.01&&x<0.01? Math.abs(x)*1.13e5 : NaN, -0.0099, 0.0099, {color:GOLD, w:3, N:40});
+     }
+        },
+        { map:2, title:"Outside: the plateau",
+          think:"Beyond d/2, does deeper penetration add charge? What E results?",
+          model:"q_enc saturates at ρAd: E = ρd/2ε₀, constant — a sheet with σ = ρd.",
+          pose:"write",
+          say:"Once the caps clear the slab, pushing farther adds vacuum, not charge: the enclosed rho A d is final. E freezes at rho d over two epsilon nought — constant forever, exactly the field of a thin sheet carrying sigma equals rho d. From outside, thickness is invisible; only the total per area speaks.",
+          board:[
+            {tex:"|x|>\\tfrac d2: \\ E = \\frac{\\rho d}{2\\varepsilon_0} = 1.13\\times10^{3}\\ \\mathrm{N/C\\ (constant)}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, x=>1130, 0.0101, 0.042, {color:GREEN, w:3, N:10});
+       plotCurve(c, x=>1130, -0.042, -0.0101, {color:GREEN, w:3, N:10});
+     }
+        },
+        { map:3, title:"The seam test",
+          think:"Evaluate both formulas at x = d/2. Must they agree?",
+          model:"Both give ρd/2ε₀ = 1.13×10³ N/C at the surface ✓ — continuous, as volume charge demands.",
+          pose:"excited",
+          say:"The audit at the seam: the inside ramp at x equals d over two gives rho d over two epsilon nought — identically the outside plateau. Continuous, as it must be: only a SURFACE charge can step a field discontinuously, and our slab hides none. Piecewise formulas that meet at their seams are telling the truth; ones that jump without a surface charge to blame are confessing an error. Always try the seam.",
+          board:[
+            {label:"Seam check", tex:"E_{\\rm in}(d/2) = E_{\\rm out} = \\frac{\\rho d}{2\\varepsilon_0}\\;\\checkmark\\ \\text{(no surface charge ⇒ no jump)}", kind:"key"},
+            {label:"Reusable method", text:"midplane E = 0 → symmetric pillbox → linear inside, constant outside (σ_eff = ρd) → check continuity at the skin", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Cylinder with density increasing outward",
+      problem:"A long cylinder of radius R = 5.00 cm has ρ(r) = ρ₀r/R with ρ₀ = 3.00 μC/m³. Find E(r) inside and outside; evaluate at r = 2.50 cm and at the surface.",
+      goal:"Goal → E(r), two regimes",
+      world:{"x0":-0.01,"x1":0.11,"y0":-500,"y1":6500},
+      pathway:["Enclose by shells","Inside","Outside","Numbers + seam"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'r (m)', ylab:'E (N/C)'});
+    dashLine(ctx, 0.05,-300, 0.05,6100, {});
+    label(ctx, 0.052,6250, 'r = R', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Nonuniform density: integrate the census",
+          think:"ρ varies with r — how must q_enc now be computed?",
+          model:"q_enc = ∫ρ(r′)·2πr′L dr′ over cylindrical shells: no shortcut.",
+          pose:"talk",
+          say:"The symmetry is still cylindrical — E radial, Gaussian cylinder as before — but the census is no longer multiplication, for the density thickens toward the rim. We must integrate over cylindrical shells: each of radius r prime contributes rho of r prime times two pi r prime L d r prime. Gauss survives nonuniformity; only the counting grows up.",
+          board:[
+            {tex:"q_{\\rm enc} = \\int_0^r\\rho_0\\frac{r'}{R}\\,2\\pi r'L\\,dr' = \\frac{2\\pi\\rho_0Lr^3}{3R}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Inside: quadratic, not linear",
+          think:"Divide by the Gaussian area 2πrL. What power of r survives?",
+          model:"E_in = ρ₀r²/3ε₀R — quadratic, because charge crowds the rim.",
+          pose:"write",
+          say:"Apply the law: E times two pi r L equals that census over epsilon nought. E inside equals rho nought r SQUARED over three epsilon nought R. Quadratic — where a uniform cylinder gives linear — because the outer layers, carrying the most charge, only join the census late. The density profile is legible in the exponent.",
+          board:[
+            {tex:"E_{\\rm in} = \\frac{\\rho_0r^2}{3\\varepsilon_0R}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, r=>r<0.05? 1.13e7*r*r/(0.05)*0.25*1e0 : NaN, 0.001, 0.0499, {color:GOLD, w:3, N:50});
+     }
+        },
+        { map:2, title:"Outside: total charge, 1/r",
+          think:"Set r → R in the census, then divide by 2πrL. What law reappears?",
+          model:"E_out = ρ₀R²/3ε₀r — the familiar line-charge 1/r with λ_eff = πρ₀R²·(2/3)... i.e. total charge per length.",
+          pose:"write",
+          say:"Outside, the census closes at r equals R — the cylinder's full charge per unit length — and E becomes rho nought R squared over three epsilon nought r: the one-over-r of an equivalent line charge. Whatever the internal decoration, from outside a cylinder is a wire with the same total per metre.",
+          board:[
+            {tex:"E_{\\rm out} = \\frac{\\rho_0R^2}{3\\varepsilon_0r}\\ \\text{— a line charge with the same } \\lambda", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, r=>r>0.05? 5650*0.05/r : NaN, 0.0501, 0.105, {color:GREEN, w:3, N:40});
+     }
+        },
+        { map:3, title:"Numbers and the seam",
+          think:"Evaluate at 2.50 cm and at R; confirm the formulas meet.",
+          model:"E(2.5 cm) = 1.41×10³; E(R) = ρ₀R/3ε₀ = 5.65×10³ N/C from BOTH sides ✓.",
+          pose:"excited",
+          say:"Numbers: at two and a half centimetres, one point four one times ten to the three. At the surface, both formulas — the inside quadratic and the outside hyperbola — deliver the same five point six five times ten to the three: the seam holds, and with it our confidence. Nonuniform densities frighten only the census-taker; the law, and its seam test, are unchanged.",
+          board:[
+            {tex:"E(0.025) = 1.41\\times10^{3}; \\quad E(R) = \\frac{\\rho_0R}{3\\varepsilon_0} = 5.65\\times10^{3}\\ \\mathrm{N/C}\\;\\checkmark", kind:"answer"},
+            {label:"Reusable method", text:"integrate shells for q_enc(r) → Gauss inside and out → exponent reveals the density profile → seam test", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Charge inside a cavity in a conductor",
+      problem:"A neutral spherical conductor has a cavity containing an off-center +5.00 nC charge. (a) Find the charge on the cavity wall and outer surface. (b) Repeat if the conductor carries net +3.00 nC. (c) In case (b), find E at 20.0 cm from the center.",
+      goal:"Goal → induced charges; E outside",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Gaussian in metal","Inner wall","Outer surface","Shielding"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 3.4, {stroke:GOLD, w:3});
+    el('path',{d:`M ${ctx.M.X(-1.8)} ${ctx.M.Y(0.4)} q 30 -40 60 -6 q 26 30 -8 44 q -40 16 -52 -38`,fill:'none',stroke:DIMC,'stroke-width':2},ctx.svg);
+    circleAt(ctx, -0.3,0.6, 0.15, {stroke:RED, w:3});
+    label(ctx, 0.05,0.85, '+5 nC', {fs:10, color:RED});
+  },
+      steps:[
+        { map:0, title:"Draw the surface where E is known",
+          think:"Where inside this system do you KNOW E = 0 — and what does Gauss conclude there?",
+          model:"In the metal E = 0 ⇒ a Gaussian surface there encloses zero net charge.",
+          pose:"talk",
+          say:"The master move for conductors with cavities: draw the Gaussian surface INSIDE THE METAL itself, where equilibrium guarantees E is zero everywhere. Zero field, zero flux — therefore zero NET enclosed charge, whatever sits in the cavity. From that one certainty, every induced charge follows by arithmetic.",
+          board:[
+            {label:"The move", text:"Gaussian surface in the metal: E = 0 ⇒ Φ = 0 ⇒ q_enc = 0. Everything follows.", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) The cavity wall",
+          think:"q_enc = +5 + q_wall = 0: solve. Is the wall's charge uniform?",
+          model:"q_wall = −5.00 nC, arranged NONuniformly to cancel the off-center field in the metal.",
+          pose:"write",
+          say:"The surface encloses the cavity's plus five and the wall's induced charge; their sum must vanish: the wall carries MINUS five nanocoulombs. And not uniformly — the charge crowds wherever the off-centre intruder comes nearest, sculpting itself precisely so the metal's interior feels nothing. Conductors are instant, perfect diplomats.",
+          board:[
+            {tex:"q_{\\rm wall} = -5.00\\ \\mathrm{nC}\\ \\text{(nonuniform, canceling the interior's field in the metal)}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(a),(b) The outer surface",
+          think:"Neutral conductor: outer = ? With net +3 nC: outer = ? And how is it distributed?",
+          model:"Neutral: +5 outside, UNIFORM. Net +3: outer = 3−(−5) = +8 nC, still uniform.",
+          pose:"write",
+          say:"Conservation finishes the ledger. Neutral conductor: minus five went to the wall, so plus five surfaces on the OUTSIDE — and by the sphere's symmetry, spread perfectly UNIFORMLY, the outside having no way to learn where the cavity charge lurks. Give the conductor net plus three, and the outer skin holds three minus minus five: plus EIGHT nanocoulombs, uniform as before.",
+          board:[
+            {tex:"\\text{(a) outer: } +5.00\\ \\mathrm{nC}; \\quad \\text{(b) outer: } 3.00-(-5.00) = +8.00\\ \\mathrm{nC}\\ \\text{(uniform)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"(c) Outside — and the great shielding theorem",
+          think:"E at 20 cm sees what effective charge? What happens if the cavity charge MOVES?",
+          model:"E = k(8 nC)/(0.2)² = 1.80×10³ N/C. Moving the interior charge changes nothing outside.",
+          pose:"excited",
+          say:"Outside, at twenty centimetres: the world sees plus eight nanocoulombs, uniformly dressed — E equals one point eight times ten to the three, radially out. And the theorem worth the whole example: wiggle that cavity charge anywhere you please, and the exterior field never flickers — the wall's diplomats redeploy instantly, the outer surface stays serene. The conductor is a one-way censor: the outside learns the interior's TOTAL and nothing more. Every shielded cable and Faraday cage bills this page.",
+          board:[
+            {tex:"E(0.200) = \\frac{k(8.00\\times10^{-9})}{(0.200)^2} = 1.80\\times10^{3}\\ \\mathrm{N/C}", kind:"answer"},
+            {label:"Reusable method", text:"Gaussian in the metal ⇒ wall = −q_cavity → conservation sets the outer skin → exterior sees only totals (shielding)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"An electron inside a uniformly charged sphere",
+      problem:"In Thomson's model, an atom is a uniform sphere of positive charge +e with radius R = 1.00×10⁻¹⁰ m, with a point electron inside. Show the electron oscillates harmonically and find its frequency.",
+      goal:"Goal → SHM proof, f",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["Field inside","Hooke again","Frequency","History"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.2, {stroke:RED, w:2.5, dash:'6,5'});
+    circleAt(ctx, 0.9,0.4, 0.12, {stroke:BLUE, w:3});
+    label(ctx, -2.1,2.5, '+e, uniform', {fs:10, color:RED});
+    label(ctx, 1.15,0.65, 'e⁻', {fs:11, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"Gauss inside the pudding",
+          think:"At radius r inside a uniform sphere of charge, what fraction is enclosed?",
+          model:"q_enc = e(r/R)³ → E = (ke/R³)r: linear in r.",
+          pose:"talk",
+          say:"Thomson's atom: a diffuse pudding of positive charge with an electron swimming inside. Gauss, inside a uniform sphere: the enclosed fraction is r over R cubed, and dividing by r squared leaves a field LINEAR in r — k e over R cubed, times r, pointing outward. The same peeled-onion logic as the tunnel through the Earth, recast in charge.",
+          board:[
+            {tex:"E(r) = \\frac{ke(r/R)^3}{r^2} = \\frac{ke}{R^3}\\,r \\quad (r<R)", kind:"key"}
+          ]
+        },
+        { map:1, title:"The force is Hooke's law",
+          think:"F = −eE for the electron: what structure appears?",
+          model:"F = −(ke²/R³)r: restoring, linear — SHM with k_spring = ke²/R³.",
+          pose:"write",
+          say:"The electron, negative, feels minus e times that outward field: a force pointing back toward the centre, proportional to displacement. Hooke's law, with spring constant k e squared over R cubed. Displace the electron anywhere in the pudding and it oscillates about the centre in perfect simple harmony.",
+          board:[
+            {tex:"F = -eE = -\\frac{ke^2}{R^3}\\,r\\ \\text{— Hooke's law: SHM guaranteed}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The frequency",
+          think:"ω = √(k_spring/m_e): evaluate — expect something optical.",
+          model:"ω = 1.59×10¹⁶ rad/s → f = 2.5×10¹⁵ Hz: ultraviolet.",
+          pose:"write",
+          say:"Omega: root of k e squared over m e R cubed — one point five nine times ten to the SIXTEEN radians per second; f, two and a half times ten to the fifteen hertz. Ultraviolet light — squarely the order of magnitude at which real atoms are seen to radiate. The model sings in nearly the right key.",
+          board:[
+            {tex:"\\omega = \\sqrt{\\frac{ke^2}{m_eR^3}} = 1.59\\times10^{16}\\ \\mathrm{rad/s}; \\quad f = 2.5\\times10^{15}\\ \\mathrm{Hz\\ (UV)}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 0.9,0.4, 0.12, {stroke:BLUE, w:3});
+       tween(u=>{ const s=Math.cos(6.28*2*u); b.setAttribute('cx', c.M.X(0.9*s)); b.setAttribute('cy', c.M.Y(0.4*s)); }, 2200, c.instant);
+     }
+        },
+        { map:3, title:"Why good wrong models matter",
+          think:"The plum pudding was wrong. Why was it nonetheless taken seriously — and what killed it?",
+          model:"It predicted atomic-scale light correctly; Rutherford's scattering killed the pudding, not the method.",
+          pose:"excited",
+          say:"Savour the epistemology: a WRONG model that got the frequency of atomic light roughly right — which is exactly why serious people believed it, until Rutherford's alpha particles bounced backward off something hard and small, and the pudding dissolved into a nucleus. But mark what survived the wreck: Gauss's law, the linear interior field, the oscillation machinery — every technique on this board outlived the theory it served. Models die; methods are immortal. And with that, so ends our tour of Gauss.",
+          board:[
+            {label:"The lesson", text:"Thomson's model: wrong atom, right physics toolkit. Rutherford killed the pudding; Gauss's law never blinked.", kind:"key"},
+            {label:"Reusable method", text:"uniform sphere ⇒ E ∝ r inside → F = −(const)r ⇒ SHM → ω = √(ke²/mR³); treasure techniques over models", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

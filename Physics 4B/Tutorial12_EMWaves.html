@@ -1359,6 +1359,592 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Wavelengths across the spectrum",
+  problem:"Find the wavelength of (a) a 2.40 GHz Wi-Fi signal and (b) a 100 MHz FM broadcast, and (c) the frequency of 550 nm green light.",
+  goal:"Use c = λf both ways and place each wave on the electromagnetic spectrum.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One relation, whole spectrum","Wi-Fi: λ = c/f","FM radio","Green light: f = c/λ","Audit: six decades, one physics"],
+  setup(ctx, w){
+    arrow(ctx, 0.5, 2.2, 9.6, 2.2, {color:CHALKC, w:2});
+    label(ctx, 5.0, 1.5, 'frequency  →', {fs:12, color:DIMC});
+    label(ctx, 1.8, 2.8, 'radio', {fs:11, color:GOLD});
+    label(ctx, 4.2, 2.8, 'microwave', {fs:11, color:GREEN});
+    label(ctx, 6.7, 2.8, 'IR', {fs:11, color:RED});
+    label(ctx, 8.0, 2.8, 'visible', {fs:11, color:PURPLE});
+    label(ctx, 9.2, 2.8, 'UV…', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"One relation covers everything", pose:"talk",
+      think:"What single fact links every electromagnetic wave, from radio to gamma rays?",
+      say:"Here is the whole electromagnetic spectrum on one chalk line. Radio, microwave, light — they are all the same thing: coupled electric and magnetic fields travelling at c. So one relation, c equals lambda f, answers all three parts of this problem.",
+      board:[
+        {label:"Universal speed", tex:"c = 3.00\\times10^{8}\\ \\text{m/s}", kind:"key"},
+        {label:"The one relation", tex:"c = \\lambda f \\;\\Rightarrow\\; \\lambda = \\frac{c}{f},\\quad f = \\frac{c}{\\lambda}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Wi-Fi at 2.40 GHz", pose:"write",
+      think:"Giga means 10⁹ — what wavelength does that give?",
+      say:"Wi-Fi first. Two point four gigahertz is two point four times ten to the nine hertz. Divide c by that and you get twelve and a half centimetres — about the size of the antenna in your router, and of the hot spots in a microwave oven.",
+      board:[
+        {label:"Wi-Fi", tex:"\\lambda = \\frac{3.00\\times10^{8}}{2.40\\times10^{9}} = 0.125\\ \\text{m} = 12.5\\ \\text{cm}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 4.2, 2.2, 4.2, 3.6, {color:GREEN, w:2});
+        label(c, 4.2, 4.1, '2.40 GHz → 12.5 cm', {fs:12, color:GREEN});
+      }
+    },
+    { map:2, title:"FM radio at 100 MHz", pose:"write",
+      think:"Lower frequency — should the wavelength be longer or shorter?",
+      say:"FM broadcast is a much lower frequency, so the wavelength must be longer: three metres. That is why an FM antenna a quarter-wavelength long is seventy-five centimetres — roughly the whip antenna on an old car.",
+      board:[
+        {label:"FM", tex:"\\lambda = \\frac{3.00\\times10^{8}}{1.00\\times10^{8}} = 3.00\\ \\text{m}", kind:"answer"},
+        {label:"Quarter-wave antenna", tex:"\\tfrac{\\lambda}{4} = 75\\ \\text{cm}", kind:"note"}
+      ],
+      action(c){
+        arrow(c, 1.8, 2.2, 1.8, 3.6, {color:GOLD, w:2});
+        label(c, 1.9, 4.1, '100 MHz → 3.00 m', {fs:12, color:GOLD});
+      }
+    },
+    { map:3, title:"Green light: invert the relation", pose:"write",
+      think:"Now λ is given — which way does the formula go?",
+      say:"For green light we know lambda — five hundred fifty nanometres — and want f. Invert the relation: five point four five times ten to the fourteen hertz. Half a petahertz! Your eye is a detector tuned to frequencies a million times higher than Wi-Fi.",
+      board:[
+        {label:"Green light", tex:"f = \\frac{c}{\\lambda} = \\frac{3.00\\times10^{8}}{5.50\\times10^{-7}} = 5.45\\times10^{14}\\ \\text{Hz}", kind:"answer", move:"invert c = λf"}
+      ],
+      action(c){
+        arrow(c, 8.0, 2.2, 8.0, 3.6, {color:PURPLE, w:2});
+        label(c, 7.7, 4.1, '550 nm → 5.45×10¹⁴ Hz', {fs:12, color:PURPLE});
+      }
+    },
+    { map:4, title:"Check: six decades, one physics", pose:"think",
+      think:"Do the three answers order themselves correctly on the spectrum?",
+      say:"Audit the pattern: as frequency climbed six orders of magnitude, wavelength fell by the same factor — the product is always c. Radio to light is the same physics at different scales. That is the reusable idea: place any wave on this line with c equals lambda f.",
+      board:[
+        {label:"Consistency", tex:"\\lambda f = c\\ \\text{for every entry}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Identify which of λ, f is given; the other is c divided by it. Sanity-check by placing the wave on the spectrum.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"From E to B to intensity",
+  problem:"A plane wave has electric-field amplitude E₀ = 300 V/m. Find the magnetic amplitude and the intensity.",
+  goal:"Use B₀ = E₀/c, then I = E₀²/2μ₀c, and see why the ½ appears.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Picture the wave","B from E","Intensity","Why the ½","Equal energy shares"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.5, y0:3.2, xLab:'x', yLab:''});
+    plotCurve(ctx, t => [t, 3.2 + 1.6*Math.sin(1.4*(t-0.5))], 0.5, 9.3, {color:BLUE, w:2.5});
+    label(ctx, 1.1, 5.4, 'E', {fs:14, color:BLUE, italic:true});
+    plotCurve(ctx, t => [t, 3.2 + 0.7*Math.sin(1.4*(t-0.5))], 0.5, 9.3, {color:RED, w:2, dash:'6 5'});
+    label(ctx, 2.6, 2.2, 'B (into page ↔ out)', {fs:11, color:RED});
+  },
+  steps:[
+    { map:0, title:"Picture the wave", pose:"point",
+      think:"In a plane wave, how are E, B and the travel direction arranged?",
+      say:"Sketch the wave: E oscillates one way, B at right angles to it, and the wave travels along E cross B. The two fields are locked in phase — they peak together. Everything in this problem follows from their fixed ratio.",
+      board:[
+        {label:"Given", tex:"E_0 = 300\\ \\text{V/m}", kind:"key"},
+        {label:"Locked ratio", tex:"\\frac{E}{B} = c\\ \\text{at every instant}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Magnetic amplitude", pose:"write",
+      think:"Dividing 300 by 3×10⁸ — roughly what size of field is that?",
+      say:"B nought is E nought over c: one microtesla. Notice the asymmetry of the numbers — the electric field is substantial, the magnetic field is fifty times weaker than the Earth's. That is just the unit system; physically they are equal partners, as we shall check.",
+      board:[
+        {label:"Magnetic amplitude", tex:"B_0 = \\frac{E_0}{c} = \\frac{300}{3.00\\times10^{8}} = 1.00\\times10^{-6}\\ \\text{T}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.3, 3.2, 5.3, 4.8, {color:BLUE, w:2.5, label:'E₀', fs:12});
+        arrow(c, 5.3, 3.2, 6.0, 3.9, {color:RED, w:2, label:'B₀', fs:12, side:1});
+      }
+    },
+    { map:2, title:"Intensity from the Poynting vector", pose:"write",
+      think:"Intensity is a time average — of what quantity?",
+      say:"Intensity is the time-averaged Poynting flux. Using B nought equals E nought over c, it collapses to E nought squared over two mu nought c. Put in three hundred volts per metre: one hundred nineteen watts per square metre — a bright lamp at close range.",
+      board:[
+        {label:"Intensity", tex:"I = \\frac{E_0 B_0}{2\\mu_0} = \\frac{E_0^2}{2\\mu_0 c}", kind:"key", move:"substitute B₀ = E₀/c"},
+        {label:"Value", tex:"I = \\frac{(300)^2}{2(4\\pi\\times10^{-7})(3.00\\times10^{8})} = 119\\ \\text{W/m}^2", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Where the ½ comes from", pose:"talk",
+      think:"The fields oscillate — what is the average of sin² over a full cycle?",
+      say:"That factor of one half is not decoration. The instantaneous flux goes as sine squared, which averages to one half over a cycle. Forget it and every intensity you compute is double the truth — the single most common error in this chapter.",
+      board:[
+        {label:"The ½", tex:"\\langle \\sin^2(kx-\\omega t)\\rangle = \\tfrac{1}{2}", kind:"warn"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 0.6 + 0.55*Math.pow(Math.sin(1.4*(t-0.5)),2)], 0.5, 9.3, {color:GOLD, w:2});
+        dashLine(c, 0.5, 0.875, 9.3, 0.875, {color:DIMC});
+        label(c, 8.6, 1.35, 'avg = ½', {fs:11, color:GOLD});
+      }
+    },
+    { map:4, title:"Check: equal energy shares", pose:"think",
+      think:"Which field 'carries' the energy of light?",
+      say:"Final check: electric energy density is half epsilon nought E squared; magnetic is B squared over two mu nought. Substitute B equals E over c and they come out identical. Neither field is 'the' carrier — light is an equal partnership. Reusable method: from any one of E nought, B nought, or I, the other two follow from B equals E over c and I equals E nought squared over two mu nought c.",
+      board:[
+        {label:"Equal shares", tex:"\\tfrac{1}{2}\\varepsilon_0 E^2 = \\frac{B^2}{2\\mu_0}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"E₀, B₀, I form a triangle: B₀ = E₀/c and I = E₀²/2μ₀c convert any one into the other two.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Light-travel times",
+  problem:"(a) How long does sunlight take to reach Earth (1.496×10¹¹ m)? (b) A radar pulse is bounced off the Moon (3.84×10⁸ m); how long until the echo returns?",
+  goal:"Use d = ct, remembering the factor of 2 for an echo.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Distance = ct","Sun to Earth","Echo: factor of 2","What timing echoes buys"],
+  setup(ctx, w){
+    circleAt(ctx, 1.2, 5.3, 0.55, {stroke:GOLD, w:2.5});
+    label(ctx, 1.2, 4.2, 'Sun', {fs:12, color:GOLD});
+    circleAt(ctx, 8.6, 5.3, 0.28, {stroke:BLUE, w:2});
+    label(ctx, 8.6, 4.4, 'Earth', {fs:12, color:BLUE});
+    circleAt(ctx, 8.6, 1.8, 0.14, {stroke:DIMC, w:2});
+    label(ctx, 9.1, 1.6, 'Moon', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Light has a travel time", pose:"talk",
+      think:"Light is fast but not instantaneous — what relation gives the delay?",
+      say:"Light's speed is enormous but finite, so every glance at the sky is a look into the past. The only tool we need is distance equals c times t — the art is in reading the geometry: one way, or there and back?",
+      board:[
+        {label:"The tool", tex:"t = \\frac{d}{c}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Sun to Earth: one way", pose:"write",
+      think:"1.5×10¹¹ divided by 3×10⁸ — estimate before computing.",
+      say:"Sun to Earth is one way. Estimate first: ten to the eleven over ten to the eight is about five hundred seconds. Precisely: four hundred ninety-nine seconds — eight point three minutes. You see the Sun as it was eight minutes ago; if it vanished now, you would not know yet.",
+      board:[
+        {label:"(a) One way", tex:"t = \\frac{1.496\\times10^{11}}{2.998\\times10^{8}} = 499\\ \\text{s} = 8.3\\ \\text{min}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 1.9, 5.3, 8.2, 5.3, {color:GOLD, w:2, label:'8.3 min', fs:12});
+      }
+    },
+    { map:2, title:"Radar echo: there and back", pose:"write",
+      think:"An echo travels the distance twice — where does the 2 go?",
+      say:"The radar pulse must go out and come back, so the distance is doubled: two point five six seconds. That pause is long enough to hear — astronauts speaking with Houston lived inside this delay.",
+      board:[
+        {label:"(b) Round trip", tex:"t = \\frac{2d}{c} = \\frac{2(3.84\\times10^{8})}{2.998\\times10^{8}} = 2.56\\ \\text{s}", kind:"answer", move:"×2 for the echo"}
+      ],
+      action(c){
+        arrow(c, 8.35, 4.95, 8.35, 2.1, {color:GREEN, w:2});
+        arrow(c, 8.85, 2.1, 8.85, 4.95, {color:GREEN, w:2, dash:'6 5'});
+        label(c, 7.6, 3.4, '2.56 s', {fs:12, color:GREEN});
+      }
+    },
+    { map:3, title:"Check: what precise timing buys", pose:"excited",
+      think:"If you can time the echo to nanoseconds, how well do you know the distance?",
+      say:"Here is the payoff: time the echo with laser pulses against the Apollo retroreflectors and c converts nanoseconds into millimetres. That is how we know the Moon recedes three point eight centimetres per year. Reusable method: distance equals c t, with a factor of two whenever the signal must return.",
+      board:[
+        {label:"Precision", tex:"\\Delta d = \\tfrac{c\\,\\Delta t}{2}\\ \\text{— ns timing } \\Rightarrow \\text{ mm ranging}", kind:"note"},
+        {label:"Reusable method", text:"d = ct one way; d = ct/2 for an echo. Always ask: does the signal make the trip once or twice?", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Fields of an ordinary light bulb",
+  problem:"A 100 W bulb converts about 5% of its power to visible light, radiated uniformly. Find the intensity and the field amplitudes 2.00 m away.",
+  goal:"Spread power over a sphere for I, then invert I = E₀²/2μ₀c for the amplitudes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Useful power","Inverse square","Invert for E₀","B₀ and the audit"],
+  setup(ctx, w){
+    circleAt(ctx, 2.2, 3.5, 0.35, {stroke:GOLD, w:2.5});
+    label(ctx, 2.2, 2.5, '5.00 W of light', {fs:11, color:GOLD});
+    circleAt(ctx, 2.2, 3.5, 1.3, {stroke:DIMC, w:1.5, dash:'5 5'});
+    circleAt(ctx, 2.2, 3.5, 2.4, {stroke:DIMC, w:1.5, dash:'5 5'});
+    label(ctx, 5.1, 5.7, 'spheres of growing area', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"First: which power radiates?", pose:"talk",
+      think:"Is the whole 100 W emitted as visible light?",
+      say:"Careful with the given data: the bulb draws one hundred watts, but only five per cent leaves as visible light. Five watts is our source. The rest is infrared and heat — we shall come back to it in the audit.",
+      board:[
+        {label:"Radiated light", tex:"P = 0.05\\times100 = 5.00\\ \\text{W}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Spread over a sphere", pose:"write",
+      think:"At r = 2 m, over what area has the power spread?",
+      say:"Uniform radiation spreads over a sphere of radius r, area four pi r squared. At two metres that is about fifty square metres, so the intensity is a tenth of a watt per square metre — feeble compared with sunlight's thousand.",
+      board:[
+        {label:"Inverse square", tex:"I = \\frac{P}{4\\pi r^2} = \\frac{5.00}{4\\pi(2.00)^2} = 0.0995\\ \\text{W/m}^2", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.2, 3.5, 4.6, 3.5, {color:BLUE, w:2, label:'r = 2.00 m', fs:12});
+      }
+    },
+    { map:2, title:"Invert intensity for E₀", pose:"write",
+      think:"I = E₀²/2μ₀c is solved for I — turn it around for E₀.",
+      say:"Now run yesterday's formula backwards: E nought is the square root of two mu nought c I. Eight point seven volts per metre. A few volts per metre of oscillating electric field — that is what your retina actually responds to when you glance at the bulb.",
+      board:[
+        {label:"Amplitude", tex:"E_0 = \\sqrt{2\\mu_0 c I} = \\sqrt{2(4\\pi\\times10^{-7})(3.00\\times10^{8})(0.0995)}", kind:"key", move:"invert I = E₀²/2μ₀c"},
+        {label:"Value", tex:"E_0 = 8.66\\ \\text{V/m}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"B₀, then audit the scalings", pose:"think",
+      think:"Double the distance: what happens to I, and what happens to E₀?",
+      say:"B nought is E nought over c: twenty-nine nanotesla. Now audit. Double the distance and I falls by four — but E nought, going as the square root of I, only halves. Fields fade more gently than intensities. And remember the hidden ninety-five watts of infrared: 'brightness' is only the visible slice. Reusable method: power over sphere gives I, square root gives the fields.",
+      board:[
+        {label:"Magnetic amplitude", tex:"B_0 = \\frac{E_0}{c} = 2.89\\times10^{-8}\\ \\text{T}", kind:"answer"},
+        {label:"Scaling check", tex:"I \\propto \\frac{1}{r^2},\\qquad E_0 \\propto \\frac{1}{r}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"P/4πr² → I, then E₀ = √(2μ₀cI) and B₀ = E₀/c. Check which power actually radiates.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Reading the Poynting vector",
+  problem:"At a point, E = 100 ĵ V/m and B = 3.33×10⁻⁷ k̂ T. Find the Poynting vector and the wave's travel direction. Is this a consistent pair for a vacuum wave?",
+  goal:"Compute S = E×B/μ₀, read the propagation direction, and audit E/B = c.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Set up the axes","Cross product","Direction of travel","Consistency audit"],
+  setup(ctx, w){
+    arrow(ctx, 2.0, 2.0, 8.6, 2.0, {color:CHALKC, w:2, label:'x', fs:12});
+    arrow(ctx, 2.0, 2.0, 2.0, 6.3, {color:CHALKC, w:2, label:'y', fs:12});
+    arrow(ctx, 2.0, 2.0, 0.6, 0.8, {color:CHALKC, w:2, label:'z (out)', fs:11});
+  },
+  steps:[
+    { map:0, title:"Draw the two fields", pose:"point",
+      think:"E is along ĵ, B along k̂ — sketch them before touching the algebra.",
+      say:"Always draw the vectors first. E points along y, B along z. The Poynting vector is E cross B over mu nought — and before computing a single digit, the right-hand rule already whispers the answer: y cross z is x.",
+      board:[
+        {label:"Given", tex:"\\vec{E} = 100\\,\\jhat\\ \\text{V/m},\\quad \\vec{B} = 3.33\\times10^{-7}\\,\\khat\\ \\text{T}", kind:"key"},
+        {label:"Energy flux", tex:"\\vec{S} = \\frac{1}{\\mu_0}\\,\\vec{E}\\times\\vec{B}", kind:"key"}
+      ],
+      action(c){
+        arrow(c, 2.0, 2.0, 2.0, 5.4, {color:BLUE, w:3, label:'E', fs:13});
+        arrow(c, 2.0, 2.0, 0.9, 1.05, {color:RED, w:3, label:'B', fs:13, side:1});
+      }
+    },
+    { map:1, title:"Compute the cross product", pose:"write",
+      think:"ĵ × k̂ = ? Keep the cyclic order î→ĵ→k̂ in mind.",
+      say:"j hat cross k hat is i hat — the cyclic order. Multiply the magnitudes and divide by mu nought: twenty-six and a half watts per square metre flowing along plus x.",
+      board:[
+        {label:"Cross product", tex:"\\jhat\\times\\khat = \\ihat", kind:"note"},
+        {label:"Poynting vector", tex:"\\vec{S} = \\frac{(100)(3.33\\times10^{-7})}{4\\pi\\times10^{-7}}\\,\\ihat = 26.5\\,\\ihat\\ \\text{W/m}^2", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.0, 2.0, 6.6, 2.0, {color:GREEN, w:3.5, label:'S', fs:14});
+      }
+    },
+    { map:2, title:"The wave travels along S", pose:"talk",
+      think:"What would reversing B do to the travel direction?",
+      say:"Energy flows where S points, and so does the wave: plus x. Flip B and the cross product flips — the wave would run toward minus x. And if E and B were parallel? S would vanish; no such wave exists in vacuum. The geometry is the physics here.",
+      board:[
+        {label:"Travel direction", tex:"\\text{wave moves along } \\vec{E}\\times\\vec{B} = +\\ihat", kind:"answer"},
+        {label:"Degenerate case", tex:"\\vec{E}\\parallel\\vec{B} \\Rightarrow \\vec{S}=0\\ \\text{— impossible for a wave}", kind:"warn"}
+      ]
+    },
+    { map:3, title:"Audit: is the pair consistent?", pose:"think",
+      think:"For a genuine vacuum wave, what must E/B equal?",
+      say:"Final audit: divide the magnitudes. One hundred over three point three three times ten to the minus seven is three times ten to the eight — exactly c. The pair is a legitimate vacuum wave. One more subtlety: this S is instantaneous; averaged over a cycle you would get half the peak. Reusable method: draw E and B, cross them for the direction, and always check E over B equals c.",
+      board:[
+        {label:"Consistency", tex:"\\frac{E}{B} = \\frac{100}{3.33\\times10^{-7}} = 3.00\\times10^{8}\\ \\text{m/s} = c\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"S = E×B/μ₀ gives magnitude and direction at once; E/B = c is the entry ticket for any claimed vacuum wave.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Radiation pressure: absorber versus mirror",
+  problem:"Sunlight of intensity 1000 W/m² falls at normal incidence on a 10.0 m² panel. Find the force if the panel is (a) perfectly absorbing and (b) perfectly reflecting.",
+  goal:"Use light's momentum p = U/c; reflection doubles the momentum transfer.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Light carries momentum","Absorbed: F = IA/c","Reflected: double","How big is it?"],
+  setup(ctx, w){
+    el('rect', {x:0, y:0, width:0, height:0});
+    boxAt(ctx, 7.2, 1.2, 0.5, 4.6, {fill:'none', stroke:CHALKC});
+    label(ctx, 7.2, 0.6, 'panel, 10.0 m²', {fs:11, color:DIMC});
+    arrow(ctx, 1.0, 5.0, 6.7, 5.0, {color:GOLD, w:2});
+    arrow(ctx, 1.0, 3.5, 6.7, 3.5, {color:GOLD, w:2});
+    arrow(ctx, 1.0, 2.0, 6.7, 2.0, {color:GOLD, w:2});
+    label(ctx, 3.2, 5.8, 'I = 1000 W/m²', {fs:12, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Light pushes", pose:"talk",
+      think:"Light has no mass — how can it carry momentum?",
+      say:"Light carries momentum even without mass: p equals U over c, energy over the speed of light. So a beam that delivers energy also delivers a push. The question is only how much momentum sticks — and that depends on what the surface does with the light.",
+      board:[
+        {label:"Momentum of light", tex:"p = \\frac{U}{c}", kind:"key"},
+        {label:"Force", tex:"F = \\frac{dp}{dt}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Perfect absorber", pose:"write",
+      think:"Energy arrives at rate IA — so momentum arrives at what rate?",
+      say:"An absorber swallows the light: all its momentum transfers, once. Energy arrives at rate I times A, so momentum arrives at rate I A over c. Thirty-three micronewtons on a ten-square-metre panel.",
+      board:[
+        {label:"(a) Absorbed", tex:"F = \\frac{IA}{c} = \\frac{(1000)(10.0)}{3.00\\times10^{8}} = 3.33\\times10^{-5}\\ \\text{N}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.45, 3.5, 8.9, 3.5, {color:RED, w:2.5, label:'F', fs:13});
+        label(c, 8.3, 2.7, 'light absorbed', {fs:11, color:DIMC});
+      }
+    },
+    { map:2, title:"Perfect mirror: momentum reverses", pose:"write",
+      think:"The photon leaves with reversed momentum — what is the change in its p?",
+      say:"A mirror is better. The light arrives with momentum plus p and leaves with minus p, so the change is two p — the panel receives double the push: sixty-seven micronewtons. Reflection, not absorption, is how you build a solar sail.",
+      board:[
+        {label:"(b) Reflected", tex:"\\Delta p = 2p \\Rightarrow F = \\frac{2IA}{c} = 6.67\\times10^{-5}\\ \\text{N}", kind:"answer", move:"×2: momentum reverses"}
+      ],
+      action(c){
+        arrow(c, 6.7, 2.0, 1.6, 1.4, {color:GOLD, w:2, dash:'6 5'});
+        label(c, 3.6, 1.0, 'reflected beam', {fs:11, color:DIMC});
+      }
+    },
+    { map:3, title:"Check: how big is this force?", pose:"think",
+      think:"Micronewtons on 10 m² — what everyday weight compares?",
+      say:"Audit the size: three to seven micropascals of pressure — the weight of a few grains of sand spread over the whole panel. On Earth, negligible. In space, though, it acts continuously, needs no fuel, and never runs out: it steers solar sails and perturbs GPS orbits enough that engineers must model it. Reusable method: F equals I A over c, doubled for a mirror.",
+      board:[
+        {label:"Pressure", tex:"p_{\\text{rad}} = \\frac{I}{c}\\ (\\text{absorb}),\\quad \\frac{2I}{c}\\ (\\text{mirror})", kind:"key"},
+        {label:"Reusable method", text:"Momentum flux = energy flux ÷ c. Ask what the surface does: absorb → ×1, reflect → ×2.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Energy stored in a cubic meter of sunlight",
+  problem:"Just above the atmosphere the solar intensity is 1361 W/m². How much electromagnetic energy is in a cube one meter on a side? What are the rms fields?",
+  goal:"Relate intensity to energy density by I = uc, then extract rms fields from u = ε₀E²ᵣₘₛ.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["I = uc: flux vs density","Energy in the cube","rms fields","Audit: sparse but fast"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.6, 2.6, 2.6, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 3.7, 4.2, 4.5, 5.0, {color:DIMC});
+    dashLine(ctx, 6.3, 4.2, 7.1, 5.0, {color:DIMC});
+    dashLine(ctx, 4.5, 5.0, 7.1, 5.0, {color:DIMC});
+    dashLine(ctx, 6.3, 1.6, 7.1, 2.4, {color:DIMC});
+    dashLine(ctx, 7.1, 2.4, 7.1, 5.0, {color:DIMC});
+    label(ctx, 5.0, 0.9, '1 m cube of sunlight', {fs:12, color:DIMC});
+    arrow(ctx, 0.7, 3.0, 3.0, 3.0, {color:GOLD, w:2.5, label:'I = 1361 W/m²', fs:11});
+  },
+  steps:[
+    { map:0, title:"Flux versus density", pose:"talk",
+      think:"Intensity is energy per area per time; energy density is energy per volume. What connects them?",
+      say:"Two different bookkeepings of the same light: intensity counts energy crossing a surface per second; energy density counts energy sitting in a volume. They differ by how fast the energy moves — I equals u times c. Fast mover, sparse stock.",
+      board:[
+        {label:"The link", tex:"I = uc \\;\\Rightarrow\\; u = \\frac{I}{c}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Energy in the cube", pose:"write",
+      think:"Divide 1361 by 3×10⁸ — expect a very small number.",
+      say:"Divide: four and a half microjoules per cubic metre. A cubic metre of full, unfiltered sunlight holds less energy than a falling raindrop. Yet because that stock is replaced at the speed of light, thirteen hundred sixty-one joules pour through each square metre every second.",
+      board:[
+        {label:"Energy density", tex:"u = \\frac{1361}{3.00\\times10^{8}} = 4.54\\times10^{-6}\\ \\text{J/m}^3", kind:"answer"},
+        {label:"In the cube", tex:"U = u\\,(1\\ \\text{m}^3) = 4.54\\ \\mu\\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"rms fields from u", pose:"write",
+      think:"u = ε₀E²ᵣₘₛ already includes both fields' shares — why no ½?",
+      say:"Total density is epsilon nought E rms squared — no half, because rms already does the averaging and the magnetic field contributes an equal share. Invert: seven hundred sixteen volts per metre rms, and B rms is that over c — two point four microtesla. For the peak values, multiply by root two.",
+      board:[
+        {label:"Electric rms", tex:"E_{\\text{rms}} = \\sqrt{\\frac{u}{\\varepsilon_0}} = \\sqrt{\\frac{4.54\\times10^{-6}}{8.854\\times10^{-12}}} = 716\\ \\text{V/m}", kind:"answer", move:"invert u = ε₀E²ᵣₘₛ"},
+        {label:"Magnetic rms", tex:"B_{\\text{rms}} = \\frac{E_{\\text{rms}}}{c} = 2.39\\ \\mu\\text{T}", kind:"answer"},
+        {label:"Amplitudes", tex:"E_0 = \\sqrt{2}\\,E_{\\text{rms}} = 1.01\\ \\text{kV/m}", kind:"note"}
+      ]
+    },
+    { map:3, title:"Check: sparse but fast", pose:"think",
+      think:"How can μJ/m³ of stored energy deliver kW/m² of power?",
+      say:"The audit is the moral: microjoules per cubic metre of stock, kilowatts per square metre of flow. The reconciliation is c — the entire cubic metre empties and refills three hundred million times a second. Reusable method: I equals u c converts between flux and density; u equals epsilon nought E rms squared unpacks the fields.",
+      board:[
+        {label:"Consistency", tex:"uc = (4.54\\times10^{-6})(3.00\\times10^{8}) = 1361\\ \\text{W/m}^2\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Flux ↔ density via I = uc; density ↔ fields via u = ε₀E²ᵣₘₛ; peaks are √2 above rms.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Checking a wave against Maxwell's equations",
+  problem:"Show E_y = E₀ sin(kx − ωt) satisfies the wave equation provided ω/k = c, and use Faraday's law to find B. Evaluate k and ω for 600 nm light.",
+  goal:"Differentiate, substitute, extract the phase-speed condition, then get B from Faraday's law.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The claim to test","Differentiate twice","Phase speed = c","B from Faraday","Numbers for 600 nm"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.5, y0:3.5, xLab:'x', yLab:'E_y'});
+    plotCurve(ctx, t => [t, 3.5 + 1.7*Math.sin(1.5*(t-0.5))], 0.5, 9.3, {color:BLUE, w:2.5});
+  },
+  steps:[
+    { map:0, title:"What must be shown", pose:"talk",
+      think:"What does it mean for a function to 'satisfy' a differential equation?",
+      say:"Maxwell's equations combine into a wave equation: the second space derivative equals mu nought epsilon nought times the second time derivative. Our job is to feed the trial sine wave in and see what condition survives. This is how you test any claimed wave — plug in and compare.",
+      board:[
+        {label:"Wave equation", tex:"\\frac{\\partial^2 E_y}{\\partial x^2} = \\mu_0\\varepsilon_0\\,\\frac{\\partial^2 E_y}{\\partial t^2}", kind:"key"},
+        {label:"Trial solution", tex:"E_y = E_0\\sin(kx - \\omega t)", kind:"key"}
+      ]
+    },
+    { map:1, title:"Differentiate twice, each way", pose:"write",
+      think:"Two derivatives of sine bring the function back — with what factor?",
+      say:"Differentiate twice with respect to x: each derivative pulls out a k, and two of them restore the sine with a minus sign — minus k squared times E y. Twice in time: minus omega squared times E y. The sine itself survives on both sides, ready to cancel.",
+      board:[
+        {label:"Space", tex:"\\frac{\\partial^2 E_y}{\\partial x^2} = -k^2 E_y", kind:"note"},
+        {label:"Time", tex:"\\frac{\\partial^2 E_y}{\\partial t^2} = -\\omega^2 E_y", kind:"note"}
+      ]
+    },
+    { map:2, title:"The condition: phase speed is c", pose:"excited",
+      think:"After cancelling E_y, what relation between ω and k remains?",
+      say:"Substitute and cancel E y: k squared equals mu nought epsilon nought omega squared, so omega over k — the phase speed — equals one over root mu nought epsilon nought. Compute that number and it is three times ten to the eight metres per second. The speed of light drops out of the constants of electricity and magnetism. This is Maxwell's great moment.",
+      board:[
+        {label:"Condition", tex:"k^2 = \\mu_0\\varepsilon_0\\,\\omega^2", kind:"key", move:"cancel E_y"},
+        {label:"Phase speed", tex:"\\frac{\\omega}{k} = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} = c", kind:"answer"}
+      ]
+    },
+    { map:3, title:"B from Faraday's law", pose:"write",
+      think:"∂E_y/∂x = −∂B_z/∂t: integrate in time to find B_z.",
+      say:"Faraday's law for this geometry says the x-derivative of E y equals minus the time-derivative of B z. Differentiate E, integrate in time, and out comes B z equals E nought over c times the same sine. In phase with E, perpendicular to it, amplitude E nought over c — and E cross B points along plus x, the direction of travel. Everything self-consistent.",
+      board:[
+        {label:"Faraday", tex:"\\frac{\\partial E_y}{\\partial x} = -\\frac{\\partial B_z}{\\partial t}", kind:"key"},
+        {label:"Companion field", tex:"B_z = \\frac{k}{\\omega}E_0\\sin(kx-\\omega t) = \\frac{E_0}{c}\\sin(kx-\\omega t)", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 3.5 + 0.75*Math.sin(1.5*(t-0.5))], 0.5, 9.3, {color:RED, w:2, dash:'6 5'});
+        label(c, 8.5, 4.6, 'B_z (in phase)', {fs:11, color:RED});
+      }
+    },
+    { map:4, title:"Numbers for 600 nm light", pose:"think",
+      think:"k = 2π/λ and ω = ck — estimate the orders of magnitude first.",
+      say:"Finish with numbers. For six hundred nanometres: k is two pi over lambda, about ten to the seven per metre; omega is c k, three times ten to the fifteen radians per second — a thousand oscillations in a picosecond. Reusable method: differentiate the trial wave, cancel the common factor, and read off the dispersion relation; then Faraday's law hands you the partner field free of charge.",
+      board:[
+        {label:"Wavenumber", tex:"k = \\frac{2\\pi}{\\lambda} = \\frac{2\\pi}{6.00\\times10^{-7}} = 1.05\\times10^{7}\\ \\text{m}^{-1}", kind:"answer"},
+        {label:"Angular frequency", tex:"\\omega = ck = 3.14\\times10^{15}\\ \\text{rad/s}", kind:"answer"},
+        {label:"Reusable method", text:"Plug the trial wave into the PDE, cancel, read the condition; get B from Faraday. Works for waves on strings, in circuits, everywhere.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Fields in a focused laser beam",
+  problem:"A 5.00 mW laser is focused to a spot 10.0 μm in diameter. Find the intensity, E₀, and the radiation pressure on an absorbing target. Compare E₀ with air's breakdown field (~3×10⁶ V/m).",
+  goal:"Concentration drives intensity; then E₀ = √(2μ₀cI) and p = I/c, with a breakdown comparison.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Concentration is the trick","Intensity at the focus","Field amplitude","Radiation pressure","Audit vs breakdown"],
+  setup(ctx, w){
+    boxAt(ctx, 1.3, 3.0, 1.6, 1.0, {fill:'none', stroke:CHALKC});
+    label(ctx, 1.3, 2.3, '5.00 mW laser', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [t, 3.5 + 0.45*(7.2-t)/5.1], 2.1, 7.2, {color:RED, w:2});
+    plotCurve(ctx, t => [t, 3.5 - 0.45*(7.2-t)/5.1], 2.1, 7.2, {color:RED, w:2});
+    label(ctx, 7.6, 4.2, 'focus', {fs:11, color:GOLD});
+    circleAt(ctx, 7.2, 3.5, 0.09, {stroke:GOLD, w:2.5});
+    label(ctx, 7.9, 2.8, 'd = 10.0 μm', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Small power, tiny area", pose:"talk",
+      think:"Five milliwatts is feeble — what makes the focus dangerous?",
+      say:"Five milliwatts would barely warm your skin. The trick is concentration: a lens squeezes that power into a spot ten microns across — a fifth the width of a hair. Intensity is power over area, and the area here is absurdly small. Watch what happens.",
+      board:[
+        {label:"Spot area", tex:"A = \\pi r^2 = \\pi(5.00\\times10^{-6})^2 = 7.85\\times10^{-11}\\ \\text{m}^2", kind:"key"}
+      ]
+    },
+    { map:1, title:"Intensity at the focus", pose:"write",
+      think:"mW divided by 10⁻¹⁰ m² — estimate the order of magnitude.",
+      say:"Divide: sixty-four million watts per square metre. Compare sunlight's thousand — this is over sixty thousand suns, from a pointer-class laser, purely by concentration. No new energy anywhere; just geometry.",
+      board:[
+        {label:"Intensity", tex:"I = \\frac{P}{A} = \\frac{5.00\\times10^{-3}}{7.85\\times10^{-11}} = 6.37\\times10^{7}\\ \\text{W/m}^2", kind:"answer"},
+        {label:"Perspective", tex:"\\approx 6\\times10^{4}\\ \\text{suns}", kind:"note"}
+      ]
+    },
+    { map:2, title:"Field amplitude", pose:"write",
+      think:"E₀ grows only as √I — concentration helps, but with a square root.",
+      say:"The field follows from the square root: two hundred nineteen kilovolts per metre. Note the square root — intensity climbed by ten thousand suns, but the field climbs only as its square root. Fields are stubborn; intensities are flashy.",
+      board:[
+        {label:"Amplitude", tex:"E_0 = \\sqrt{2\\mu_0 c I} = \\sqrt{2(4\\pi\\times10^{-7})(3.00\\times10^{8})(6.37\\times10^{7})}", kind:"key"},
+        {label:"Value", tex:"E_0 = 2.19\\times10^{5}\\ \\text{V/m}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Radiation pressure at the focus", pose:"write",
+      think:"An absorbing target: which momentum-transfer factor applies?",
+      say:"On an absorbing target the pressure is I over c: about a fifth of a pascal. Tiny in absolute terms — but on a micron-sized bead that pressure delivers piconewton forces, and piconewtons are exactly the scale of forces inside living cells. This is the physics of optical tweezers: focused light that holds and moves a single cell.",
+      board:[
+        {label:"Pressure", tex:"p_{\\text{rad}} = \\frac{I}{c} = \\frac{6.37\\times10^{7}}{3.00\\times10^{8}} = 0.212\\ \\text{Pa}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.2, 3.5, 8.6, 3.5, {color:GREEN, w:2, label:'p·A ~ pN', fs:11});
+      }
+    },
+    { map:4, title:"Audit: distance to breakdown", pose:"think",
+      think:"How far below air's 3×10⁶ V/m are we — and what closes the gap?",
+      say:"Final audit: our field is a factor of fourteen below air's breakdown. Since E nought scales as root P, closing a factor fourteen in field takes a factor two hundred in power — a one-watt laser focused the same way would spark in air. Reusable method: concentrate P into A for I, then square-root for the field, and always compare against a physical threshold.",
+      board:[
+        {label:"Comparison", tex:"\\frac{3\\times10^{6}}{2.19\\times10^{5}} \\approx 14\\ \\text{below breakdown}", kind:"key"},
+        {label:"Scaling", tex:"E_0 \\propto \\sqrt{P} \\Rightarrow 14^2 \\approx 200\\times\\ \\text{power to spark}", kind:"note"},
+        {label:"Reusable method", text:"I = P/A rewards small spots; E₀ = √(2μ₀cI); judge the result against a threshold field, not just a number.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Sunlight versus gravity on a dust grain",
+  problem:"A dust grain (a = 1.00 μm, ρ = 2000 kg/m³) absorbs sunlight. Compare the radiation force to the Sun's gravity, and show the ratio is independent of distance. (L☉ = 3.83×10²⁶ W, M☉ = 1.99×10³⁰ kg.)",
+  goal:"Build both forces, watch 1/r² cancel, and read off the size-sorting that shapes comet tails.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two competing forces","Radiation force","Gravity on the grain","The ratio: r cancels","Size-sorting and comet tails"],
+  setup(ctx, w){
+    circleAt(ctx, 1.4, 3.5, 0.6, {stroke:GOLD, w:2.5});
+    label(ctx, 1.4, 2.3, 'Sun', {fs:12, color:GOLD});
+    circleAt(ctx, 7.4, 3.5, 0.12, {stroke:CHALKC, w:2});
+    label(ctx, 7.4, 2.7, 'grain, a = 1 μm', {fs:11, color:DIMC});
+    dashLine(ctx, 2.1, 3.5, 7.2, 3.5, {color:DIMC});
+    label(ctx, 4.6, 3.0, 'r', {fs:12, color:DIMC, italic:true});
+  },
+  steps:[
+    { map:0, title:"A tug of war on a speck", pose:"talk",
+      think:"Both sunlight and gravity weaken as 1/r² — what does that suggest about their ratio?",
+      say:"A dust grain near the Sun feels two hands: gravity pulling in, sunlight pushing out. Both weaken with the square of distance — and that shared factor is the key to the whole problem. If both forces scale the same way with r, their ratio cannot depend on where the grain is.",
+      board:[
+        {label:"Solar intensity at r", tex:"I = \\frac{L_\\odot}{4\\pi r^2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The outward push", pose:"write",
+      think:"The grain intercepts light over what area?",
+      say:"The grain absorbs whatever light hits its cross-section, pi a squared. Radiation force is intensity times that area over c. Assemble it: L over four pi r squared, times pi a squared, over c — the pi's simplify to L a squared over four c r squared.",
+      board:[
+        {label:"Radiation force", tex:"F_{\\text{rad}} = \\frac{I\\pi a^2}{c} = \\frac{L_\\odot a^2}{4c\\,r^2}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.55, 3.5, 9.1, 3.5, {color:GOLD, w:2.5, label:'F_rad', fs:12});
+      }
+    },
+    { map:2, title:"The inward pull", pose:"write",
+      think:"Mass of a sphere: which power of a enters?",
+      say:"Gravity needs the grain's mass: density times four-thirds pi a cubed. Note the powers — the push grows with a squared, the pull with a cubed. That mismatch is where all the drama will come from.",
+      board:[
+        {label:"Grain mass", tex:"m = \\tfrac{4}{3}\\pi a^3\\rho", kind:"note"},
+        {label:"Gravity", tex:"F_g = \\frac{GM_\\odot m}{r^2} = \\frac{4\\pi G M_\\odot \\rho\\, a^3}{3r^2}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.25, 3.5, 5.9, 3.5, {color:BLUE, w:2.5, label:'F_g', fs:12, side:1});
+      }
+    },
+    { map:3, title:"Take the ratio: r cancels", pose:"excited",
+      think:"Divide the two forces — what survives?",
+      say:"Divide, and watch r squared cancel completely: the ratio is three L over sixteen pi c G M rho a — a pure constant of the grain, the same at Mercury as beyond Neptune. For our one-micron grain it comes to zero point two nine: gravity wins, but only by a factor of three.",
+      board:[
+        {label:"The ratio", tex:"\\frac{F_{\\text{rad}}}{F_g} = \\frac{3L_\\odot}{16\\pi c G M_\\odot \\rho\\, a}", kind:"key", move:"cancel 1/r²"},
+        {label:"Value", tex:"\\frac{F_{\\text{rad}}}{F_g} = 0.29\\ \\text{(independent of } r\\text{)}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Size-sorting: why comet tails point away", pose:"think",
+      think:"The ratio goes as 1/a — what happens for smaller grains?",
+      say:"Now the payoff. The ratio scales as one over a: shrink the grain below about a third of a micron and radiation wins outright — those grains are blown clean out of the solar system, at any distance. That is why a comet's dust tail streams away from the Sun regardless of which way the comet moves, and why the finest dust is swept from interplanetary space. At one AU the actual forces are ten to the minus seventeen newtons — laughably small, yet they sculpt what we see in the night sky. Reusable method: when two forces share their r-dependence, take the ratio first; the surviving scaling tells the whole story.",
+      board:[
+        {label:"Numbers at 1 AU", tex:"F_{\\text{rad}} = 1.4\\times10^{-17}\\ \\text{N},\\quad F_g = 5.0\\times10^{-17}\\ \\text{N}", kind:"note"},
+        {label:"Blow-out size", tex:"\\frac{F_{\\text{rad}}}{F_g}\\propto\\frac{1}{a}:\\ a \\lesssim 0.3\\ \\mu\\text{m} \\Rightarrow \\text{radiation wins}", kind:"key"},
+        {label:"Reusable method", text:"Build each force symbolically, divide, and let shared factors cancel; the residual scaling (here 1/a) is the physics.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

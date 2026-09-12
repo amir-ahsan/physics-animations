@@ -1395,6 +1395,544 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Self-induced emf",
+      problem:"The current through a 50.0 mH inductor increases steadily at 20.0 A/s. Find the induced emf and its direction.",
+      goal:"Goal → ε and its sense",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["ε = L di/dt","Direction","Rate not value","Character"],
+      setup(ctx,w){
+    indSym(ctx, 5.5, 2.3, 4.7, '50 mH');
+    arrow(ctx, 1.2,3.5, 3.2,3.5, {color:GREEN, w:2.5, label:'i rising', fs:11, side:-1});
+  },
+      steps:[
+        { map:0, title:"The inductor's law",
+          think:"|ε| = L di/dt: evaluate.",
+          model:"|ε| = (0.0500)(20.0) = 1.00 V.",
+          pose:"talk",
+          say:"An inductor's protest is proportional to how fast its current is asked to change: L d i d t. Fifty millihenries times twenty amperes per second — one volt of back-emf, sustained as long as the current keeps climbing at that rate.",
+          board:[
+            {tex:"|\\mathcal{E}| = L\\frac{di}{dt} = (0.0500)(20.0) = 1.00\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Which way does it push?",
+          think:"The current is INCREASING: does the inductor's emf aid or oppose? Which terminal is at higher potential?",
+          model:"Opposes the increase — a battery facing against the current; the entry terminal sits higher.",
+          pose:"point",
+          say:"Direction, by Lenz translated to circuits: the current is increasing, so the inductor behaves as a battery aimed AGAINST it — the terminal where current enters rides at the higher potential, charging a toll on growth. Were the current DECREASING, the emf would flip and push to sustain it. The inductor has no opinion about current; it has strong opinions about change.",
+          board:[
+            {label:"Direction", text:"Rising i: emf opposes (entry end at higher V). Falling i: emf assists. Always anti-change.", kind:"key"}
+          ]
+        },
+        { map:2, title:"A steady giant is silent",
+          think:"i = 100 A, constant: ε = ?",
+          model:"Zero. Only di/dt speaks.",
+          pose:"write",
+          say:"And mark the counterpart fact: a steady HUNDRED amperes through this coil induces nothing whatsoever — d i d t is zero, and so is the emf. Like Faraday's coil in a constant field, the inductor taxes motion, never possession.",
+          board:[
+            {tex:"i\\ \\text{constant (any size)} \\Rightarrow \\mathcal{E} = 0", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The inductor's character",
+          think:"Summarize: what does an inductor 'want', in one sentence — and what is its capacitor mirror?",
+          model:"Inductors resist changes in CURRENT as capacitors resist changes in VOLTAGE. The two duals of circuit theory.",
+          pose:"excited",
+          say:"File the character sketch that will carry you through three tutorials: the inductor is current's conservative — it resists any change in the current through it, exactly as the capacitor resists change in the voltage across it. Current and voltage, L and C, magnetic and electric: circuit theory is built on this mirrored pair, and every filter, oscillator, and power supply plays one against the other.",
+          board:[
+            {label:"Duality", text:"L guards its current; C guards its voltage. The two temperaments of circuit dynamics.", kind:"key"},
+            {label:"Reusable method", text:"|ε| = L di/dt → direction anti-change → steady current = silence", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Energy stored in an inductor",
+      problem:"A 2.00 H inductor carries 3.00 A. How much energy is stored? What happens if the circuit is suddenly opened?",
+      goal:"Goal → U, and the spark",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["U = ½Li²","The sudden open","The spark","Flyback"],
+      setup(ctx,w){
+    indSym(ctx, 5.5, 2.3, 4.7, '2.00 H');
+  },
+      steps:[
+        { map:0, title:"The stored energy",
+          think:"½Li² — where, physically, does it reside?",
+          model:"U = ½(2.00)(9.00) = 9.00 J, held in the magnetic field around the coil.",
+          pose:"talk",
+          say:"An inductor carrying current is a loaded flywheel: one half L i squared — nine joules here — banked not in the wire but in the MAGNETIC FIELD threading and surrounding the coil. Space itself holds the deposit, at B squared over two mu nought per cubic metre.",
+          board:[
+            {tex:"U = \\tfrac12Li^2 = \\tfrac12(2.00)(3.00)^2 = 9.00\\ \\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Now open the switch",
+          think:"i must fall to zero 'instantly': what does L di/dt attempt?",
+          model:"di/dt → −∞ would make ε → ∞: the inductor refuses graceful surrender.",
+          pose:"point",
+          say:"Now snap the switch open and watch the drama: the current is asked to vanish instantly, d i d t plunging toward minus infinity — and L d i d t responds with a voltage spike growing toward INFINITY, whatever it takes to keep its current flowing. An inductor does not negotiate the loss of its current; it escalates.",
+          board:[
+            {label:"The refusal", tex:"i\\to0\\ \\text{instantly} \\Rightarrow |\\mathcal{E}| = L\\left|\\frac{di}{dt}\\right|\\to\\text{huge}", kind:"warn"}
+          ]
+        },
+        { map:2, title:"The energy finds its exit",
+          think:"Nine joules must go SOMEWHERE in milliseconds. Where?",
+          model:"An arc across the opening switch: the air breaks down and the energy burns through.",
+          pose:"write",
+          say:"The nine joules must discharge somewhere, and the escalating voltage finds the only path on offer: it tears the air apart across the widening switch contacts and burns through as a SPARK. Every electrician who has unplugged a running motor has seen this blue farewell — the inductor's estate, probated by arc.",
+          board:[
+            {label:"The spark", text:"The stored 9 J arcs across the opening switch — inductive kick, seen at every motor unplugging.", kind:"key"}
+          ]
+        },
+        { map:3, title:"The engineer's mercy: flyback",
+          think:"How does a diode across the coil tame the kick?",
+          model:"A flyback diode gives the current a safe loop to decay through: relays, motors, every transistor-driven coil.",
+          pose:"excited",
+          say:"And the standard mercy: solder a DIODE across the coil, oriented to sleep during normal operation and wake the instant the switch opens — offering the current a gentle loop in which to decay at its leisure. The flyback diode, a few cents of silicon, guards every relay driver and motor controller ever built; omit it once, and the transistor it was protecting will teach you the lesson permanently. Respect the inductor's momentum, and always give it an exit.",
+          board:[
+            {label:"Flyback", text:"A diode across the coil = a safe decay path. Standard armor for every switched inductive load.", kind:"key"},
+            {label:"Reusable method", text:"U = ½Li² lives in the field → sudden opens make spikes → provide a decay path (flyback/snubber)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Inductance from measured flux",
+      problem:"A coil of 400 turns carries 0.500 A; the flux per turn is 2.00×10⁻⁴ Wb. Find the self-inductance.",
+      goal:"Goal → L",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Flux linkage","Evaluate","Geometry only","N²"],
+      setup(ctx,w){
+    for(let x=3;x<=8;x+=0.62){ el('ellipse',{cx:ctx.M.X(x),cy:ctx.M.Y(3.5),rx:5,ry:40,fill:'none',stroke:GOLD,'stroke-width':2},ctx.svg); }
+  },
+      steps:[
+        { map:0, title:"Inductance is flux linkage per ampere",
+          think:"L = NΦ/i: why does the N multiply the flux?",
+          model:"Each of the N turns links the flux; the total linkage NΦ drives the emf.",
+          pose:"talk",
+          say:"The working definition: inductance is the FLUX LINKAGE per ampere — N phi over i — because Faraday will differentiate the linkage of all N turns together when the current changes. Measure the flux, count the turns, divide by the current: the coil's inductance, from bench data.",
+          board:[
+            {label:"Definition", tex:"L = \\frac{N\\Phi}{i}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate",
+          think:"400 × 2×10⁻⁴ / 0.5.",
+          model:"L = 0.160 H.",
+          pose:"write",
+          say:"Four hundred turns, each threaded by two ten-thousandths of a weber, at half an ampere: one hundred sixty millihenries. A healthy laboratory choke.",
+          board:[
+            {tex:"L = \\frac{(400)(2.00\\times10^{-4})}{0.500} = 0.160\\ \\mathrm H", kind:"answer"}
+          ]
+        },
+        { map:2, title:"A property of the hardware",
+          think:"Double the current: what happens to Φ and to L?",
+          model:"Φ doubles too (linear media): the RATIO L is untouched — geometry and core only.",
+          pose:"point",
+          say:"Push the current to one ampere and the flux — proportional in any air-cored or linear coil — doubles alongside: the RATIO stands immutable. Like capacitance and resistance before it, inductance belongs to the hardware — geometry and core material — not to the operating point. The trinity of circuit elements is complete, each a ratio the circumstances cannot bribe.",
+          board:[
+            {label:"Hardware", text:"L is set by geometry + core, independent of i (linear media). The third ratio-constant of circuits.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why L grows as N²",
+          think:"N appears once in NΦ — but Φ itself is proportional to what?",
+          model:"Φ ∝ Ni (the turns also MAKE the field): L ∝ N². Double the turns, quadruple the inductance.",
+          pose:"excited",
+          say:"One subtlety with financial consequences: our formula shows one factor of N, but the flux itself was MANUFACTURED by those same turns — phi is proportional to N i. Compound the two and L grows as N SQUARED: double the winding, quadruple the inductance. Coil winders price henries accordingly, and transformer designers live and die by this square. When a variable appears on both sides of a definition, always chase the compounding.",
+          board:[
+            {tex:"\\Phi\\propto Ni \\Rightarrow L = \\frac{N\\Phi}{i}\\propto N^2", kind:"key"},
+            {label:"Reusable method", text:"L = NΦ/i from measurement → a hardware ratio → scaling: L ∝ N²", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Current growth in an RL circuit",
+      problem:"L = 0.200 H and R = 50.0 Ω in series with a 12.0 V battery at t = 0. Find τ, I_∞, i(4.00 ms), and the initial di/dt.",
+      goal:"Goal → τ, I_∞, i(τ), slope(0)",
+      world:{"x0":-0.5,"x1":18,"y0":-0.02,"y1":0.29},
+      pathway:["τ = L/R","Final","At one τ","Initial slope"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (ms)', ylab:'i (A)'});
+    plotCurve(ctx, t=>0.24*(1-Math.exp(-t/4)), 0, 17, {color:CHALKC, w:2.5, N:60});
+    dashLine(ctx, 0,0.24, 17,0.24, {});
+  },
+      steps:[
+        { map:0, title:"The RL clock",
+          think:"τ = L/R: check the units, and the final current.",
+          model:"τ = 4.00 ms; I_∞ = ε/R = 0.240 A (the inductor, eventually, is a wire).",
+          pose:"talk",
+          say:"Close the switch and the inductor rations the growth: the clock is tau equals L over R — four milliseconds — and the destination is the inductor-free current, emf over R, two hundred forty milliamps, once the coil has become, asymptotically, a mere wire. Henries over ohms give seconds; verify it once and trust it forever.",
+          board:[
+            {tex:"\\tau = \\frac{L}{R} = 4.00\\ \\mathrm{ms}; \\qquad I_{\\infty} = \\frac{\\mathcal{E}}{R} = 0.240\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:1, title:"At one time constant",
+          think:"i(τ) = I_∞(1 − e⁻¹): the 63% checkpoint.",
+          model:"i = 0.152 A.",
+          pose:"write",
+          say:"At four milliseconds — one tau — the current has covered its sixty three percent: one hundred fifty two milliamps. The same saturating exponential as the charging capacitor, with the roles of current and voltage exchanged — the duality, reporting for duty.",
+          board:[
+            {tex:"i(\\tau) = 0.240(1-e^{-1}) = 0.152\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The initial slope",
+          think:"At t = 0, i = 0: where does the whole 12 V sit, and what di/dt results?",
+          model:"All across L: di/dt = ε/L = 60.0 A/s — the geometric meaning of τ.",
+          pose:"write",
+          say:"At the first instant the current is still zero, the resistor drops nothing, and the ENTIRE twelve volts lands on the inductor: d i d t equals emf over L — sixty amperes per second, the curve's steepest moment. And a pleasing geometry: hold that initial slope and you would arrive at the final current in exactly one time constant — the tangent line's promise, which the exponential forever approaches and never keeps.",
+          board:[
+            {tex:"\\left.\\frac{di}{dt}\\right|_0 = \\frac{\\mathcal{E}}{L} = 60.0\\ \\mathrm{A/s}\\ \\text{— tangent hits } I_{\\infty}\\ \\text{at } t = \\tau", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>0.06*t, 0, 4, {color:GOLD, w:2, dash:'6,5', N:10});
+       circleAt(c, 4,0.24, 0.005, {stroke:GOLD, w:3});
+     }
+        },
+        { map:3, title:"RL versus RC: the mirror",
+          think:"In RC the current STARTS maximal; in RL it starts at zero. Why the reversal?",
+          model:"C passes sudden change, blocks steady; L blocks sudden change, passes steady. Duals at switch-on.",
+          pose:"excited",
+          say:"Set the two first-order circuits side by side and admire the mirror: the capacitor welcomes the first rush of current and chokes off the steady state; the inductor bars the door at the first instant and waves the steady current through. At switch-on, C is a wire and L is a gap; at infinity, they trade costumes. Memorise the mirror and every first-order transient in electronics becomes a familiar face.",
+          board:[
+            {label:"The mirror", text:"t = 0: C ≈ wire, L ≈ open. t → ∞: C ≈ open, L ≈ wire. The dual transients.", kind:"key"},
+            {label:"Reusable method", text:"τ = L/R → i = I_∞(1−e^(−t/τ)) → initial slope ε/L → contrast with RC by duality", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Mutual inductance of a solenoid and a secondary coil",
+      problem:"A solenoid (n = 2000 turns/m, A = 3.00 cm²) has a 100-turn coil wound around its middle. Find M, and the secondary emf when the solenoid current changes at 5.00 A/s.",
+      goal:"Goal → M and ε₂",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The easy direction","M","ε₂","Reciprocity"],
+      setup(ctx,w){
+    for(let x=1.5;x<=9.5;x+=0.55){ el('ellipse',{cx:ctx.M.X(x),cy:ctx.M.Y(3.5),rx:4,ry:30,fill:'none',stroke:GOLD,'stroke-width':1.8},ctx.svg); }
+    for(let x=4.8;x<=6.2;x+=0.5){ el('ellipse',{cx:ctx.M.X(x),cy:ctx.M.Y(3.5),rx:6,ry:42,fill:'none',stroke:PURPLE,'stroke-width':2.2},ctx.svg); }
+  },
+      steps:[
+        { map:0, title:"Choose the tractable direction",
+          think:"Flux of solenoid through the coil: easy. The reverse: nightmare. Which do we compute?",
+          model:"Drive the solenoid; its uniform μ₀ni₁ threads all N₂ turns cleanly.",
+          pose:"talk",
+          say:"Mutual inductance couples two coils, and it may be computed from EITHER side — so choose the merciful one. Drive the SOLENOID: its interior field, mu nought n i, is uniform and neatly threads every turn of the little secondary. The reverse computation — the small coil's ragged field integrated through the solenoid — is a penance we decline.",
+          board:[
+            {label:"Strategy", tex:"M = \\frac{N_2\\Phi_{21}}{i_1}\\ \\text{— compute from the side with the clean field}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate M",
+          think:"M = μ₀nN₂A: assemble.",
+          model:"M = 7.54×10⁻⁵ H.",
+          pose:"write",
+          say:"The flux per secondary turn is mu nought n i times A; linkage multiplies by one hundred; divide by i and M stands free of the current, as a good hardware constant must: mu nought n N two A — seventy five microhenries.",
+          board:[
+            {tex:"M = \\mu_0nN_2A = (4\\pi\\times10^{-7})(2000)(100)(3.00\\times10^{-4}) = 7.54\\times10^{-5}\\ \\mathrm H", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The secondary speaks",
+          think:"|ε₂| = M di₁/dt at 5.00 A/s.",
+          model:"ε₂ = 3.77×10⁻⁴ V — a coil that was never touched.",
+          pose:"write",
+          say:"Wiggle the primary at five amperes per second and the untouched secondary answers: M d i d t — three hundred seventy seven microvolts. Energy and information, ferried across empty space by a changing field: the whole idea of the transformer, in miniature.",
+          board:[
+            {tex:"|\\mathcal{E}_2| = M\\frac{di_1}{dt} = (7.54\\times10^{-5})(5.00) = 3.77\\times10^{-4}\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The reciprocity theorem",
+          think:"M₁₂ = M₂₁ — why is this a gift, and what device is built on M?",
+          model:"The hard direction is guaranteed equal to the easy one. Transformers: M engineered large, at grid scale.",
+          pose:"excited",
+          say:"And the theorem that blessed our laziness: M one-two EQUALS M two-one, always — the hard computation is guaranteed to agree with the easy one, so no one ever performs it. Reciprocity is one of physics' quiet two-way mirrors. Engineer M large — iron core, tight winding — drive the primary with alternating current, and the secondary delivers power at any voltage ratio you wind: the TRANSFORMER, which is nothing but this example wearing utility-grade iron, humming in every substation on the grid.",
+          board:[
+            {label:"Reciprocity", tex:"M_{12} = M_{21}\\ \\text{— always compute the easy side. Scaled up: the transformer.}", kind:"key"},
+            {label:"Reusable method", text:"pick the clean-field direction → M = N₂Φ/i₁ → ε₂ = M di₁/dt → trust reciprocity", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Energy in the field of an MRI magnet",
+      problem:"An MRI magnet holds 1.50 T through ~0.500 m³. Find the energy density and total energy; compare with the electric energy density at air's breakdown field.",
+      goal:"Goal → u_B, U, the comparison",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["u_B","Total","The electric rival","Quench"],
+      setup(ctx,w){
+    circleAt(ctx, 5.5,3.5, 2.6, {stroke:GOLD, w:3});
+    circleAt(ctx, 5.5,3.5, 1.7, {stroke:DIMC, w:2});
+    label(ctx, 4.2,3.4, '1.5 T bore', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Magnetic energy density",
+          think:"u_B = B²/2μ₀ at 1.50 T: evaluate.",
+          model:"u_B = 8.95×10⁵ J/m³ — nearly a megajoule per cubic metre of 'empty' bore.",
+          pose:"talk",
+          say:"Magnetic fields bank energy in space at B squared over two mu nought per cubic metre. At one and a half tesla: eight point nine five times ten to the FIVE joules per cubic metre — call it a megajoule — stored in what a casual observer would swear is an empty tube.",
+          board:[
+            {tex:"u_B = \\frac{B^2}{2\\mu_0} = \\frac{(1.50)^2}{2(4\\pi\\times10^{-7})} = 8.95\\times10^{5}\\ \\mathrm{J/m^3}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The total estate",
+          think:"×0.500 m³: compare to something kinetic.",
+          model:"U = 4.5×10⁵ J — a highway-speed car's kinetic energy, parked in the bore.",
+          pose:"write",
+          say:"Across the half cubic metre of bore: four and a half hundred thousand joules — the kinetic energy of a family car at highway speed, sitting silently in the machine's throat while patients slide through. Hospitals post the warnings for good reason.",
+          board:[
+            {tex:"U = u_BV = (8.95\\times10^{5})(0.500) = 4.5\\times10^{5}\\ \\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The electric rival, humbled",
+          think:"u_E = ½ε₀E² at E = 3×10⁶ V/m (air's limit): compare.",
+          model:"u_E = 40 J/m³ — twenty thousand times poorer. Air breaks down long before matching B.",
+          pose:"write",
+          say:"Now the comparison that decides technologies: crank an electric field to air's absolute limit — three million volts per metre, the spark threshold — and its energy density is a paltry FORTY joules per cubic metre: twenty thousand times poorer than our magnet. In air, magnetic storage wins by four orders of magnitude; capacitor banks fight back only with exotic dielectrics and thin films.",
+          board:[
+            {tex:"u_E^{\\max} = \\tfrac12\\varepsilon_0(3\\times10^{6})^2 = 40\\ \\mathrm{J/m^3}\\ \\text{— } 2\\times10^4\\ \\text{times smaller}", kind:"key"}
+          ]
+        },
+        { map:3, title:"When the field must move out",
+          think:"A superconducting magnet 'quenches': what must happen to the half-megajoule, and how fast?",
+          model:"Quench: sudden resistance, energy dumps in seconds — hence massive dump resistors and boiling helium vents.",
+          pose:"excited",
+          say:"And the operational drama every MRI facility rehearses: a QUENCH. Should one centimetre of the superconducting winding warm into resistance, the half-megajoule estate must liquidate in seconds — flashing helium to gas, and, in a designed quench, dumping through great external resistors built for the purpose. The dramatic venting you may have seen on videos is our energy-density formula, exercising its rights. Fields store magnificently; they also, on occasion, foreclose.",
+          board:[
+            {label:"Quench", text:"Sudden loss of superconductivity → ½ MJ dumps in seconds: dump resistors and helium vents by design.", kind:"key"},
+            {label:"Reusable method", text:"u_B = B²/2μ₀ → ×volume → compare with ½ε₀E² at breakdown → magnetic wins in air", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"An LC oscillator",
+      problem:"A 10.0 mH inductor across a 4.00 μF capacitor charged to 20.0 μC. Find ω, f, the maximum current, and the total energy.",
+      goal:"Goal → ω, f, I_max, U",
+      world:{"x0":-0.2,"x1":4.2,"y0":-1.3,"y1":1.3},
+      pathway:["The slosh","ω and f","I_max","Energy check","The analogy"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (ms)', ylab:'q/Q₀'});
+    plotCurve(ctx, t=>Math.cos(5*t), 0, 4, {color:CHALKC, w:2.5, N:90});
+    plotCurve(ctx, t=>-Math.sin(5*t), 0, 4, {color:GOLD, w:2, dash:'5,4', N:90});
+    label(ctx, 2.6,1.05, 'q', {fs:11, color:CHALKC});
+    label(ctx, 3.1,-0.75, 'i', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Two hoarders, one estate",
+          think:"C holds charge; L holds current. Connect them: what must the energy do?",
+          model:"It sloshes: capacitor empties into current; current recharges the capacitor — oscillation.",
+          pose:"talk",
+          say:"Connect the two great hoarders and watch the estate slosh: the capacitor discharges, but the inductor, cherishing the current thus born, refuses to let it die — and drives the charge onward, recharging the capacitor in reverse. Back and forth, electric to magnetic and home again: the L C oscillator, electronics' pendulum.",
+          board:[
+            {label:"The slosh", text:"C's charge ⇄ L's current: energy alternates between electric and magnetic storage.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The natural frequency",
+          think:"ω = 1/√(LC): evaluate ω and f.",
+          model:"ω = 5000 rad/s; f = 796 Hz — an audible pitch.",
+          pose:"write",
+          say:"The tempo: one over root L C — five thousand radians per second, seven hundred ninety six hertz. An audible G, more or less, hummed by ten millihenries and four microfarads. Every radio dial ever turned was choosing this omega.",
+          board:[
+            {tex:"\\omega = \\frac{1}{\\sqrt{LC}} = 5.00\\times10^{3}\\ \\mathrm{rad/s}; \\quad f = 796\\ \\mathrm{Hz}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The peak current",
+          think:"q = Q₀cos ωt → i = ωQ₀ at peak.",
+          model:"I_max = ωQ₀ = 0.100 A, at the instant q = 0.",
+          pose:"write",
+          say:"Differentiate the cosine of charge and the current peaks at omega Q nought — one hundred milliamps — precisely when the capacitor stands EMPTY: all the energy then rides in the coil. Charge and current, a quarter period out of phase, each maximal at the other's zero — position and velocity, in electrical dress.",
+          board:[
+            {tex:"I_{\\max} = \\omega Q_0 = (5000)(20.0\\times10^{-6}) = 0.100\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Audit the estate",
+          think:"Q₀²/2C vs ½LI_max²: must they agree?",
+          model:"Both give 5.00×10⁻⁵ J ✓ — lossless exchange (until R intrudes).",
+          pose:"write",
+          say:"The audit: the opening electric fortune, Q nought squared over two C — fifty microjoules — against the magnetic peak, half L I max squared — fifty microjoules. Identical, as a lossless slosh demands. Real coils harbour resistance, and the oscillation rings down like a struck bell; but the ideal case sets the pitch.",
+          board:[
+            {tex:"\\frac{Q_0^2}{2C} = \\tfrac12LI_{\\max}^2 = 5.00\\times10^{-5}\\ \\mathrm J\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:4, title:"The grand analogy",
+          think:"Map L, C, q, i onto the mass-spring: what corresponds to what?",
+          model:"L↔m, 1/C↔k, q↔x, i↔v: ω = 1/√(LC) IS ω = √(k/m). One oscillator, two costumes.",
+          pose:"excited",
+          say:"And spread the map on the table: the inductor is the MASS — inertia of current; the inverse capacitance is the SPRING — stiffness against charge; q is position, i velocity, and one over root L C is root k over m wearing solder. Every theorem of Physics 4A's oscillations chapter — energy exchange, phase relations, resonance to come — transfers verbatim. You have studied this circuit before, under a different alphabet; physics keeps one great oscillator and a wardrobe of costumes.",
+          board:[
+            {label:"The analogy", tex:"L\\leftrightarrow m, \\ \\frac1C\\leftrightarrow k, \\ q\\leftrightarrow x, \\ i\\leftrightarrow v", kind:"key"},
+            {label:"Reusable method", text:"ω = 1/√(LC) → I_max = ωQ₀ → energy audit both costumes → import all SHM theorems", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Decay of current and energy in an RL circuit",
+      problem:"An inductor L = 0.500 H carrying 2.00 A is switched (without interruption) across R = 10.0 Ω. Find τ, the total heat, and when 90% of the energy is gone.",
+      goal:"Goal → τ, W, t(90%)",
+      world:{"x0":-0.02,"x1":0.27,"y0":-0.1,"y1":2.3},
+      pathway:["Decay","Total heat","Energy's clock","The 90% trap"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'i (A)'});
+    plotCurve(ctx, t=>2*Math.exp(-t/0.05), 0, 0.25, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"The freewheeling decay",
+          think:"τ = L/R; i(t) = ?",
+          model:"τ = 50 ms; i = 2.00e^(−t/τ) — the current coasts down through R.",
+          pose:"talk",
+          say:"Switched across the resistor — carefully, without ever breaking the path — the inductor's two amperes freewheel and decay: i equals two e to the minus t over tau, with tau equal to L over R, fifty milliseconds. The flywheel spins down against a brake.",
+          board:[
+            {tex:"\\tau = \\frac{L}{R} = 0.0500\\ \\mathrm s; \\qquad i = 2.00e^{-t/\\tau}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The total heat",
+          think:"Where must ALL of ½LI₀² go? Verify by the integral.",
+          model:"W = ½(0.5)(4) = 1.00 J; ∫i²R dt = I₀²Rτ/2 confirms it.",
+          pose:"write",
+          say:"The estate: half L I nought squared — one joule — and the resistor is the sole heir. The integral concurs: I nought squared R tau over two, precisely one joule. As with the discharging capacitor, R sets the tempo, never the total.",
+          board:[
+            {tex:"W = \\tfrac12LI_0^2 = 1.00\\ \\mathrm J = \\int_0^{\\infty}i^2R\\,dt\\;\\checkmark", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Energy decays twice as fast",
+          think:"U(t) = ½Li² with i ∝ e^(−t/τ): what is energy's time constant?",
+          model:"U ∝ e^(−2t/τ): the square halves the clock. Energy's τ is τ/2.",
+          pose:"point",
+          say:"Now the subtlety: the REMAINING energy is half L i squared, and squaring the exponential DOUBLES its decay rate — energy fades with time constant tau over two, twice as fast as the current that carries it. Squares always compress exponential clocks; we saw the same in the charging resistor's heat.",
+          board:[
+            {tex:"U(t) = \\tfrac12LI_0^2e^{-2t/\\tau}\\ \\text{— energy's clock is } \\tau/2", kind:"key"}
+          ]
+        },
+        { map:3, title:"When is 90% gone?",
+          think:"Set e^(−2t/τ) = 0.10; and check what the CURRENT still is then.",
+          model:"t = (τ/2)ln10 = 57.6 ms ≈ 1.15τ — while the current is still 31.6%!",
+          pose:"excited",
+          say:"Ninety percent of the energy is spent when e to the minus two t over tau reaches one tenth: t equals tau over two, log ten — fifty seven point six milliseconds, barely more than one current-time-constant. And the trap, set and sprung: at that instant the CURRENT still reads a healthy thirty one point six percent. Ninety percent of the energy is emphatically NOT ninety percent of the current — the square guarantees the divergence. Whenever two decaying quantities share a circuit, ask each for its own clock.",
+          board:[
+            {tex:"t_{90\\%} = \\frac{\\tau}{2}\\ln10 = 0.0576\\ \\mathrm s; \\ \\ i(t_{90\\%}) = 31.6\\%\\ \\text{of } I_0", kind:"answer"},
+            {label:"Reusable method", text:"i decays with τ; U with τ/2 → total heat = ½LI₀² regardless of R → never conflate %energy with %current", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Inductance of a toroid with rectangular cross-section",
+      problem:"A toroid: N = 500 turns, inner radius a = 10.0 cm, outer b = 15.0 cm, height h = 2.00 cm. Find L.",
+      goal:"Goal → L by integration",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Nonuniform B","Integrate Φ","L","Mean-radius check"],
+      setup(ctx,w){
+    circleAt(ctx, 5.5,3.5, 1.7, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 5.5,3.5, 2.7, {stroke:GOLD, w:2.5});
+    label(ctx, 4.5,3.4, 'a → b', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The field varies across the core",
+          think:"B = μ₀Ni/2πr inside the windings: uniform, or not?",
+          model:"A 1/r profile across the rectangular core: flux must be integrated in strips.",
+          pose:"talk",
+          say:"From Tutorial eight we own the toroid's field: mu nought N i over two pi r — falling as one over r across the core's width. The flux through a turn is therefore NOT field-times-area; slice the rectangular window into vertical strips of height h and width d r, each drinking its own local B.",
+          board:[
+            {tex:"\\Phi = \\int_a^b\\frac{\\mu_0Ni}{2\\pi r}h\\,dr", kind:"key"}
+          ]
+        },
+        { map:1, title:"The logarithm returns",
+          think:"∫dr/r again: assemble Φ.",
+          model:"Φ = (μ₀Nih/2π)ln(b/a).",
+          pose:"write",
+          say:"The one-over-r integral yields its inevitable logarithm: mu nought N i h over two pi, times log of b over a. The third appearance of this log in our course — cylindrical geometry signs its work consistently.",
+          board:[
+            {tex:"\\Phi = \\frac{\\mu_0Nih}{2\\pi}\\ln\\frac{b}{a}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"From flux to inductance",
+          think:"L = NΦ/i: note the N² and evaluate.",
+          model:"L = (μ₀N²h/2π)ln1.5 = 4.05×10⁻⁴ H.",
+          pose:"write",
+          say:"Multiply by N for the linkage, divide by i, and the current departs, leaving the promised N squared: L equals mu nought N squared h over two pi, log b over a. Numbers: four hundred five microhenries, from five hundred turns on a modest ring.",
+          board:[
+            {tex:"L = \\frac{\\mu_0N^2h}{2\\pi}\\ln\\frac{b}{a} = \\frac{(4\\pi\\times10^{-7})(500)^2(0.0200)}{2\\pi}\\ln1.5 = 4.05\\times10^{-4}\\ \\mathrm H", kind:"answer"}
+          ]
+        },
+        { map:3, title:"How wrong is the lazy estimate?",
+          think:"B at the mean radius times the area: compare, and judge when laziness is affordable.",
+          model:"4.00×10⁻⁴ H — 1% low here (thin core); the error grows with b/a. Integrals bill the near wall honestly.",
+          pose:"excited",
+          say:"And the honest comparison with the shortcut everyone is tempted by: take B at the mean radius, multiply by the window's area — four hundred microhenries, one percent shy. Affordable, because our core is THIN — b over a only one and a half; fatten the ring and the discrepancy swells, for the true flux always favours the crowded inner wall that the average politely ignores. Thin cores may average; fat ones must integrate; and knowing WHICH is yours is the whole art of approximation.",
+          board:[
+            {tex:"\\text{mean-radius estimate: } 4.00\\times10^{-4}\\ \\mathrm H\\ (1\\%\\ \\text{low; error grows with } b/a)", kind:"key"},
+            {label:"Reusable method", text:"1/r field → strip-integrate the flux (log) → L = NΦ/i ∝ N² → gauge the mean-field error by b/a", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A coaxial cable: L′, C′, and the speed of a signal",
+      problem:"A coax: a = 0.500 mm, b = 3.00 mm, κ = 2.30. Find L′ and C′ per length, the signal speed, and Z₀ = √(L′/C′).",
+      goal:"Goal → L′, C′, v, Z₀",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["L′","C′","The magic product","Z₀","One line, one oscillator"],
+      setup(ctx,w){
+    circleAt(ctx, 5.5,3.5, 0.5, {stroke:GOLD, w:4});
+    circleAt(ctx, 5.5,3.5, 2.6, {stroke:CHALKC, w:3});
+    label(ctx, 7.0,5.6, 'κ = 2.30 dielectric', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Inductance per metre",
+          think:"Flux between conductors from B = μ₀i/2πr: integrate a to b.",
+          model:"L′ = (μ₀/2π)ln(b/a) = 3.58×10⁻⁷ H/m.",
+          pose:"talk",
+          say:"A coaxial cable is our cylindrical geometry, sold by the metre. The magnetic side: field mu nought i over two pi r between the conductors, flux per metre integrating — that logarithm again — to L prime equals mu nought over two pi, log b over a: three hundred fifty eight nanohenries per metre.",
+          board:[
+            {tex:"L' = \\frac{\\mu_0}{2\\pi}\\ln\\frac{b}{a} = (2\\times10^{-7})\\ln6 = 3.58\\times10^{-7}\\ \\mathrm{H/m}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Capacitance per metre",
+          think:"Tutorial 4's cylindrical capacitor, with κ.",
+          model:"C′ = 2πκε₀/ln(b/a) = 7.14×10⁻¹¹ F/m.",
+          pose:"write",
+          say:"The electric side arrives prefabricated from Tutorial four: the cylindrical capacitor, two pi kappa epsilon nought over the same log — seventy one picofarads per metre. Note the log's position: numerator for C, denominator for L. That placement is about to work a small miracle.",
+          board:[
+            {tex:"C' = \\frac{2\\pi\\kappa\\varepsilon_0}{\\ln(b/a)} = 7.14\\times10^{-11}\\ \\mathrm{F/m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The product forgets the geometry",
+          think:"Multiply L′C′: what cancels, and what constant remains?",
+          model:"L′C′ = κμ₀ε₀ = κ/c²: radii gone. v = c/√κ = 1.98×10⁸ m/s.",
+          pose:"write",
+          say:"Multiply them: the logarithms — one up, one down — annihilate, the radii vanish, and L prime C prime equals kappa mu nought epsilon nought: kappa over c SQUARED. The signal speed, one over root L prime C prime, is c over root kappa — one point nine eight times ten to the eight metres per second, sixty six percent of light. Any coax, any radii, same dielectric: same speed. Cable catalogues print this as the velocity factor, and now you know it is mu nought epsilon nought keeping the appointment.",
+          board:[
+            {tex:"L'C' = \\frac{\\kappa}{c^2} \\Rightarrow v = \\frac{c}{\\sqrt\\kappa} = 1.98\\times10^{8}\\ \\mathrm{m/s} = 0.66c", kind:"answer", move:"logs cancel"}
+          ]
+        },
+        { map:3, title:"The characteristic impedance",
+          think:"Z₀ = √(L′/C′): evaluate and recognize the number.",
+          model:"Z₀ = 70.8 Ω — essentially the 75 Ω of television coax.",
+          pose:"write",
+          say:"The ratio, root L prime over C prime, is the cable's characteristic impedance: seventy point eight ohms — recognisably the seventy five ohm television standard, set by nothing more than these radii and this plastic. Signals launched into the line meet this impedance as if it were a resistor; match it at the far end and no echo returns.",
+          board:[
+            {tex:"Z_0 = \\sqrt{\\frac{L'}{C'}} = 70.8\\ \\Omega\\ \\text{— the TV-cable standard, from geometry}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"An LC oscillator, stretched thin",
+          think:"What IS a signal on the line, in L-and-C language — and what does this preview?",
+          model:"Energy handed from C′ to L′ segment by segment: a wave. Next tutorial: fields do it without wires.",
+          pose:"excited",
+          say:"And the closing image, chosen with intent: a pulse racing down this cable is energy handed from capacitance to inductance, segment after segment — an L C oscillator unrolled into a line, the slosh become a WAVE, travelling at one over root L prime C prime. Strip away the copper and let the fields hand the energy along through space itself, and the very same square root becomes one over root mu nought epsilon nought — the speed of light. That story is Tutorial twelve's; the cable has just whispered its ending.",
+          board:[
+            {label:"The preview", text:"A line signal = LC energy exchange propagating. Without wires: 1/√(μ₀ε₀) = c. See Tutorial 12.", kind:"key"},
+            {label:"Reusable method", text:"L′, C′ from the twin logs → product kills geometry: v = c/√κ → Z₀ = √(L′/C′)", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

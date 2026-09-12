@@ -1436,6 +1436,570 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"A real battery under load",
+      problem:"A battery has emf 12.0 V and internal resistance 0.500 Ω, driving a 5.50 Ω load. Find the current, terminal voltage, power to the load, and power wasted inside.",
+      goal:"Goal → I, V_term, both powers",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The real battery","I","Terminal V","Power audit"],
+      setup(ctx,w){
+    batSym(ctx, 2.5,4.5, 'ε');
+    resSym(ctx, 1.8,2.2, 3.2,2.2, 'r');
+    resSym(ctx, 7.5,2.6, 7.5,4.2, 'R');
+    label(ctx, 0.7,5.7, 'inside the battery', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"A battery is an emf plus a resistor",
+          think:"Why must every real battery be modeled with an internal r in series?",
+          model:"Chemistry provides ε; the electrolyte's own resistance r rides in series, inescapably.",
+          pose:"talk",
+          say:"The ideal battery of the textbook diagram does not exist for sale. A real cell is an electromotive force — the chemistry's fixed offer — in series with a small INTERNAL resistance, the toll of pushing current through its own electrolyte. Model the pair, and every puzzling battery behavior becomes arithmetic.",
+          board:[
+            {label:"The model", text:"Real battery = ideal emf ε in series with internal resistance r.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The current",
+          think:"r and R share the loop in series. I = ?",
+          model:"I = ε/(R+r) = 12.0/6.00 = 2.00 A.",
+          pose:"write",
+          say:"One loop, resistances in series: the current is the emf over R plus r — twelve over six — two amperes. The internal half-ohm counts exactly like any other; the battery taxes itself.",
+          board:[
+            {tex:"I = \\frac{\\mathcal{E}}{R+r} = \\frac{12.0}{6.00} = 2.00\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The terminal voltage",
+          think:"What does a voltmeter across the terminals read — ε, or less?",
+          model:"V = ε − Ir = 11.0 V (= IR ✓). Equal to ε only at zero current.",
+          pose:"write",
+          say:"At the terminals a voltmeter reads the emf MINUS the internal drop: twelve minus two times a half — eleven volts, which is also I R across the load, as consistency demands. Only an idle battery shows its full emf; under load, the terminals always sag.",
+          board:[
+            {tex:"V_{\\rm term} = \\mathcal{E} - Ir = 12.0 - 1.00 = 11.0\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The power ledger",
+          think:"I²R, I²r, and Iε: do the books close? And why do headlights dim?",
+          model:"22.0 W to the load + 2.00 W internal heat = 24.0 W = Iε ✓. Big loads sag V: the starter-motor dim.",
+          pose:"excited",
+          say:"Audit the power: twenty two watts reach the load, two are lost warming the battery's own innards, and the chemistry's total output — I times emf — is twenty four. The books close. And the everyday exhibit: crank a car's starter — hundreds of amperes — and I r swells until the terminals sag by volts; the headlights dim in sympathy. Your dashboard is performing this example every cold morning.",
+          board:[
+            {tex:"I^2R = 22.0 + I^2r = 2.00 \\Rightarrow I\\mathcal{E} = 24.0\\ \\mathrm W\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"series r → I = ε/(R+r) → V_term = ε − Ir → audit Iε = I²R + I²r", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Three resistors, two ways",
+      problem:"Resistors of 2.00, 3.00, and 6.00 Ω are connected (a) in series and (b) in parallel. Find the equivalent resistance in each case.",
+      goal:"Goal → R_eq twice",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Series","Parallel","Brackets","Paths intuition"],
+      setup(ctx,w){
+    resSym(ctx, 1.3,6, 2.7,6, ''); resSym(ctx, 4.3,6, 5.7,6, ''); resSym(ctx, 7.3,6, 8.7,6, '');
+    resSym(ctx, 4.3,3.4, 5.7,3.4, ''); resSym(ctx, 4.3,2.4, 5.7,2.4, ''); resSym(ctx, 4.3,1.4, 5.7,1.4, '');
+    label(ctx, 0.6,6.9, 'series', {fs:10, color:DIMC});
+    label(ctx, 1.4,2.3, 'parallel', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Series: one road, tolls add",
+          think:"Same current through all three: what adds?",
+          model:"R_eq = 2+3+6 = 11.0 Ω.",
+          pose:"talk",
+          say:"In series the current has ONE road and pays every toll in turn: resistances add. Two plus three plus six — eleven ohms. Nothing subtle; the subtlety is reserved for parallel.",
+          board:[
+            {tex:"\\text{series: } R_{\\rm eq} = 2.00+3.00+6.00 = 11.0\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Parallel: many roads, conductances add",
+          think:"Same V across all three: what adds now? Find the friendly common denominator.",
+          model:"1/R_eq = 1/2 + 1/3 + 1/6 = 1 → R_eq = 1.00 Ω.",
+          pose:"write",
+          say:"In parallel all three feel the same voltage and each conducts its own share: the RECIPROCALS add. One half plus one third plus one sixth — three sixths plus two plus one — exactly one. R equivalent: one ohm, a number so tidy the examiners could not resist it.",
+          board:[
+            {tex:"\\text{parallel: } \\frac{1}{R_{\\rm eq}} = \\frac12+\\frac13+\\frac16 = 1 \\Rightarrow R_{\\rm eq} = 1.00\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The brackets",
+          think:"11 vs the trio; 1 vs the trio: state the inequalities.",
+          model:"Series > largest (11 > 6); parallel < smallest (1 < 2).",
+          pose:"point",
+          say:"The standing sanity brackets: series exceeds the LARGEST member — eleven above six — and parallel undercuts the SMALLEST — one below two. Any equivalent resistance caught inside its own components' range is confessing a wiring misread.",
+          board:[
+            {label:"Brackets", tex:"R_{\\rm series} > \\max(R_i); \\qquad R_{\\parallel} < \\min(R_i)", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why parallel shrinks",
+          think:"Adding a parallel resistor — even a huge one — always lowers R_eq. Why, physically?",
+          model:"Every new path carries SOME current: more total flow at the same V. And note the capacitor mirror.",
+          pose:"excited",
+          say:"The intuition that outlives the formula: every parallel branch is an additional ROAD, and any road — however narrow — carries some traffic. More total current at the same voltage IS less resistance; adding even a megohm in parallel nudges R downward. And file the symmetry: these rules mirror the capacitor rules exactly, reversed — one measures difficulty, the other capacity. Two tables, one reflection.",
+          board:[
+            {label:"The intuition", text:"More paths, more flow, less R — always. (Capacitors: the same rules, mirrored.)", kind:"key"},
+            {label:"Reusable method", text:"series: add R → parallel: add 1/R → bracket check → think roads, not formulas", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Charging an RC circuit: the time constant",
+      problem:"A 100 μF capacitor charges through 10.0 kΩ from a 12.0 V battery. Find τ, the capacitor voltage after 2.00 s, and the current then.",
+      goal:"Goal → τ, v_C(2), i(2)",
+      world:{"x0":-0.3,"x1":5.5,"y0":-1,"y1":14},
+      pathway:["τ = RC","The curve","Evaluate","5τ rule"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v_C (V)'});
+    plotCurve(ctx, t=>12*(1-Math.exp(-t)), 0, 5.2, {color:CHALKC, w:2.5, N:60});
+    dashLine(ctx, 0,12, 5.2,12, {});
+  },
+      steps:[
+        { map:0, title:"The natural clock",
+          think:"τ = RC: check the units actually give seconds.",
+          model:"τ = (10⁴)(10⁻⁴) = 1.00 s. Ohms × farads = seconds.",
+          pose:"talk",
+          say:"Every RC circuit carries its own clock: tau equals R times C — ten kilohms times a hundred microfarads — one full second. And relish the units: ohms times farads is volts-per-amp times coulombs-per-volt — coulombs per amp — SECONDS. The dimensional analysis practically charges the capacitor itself.",
+          board:[
+            {tex:"\\tau = RC = (10^4)(10^{-4}) = 1.00\\ \\mathrm s", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The charging law",
+          think:"v_C starts at 0, approaches ε: write the exponential.",
+          model:"v_C = ε(1 − e^(−t/τ)): 63% at τ, 86% at 2τ...",
+          pose:"write",
+          say:"The capacitor's voltage climbs the saturating exponential: emf times one minus e to the minus t over tau. Sixty three percent of the way after one time constant, eighty six after two — each tau closing sixty three percent of whatever gap remains. Exponentials never arrive; they approach.",
+          board:[
+            {label:"Charging", tex:"v_C(t) = \\mathcal{E}(1-e^{-t/\\tau})", kind:"key"}
+          ]
+        },
+        { map:2, title:"At t = 2.00 s",
+          think:"Two time constants: v_C and the leftover current.",
+          model:"v_C = 12(1−e⁻²) = 10.4 V; i = (ε−v_C)/R = 0.162 mA.",
+          pose:"write",
+          say:"At two seconds — two tau — v C reads ten point four volts. The current is whatever voltage REMAINS for the resistor, divided by R: one point six volts over ten kilohms — zero point one six two milliamps, down from the opening surge of one point two. As the capacitor fills, it backs its voltage against the battery and throttles its own supply.",
+          board:[
+            {tex:"v_C = 12.0(1-e^{-2}) = 10.4\\ \\mathrm V; \\quad i = \\frac{\\mathcal{E}-v_C}{R} = 0.162\\ \\mathrm{mA}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 2,10.38, 0.1, {stroke:GOLD, w:3});
+       dashLine(c, 2,0, 2,10.38, {});
+     }
+        },
+        { map:3, title:"The five-τ convention",
+          think:"After 5τ, what fraction remains? Why do engineers call that 'done'?",
+          model:"e⁻⁵ < 1%: 'fully charged' by convention. Exponentials end by agreement, not by arrival.",
+          pose:"excited",
+          say:"When is it DONE? Never, strictly — but after five time constants the shortfall is e to the minus five, under one percent, and engineering declares victory by convention. Five tau: the profession's statute of limitations on exponentials. Camera flashes, timing circuits, defibrillators — all schedule their lives in units of R C. Know a circuit's tau and you know its tempo.",
+          board:[
+            {label:"5τ rule", tex:"e^{-5} \\approx 0.7\\%\\ \\text{— after } 5\\tau, \\text{'fully charged' by decree}", kind:"key"},
+            {label:"Reusable method", text:"τ = RC → v_C = ε(1−e^(−t/τ)) → i from the resistor's leftover → 5τ ≈ done", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Series–parallel ladder",
+      problem:"A 4.00 Ω resistor is in series with a parallel pair (6.00 Ω and 3.00 Ω), across a 12.0 V ideal battery. Find each current and the battery's power.",
+      goal:"Goal → all I's and P",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Reduce","Battery current","Expand","Power audit"],
+      setup(ctx,w){
+    resSym(ctx, 2.2,6, 3.8,6, '4Ω');
+    resSym(ctx, 6.7,6.7, 8.3,6.7, '6Ω');
+    resSym(ctx, 6.7,5.2, 8.3,5.2, '3Ω');
+    batSym(ctx, 2,1.5, '12 V');
+  },
+      steps:[
+        { map:0, title:"Reduce the network",
+          think:"Product-over-sum for the pair, then add the series 4 Ω.",
+          model:"Pair: 18/9 = 2.00 Ω; total 6.00 Ω.",
+          pose:"talk",
+          say:"Reduce first, always: the six and three in parallel give product over sum — eighteen over nine — two ohms; in series with the four, six ohms total. The circuit, folded flat for the battery's inspection.",
+          board:[
+            {tex:"R_{63} = \\frac{(6.00)(3.00)}{9.00} = 2.00\\ \\Omega; \\quad R_{\\rm tot} = 6.00\\ \\Omega", kind:"key"}
+          ]
+        },
+        { map:1, title:"The trunk current",
+          think:"I = V/R_tot flows through which resistor undivided?",
+          model:"I = 2.00 A — all of it through the 4 Ω.",
+          pose:"write",
+          say:"Twelve volts across six ohms: two amperes from the battery, ALL of it marching through the series four-ohm — the trunk of the ladder — before any parting of ways.",
+          board:[
+            {tex:"I = \\frac{12.0}{6.00} = 2.00\\ \\mathrm A\\ \\text{(the 4 Ω carries it all)}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Expand: split at the fork",
+          think:"Voltage across the pair = 12 − IR₄. Then each branch current; check the sum.",
+          model:"V_pair = 4.00 V: I₆ = 0.667 A, I₃ = 1.33 A; sum 2.00 ✓.",
+          pose:"write",
+          say:"Expanding: the four-ohm consumes eight volts, leaving four across the fork. The six-ohm branch takes two thirds of an amp; the three-ohm, one and a third — the SMALLER resistor claiming the LARGER share, as parallel etiquette dictates. Sum: two amperes, the trunk's full delivery, reconciled.",
+          board:[
+            {tex:"V_{\\rm pair} = 12.0-8.00 = 4.00\\ \\mathrm V; \\quad I_6 = 0.667, \\ I_3 = 1.33\\ \\mathrm A\\ (\\Sigma = 2.00\\checkmark)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Power: two ledgers, one total",
+          think:"Battery IV vs Σ I²R over the three resistors: reconcile.",
+          model:"P = 24.0 W = 16.0 + 2.67 + 5.33 ✓.",
+          pose:"excited",
+          say:"Close with the power audit: the battery furnishes I V — twenty four watts. The resistors' ledgers: sixteen in the trunk, two point six seven and five point three three at the fork — twenty four on the nose. Reduce, expand, audit: the three-step liturgy of every network, and it never fails to catch an arithmetic sin before the grader does.",
+          board:[
+            {tex:"P = IV = 24.0\\ \\mathrm W = 16.0+2.67+5.33\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"reduce → trunk current → expand (series shares I, parallel shares V) → power audit", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Two batteries in one loop: which one is charging?",
+      problem:"One loop: 12.0 V and 6.00 V batteries OPPOSING, with 2.00, 3.00, 1.00 Ω resistors. Find the current and each battery's power role.",
+      goal:"Goal → I; who charges whom",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Walk the loop","I","Roles","The alternator"],
+      setup(ctx,w){
+    batSym(ctx, 2.5,5.8, '12 V');
+    batSym(ctx, 8,5.8, '6 V');
+    resSym(ctx, 4.2,1.5, 6.2,1.5, '');
+    label(ctx, 4.0,0.6, '2 + 3 + 1 Ω around the loop', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Kirchhoff's loop walk",
+          think:"Guess the direction (larger emf wins), then sum voltage changes to zero.",
+          model:"+12.0 − 6.00 − I(6.00) = 0.",
+          pose:"talk",
+          say:"Two batteries face off in one loop. Guess the current's direction — bet on the stronger emf — and take Kirchhoff's walk: up twelve through the big battery, DOWN six through the opposing one, down I R at every resistor, returning to zero. The loop rule is conservation of energy, worn as a stroll.",
+          board:[
+            {tex:"+12.0 - 6.00 - I(2.00+3.00+1.00) = 0", kind:"key"}
+          ]
+        },
+        { map:1, title:"Solve",
+          think:"I = 6/6: sign check on the guess.",
+          model:"I = 1.00 A, positive — the guess stood.",
+          pose:"write",
+          say:"Six volts of net drive across six ohms of toll: one ampere, positive, confirming our bet on the twelve-volt battery. A negative answer would merely have reversed the arrow — Kirchhoff forgives wrong guesses and corrects them by sign.",
+          board:[
+            {tex:"I = \\frac{12.0-6.00}{6.00} = 1.00\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Read each battery's role",
+          think:"Current EXITS the 12 V battery's + terminal but ENTERS the 6 V's +. What does each do?",
+          model:"12 V delivers 12.0 W; the 6 V ABSORBS 6.00 W — it is being charged.",
+          pose:"point",
+          say:"Now the roles, read from the terminals: the current leaves the twelve-volt battery by its positive terminal — a SUPPLIER, delivering twelve watts. But it enters the six-volt battery AT its positive terminal — driven backward through its own chemistry — an ABSORBER, banking six watts as chemical energy. The weaker battery is being CHARGED by the stronger.",
+          board:[
+            {tex:"P_{12} = +12.0\\ \\mathrm W\\ \\text{(delivers)}; \\quad P_6 = -6.00\\ \\mathrm W\\ \\text{(charging)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Balance the books; start the car",
+          think:"Resistors get I²ΣR. Does 12 = 6 + 6? And name the household example.",
+          model:"6.00 W of heat + 6.00 W stored = 12.0 W ✓. This IS an alternator charging a car battery.",
+          pose:"excited",
+          say:"The audit: the resistors burn I squared times six — six watts; the charging battery stores six; the supplier furnishes twelve. Perfect books. And you own this circuit: every time your engine runs, the alternator — the stronger emf — drives current backward through the car battery, refilling the charge the starter borrowed. Charging is nothing exotic; it is Kirchhoff's loop with the current swimming upstream through a willing emf.",
+          board:[
+            {tex:"12.0 = 6.00_{\\rm heat} + 6.00_{\\rm stored}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"guess direction, walk the loop → sign corrects the guess → current INTO a + terminal = charging → audit powers", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Voltmeter loading",
+      problem:"Two 50.0 kΩ resistors in series across 10.0 V. A voltmeter of input resistance 100 kΩ is placed across one. What does it read, and what was the true voltage?",
+      goal:"Goal → reading vs truth",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["The truth","The intruder","The reading","Meter rules"],
+      setup(ctx,w){
+    resSym(ctx, 2.2,6.3, 3.8,6.3, '50k');
+    resSym(ctx, 2.2,3.6, 3.8,3.6, '50k');
+    circleAt(ctx, 7.5,3.6, 0.8, {stroke:GOLD, w:2.5});
+    label(ctx, 7.15,3.45, 'V', {fs:13, color:GOLD});
+    label(ctx, 6.2,5.0, '100 kΩ inside', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The undisturbed truth",
+          think:"Equal divider: the true voltage across either resistor?",
+          model:"5.00 V exactly, before any meter arrives.",
+          pose:"talk",
+          say:"Before any instrument intrudes, the two equal resistors split the ten volts with perfect fairness: five apiece. That is the TRUTH of the circuit — and we are about to watch the act of measurement bend it.",
+          board:[
+            {tex:"\\text{true: } V = \\frac{50}{50+50}\\times10.0 = 5.00\\ \\mathrm V", kind:"key"}
+          ]
+        },
+        { map:1, title:"The meter is a resistor",
+          think:"100 kΩ lands in parallel with the measured 50 kΩ. New branch resistance?",
+          model:"50∥100 = 33.3 kΩ: the divider is no longer equal.",
+          pose:"write",
+          say:"A real voltmeter is a resistor with a display. Its hundred kilohms lands in PARALLEL with the fifty it means to observe: product over sum, thirty three point three kilohms. The measured branch has been diminished by the observer.",
+          board:[
+            {tex:"R_{\\rm branch} = \\frac{(50.0)(100)}{150} = 33.3\\ \\mathrm{k\\Omega}", kind:"key"}
+          ]
+        },
+        { map:2, title:"What the meter reports",
+          think:"Recompute the divider with 33.3 vs 50.",
+          model:"V = 10 × 33.3/83.3 = 4.00 V: a 20% error, self-inflicted.",
+          pose:"write",
+          say:"The lopsided divider now yields ten times thirty three point three over eighty three point three: FOUR volts on the display, where five was the truth. A twenty percent error, manufactured entirely by the act of looking. The meter did not lie; it reported the circuit it created.",
+          board:[
+            {tex:"V_{\\rm read} = 10.0\\times\\frac{33.3}{83.3} = 4.00\\ \\mathrm V\\ \\text{— 20\\% low}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The two meter commandments",
+          think:"State the resistance rules for voltmeters and ammeters — and check the modern 10 MΩ meter here.",
+          model:"Voltmeter: R ≫ circuit (10 MΩ → 0.25% error here). Ammeter: R ≪ branch. Perturb little, then trust.",
+          pose:"excited",
+          say:"Hence the two commandments of instrumentation. A VOLTMETER, sitting in parallel, must dwarf the circuit's resistances — the modern ten-megohm digital meter would err here by a quarter percent, invisible. An AMMETER, sitting in series, must vanish beneath them. Every measurement disturbs; the professional's job is to compute the disturbance and buy instruments that keep it beneath caring. Even in circuits, the observer is part of the system.",
+          board:[
+            {label:"Commandments", text:"Voltmeter: R_in ≫ circuit R (parallel). Ammeter: R_in ≪ branch R (series). Estimate the loading, always.", kind:"key"},
+            {label:"Reusable method", text:"truth first → meter = parallel resistor → recompute the divider → judge the loading error", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Discharging a capacitor through a resistor",
+      problem:"A 200 μF capacitor at 50.0 V discharges through 2.00 kΩ. (a) When does v reach 10.0 V? (b) Total energy dissipated in the resistor?",
+      goal:"Goal → t to 10 V; total heat",
+      world:{"x0":-0.1,"x1":2.1,"y0":-4,"y1":56},
+      pathway:["Decay law","Solve for t","All the energy","R's real role"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (V)'});
+    plotCurve(ctx, t=>50*Math.exp(-t/0.4), 0, 2, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"The decay law",
+          think:"τ = RC here; write v(t).",
+          model:"τ = 0.400 s; v = 50 e^(−t/0.4).",
+          pose:"talk",
+          say:"Discharge is charging's mirror: the capacitor bleeds through the resistor along a falling exponential, v equals V nought e to the minus t over tau, with tau equal to R C — four tenths of a second here. Same clock, opposite direction.",
+          board:[
+            {tex:"\\tau = RC = 0.400\\ \\mathrm s; \\qquad v(t) = 50.0\\,e^{-t/\\tau}", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Solve for the time",
+          think:"v = V₀/5: invert with a logarithm — WHICH logarithm?",
+          model:"t = τ ln5 = 0.644 s. (Natural log — a classic calculator wound.)",
+          pose:"write",
+          say:"When has v fallen to a FIFTH? Invert: t equals tau times the NATURAL log of five — one point six one tau — zero point six four four seconds. The natural log, mind: punching log-base-ten instead is the oldest self-inflicted wound in the exponential business.",
+          board:[
+            {tex:"t = \\tau\\ln5 = (0.400)(1.609) = 0.644\\ \\mathrm s", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0.644,10, 0.035, {stroke:GOLD, w:3});
+       dashLine(c, 0,10, 0.644,10, {}); dashLine(c, 0.644,0, 0.644,10, {});
+     }
+        },
+        { map:2, title:"(b) The total heat",
+          think:"Where must ALL of ½CV₀² eventually go?",
+          model:"W_R = ½(200 μF)(50)² = 0.250 J — every stored joule becomes heat.",
+          pose:"write",
+          say:"The total heat needs no integral if you think in ledgers: the capacitor begins with half C V nought squared — a quarter joule — and ends empty; the resistor is the only exit. A quarter joule of warmth, delivered on an exponential schedule. The doubting may integrate i squared R and find, after two lines, exactly the same number.",
+          board:[
+            {tex:"W_R = \\tfrac12CV_0^2 = \\tfrac12(200\\times10^{-6})(50.0)^2 = 0.250\\ \\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:3, title:"What R controls — and what it can't",
+          think:"Change R: which of (a) and (b) changes?",
+          model:"R sets the PACE (τ), never the TOTAL. How fast, not how much.",
+          pose:"excited",
+          say:"And the division of powers, worth engraving: the resistor's value sets HOW FAST — the time constant — but never HOW MUCH — the total energy, fixed by the capacitor's opening balance. Double R and the same quarter joule seeps out at half the rate. Energy questions consult the endpoints; timing questions consult tau; confusing the jurisdictions is this chapter's favourite exam trap.",
+          board:[
+            {label:"Jurisdictions", text:"R governs the pace (τ = RC); initial storage governs the total. How-fast vs how-much.", kind:"key"},
+            {label:"Reusable method", text:"v = V₀e^(−t/τ) → t = τ ln(ratio), NATURAL log → total heat = initial ½CV² regardless of R", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Two-loop circuit with a battery being charged",
+      problem:"Three branches join two nodes: (1) 10.0 V battery + 2.00 Ω; (2) 4.00 V battery + 4.00 Ω (both + terminals at the top node); (3) 6.00 Ω resistor. Find all three currents.",
+      goal:"Goal → I₁, I₂, I₃",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Name currents","Junction + loops","Solve","Negative current","Audit"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(6.5),x2:ctx.M.X(10),y2:ctx.M.Y(6.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(0.8),x2:ctx.M.X(10),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(6.5),x2:ctx.M.X(2),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(5.5),y1:ctx.M.Y(6.5),x2:ctx.M.X(5.5),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(9),y1:ctx.M.Y(6.5),x2:ctx.M.X(9),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    label(ctx, 1.0,3.6, '10V, 2Ω', {fs:9, color:DIMC});
+    label(ctx, 4.5,3.6, '4V, 4Ω', {fs:9, color:DIMC});
+    label(ctx, 9.2,3.6, '6Ω', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Name the unknowns",
+          think:"Three branches, three currents — and one junction relation.",
+          model:"I₁, I₂ up toward the top node; I₃ down through the 6 Ω. Junction: I₁ + I₂ = I₃.",
+          pose:"talk",
+          say:"A genuine two-loop network — no series-parallel shortcut survives contact with it. Kirchhoff's full protocol: name a current per branch with a GUESSED direction — both batteries pushing up, the six-ohm draining down — and let the junction rule bind them: what flows in must flow out.",
+          board:[
+            {tex:"I_1 + I_2 = I_3", kind:"key"}
+          ]
+        },
+        { map:1, title:"Two loop equations",
+          think:"Each battery's loop through the shared 6 Ω branch.",
+          model:"10 − 2I₁ − 6I₃ = 0; 4 − 4I₂ − 6I₃ = 0.",
+          pose:"write",
+          say:"Two independent loops, each pairing a battery with the shared middle branch: ten minus two I one minus six I three equals zero; four minus four I two minus six I three equals zero. Three equations, three unknowns — the network is cornered.",
+          board:[
+            {tex:"10.0 - 2.00I_1 - 6.00I_3 = 0; \\qquad 4.00 - 4.00I_2 - 6.00I_3 = 0", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve the system",
+          think:"Express I₁, I₂ in terms of I₃; feed the junction.",
+          model:"I₃ = 1.09 A, I₁ = 1.73 A, I₂ = −0.636 A.",
+          pose:"write",
+          say:"Express each battery current in terms of I three and feed the junction: six minus four and a half I three equals I three — I three is one point zero nine amperes. Back-substitute: I one, one point seven three; I two, MINUS zero point six three six. A minus sign has arrived, and it is not an error but a message.",
+          board:[
+            {tex:"I_3 = 1.09\\ \\mathrm A; \\quad I_1 = 1.73\\ \\mathrm A; \\quad I_2 = -0.636\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Decode the minus sign",
+          think:"I₂ < 0 means the current actually flows... which way? And what is happening to that battery?",
+          model:"Downward through the 4 V battery — driven backward: it is being CHARGED by the 10 V.",
+          pose:"point",
+          say:"The message: current actually flows DOWNWARD through the four-volt branch — backward through that battery's emf. The ten-volt battery is not merely feeding the resistors; it is force-feeding its weaker colleague, charging it. The algebra discovered the physics before we did — which is precisely what good sign conventions are for.",
+          board:[
+            {label:"The message", text:"I₂ < 0: the 4 V battery is driven in reverse — it is being charged.", kind:"key"}
+          ]
+        },
+        { map:4, title:"The power audit",
+          think:"Supplier, absorber, heaters: do the watts balance?",
+          model:"17.3 W in = 2.55 W charged + 14.7 W heat ✓.",
+          pose:"excited",
+          say:"Close the books: the ten-volt battery supplies seventeen point three watts. Destinations: two point five five absorbed into the charging battery's chemistry, and fourteen point seven across the three resistors as heat. Seventeen point three equals seventeen point three — to the decimal. Kirchhoff plus a power audit is a self-grading examination; hand in nothing that fails its own arithmetic.",
+          board:[
+            {tex:"17.3 = 2.55 + (5.97+1.62+7.14)\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"name branch currents → junction + independent loops → solve; minus signs are findings → audit the watts", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"The Wheatstone bridge",
+      problem:"A diamond of R₁, R₂ (left side) and R₃, R_x (right side), battery across top-bottom, galvanometer between midpoints. Show balance means R_x = R₂R₃/R₁; find R_x for R₁ = 100, R₂ = 200, R₃ = 150 Ω.",
+      goal:"Goal → the balance condition, R_x",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["The null idea","Two dividers","Divide","Why ratios win"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(5.5),y1:ctx.M.Y(7),x2:ctx.M.X(2),y2:ctx.M.Y(3.9),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(3.9),x2:ctx.M.X(5.5),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(5.5),y1:ctx.M.Y(7),x2:ctx.M.X(9),y2:ctx.M.Y(3.9),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(9),y1:ctx.M.Y(3.9),x2:ctx.M.X(5.5),y2:ctx.M.Y(0.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(3.9),x2:ctx.M.X(9),y2:ctx.M.Y(3.9),stroke:GOLD,'stroke-width':2,'stroke-dasharray':'5,4'},ctx.svg);
+    label(ctx, 2.6,5.9, 'R₁', {fs:11, color:DIMC});
+    label(ctx, 2.6,1.7, 'R₂', {fs:11, color:DIMC});
+    label(ctx, 7.9,5.9, 'R₃', {fs:11, color:DIMC});
+    label(ctx, 7.9,1.7, 'R_x', {fs:11, color:DIMC});
+    label(ctx, 5.1,4.35, 'G', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"The power of reading zero",
+          think:"At balance the galvanometer carries NO current. What does that make each side of the diamond?",
+          model:"Two independent voltage dividers whose midpoints happen to agree.",
+          pose:"talk",
+          say:"The Wheatstone bridge is measurement by SILENCE: adjust until the galvanometer between the midpoints reads exactly nothing. At that null, no current crosses the bridge wire — each side of the diamond becomes a private, undisturbed voltage divider, and the two midpoints simply happen to sit at the same potential.",
+          board:[
+            {label:"At balance", text:"I_G = 0: the two sides are independent dividers with equal midpoint potentials.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Write both dividers",
+          think:"Equal drops from the top: I_L R₁ = I_R R₃; and from midpoint to bottom?",
+          model:"I_L R₁ = I_R R₃ and I_L R₂ = I_R R_x.",
+          pose:"write",
+          say:"Measure from the top node: the drop through R one must equal the drop through R three — same starting potential, same midpoint potential. Likewise below the midpoints: I L R two equals I R R x. Two statements, two nuisance currents.",
+          board:[
+            {tex:"I_LR_1 = I_RR_3; \\qquad I_LR_2 = I_RR_x", kind:"key"}
+          ]
+        },
+        { map:2, title:"Divide: the currents vanish",
+          think:"Divide the equations. What survives?",
+          model:"R₁/R₂ = R₃/R_x → R_x = R₂R₃/R₁ = 300 Ω.",
+          pose:"write",
+          say:"Divide one equation by the other and both currents — whose values we never knew nor needed — cancel: R one over R two equals R three over R x. The unknown: R two R three over R one — two hundred times one fifty over one hundred — three hundred ohms. Ratios in, ratios out.",
+          board:[
+            {tex:"R_x = \\frac{R_2R_3}{R_1} = \\frac{(200)(150)}{100} = 300\\ \\Omega", kind:"answer", move:"divide: currents cancel"}
+          ]
+        },
+        { map:3, title:"Why null methods rule the lab",
+          think:"What quantities NEVER entered the result — and why does that make the bridge precise?",
+          model:"No battery voltage, no galvanometer calibration: the null needs sensitivity, not accuracy. Sensors ride bridges to this day.",
+          pose:"excited",
+          say:"Inventory what the answer does NOT contain: the battery's voltage — drift as it may; the galvanometer's calibration — it need only know ZERO from not-zero, sensitivity without accuracy. That is the genius of null methods: they replace 'measure a value' with 'detect a silence,' and silence can be detected exquisitely. Strain gauges, thermometer bridges, and half the sensor industry still ride this diamond — Wheatstone's eighteen forties are alive in every digital scale.",
+          board:[
+            {label:"Null virtues", text:"Independent of battery V and meter calibration. Detecting zero beats measuring a value.", kind:"key"},
+            {label:"Reusable method", text:"balance ⇒ two free dividers → equate drops, divide away the currents → R_x by ratio", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"The unavoidable 50% loss when charging a capacitor",
+      problem:"A capacitor C charges from zero through R from emf ε. Show exactly half the battery's energy is dissipated in R, independent of R. Evaluate for C = 100 μF, ε = 12.0 V.",
+      goal:"Goal → the 50% theorem",
+      world:{"x0":-0.4,"x1":5.5,"y0":-0.15,"y1":1.45},
+      pathway:["Battery's bill","Stored half","Integrate the heat","R cancels","Escapes"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t/τ', ylab:'power (arb)'});
+    plotCurve(ctx, t=>Math.exp(-2*t), 0, 5, {color:RED, w:2.5, N:50});
+    label(ctx, 1.6,0.75, 'resistor heat rate', {fs:10, color:RED, italic:true});
+  },
+      steps:[
+        { map:0, title:"The battery's total bill",
+          think:"It moves Q = Cε through the constant emf. Total work?",
+          model:"W_batt = Qε = Cε² — full fare on every coulomb.",
+          pose:"talk",
+          say:"Charge a capacitor through a resistor and audit the source: the battery lifts every one of its Q equals C emf coulombs through its FULL, constant emf — total outlay C emf squared. The capacitor, though, will bank only half that. The other half has a story.",
+          board:[
+            {tex:"W_{\\rm batt} = Q\\mathcal{E} = C\\mathcal{E}^2", kind:"key"}
+          ]
+        },
+        { map:1, title:"What the capacitor keeps",
+          think:"The stored energy at full charge?",
+          model:"U = ½Cε² — the half from the ramping voltage.",
+          pose:"write",
+          say:"The capacitor's final holdings: half C emf squared — half, because ITS voltage ramped from zero while the battery's held firm. The battery paid full fare; the capacitor banked average fare. The difference is owed to the resistor.",
+          board:[
+            {tex:"U_C = \\tfrac12C\\mathcal{E}^2\\ \\text{— half the outlay}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Confirm by integration",
+          think:"i = (ε/R)e^(−t/RC): integrate i²R over all time.",
+          model:"W_R = (ε²/R)(RC/2) = ½Cε² — the missing half, found in the heat.",
+          pose:"write",
+          say:"Confirm forensically: the charging current is emf over R times a decaying exponential; square it, multiply by R, integrate over all time — emf squared over R, times R C over two. HALF C emf squared, to the joule: the resistor received precisely the missing half.",
+          board:[
+            {tex:"W_R = \\int_0^{\\infty}i^2R\\,dt = \\frac{\\mathcal{E}^2}{R}\\cdot\\frac{RC}{2} = \\tfrac12C\\mathcal{E}^2", kind:"answer"}
+          ]
+        },
+        { map:3, title:"R canceled — the loss is a law",
+          think:"Where did R go in that result? What does its absence mean?",
+          model:"Any R: smaller resistor = bigger, briefer burn, same total. 50% is structural. Numbers: 14.4 → 7.2 + 7.2 mJ.",
+          pose:"point",
+          say:"Stare at the derivation's quiet scandal: R CANCELED. A tiny resistor burns hot and briefly, a large one cool and long — the integral is indifferent, always half. Numbers for our case: fourteen point four millijoules from the battery, seven point two stored, seven point two heat, whatever resistor you solder. Even with superconducting wire the half reappears as sparks and radiation. The tax is structural.",
+          board:[
+            {tex:"\\text{Battery } 14.4 = \\text{stored } 7.20 + \\text{heat } 7.20\\ \\mathrm{mJ, for ANY } R", kind:"warn"}
+          ]
+        },
+        { map:4, title:"The escape clauses",
+          think:"If constant-ε charging always loses half, how do efficient converters charge capacitors?",
+          model:"Ramp the source with the capacitor, or shuttle energy via an inductor — the switching-converter trick.",
+          pose:"excited",
+          say:"Is the tax truly inescapable? Only for CONSTANT-voltage charging. Raise the source gradually, keeping it barely above the capacitor's own voltage, and the resistor sees almost no difference to burn — losses arbitrarily small. Or route the energy through an INDUCTOR, which hands it over without resistive appetite: precisely what every switching power converter in every laptop does, megahertz-fast. The fifty percent rule is not a wall; it is a toll booth with a well-marked detour — and knowing the detour is worth an industry.",
+          board:[
+            {label:"Escapes", text:"Ramped sources or inductive transfer evade the 50% rule — the founding trick of switching converters.", kind:"key"},
+            {label:"Reusable method", text:"battery pays Qε; capacitor keeps half → integral confirms, R-free → escape via ramps or inductors", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

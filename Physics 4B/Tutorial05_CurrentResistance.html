@@ -845,6 +845,11 @@
       return dots;
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1359,6 +1364,511 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Charge and electrons delivered by a current",
+      problem:"A steady current of 2.00 A flows for one minute. How much charge passes a cross-section, and how many electrons is that?",
+      goal:"Goal → Q and N",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Q = It","Count","Direction","Why drift is slow"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(3.2),x2:ctx.M.X(10.5),y2:ctx.M.Y(3.2),stroke:'#8a7d60','stroke-width':10,'stroke-linecap':'round',opacity:.5},ctx.svg);
+    dashLine(ctx, 5.5,1.8, 5.5,4.6, {});
+    label(ctx, 5.7,4.9, 'cross-section', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Current is charge per time",
+          think:"I = dq/dt, steady: Q over one minute?",
+          model:"Q = It = (2.00)(60.0) = 120 C.",
+          pose:"talk",
+          say:"Current is the rate at which charge crosses a checkpoint: steady two amperes for sixty seconds delivers Q equals I t — one hundred twenty coulombs past the line. The ampere IS a coulomb per second; the formula is its definition rearranged.",
+          board:[
+            {tex:"Q = It = (2.00)(60.0) = 120\\ \\mathrm C", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Head count",
+          think:"N = Q/e: how many electrons?",
+          model:"N = 120/1.602×10⁻¹⁹ = 7.49×10²⁰ electrons.",
+          pose:"write",
+          say:"Divide by the elementary charge: seven and a half times ten to the TWENTY electrons in one minute, through one wire, for one unremarkable current. Electricity is a census of unimaginable turnout.",
+          board:[
+            {tex:"N = \\frac{Q}{e} = \\frac{120}{1.602\\times10^{-19}} = 7.49\\times10^{20}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Which way do they go?",
+          think:"Conventional current vs the electrons' actual drift: relate them.",
+          model:"Electrons drift OPPOSITE the conventional arrow — a historical sign convention, harmless if consistent.",
+          pose:"point",
+          say:"A confession the subject makes once and then ignores: the electrons, negative, drift OPPOSITE to the conventional current arrow — Franklin guessed the sign before anyone met the electron, and the convention stuck. No physics is harmed: a flow of minus charge leftward IS a conventional current rightward, in every equation we will ever write.",
+          board:[
+            {label:"Convention", text:"Conventional I: direction positive charge would move. Electrons drift the other way. Consistency is all.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why so many, so slow",
+          think:"10²¹ carriers a minute — yet drift speeds are mm/s. Reconcile.",
+          model:"Copper's carrier density is ~10²⁹/m³: a vast, slow crowd carries big currents. The SIGNAL travels near c; the carriers amble.",
+          pose:"excited",
+          say:"And the resolution of the classic riddle: with ten to the twenty-nine carriers per cubic metre on the payroll, each electron need only AMBLE — fractions of a millimetre per second — for the collective flow to reach amperes. The light turns on instantly not because electrons sprint but because the FIELD does: the push propagates near light speed while the crowd shuffles. A stadium wave, not a stampede.",
+          board:[
+            {label:"The riddle", text:"Huge carrier density ⇒ slow drift suffices. Signals travel at ~c; electrons drift at ~mm/s.", kind:"key"},
+            {label:"Reusable method", text:"Q = It → N = Q/e → keep the sign convention straight → drift vs signal speed", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Resistance of a household wire",
+      problem:"A 50.0 m copper wire (ρ = 1.72×10⁻⁸ Ω·m), diameter 1.60 mm, carries 10.0 A. Find its resistance and the voltage drop.",
+      goal:"Goal → R and V",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Geometry","R","Drop","Why codes exist"],
+      steps:[
+        { map:0, title:"Area first",
+          think:"Diameter 1.60 mm → radius → A in m².",
+          model:"A = π(0.800×10⁻³)² = 2.01×10⁻⁶ m².",
+          pose:"talk",
+          say:"Resistance is geometry times material: rho L over A. The geometry first — radius eight tenths of a millimetre, area pi r squared: two point zero one times ten to the minus six square metres. Metric discipline on the radius, or the factor of four exacts revenge.",
+          board:[
+            {tex:"A = \\pi(0.800\\times10^{-3})^2 = 2.01\\times10^{-6}\\ \\mathrm{m^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The resistance",
+          think:"ρL/A for 50 m of copper.",
+          model:"R = 0.428 Ω.",
+          pose:"write",
+          say:"R equals rho L over A: copper's tiny resistivity times fifty metres, over our area — zero point four two eight ohms. Half an ohm sounds harmless; the next line prices it.",
+          board:[
+            {tex:"R = \\frac{\\rho L}{A} = \\frac{(1.72\\times10^{-8})(50.0)}{2.01\\times10^{-6}} = 0.428\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The drop at 10 A",
+          think:"V = IR; also the heat P = I²R.",
+          model:"V = 4.28 V; P = 42.8 W of wire heating.",
+          pose:"write",
+          say:"At ten amperes: V equals I R — four point two eight volts sacrificed along the run, and I squared R — forty three watts — quietly warming the wall cavity. On a one twenty volt circuit that is a three point six percent tax, paid in heat, collected continuously.",
+          board:[
+            {tex:"V = IR = 4.28\\ \\mathrm V; \\qquad P = I^2R = 42.8\\ \\mathrm W", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why electrical codes specify gauge",
+          think:"Longer runs, bigger currents: what does the code make thicker, and why?",
+          model:"Loss ∝ L/A and I²: codes mandate thicker copper for long/high-current runs — fire prevention by formula.",
+          pose:"excited",
+          say:"And thus the electrician's rulebook is our formula with a badge: losses grow with length over area and with the SQUARE of current, so long runs and hungry appliances demand thicker wire — not for the appliance's sake but to keep those I squared R watts from cooking the insulation. Every gauge table in the code book is rho L over A, tabulated by lawyers.",
+          board:[
+            {label:"The code", text:"Wire heating ∝ I²L/A: thicker wire for longer runs and larger currents. Fire codes are physics tables.", kind:"key"},
+            {label:"Reusable method", text:"A from the diameter (in metres!) → R = ρL/A → V = IR, P = I²R → judge the % loss", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"A light bulb: current, resistance, energy",
+      problem:"A 60.0 W bulb operates at 120 V. Find the current, the operating resistance, and the energy used in 5.00 hours (J and kWh).",
+      goal:"Goal → I, R, E",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["I","R hot","Energy","Cold surge"],
+      steps:[
+        { map:0, title:"Current from power",
+          think:"P = IV: solve for I.",
+          model:"I = 60/120 = 0.500 A.",
+          pose:"talk",
+          say:"The bulb's label is a power rating at a voltage; the current follows from P equals I V: half an ampere. Labels are equations wearing consumer packaging.",
+          board:[
+            {tex:"I = \\frac{P}{V} = \\frac{60.0}{120} = 0.500\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Operating resistance",
+          think:"R = V/I — or V²/P directly.",
+          model:"R = 240 Ω (hot).",
+          pose:"write",
+          say:"Resistance while glowing: V over I — two hundred forty ohms; equivalently V squared over P, a form worth keeping loaded. Note the adjective WHILE GLOWING; it is about to matter.",
+          board:[
+            {tex:"R = \\frac{V}{I} = \\frac{V^2}{P} = 240\\ \\Omega\\ \\text{(hot)}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Five hours of light",
+          think:"E = Pt in joules; then the utility's unit.",
+          model:"E = 1.08×10⁶ J = 0.300 kWh.",
+          pose:"write",
+          say:"Energy: sixty watts for eighteen thousand seconds — one point zero eight million joules; in the utility's dialect, zero point three kilowatt hours, a few cents' worth. The kilowatt hour is nothing exotic: power times time, three point six megajoules in civilian clothing.",
+          board:[
+            {tex:"E = Pt = (60.0)(1.80\\times10^{4}) = 1.08\\times10^{6}\\ \\mathrm J = 0.300\\ \\mathrm{kWh}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The switch-on surge",
+          think:"Cold tungsten measures ~20 Ω. What current flows at the first instant — and when do bulbs die?",
+          model:"I_cold ≈ 120/20 = 6 A: a 12× surge until the filament heats. Hence bulbs fail at switch-on.",
+          pose:"excited",
+          say:"Now the sting in the tail: COLD tungsten measures only about twenty ohms — resistivity climbs with temperature, and the filament runs white hot. At the flick of the switch, then, the bulb gulps SIX amperes, twelve times its cruising current, until the filament heats up in a few milliseconds. That surge is why bulbs almost always die at the moment of switch-on, with a ping: the resistance you compute depends on WHEN you ask.",
+          board:[
+            {label:"The surge", text:"Cold R ≈ 20 Ω → ~6 A inrush at switch-on. Resistance is temperature's servant; bulbs die at dawn.", kind:"warn"},
+            {label:"Reusable method", text:"I = P/V → R = V²/P (hot!) → E = Pt, kWh = kW × h → expect cold-resistance surges", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Current density and the field inside a wire",
+      problem:"A copper wire of cross-section 2.50 mm² carries 10.0 A. Find the current density and the electric field inside the wire.",
+      goal:"Goal → J and E",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["J = I/A","Microscopic Ohm","Tiny E","Contrast statics"],
+      steps:[
+        { map:0, title:"Current density",
+          think:"J = I/A in SI: watch the mm² conversion.",
+          model:"J = 10.0/2.50×10⁻⁶ = 4.00×10⁶ A/m².",
+          pose:"talk",
+          say:"Current density is current per unit cross-section — the microscopic bookkeeping behind the macroscopic ampere. Ten amperes through two and a half square millimetres: four MILLION amperes per square metre. Impressive-sounding, and entirely routine for household copper.",
+          board:[
+            {tex:"J = \\frac{I}{A} = \\frac{10.0}{2.50\\times10^{-6}} = 4.00\\times10^{6}\\ \\mathrm{A/m^2}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Ohm's law, microscopic edition",
+          think:"E = ρJ: the material's own constitutive law.",
+          model:"E = (1.72×10⁻⁸)(4.00×10⁶) = 0.0688 V/m.",
+          pose:"write",
+          say:"Ohm's law strips to its essentials at the microscopic level: E equals rho J — field drives density, resistivity is the exchange rate, geometry nowhere in sight. For our copper: zero point zero six nine volts per metre inside the wire.",
+          board:[
+            {tex:"E = \\rho J = (1.72\\times10^{-8})(4.00\\times10^{6}) = 0.0688\\ \\mathrm{V/m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Seven centivolts per metre",
+          think:"Why does such a feeble field drive such a hearty current?",
+          model:"Copper's ~10²⁹ carriers/m³: countless hands, each barely pushed.",
+          pose:"point",
+          say:"Marvel at the disproportion: seven hundredths of a volt per metre — a field you could hardly measure in air — herds ten amperes through the metal. The secret, as ever, is the payroll: with ten to the twenty-nine free electrons per cubic metre, each need only creep for the total to thunder. Copper conducts by overwhelming committee.",
+          board:[
+            {label:"The disproportion", text:"A centivolt-scale field drives amperes: enormous carrier density does the heavy lifting.", kind:"key"}
+          ]
+        },
+        { map:3, title:"A field INSIDE a conductor?",
+          think:"Electrostatics swore E = 0 in conductors. What changed?",
+          model:"That was EQUILIBRIUM. A current-carrying wire is a steady state, not equilibrium: E ≠ 0 sustains the flow against drag.",
+          pose:"excited",
+          say:"And confront the apparent heresy: two tutorials ago we PROVED the field inside a conductor vanishes. That proof carried a premise — electrostatic EQUILIBRIUM, charges at rest. A wire with current is not in equilibrium but in steady STATE: charges forever drifting, forever dragged, needing a standing field to push them on. Same metal, different contract. Theorems keep their premises even when we forget them.",
+          board:[
+            {label:"No contradiction", text:"E = 0 holds in equilibrium. A current-carrying wire is a driven steady state: E = ρJ ≠ 0 inside.", kind:"warn"},
+            {label:"Reusable method", text:"J = I/A → E = ρJ → credit the carrier density → distinguish equilibrium from steady state", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Resistance thermometer",
+      problem:"A copper coil is 10.0 Ω at 20.0°C (α = 3.93×10⁻³ K⁻¹). (a) Find R at 80.0°C. (b) At what temperature is R = 15.0 Ω?",
+      goal:"Goal → R(80°C); T for 15 Ω",
+      world:{"x0":-10,"x1":180,"y0":8.4,"y1":17.5},
+      pathway:["Linear law","Forward","Inverse","Instrument"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'T (°C)', ylab:'R (Ω)'});
+    plotCurve(ctx, T=>10*(1+3.93e-3*(T-20)), -5, 175, {color:CHALKC, w:2.5, N:20});
+  },
+      steps:[
+        { map:0, title:"The linear model",
+          think:"R(T) = R₀[1 + α(T−T₀)]: what physical effect does α encode?",
+          model:"Hotter metal: livelier lattice, more scattering, more ρ. Thermal expansion is negligible beside it.",
+          pose:"talk",
+          say:"A metal's resistivity climbs with temperature — the lattice jitters harder and scatters the electron traffic more often — and over modest ranges the climb is usefully LINEAR: R equals R nought times one plus alpha delta T. The wire's thermal expansion also changes geometry, but three orders more feebly; we ignore it with a clear conscience.",
+          board:[
+            {label:"The model", tex:"R(T) = R_0[1+\\alpha(T-T_0)]", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Forward: predict R",
+          think:"ΔT = 60 K: evaluate.",
+          model:"R = 10.0[1 + 0.236] = 12.4 Ω.",
+          pose:"write",
+          say:"Sixty kelvin of warming: alpha delta T is zero point two three six, so R rises to twelve point four ohms. Nearly a quarter of itself — copper is a talkative thermometer.",
+          board:[
+            {tex:"R = 10.0[1+(3.93\\times10^{-3})(60.0)] = 12.4\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) Inverse: read T",
+          think:"R/R₀ − 1 = αΔT: solve for the temperature.",
+          model:"ΔT = 0.500/α = 127 K → T = 147°C.",
+          pose:"write",
+          say:"Run it backwards: fifteen over ten, minus one — one half — equals alpha delta T. Delta T is one hundred twenty seven kelvin: the coil sits at one hundred forty seven Celsius. The ohmmeter has become a thermometer by algebraic inversion.",
+          board:[
+            {tex:"\\Delta T = \\frac{0.500}{3.93\\times10^{-3}} = 127\\ \\mathrm K \\Rightarrow T = 147^{\\circ}\\mathrm C", kind:"answer"}
+          ]
+        },
+        { map:3, title:"From effect to instrument",
+          think:"Which metal, and which caveat, make this a laboratory standard?",
+          model:"Platinum RTDs: stable, linear to ~1-2% over hundreds of K. The linearity is an approximation — know its range.",
+          pose:"excited",
+          say:"Industrialise the idea and you have the RESISTANCE THERMOMETER: platinum, chosen for stability and clean linearity, wound into probes that calibrate the world's laboratories. And the fine print, stated like professionals: the linear law is a truncated series, faithful to a percent or two across a few hundred kelvin, drifting beyond. Every instrument is a physics formula plus an honesty clause about its range.",
+          board:[
+            {label:"The instrument", text:"Platinum RTDs run on this law. Linearity is an approximation — valid over a stated range only.", kind:"key"},
+            {label:"Reusable method", text:"R = R₀(1+αΔT) forward for prediction, inverted for thermometry → respect the model's range", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Stretching a wire to twice its length",
+      problem:"A wire of resistance R is drawn out (constant volume and resistivity) until its length doubles. What is its new resistance?",
+      goal:"Goal → R′ in terms of R",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The constraint","Double whammy","R ∝ L²","Strain gauges"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(5),x2:ctx.M.X(5),y2:ctx.M.Y(5),stroke:'#8a7d60','stroke-width':10,'stroke-linecap':'round'},ctx.svg);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(2),x2:ctx.M.X(9),y2:ctx.M.Y(2),stroke:'#8a7d60','stroke-width':5,'stroke-linecap':'round'},ctx.svg);
+    label(ctx, 1.2,5.7, 'before: L, A', {fs:10, color:DIMC});
+    label(ctx, 1.2,2.7, 'after: 2L, A/2', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The hidden constraint",
+          think:"Drawing a wire conserves what? So doubling L does what to A?",
+          model:"Volume AL fixed: L → 2L forces A → A/2.",
+          pose:"talk",
+          say:"Stretching a wire is conservation in disguise: the metal's VOLUME, A times L, survives the draw. Double the length and the cross-section must halve — the wire pays for its new reach out of its own girth.",
+          board:[
+            {label:"Constraint", tex:"AL = \\text{const}: \\ L\\to2L \\Rightarrow A\\to A/2", kind:"key"}
+          ]
+        },
+        { map:1, title:"Two changes, one direction",
+          think:"R = ρL/A: L doubles AND A halves. Combined factor?",
+          model:"R′ = ρ(2L)/(A/2) = 4R.",
+          pose:"write",
+          say:"Now feed both changes to rho L over A: the numerator doubles, the denominator halves, and the two effects CONSPIRE rather than cancel — four times the resistance. A double stretch is a quadruple penalty.",
+          board:[
+            {tex:"R' = \\rho\\frac{2L}{A/2} = 4\\,\\rho\\frac{L}{A} = 4R", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The general law",
+          think:"At constant volume, express R in terms of L alone.",
+          model:"R = ρL²/V: R ∝ L² for any constant-volume deformation.",
+          pose:"write",
+          say:"Generalise: substitute A equals V over L and R becomes rho L SQUARED over V. At constant volume, resistance grows as the square of the length — every stretch is counted twice, once as added path and once as narrowed passage.",
+          board:[
+            {tex:"R = \\frac{\\rho L^2}{V}\\ \\text{— quadratic in L at fixed volume}", kind:"key"}
+          ]
+        },
+        { map:3, title:"The strain gauge",
+          think:"For a small strain ε, fractional ΔR ≈ ? What device exploits it?",
+          model:"ΔR/R ≈ 2ε (plus a small ρ effect): glue the wire to a beam and read its strain electrically.",
+          pose:"excited",
+          say:"Differentiate the square law for a SMALL stretch and the fractional resistance change is TWICE the strain — a built-in amplifier. Glue a zigzag of fine wire to a bridge girder, wire it into a Wheatstone bridge, and the girder's invisible flexing becomes millivolts on a meter: the STRAIN GAUGE, sold by the million, weighing trucks and monitoring aircraft wings. Today's parlor trick is the sensor industry's daily bread.",
+          board:[
+            {label:"The gauge", tex:"\\frac{\\Delta R}{R} \\approx 2\\epsilon\\ \\text{— strain, read electrically}", kind:"key"},
+            {label:"Reusable method", text:"constant volume ties A to L → R ∝ L² → small-strain ΔR/R ≈ 2ε → the strain gauge", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"The cost of running a heater",
+      problem:"A 1500 W heater runs 8.00 h/day for 30 days at $0.15/kWh. Find the energy, the cost, and the current from a 120 V outlet. Why is a 15 A breaker marginal?",
+      goal:"Goal → kWh, $, I, headroom",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Energy","Cost","Current","Efficiency footnote"],
+      steps:[
+        { map:0, title:"Energy in the utility's unit",
+          think:"1.5 kW × 240 h: work in kWh from the start.",
+          model:"E = 360 kWh (= 1.30×10⁹ J).",
+          pose:"talk",
+          say:"Track the month in the billing unit itself: one and a half kilowatts times two hundred forty hours — three hundred sixty kilowatt hours. In joules, one point three billion, which is why nobody bills in joules.",
+          board:[
+            {tex:"E = (1.50\\ \\mathrm{kW})(8.00\\times30\\ \\mathrm h) = 360\\ \\mathrm{kWh}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The bill",
+          think:"360 × $0.15.",
+          model:"$54 for the month — heat is the expensive way to use electrons.",
+          pose:"write",
+          say:"At fifteen cents each: fifty four dollars for one warm room, one month. Resistive heat is the least clever thing electricity can do — every joule bought at full retail — which is why heat pumps, moving three joules for the price of one, are eating this market.",
+          board:[
+            {tex:"\\text{cost} = 360\\times\\$0.15 = \\$54", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The current draw",
+          think:"I = P/V at 120 V; compare with the 15 A breaker.",
+          model:"I = 12.5 A: only 2.5 A of headroom on a 15 A circuit.",
+          pose:"write",
+          say:"The outlet's view: twelve and a half amperes, continuously. On a fifteen ampere breaker that leaves two and a half of headroom — one desk lamp and a phone charger from the tripping point. The breaker is not being temperamental; it is doing arithmetic.",
+          board:[
+            {tex:"I = \\frac{P}{V} = \\frac{1500}{120} = 12.5\\ \\mathrm A\\ \\ \\text{(15 A breaker: 2.5 A spare)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The 100% footnote",
+          think:"Where does ALL the heater's electrical energy end up? Is 'efficiency' even meaningful here?",
+          model:"For heating, every device is 100% efficient — waste heat IS the product. kWh: energy, not power.",
+          pose:"excited",
+          say:"Two footnotes worth their space. First: for a HEATER, efficiency is a solved problem — every last joule, including the glow of the element and the hum of the fan, ends as heat in the room; waste heat is the merchandise. Second, the unit pedantry that settles a thousand internet arguments: the kilowatt HOUR is ENERGY — power times time — and a kilowatt is its rate. Bill in one, complain about the other, never confuse the two.",
+          board:[
+            {label:"Footnotes", text:"Heating devices: 100% efficient by definition. kWh = energy (3.6 MJ); kW = its rate.", kind:"key"},
+            {label:"Reusable method", text:"E = Pt in kWh → cost = E × rate → I = P/V vs breaker → for heat, all joules count", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Radial resistance of a cylindrical shell",
+      problem:"A tube: inner radius 1.00 mm, outer 5.00 mm, length 10.0 cm, ρ = 1.00×10⁻³ Ω·m. Current flows RADIALLY from inner to outer surface. Find the resistance.",
+      goal:"Goal → R radial",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["Why ρL/A fails","Slice in series","Integrate","The log's meaning"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.5, {stroke:CHALKC, w:2.5});
+    circleAt(ctx, 0,0, 2.3, {stroke:CHALKC, w:2.5});
+    arrow(ctx, 0.55,0, 2.2,0, {color:GOLD, w:2.5, label:'I radial', fs:11, side:-1});
+  },
+      steps:[
+        { map:0, title:"The formula's fine print",
+          think:"R = ρL/A assumed what about the cross-section along the current's path?",
+          model:"A must be constant along the flow. Radial flow crosses ever-larger areas: must integrate.",
+          pose:"talk",
+          say:"Rho L over A carries fine print nobody reads: it assumes the current crosses the SAME area all along its path. Our current flows radially outward, through cylindrical shells of ever-growing circumference — the fine print is violated, and the remedy, as always, is slicing.",
+          board:[
+            {label:"The failure", text:"ρL/A needs constant A along the flow. Radial flow: A = 2πrL grows with r ⇒ integrate.", kind:"warn"}
+          ]
+        },
+        { map:1, title:"Shells in series",
+          think:"Each shell of thickness dr passes the SAME current. Series or parallel?",
+          model:"Series: dR = ρdr/(2πrL), summed along the path.",
+          pose:"write",
+          say:"Slice the tube into thin concentric shells. The whole current threads each shell in turn — one after another — so the shells stand in SERIES, resistances adding: each contributes rho d r over its area two pi r L. The near shells, with the least area, charge the highest tolls.",
+          board:[
+            {tex:"dR = \\frac{\\rho\\,dr}{2\\pi rL}\\ \\text{— shells in series (same I through each)}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Integrate: a logarithm appears",
+          think:"∫dr/r from a to b: evaluate the whole R.",
+          model:"R = (ρ/2πL)ln(b/a) = 2.56×10⁻³ Ω.",
+          pose:"write",
+          say:"Sum the series: the integral of d r over r delivers its trademark logarithm. R equals rho over two pi L, times log of b over a — log five. Numbers: two point five six milliohms. Small, but the FORM is the prize.",
+          board:[
+            {tex:"R = \\frac{\\rho}{2\\pi L}\\ln\\frac{b}{a} = \\frac{1.00\\times10^{-3}}{2\\pi(0.100)}\\ln5 = 2.56\\times10^{-3}\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Read the logarithm",
+          think:"Which layers dominate R? And where else does this exact formula reappear?",
+          model:"The inner layers (least area) dominate; doubling b barely matters. Same form: coax-cable leakage, spherical grounding resistance.",
+          pose:"excited",
+          say:"The logarithm testifies: the resistance is built almost entirely at the INNER radii, where the current squeezes through the least circumference — widen the outer wall tenfold and R grows only by log ten. Swap our resistive tube for a coaxial cable's insulation, with rho astronomically large, and this identical formula prices the cable's LEAKAGE — the same geometry, the same log, an ocean apart in application. Slicing along the current: the one method behind them all.",
+          board:[
+            {label:"The meaning", text:"ln(b/a): inner layers dominate. Same formula = coax insulation leakage, grounding electrodes.", kind:"key"},
+            {label:"Reusable method", text:"varying A ⇒ slice ⊥ to the current → series shells dR = ρdr/A(r) → integrate; expect logs in cylinders", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A thermistor: exponential, not linear",
+      problem:"R(T) = R₀exp[B(1/T − 1/T₀)], R₀ = 10.0 kΩ at 298 K, B = 3500 K. (a) Find R at 310 K. (b) Find (1/R)dR/dT at 298 K; compare with copper.",
+      goal:"Goal → R(310), sensitivity",
+      world:{"x0":270,"x1":345,"y0":-1,"y1":22},
+      pathway:["Semiconductor logic","Evaluate","Sensitivity","Trade-off"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'T (K)', ylab:'R (kΩ)'});
+    plotCurve(ctx, T=>10*Math.exp(3500*(1/T-1/298)), 274, 342, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"Why falling, why exponential",
+          think:"In a semiconductor, what does warmth do to the CARRIER COUNT?",
+          model:"Heat frees carriers exponentially (Boltzmann): R drops with T — opposite to metals.",
+          pose:"talk",
+          say:"A thermistor is a semiconductor, and semiconductors play resistance backwards: warmth does not merely agitate the lattice, it LIBERATES new charge carriers, their number growing by Boltzmann's exponential law. More carriers, less resistance: R FALLS as T rises, and steeply — the formula's exponential is thermodynamics showing through.",
+          board:[
+            {label:"The physics", text:"Semiconductors: carrier count grows exponentially with T ⇒ R falls exponentially. Metals do the opposite.", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Body temperature",
+          think:"Evaluate the exponent at 310 vs 298 K.",
+          model:"exponent = 3500(−1.30×10⁻⁴) = −0.455 → R = 6.35 kΩ.",
+          pose:"write",
+          say:"At three hundred ten kelvin: one over three ten minus one over two ninety eight is minus one point three ten to the minus four; times B, minus zero point four five five. R equals ten kilohms times e to that: six point three five kilohms. Twelve degrees of warmth, a THIRD of the resistance gone.",
+          board:[
+            {tex:"R = 10.0\\,e^{3500(1/310-1/298)} = 10.0\\,e^{-0.455} = 6.35\\ \\mathrm{k\\Omega}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) The sensitivity",
+          think:"Differentiate: (1/R)dR/dT = −B/T². Evaluate and compare with copper's +0.39%/K.",
+          model:"−3500/298² = −3.94%/K — ten times copper's magnitude, opposite sign.",
+          pose:"write",
+          say:"Differentiate the law: the fractional sensitivity is minus B over T squared — minus three point nine percent per kelvin. Copper offered plus zero point three nine. The thermistor is TEN TIMES more talkative, and speaks with the opposite sign; a tenth of a degree moves its resistance a measurable half percent.",
+          board:[
+            {tex:"\\frac{1}{R}\\frac{dR}{dT} = -\\frac{B}{T^2} = -\\frac{3500}{(298)^2} = -0.0394\\ \\mathrm{K^{-1}}\\ \\ (\\text{Cu: } +0.0039)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Sensitivity versus linearity",
+          think:"Why does your digital thermometer contain a thermistor AND a lookup table?",
+          model:"Thermistors: superb sensitivity, awful linearity — software corrects the curve. Platinum: the reverse trade.",
+          pose:"excited",
+          say:"And the engineering bargain, stated plainly: the thermistor sells SENSITIVITY and charges in LINEARITY — that swooping exponential must be straightened out in software, a lookup table riding shotgun in every digital fever thermometer. Platinum sells the opposite contract: modest signal, beautiful straightness, no apologies. Instrument design is the art of choosing which vice you can correct — and nonlinearity, unlike insensitivity, is correctable.",
+          board:[
+            {label:"The trade", text:"Thermistor: ×10 sensitivity, exponential curve (software fixes). RTD: linear but faint. Choose your correctable vice.", kind:"key"},
+            {label:"Reusable method", text:"exponential R(T) from carrier liberation → evaluate via the 1/T difference → sensitivity −B/T² → linearize in software", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Charge and heat from a rising current",
+      problem:"I(t) = I₀(1 − e^(−t/τ)) in a 5.00 Ω resistor, I₀ = 2.00 A, τ = 0.500 s. Find (a) the charge in the first 1.00 s, (b) the energy dissipated in that time.",
+      goal:"Goal → Q and W by integration",
+      world:{"x0":-0.1,"x1":1.6,"y0":-0.2,"y1":2.4},
+      pathway:["The waveform","Q = ∫I dt","W = ∫I²R dt","Why heat lags"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'I (A)'});
+    plotCurve(ctx, t=>2*(1-Math.exp(-t/0.5)), 0, 1.5, {color:CHALKC, w:2.5, N:60});
+    dashLine(ctx, 0,2, 1.5,2, {});
+    label(ctx, 1.05,2.15, 'I₀ = 2 A', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"A current still waking up",
+          think:"Recognize the waveform — where will you meet it again?",
+          model:"The RL turn-on curve (Tutorial 10). At t = 1 s = 2τ, I = 86% of I₀.",
+          pose:"talk",
+          say:"A current that rises toward its ceiling with an exponential yawn — memorise the shape, for it is precisely how current builds through an inductor after a switch closes, five tutorials hence. Today we ask two accounting questions of it: how much CHARGE has passed by one second, and how much HEAT has been made.",
+          board:[
+            {label:"The waveform", tex:"I(t) = I_0(1-e^{-t/\\tau})\\ \\text{— the RL turn-on, previewed}", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Charge: integrate once",
+          think:"∫(1 − e^(−t/τ))dt: evaluate over [0, 1].",
+          model:"Q = I₀[t − τ(1−e^(−t/τ))] = 1.14 C (vs 2.00 C steady).",
+          pose:"write",
+          say:"Charge is the integral of current: I nought times t minus tau one minus e to the minus t over tau. At one second — two time constants — one point one four coulombs, against the two that a full-grown current would have delivered. Fifty seven percent: the ramp-up withheld the rest.",
+          board:[
+            {tex:"Q = I_0\\left[t-\\tau(1-e^{-t/\\tau})\\right] = 2.00[1.00-0.500(1-e^{-2})] = 1.14\\ \\mathrm C", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0.1,0.36],[0.2,0.66],[0.3,0.9],[0.4,1.1],[0.5,1.26],[0.6,1.4],[0.7,1.51],[0.8,1.6],[0.9,1.67],[1.0,1.73],[1.0,0]], {color:'rgba(232,172,86,.28)'});
+       label(c, 0.62,0.5, 'Q = area', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"(b) Heat: integrate the square",
+          think:"P = I²R with I(t) squared: expand (1−e)² and integrate term by term.",
+          model:"W = I₀²R[t − 2τ(1−e^(−t/τ)) + (τ/2)(1−e^(−2t/τ))] = 7.62 J (vs 20.0 J steady).",
+          pose:"write",
+          say:"Heat requires the SQUARE: expand one minus e, squared, into three integrable pieces — the steady term, a cross term with time constant tau, and a squared term with tau over two. Assemble: twenty joules' worth of coefficients times the bracket — seven point six two joules, where a mature current would have burned twenty.",
+          board:[
+            {tex:"W = I_0^2R\\left[t-2\\tau(1-e^{-t/\\tau})+\\frac{\\tau}{2}(1-e^{-2t/\\tau})\\right] = 7.62\\ \\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why the heat lags the charge",
+          think:"Charge reached 57% of steady; heat only 38%. What does the square do to small currents?",
+          model:"P ∝ I²: the feeble early current is doubly penalized in heat. Squares punish the timid.",
+          pose:"excited",
+          say:"Compare the two fractions: the charge reached fifty seven percent of its steady-state entitlement, the heat a mere thirty eight. The square is the reason — while the current idled at half strength it delivered half the charge but only a QUARTER of the power. Wherever a rate enters squared — heating, drag, radiated power — slow starts are doubly forgiven and fast finishes doubly billed. An integral, a square, and a moral: the toolkit of every waveform you will ever meet.",
+          board:[
+            {label:"The asymmetry", text:"Q: 57% of steady; W: 38%. P ∝ I² double-punishes the ramp-up. Squares forgive slow starts.", kind:"key"},
+            {label:"Reusable method", text:"Q = ∫I dt; W = R∫I² dt (expand the square) → compare both to the steady baseline", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

@@ -1376,6 +1376,572 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Electron-volts and the speed of an accelerated electron",
+      problem:"An electron starts from rest and is accelerated through 500 V. Find its kinetic energy in eV and joules, and its final speed.",
+      goal:"Goal → K and v",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The eV","To joules","Speed","Sign subtlety"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(0.5),x2:ctx.M.X(1.5),y2:ctx.M.Y(6.5),stroke:BLUE,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(9.5),y1:ctx.M.Y(0.5),x2:ctx.M.X(9.5),y2:ctx.M.Y(6.5),stroke:RED,'stroke-width':4},ctx.svg);
+    label(ctx, 0.7,6.8, '−', {fs:14, color:BLUE});
+    label(ctx, 9.7,6.8, '+ (500 V higher)', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"The electron-volt earns its name",
+          think:"One elementary charge through one volt gains how much energy — by definition?",
+          model:"K = |qΔV| = 500 eV, by construction of the unit.",
+          pose:"talk",
+          say:"Accelerate one elementary charge through five hundred volts and it banks five hundred ELECTRON VOLTS — the unit was invented so that this sentence needs no calculator. Charge times voltage is energy; when the charge is e and the voltage is in volts, the answer is already in eV.",
+          board:[
+            {label:"By construction", tex:"K = |q\\,\\Delta V| = 500\\ \\mathrm{eV}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Convert to joules",
+          think:"Multiply by e = 1.602×10⁻¹⁹ C.",
+          model:"K = 8.01×10⁻¹⁷ J.",
+          pose:"write",
+          say:"For SI bookkeeping, multiply by e: eight point zero one times ten to the minus seventeen joules. The joule is a clumsy giant at atomic scale — which is precisely why the eV was coined for this neighbourhood.",
+          board:[
+            {tex:"K = (500)(1.602\\times10^{-19}) = 8.01\\times10^{-17}\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The speed",
+          think:"v = √(2K/m): evaluate and compare with c.",
+          model:"v = 1.33×10⁷ m/s ≈ 4% of c — classical formula still legitimate.",
+          pose:"write",
+          say:"Speed: root of two K over the electron's tiny mass — one point three three times ten to the seven metres per second. Four percent of light speed, from five hundred humble volts! At that fraction, classical mechanics still holds with a straight face; push past a few kilovolts and relativity must be invited.",
+          board:[
+            {tex:"v = \\sqrt{\\frac{2K}{m_e}} = \\sqrt{\\frac{2(8.01\\times10^{-17})}{9.11\\times10^{-31}}} = 1.33\\times10^{7}\\ \\mathrm{m/s}\\ (\\approx0.04c)", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 2.2,3.5, 0.22, {stroke:BLUE, w:3});
+       tween(u=>{ b.setAttribute('cx', c.M.X(2.2+6.8*u*u)); }, 1400, c.instant);
+     }
+        },
+        { map:3, title:"Mind the sign of the traveler",
+          think:"The electron moves toward HIGHER potential. Why does it still gain K?",
+          model:"q < 0: U = qV falls as V rises. Negative charges roll UPHILL in V.",
+          pose:"excited",
+          say:"And the sign subtlety that catches half of every class: the electron accelerates toward HIGHER potential. No contradiction — its potential energy is q V with q NEGATIVE, so rising V means falling U, and the difference funds the speed. Positive charges roll downhill in potential; negative charges roll uphill. Keep the charge's sign attached to every energy statement, and the paradoxes evaporate.",
+          board:[
+            {label:"The sign rule", text:"U = qV: electrons (q<0) gain K moving toward HIGHER V. Track the sign, not the slogan.", kind:"warn"},
+            {label:"Reusable method", text:"K = |q|ΔV (eV for free) → joules via e → v = √(2K/m) → check v ≪ c; signs via U = qV", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Potential of a point charge and the work to approach it",
+      problem:"A +5.00 nC charge is fixed. (a) Find the potential 30.0 cm away. (b) How much work must you do to bring a +2.00 nC charge from infinity to that point?",
+      goal:"Goal → V, then W",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["V = kq/r","Evaluate","Work = qV","Stored"],
+      setup(ctx,w){
+    circleAt(ctx, 3,3.5, 0.35, {stroke:RED, w:3});
+    label(ctx, 2.4,4.3, '+5 nC', {fs:11, color:RED});
+    circleAt(ctx, 7.5,3.5, 0.2, {stroke:GOLD, w:3});
+    label(ctx, 7.1,4.15, 'P, 0.30 m', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Potential: the field's price list",
+          think:"V = kq/r is a SCALAR. What convention pins its zero?",
+          model:"V = 0 at infinity; V(r) = kq/r is energy-per-charge at each location.",
+          pose:"talk",
+          say:"The potential is the field translated into accounting: at every point, the energy per coulomb that a visitor would hold there, with the zero placed by convention at infinity. A SCALAR — no components, no directions, just a number posted at every location like a price.",
+          board:[
+            {label:"Definition", tex:"V = \\frac{kq}{r}\\ \\ (V = 0\\ \\text{at}\\ \\infty)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): read the price",
+          think:"kq/r at 30 cm: evaluate.",
+          model:"V = (8.99×10⁹)(5×10⁻⁹)/0.300 = 150 V.",
+          pose:"write",
+          say:"At thirty centimetres: nine ten to the nine times five nanocoulombs over point three — one hundred fifty volts. No arrow attached; the potential at P is simply one hundred fifty joules per coulomb, whichever way you approach.",
+          board:[
+            {tex:"V = \\frac{(8.99\\times10^{9})(5.00\\times10^{-9})}{0.300} = 150\\ \\mathrm{V}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): the bill for arriving",
+          think:"W = q₂V for the 2 nC visitor, from infinity. Sign?",
+          model:"W = (2×10⁻⁹)(150) = 3.00×10⁻⁷ J, positive — pushing like toward like.",
+          pose:"write",
+          say:"Bringing in two nanocoulombs from infinity: work equals charge times potential — three times ten to the minus seven joules, POSITIVE, since we shove a positive charge toward positive territory against its protests. The price list makes the work a one-line multiplication; no path integrals were harmed.",
+          board:[
+            {tex:"W = q_2V = (2.00\\times10^{-9})(150) = 3.00\\times10^{-7}\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The work is banked, not spent",
+          think:"Where did the 3×10⁻⁷ J go? What happens if the visitor is released?",
+          model:"Stored as pair energy U = kq₁q₂/r; released on escape. Potential = potential ENERGY per charge.",
+          pose:"excited",
+          say:"And the work is not lost but BANKED: it now resides as the pair's potential energy, k q one q two over r — release the visitor and the account pays out in kinetic energy as it flees. Potential is potential energy per unit charge; keep the two words distinguished by their units — volts for the price, joules for the bill — and this chapter stays honest.",
+          board:[
+            {label:"The bank", tex:"U = \\frac{kq_1q_2}{r} = 3.00\\times10^{-7}\\ \\mathrm{J}\\ \\text{— refundable on release}", kind:"key"},
+            {label:"Reusable method", text:"V = kq/r (scalar) → W = qV from infinity → the work is stored as pair energy", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Field between parallel plates from the voltage",
+      problem:"Two parallel plates 2.00 mm apart are connected to a 120 V supply. Find the field between them and the force on an electron there.",
+      goal:"Goal → E and F",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["E = V/d","Units","Force","Path-free energy"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(0.5),x2:ctx.M.X(2),y2:ctx.M.Y(6.5),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(9),y1:ctx.M.Y(0.5),x2:ctx.M.X(9),y2:ctx.M.Y(6.5),stroke:BLUE,'stroke-width':4},ctx.svg);
+    label(ctx, 1.5,6.8, '+', {fs:14, color:RED});
+    label(ctx, 8.7,6.8, '−', {fs:14, color:BLUE});
+    label(ctx, 4.7,-0.2, '2.00 mm, 120 V', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Uniform field, simple ratio",
+          think:"For a UNIFORM field, how do E, V, and d relate?",
+          model:"E = ΔV/d — valid precisely because the plate field is uniform.",
+          pose:"talk",
+          say:"Between close parallel plates the field is uniform, and for a uniform field, potential difference is simply field times distance. Invert: E equals delta V over d. One hundred twenty volts across two millimetres — sixty thousand volts per metre, aimed from the positive plate to the negative.",
+          board:[
+            {tex:"E = \\frac{\\Delta V}{d} = \\frac{120}{2.00\\times10^{-3}} = 6.00\\times10^{4}\\ \\mathrm{V/m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 2.8,3.5, 8.2,3.5, {color:GOLD, w:2.5, label:'E', fs:12, side:-1});
+     }
+        },
+        { map:1, title:"V/m equals N/C",
+          think:"Show the two field units are identical — via the definitions.",
+          model:"V/m = (J/C)/m = N·m/(C·m) = N/C. One field, two dialects.",
+          pose:"point",
+          say:"A units aside worth thirty seconds: volts per metre and newtons per coulomb are the SAME unit — volts are joules per coulomb, joules are newton metres, and the metres cancel. Field-as-force-ratio and field-as-potential-slope are one concept in two dialects; fluency means translating without noticing.",
+          board:[
+            {label:"Units", tex:"\\frac{\\mathrm V}{\\mathrm m} = \\frac{\\mathrm{J/C}}{\\mathrm m} = \\frac{\\mathrm N}{\\mathrm C}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Force on the electron",
+          think:"F = eE, direction for a negative charge?",
+          model:"F = 9.6×10⁻¹⁵ N toward the POSITIVE plate.",
+          pose:"write",
+          say:"The electron: force e E — nine point six times ten to the minus fifteen newtons — toward the POSITIVE plate, against the field's arrow, as negative charges insist. Small in newtons, colossal against the electron's mass: the accelerations of the last tutorial, funded by a battery.",
+          board:[
+            {tex:"F = eE = (1.602\\times10^{-19})(6.00\\times10^{4}) = 9.6\\times10^{-15}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"120 eV, any road taken",
+          think:"The electron crosses the gap by a wild zigzag. What energy does it gain?",
+          model:"Exactly 120 eV, path-independent — the conservative field's signature.",
+          pose:"excited",
+          say:"Final flourish: however the electron crosses — straight, slanted, or in drunken spirals — it banks EXACTLY one hundred twenty electron volts, because the electric force is conservative and only the endpoints' potentials matter. Voltage is a promise about energy that no path can renegotiate. That promise is what makes circuit analysis possible at all, as the next tutorials will exploit relentlessly.",
+          board:[
+            {label:"Path independence", text:"ΔK = qΔV = 120 eV regardless of route — conservative fields bill by endpoints.", kind:"key"},
+            {label:"Reusable method", text:"uniform gap: E = V/d → V/m ≡ N/C → F = qE → energy = qΔV, path-free", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Scalar superposition of potentials",
+      problem:"+3.00 nC at the origin, −2.00 nC at (0.400, 0) m. Find the potential at P = (0.200, 0.200) m and the potential energy of a +1.00 nC charge there.",
+      goal:"Goal → V_P and U",
+      world:{"x0":-0.1,"x1":0.55,"y0":-0.06,"y1":0.34},
+      pathway:["Distances","Add numbers","Energy","Why easier"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    circleAt(ctx, 0,0, 0.014, {stroke:RED, w:3});
+    circleAt(ctx, 0.4,0, 0.012, {stroke:BLUE, w:3});
+    circleAt(ctx, 0.2,0.2, 0.009, {stroke:GOLD, w:3});
+    label(ctx, -0.03,0.045, '+3', {fs:11, color:RED});
+    label(ctx, 0.41,0.045, '−2', {fs:11, color:BLUE});
+    label(ctx, 0.215,0.225, 'P', {fs:12, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Geometry first",
+          think:"Compute each charge's distance to P. Notice anything convenient?",
+          model:"Both distances = √(0.2²+0.2²) = 0.283 m — equidistant by the setup's kindness.",
+          pose:"talk",
+          say:"First the geometry: P sits at point two, point two. From the origin: root of point zero four plus point zero four — point two eight three metres. From the charge at point four: the same, by symmetry. Both sources equidistant — the problem's small kindness, gratefully accepted.",
+          board:[
+            {tex:"r_1 = r_2 = \\sqrt{0.200^2 + 0.200^2} = 0.283\\ \\mathrm{m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Add potentials as numbers",
+          think:"V = Σkqᵢ/rᵢ: signs included, directions ignored. Total?",
+          model:"V_P = k(3−2)(10⁻⁹)/0.283 = 31.8 V.",
+          pose:"write",
+          say:"Now the luxury of scalars: potentials add as NUMBERS, signs included, directions nonexistent. k times three nanocoulombs minus two nanocoulombs, over point two eight three: thirty one point eight volts. The negative charge subtracts arithmetic, not vectors.",
+          board:[
+            {tex:"V_P = k\\left(\\frac{3.00\\times10^{-9}}{0.283} + \\frac{-2.00\\times10^{-9}}{0.283}\\right) = 31.8\\ \\mathrm{V}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Energy of the visitor",
+          think:"U = qV_P for +1 nC. Evaluate.",
+          model:"U = 3.18×10⁻⁸ J.",
+          pose:"write",
+          say:"A one nanocoulomb visitor at P holds energy q V: three point one eight times ten to the minus eight joules. The single number thirty one point eight volts served instantly; the potential is precomputed hospitality.",
+          board:[
+            {tex:"U = qV_P = (1.00\\times10^{-9})(31.8) = 3.18\\times10^{-8}\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Contrast with the field at P",
+          think:"To find E at P you'd need what extra machinery?",
+          model:"Two vectors, different directions, componentwise addition. Scalars beat vectors — use V when energy suffices.",
+          pose:"excited",
+          say:"For contrast, imagine asking for the FIELD at P: two vectors of different directions, resolved into components, summed, recombined — honest work, but work. Potential problems skip the trigonometry because scalars have no compass. The strategic rule of this chapter: whenever the question speaks of energy, speed, or work, route the calculation through V and arrive early.",
+          board:[
+            {label:"The strategy", text:"Fields add as vectors (components); potentials add as signed numbers. Prefer V for any energy question.", kind:"key"},
+            {label:"Reusable method", text:"distances → V = Σkq/r with signs → U = qV; save vectors for when force itself is demanded", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A charged conducting sphere: potential, charge, field",
+      problem:"A metal sphere of radius 15.0 cm is charged to 3000 V (relative to infinity). Find its charge, the field just outside, and the potential at 30.0 cm. What is V inside?",
+      goal:"Goal → Q, E_surf, V(0.30), V inside",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["Q from V","E = V/R","Farther out","Flat inside"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.2, {stroke:GOLD, w:3});
+    circleAt(ctx, 0,0, 4.2, {stroke:DIMC, w:1.5, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"Charge from the potential",
+          think:"On/outside a sphere V = kQ/r. Invert at the surface.",
+          model:"Q = VR/k = 50 nC.",
+          pose:"talk",
+          say:"A conducting sphere wears the point charge's potential from its surface outward: V equals k Q over r. Invert at the skin: Q equals V R over k — three thousand times point one five over nine ten to the nine — fifty nanocoulombs. Voltmeters, suitably read, are charge meters.",
+          board:[
+            {tex:"Q = \\frac{VR}{k} = \\frac{(3000)(0.150)}{8.99\\times10^{9}} = 50\\ \\mathrm{nC}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Surface field: the V/R shortcut",
+          think:"E = kQ/R² — but rewrite it using V. What compact relation appears?",
+          model:"E_surface = V/R = 3000/0.15 = 2.00×10⁴ V/m.",
+          pose:"write",
+          say:"The surface field: k Q over R squared — which is simply V over R: twenty thousand volts per metre. Pocket that relation, E equals V over R, for it explains a whole phenomenology: at a GIVEN voltage, the smaller the sphere, the fiercer its surface field.",
+          board:[
+            {tex:"E_{\\rm surface} = \\frac{kQ}{R^2} = \\frac{V}{R} = 2.00\\times10^{4}\\ \\mathrm{V/m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Farther out, and inside",
+          think:"V at 30 cm; and what does V do throughout the metal's interior?",
+          model:"V(0.30) = 1500 V; inside, E = 0 keeps V flat at 3000 V.",
+          pose:"write",
+          say:"At thirty centimetres — double the radius — the potential halves: fifteen hundred volts. And INSIDE the metal? The field is zero, so the potential cannot change: a flat three thousand volts throughout the interior. A conductor in equilibrium is an EQUIPOTENTIAL VOLUME — one number describes the entire lump.",
+          board:[
+            {tex:"V(0.300) = \\frac{kQ}{r} = 1500\\ \\mathrm{V}; \\qquad V_{\\rm inside} = 3000\\ \\mathrm{V\\ (flat)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why sharp points spark",
+          think:"At fixed V, E = V/R: what happens as R shrinks toward a needle tip?",
+          model:"Small R → huge surface field → air ionizes first at points. Lightning rods by design.",
+          pose:"excited",
+          say:"Now let E equals V over R testify: hold any conductor at three thousand volts and its SHARPEST features — smallest local R — carry the most violent fields. Shrink R enough and the field tears air molecules apart: corona, sparks, St Elmo's fire, always from the points first. The lightning rod is this formula, sharpened and sold; the next example will derive the same moral from two spheres and a wire.",
+          board:[
+            {label:"Points spark", tex:"E = \\frac{V}{R}: \\ \\text{small curvature radius} \\Rightarrow \\text{intense field — the lightning-rod principle}", kind:"key"},
+            {label:"Reusable method", text:"sphere: V = kQ/r outside → Q = VR/k, E_surf = V/R → V flat inside → small R means big E", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Energy stored in a triangle of charges",
+      problem:"Three +2.00 μC charges sit at the corners of an equilateral triangle of side 10.0 cm. How much work was required to assemble them from infinity?",
+      goal:"Goal → assembly energy U",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Pairs","Count once","Assembly story","Release"],
+      setup(ctx,w){
+    circleAt(ctx, 3,1.5, 0.25, {stroke:RED, w:3});
+    circleAt(ctx, 8,1.5, 0.25, {stroke:RED, w:3});
+    circleAt(ctx, 5.5,5.83, 0.25, {stroke:RED, w:3});
+    dashLine(ctx, 3,1.5, 8,1.5, {}); dashLine(ctx, 8,1.5, 5.5,5.83, {}); dashLine(ctx, 5.5,5.83, 3,1.5, {});
+  },
+      steps:[
+        { map:0, title:"Energy lives in pairs",
+          think:"U_total = Σ over pairs of kqᵢqⱼ/rᵢⱼ. How many pairs here?",
+          model:"Three charges → three pairs, each kq²/d.",
+          pose:"talk",
+          say:"Interaction energy is a property of PAIRS: sum k q i q j over r, once per pair, i less than j. Three charges make exactly three pairs — count them on the triangle's three sides — each contributing k q squared over d.",
+          board:[
+            {label:"Pairs", tex:"U = \\sum_{i<j}\\frac{kq_iq_j}{r_{ij}}\\ \\text{— 3 charges} \\Rightarrow \\text{3 pairs}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate — once per pair",
+          think:"3 × kq²/d with q = 2 μC, d = 10 cm.",
+          model:"U = 3(8.99×10⁹)(4×10⁻¹²)/0.1 = 1.08 J.",
+          pose:"write",
+          say:"Three identical pairs: three times nine ten to the nine times four ten to the minus twelve, over a tenth — one point zero eight joules. And the classic blunder, named and shamed: counting each pair from BOTH ends and reporting two point one six. A pair is one relationship, not two.",
+          board:[
+            {tex:"U = 3\\,\\frac{kq^2}{d} = 3\\,\\frac{(8.99\\times10^{9})(2.00\\times10^{-6})^2}{0.100} = 1.08\\ \\mathrm{J}", kind:"answer"},
+            {label:"The trap", text:"Counting pairs twice gives 2.16 J — wrong. i < j means ONCE per pair.", kind:"warn"}
+          ]
+        },
+        { map:2, title:"Verify by building it",
+          think:"Bring the charges in one at a time. What does each arrival cost?",
+          model:"1st: free. 2nd: kq²/d. 3rd: 2kq²/d. Total 3kq²/d ✓.",
+          pose:"write",
+          say:"Cross-examine by construction: the first charge arrives into empty space, free of charge. The second pays k q squared over d against the first. The third faces BOTH residents: two k q squared over d. Total: three — agreeing with the pair count. Two bookkeeping methods, one answer; the audit passes.",
+          board:[
+            {tex:"0 + \\frac{kq^2}{d} + \\frac{2kq^2}{d} = \\frac{3kq^2}{d}\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"The energy is loaded",
+          think:"Release all three simultaneously: what becomes of the 1.08 J?",
+          model:"It converts to kinetic energy as they fly apart — assembly energy is stored explosive potential.",
+          pose:"excited",
+          say:"And what IS this one point zero eight joules, physically? A loaded spring made of pure geometry: release the three charges and they fly apart, dividing precisely that energy among their kinetic accounts. Assembly work in, explosion energy out — the same ledger that prices ionic crystals, nuclear binding, and every configuration of charge the universe has ever paid to build.",
+          board:[
+            {label:"The meaning", text:"Assembly energy = the KE released if the system flies apart. Configurations store work.", kind:"key"},
+            {label:"Reusable method", text:"sum kqq/r once per pair → verify by sequential assembly → read U as stored (or released) energy", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Field from a potential function in two dimensions",
+      problem:"V(x,y) = 5.00x²y − 2.00y³ (volts, meters). Find E at (1.00, 2.00) m.",
+      goal:"Goal → E from −∇V",
+      world:{"x0":-0.6,"x1":3.2,"y0":-0.4,"y1":3.2},
+      pathway:["The gradient","Differentiate","Evaluate","Downhill ⊥"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    circleAt(ctx, 1,2, 0.06, {stroke:GOLD, w:3});
+    label(ctx, 1.1,2.2, '(1, 2)', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"E is minus the gradient",
+          think:"Given V(x,y), what operation recovers the vector field?",
+          model:"E = −∇V: each component is minus a partial derivative.",
+          pose:"talk",
+          say:"When the potential is handed to you as a formula, the field is one derivative away: E equals MINUS the gradient of V — each component, minus the partial derivative along its own axis, the other variables held politely still. The scalar landscape, differentiated, yields the vector weather.",
+          board:[
+            {label:"The rule", tex:"E_x = -\\frac{\\partial V}{\\partial x}, \\quad E_y = -\\frac{\\partial V}{\\partial y}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Take the partials",
+          think:"∂/∂x of 5x²y − 2y³; then ∂/∂y. Treat the other variable as constant.",
+          model:"E_x = −10xy; E_y = −5x² + 6y².",
+          pose:"write",
+          say:"Differentiate: with y frozen, the x partial is ten x y, so E x is minus ten x y. With x frozen, the y partial is five x squared minus six y squared — E y is minus five x squared plus six y squared. Note the cubed term ignored x entirely, and vice versa: partials are loyal to one variable at a time.",
+          board:[
+            {tex:"E_x = -10.0\\,xy, \\qquad E_y = -5.00x^2 + 6.00y^2", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate at (1, 2)",
+          think:"Insert the point; assemble magnitude.",
+          model:"E = −20.0 i + 19.0 j V/m; |E| = 27.6 V/m.",
+          pose:"write",
+          say:"At one comma two: E x is minus twenty; E y is minus five plus twenty four — plus nineteen. The field: minus twenty i plus nineteen j, magnitude twenty seven point six volts per metre. Units audit: volts differentiated by metres give volts per metre — the field's native tongue.",
+          board:[
+            {tex:"\\vec E(1,2) = -20.0\\,\\ihat + 19.0\\,\\jhat\\ \\mathrm{V/m}, \\quad |\\vec E| = 27.6\\ \\mathrm{V/m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 1,2, 0.35,2.62, {color:GOLD, w:3, label:'E', fs:12, side:-1});
+     }
+        },
+        { map:3, title:"Downhill, and perpendicular to the contours",
+          think:"What two geometric facts does E = −∇V encode about equipotential lines?",
+          model:"E points down the steepest V-slope, ⊥ to every equipotential. Maps and fields share a grammar.",
+          pose:"excited",
+          say:"The geometry in the minus sign: E points DOWNHILL in potential, along the steepest descent, and therefore crosses every equipotential contour at a right angle — for along a contour V does not change, and a gradient has no business there. Anyone who reads hiking maps already knows this grammar: contour lines, steepest paths, perpendicularity. The electrostatic landscape is a topographic map whose altitude is voltage.",
+          board:[
+            {label:"Geometry", text:"E ⊥ equipotentials, pointing down-V. Potential maps read exactly like elevation maps.", kind:"key"},
+            {label:"Reusable method", text:"partials one variable at a time → negate → evaluate → check units and the downhill direction", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Potential on the axis of a charged disk",
+      problem:"A disk of radius R = 10.0 cm carries σ = 2.00 μC/m². Find V on its axis at height z, evaluate at z = 5.00 cm, and recover the axial field.",
+      goal:"Goal → V(z), then E = −dV/dz",
+      world:{"x0":-2.6,"x1":3.4,"y0":-2.2,"y1":2.6},
+      pathway:["Rings again","Integrate V","Evaluate","Differentiate"],
+      setup(ctx,w){
+    el('ellipse',{cx:ctx.M.X(-0.8),cy:ctx.M.Y(0),rx:22,ry:60,fill:'rgba(232,106,90,.2)',stroke:RED,'stroke-width':2.5},ctx.svg);
+    dashLine(ctx, -0.8,0, 3,0, {});
+    circleAt(ctx, 1.2,0, 0.05, {stroke:GOLD, w:3});
+  },
+      steps:[
+        { map:0, title:"Why V is the easier road",
+          think:"For a ring's contribution to V (unlike E), what complication vanishes?",
+          model:"Every point of a ring is equidistant from the axis point — scalar addition, no components.",
+          pose:"talk",
+          say:"We found this disk's FIELD in Tutorial one by wrestling vectors. Watch the potential route: every point of a given ring lies at the SAME distance from our axial point, and potentials add as plain numbers — no components, no angles, no cancellation bookkeeping. Same disk, kinder mathematics.",
+          board:[
+            {label:"The advantage", tex:"dV = \\frac{k\\,dq}{\\sqrt{z^2+r^2}}\\ \\text{— scalars: no directions to track}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate over rings",
+          think:"dq = 2πσr dr: the integrand is nearly its own antiderivative. Integrate.",
+          model:"V(z) = (σ/2ε₀)(√(z²+R²) − z).",
+          pose:"write",
+          say:"Sum the rings: integral of two pi k sigma r d r over root z squared plus r squared — an integrand that is its own antiderivative's shadow. Result: sigma over two epsilon nought, times root z squared plus R squared, minus z. One clean closed form, no trigonometric scars.",
+          board:[
+            {tex:"V(z) = 2\\pi k\\sigma\\left[\\sqrt{z^2+r^2}\\right]_0^R = \\frac{\\sigma}{2\\varepsilon_0}\\left(\\sqrt{z^2+R^2}-z\\right)", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate at 5 cm",
+          think:"σ/2ε₀ = 1.13×10⁵; the bracket = 0.1118 − 0.05.",
+          model:"V = (1.13×10⁵)(0.0618) = 6.98×10³ V.",
+          pose:"write",
+          say:"At five centimetres: the prefactor one point one three times ten to the five, the bracket zero point zero six one eight metres — nearly seven thousand volts on the axis of a hand-sized disk. Static charge is not shy.",
+          board:[
+            {tex:"V(0.0500) = (1.13\\times10^{5})(0.1118-0.0500) = 6.98\\times10^{3}\\ \\mathrm{V}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Differentiate to recover E",
+          think:"E_z = −dV/dz: does it reproduce Tutorial 1's hard-won formula?",
+          model:"E_z = (σ/2ε₀)(1 − z/√(z²+R²)) ✓ — the vector answer, from scalar work.",
+          pose:"excited",
+          say:"And the encore: differentiate once — E z equals minus d V d z — and out falls sigma over two epsilon nought times one minus z over root z squared plus R squared: EXACTLY the field we once earned by brute vector integration, now recovered with an afternoon to spare. The grand strategy of this chapter, in one example: integrate the easy scalar, differentiate once, collect the vector. Order of operations as a way of life.",
+          board:[
+            {tex:"E_z = -\\frac{dV}{dz} = \\frac{\\sigma}{2\\varepsilon_0}\\left(1-\\frac{z}{\\sqrt{z^2+R^2}}\\right) = 6.24\\times10^{4}\\ \\mathrm{V/m\\ at\\ 5\\ cm}\\;\\checkmark", kind:"answer"},
+            {label:"Reusable method", text:"rings → scalar integral for V(z) → differentiate for E → confirm against the vector-route result", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Two spheres joined by a wire: where does the charge go?",
+      problem:"Conducting spheres of radii 10.0 and 30.0 cm, far apart, are joined by a thin wire and share 8.00 nC total. Find each charge, the common potential, and each surface field.",
+      goal:"Goal → Q₁, Q₂, V, E₁, E₂",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Equipotential","Split the charge","V","Fields","Lightning rods"],
+      setup(ctx,w){
+    circleAt(ctx, 2.2,3.5, 0.9, {stroke:GOLD, w:3});
+    circleAt(ctx, 7.8,3.5, 2.6, {stroke:GOLD, w:3});
+    el('line',{x1:ctx.M.X(3.1),y1:ctx.M.Y(3.5),x2:ctx.M.X(5.2),y2:ctx.M.Y(3.5),stroke:CHALKC,'stroke-width':1.5},ctx.svg);
+    label(ctx, 1.5,1.9, 'R = 10 cm', {fs:10, color:DIMC});
+    label(ctx, 6.7,0.3, 'R = 30 cm', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The wire's one demand",
+          think:"Connected conductors settle at what condition?",
+          model:"One equipotential: kQ₁/R₁ = kQ₂/R₂ → Q ∝ R.",
+          pose:"talk",
+          say:"Join two conductors by a wire and charge flows until protest ceases — until both sit at ONE potential. k Q one over R one equals k Q two over R two: the charges divide in proportion to the RADII. Not the areas, not the volumes — the radii. Let us see what that innocent linearity does.",
+          board:[
+            {label:"Equipotential", tex:"\\frac{kQ_1}{R_1} = \\frac{kQ_2}{R_2} \\;\\Rightarrow\\; \\frac{Q_1}{Q_2} = \\frac{R_1}{R_2} = \\frac13", kind:"key"}
+          ]
+        },
+        { map:1, title:"Divide the eight nanocoulombs",
+          think:"Q₁:Q₂ = 1:3 with total 8 nC.",
+          model:"Q₁ = 2.00 nC, Q₂ = 6.00 nC.",
+          pose:"write",
+          say:"One part to three parts, summing to eight: two nanocoulombs on the small sphere, six on the large. The big sphere, as intuition demanded, holds the bulk of the charge. Intuition may now leave the room; the next line will not flatter it.",
+          board:[
+            {tex:"Q_1 = 2.00\\ \\mathrm{nC}, \\qquad Q_2 = 6.00\\ \\mathrm{nC}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The common potential",
+          think:"Either sphere reports it: kQ₁/R₁.",
+          model:"V = (8.99×10⁹)(2×10⁻⁹)/0.1 = 180 V.",
+          pose:"write",
+          say:"The shared potential, read off either sphere: k times two nanocoulombs over ten centimetres — one hundred eighty volts. One number for the whole connected system; that is what the wire was for.",
+          board:[
+            {tex:"V = \\frac{kQ_1}{R_1} = 180\\ \\mathrm{V}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The fields betray the small sphere",
+          think:"E = kQ/R² each — or use E = V/R. Who wins?",
+          model:"E₁ = 1.80×10³, E₂ = 599 V/m: the SMALL sphere's field is 3× larger.",
+          pose:"write",
+          say:"Now the surface fields: E equals V over R at a shared V — so the SMALL sphere, despite holding a third of the charge, wears THREE TIMES the field: eighteen hundred versus six hundred volts per metre. Less charge, more intensity: the charge it has is crowded onto a far smaller stage.",
+          board:[
+            {tex:"E_1 = \\frac{V}{R_1} = 1.80\\times10^{3}; \\quad E_2 = \\frac{V}{R_2} = 599\\ \\mathrm{V/m}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The pointed moral",
+          think:"A charged conductor with a sharp tip is 'small sphere joined to big sphere'. Conclusion?",
+          model:"σ and E concentrate at small curvature: points discharge first — the lightning rod, derived.",
+          pose:"excited",
+          say:"Now generalise: ANY charged conductor is, in effect, spheres of assorted radii welded together — and its sharpest features, the smallest local radii, carry the densest charge and the fiercest fields. Air breaks down there first: sparks leave from points, and lightning prefers rods sharpened for the purpose. Franklin guessed it with a kite; you have now derived it with a wire and two spheres.",
+          board:[
+            {label:"The moral", text:"At shared V, E = V/R: curvature concentrates field. Points spark first — lightning rods by theorem.", kind:"key"},
+            {label:"Reusable method", text:"wire ⇒ equal V → Q ∝ R → E = V/R exposes the small-radius hazard", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Potential inside a uniformly charged sphere",
+      problem:"A nonconducting sphere of radius R = 10.0 cm carries Q = 4.00 nC uniformly through its volume. Find V(r) for r ≤ R; evaluate at the surface and center.",
+      goal:"Goal → V(r) inside; V(R), V(0)",
+      world:{"x0":-0.02,"x1":0.24,"y0":-60,"y1":640},
+      pathway:["Two-region E","Integrate outside","Continue inside","Evaluate","Why it rises"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'r (m)', ylab:'V (V)'});
+    dashLine(ctx, 0.1,-30, 0.1,600, {});
+    label(ctx, 0.103,615, 'r = R', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Start from the known field",
+          think:"Recall E(r) for a uniform ball, both regions.",
+          model:"E = kQ/r² outside; E = kQr/R³ inside (Gauss, Tutorial 2).",
+          pose:"talk",
+          say:"The potential is the field, integrated — so first recall the field, Gauss's gift from last tutorial: k Q over r squared outside, and inside, the linear k Q r over R cubed. Two regions, two integrations, one continuous splice at the surface.",
+          board:[
+            {tex:"E_{\\rm out} = \\frac{kQ}{r^2}; \\qquad E_{\\rm in} = \\frac{kQr}{R^3}", kind:"key"}
+          ]
+        },
+        { map:1, title:"March in from infinity",
+          think:"V(r) = −∫E dr from ∞: what is V at the surface?",
+          model:"Outside: V = kQ/r → V(R) = kQ/R = 360 V.",
+          pose:"write",
+          say:"March in from infinity, paying the field's toll: outside, the integral yields the familiar k Q over r, and at the surface the meter reads k Q over R — three hundred sixty volts. So far, indistinguishable from a point charge.",
+          board:[
+            {tex:"V(R) = \\frac{kQ}{R} = \\frac{(8.99\\times10^{9})(4.00\\times10^{-9})}{0.100} = 360\\ \\mathrm{V}", kind:"answer"}
+          ],
+      action(c){
+       plotCurve(c, r=>r>=0.1? 35.96/r*1 : NaN, 0.1, 0.23, {color:GREEN, w:3, N:40});
+     }
+        },
+        { map:2, title:"Continue through the interior",
+          think:"Add −∫ from R to r of the INSIDE field. What curve results?",
+          model:"V(r) = (kQ/2R³)(3R² − r²): an inverted parabola capping the 1/r curve.",
+          pose:"write",
+          say:"Crossing the surface, switch integrands mid-march: V of r equals V at R minus the integral of the inside field. The algebra settles into k Q over two R cubed, times three R squared minus r squared — an inverted parabola, gently cresting toward the centre.",
+          board:[
+            {tex:"V(r) = \\frac{kQ}{R} - \\int_R^r\\frac{kQr'}{R^3}dr' = \\frac{kQ}{2R^3}(3R^2 - r^2)", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, r=>r<0.1? 5394*(0.03-r*r)/1e-2*1 : NaN, 0.001, 0.0999, {color:GOLD, w:3, N:40});
+     }
+        },
+        { map:3, title:"The center",
+          think:"Set r = 0: what multiple of the surface potential?",
+          model:"V(0) = (3/2)kQ/R = 539 V — one and a half times V(R).",
+          pose:"write",
+          say:"At the very centre: three halves k Q over R — five hundred thirty nine volts, half again above the surface's three sixty. The deepest point of the charge cloud is its electrical summit.",
+          board:[
+            {tex:"V(0) = \\tfrac32\\frac{kQ}{R} = 539\\ \\mathrm{V}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Why V climbs while E dies",
+          think:"E shrinks toward the center — yet V keeps rising. Reconcile.",
+          model:"E > 0 (outward) all the way in: every inward step climbs. V peaks where E = 0. And kQ/r inside is a named error.",
+          pose:"excited",
+          say:"The seeming paradox, resolved: the field WEAKENS toward the centre, yet the potential keeps CLIMBING — because the field, however feeble, still points outward, and every inward step is uphill. V crests exactly where E vanishes, at the centre. Contrast the conductor, flat inside; and beware the classic error of writing k Q over r within the ball — that formula's jurisdiction ends at the surface. Fields are slopes; potentials are altitudes; confuse them and the landscape takes revenge.",
+          board:[
+            {label:"Reconciliation", text:"E outward (though shrinking) ⇒ V rises inward, peaking at E = 0. Never use kQ/r inside a volume charge.", kind:"warn"},
+            {label:"Reusable method", text:"E per region from Gauss → V by −∫E dr, splicing at boundaries → V continuous, peaking where E = 0", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

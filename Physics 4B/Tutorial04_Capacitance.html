@@ -862,6 +862,11 @@
       return r;
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1414,6 +1419,540 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Capacitance from charge and voltage",
+      problem:"A capacitor holds 12.0 μC when connected to a 6.00 V battery. Find its capacitance and stored energy. What charge would it hold at 9.00 V?",
+      goal:"Goal → C, U, Q(9V)",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["C = Q/V","Energy","Rescale","What C is"],
+      setup(ctx,w){
+    capSym(ctx, 5.5,3.5, true);
+  },
+      steps:[
+        { map:0, title:"The defining ratio",
+          think:"C = Q/V: what property of the device does this ratio capture?",
+          model:"C = 12.0 μC / 6.00 V = 2.00 μF — charge stored per volt applied.",
+          pose:"talk",
+          say:"Capacitance is a device's appetite for charge per volt of persuasion: C equals Q over V. Twelve microcoulombs at six volts — two microfarads. The ratio, not either number alone, is the device.",
+          board:[
+            {tex:"C = \\frac{Q}{V} = \\frac{12.0\\times10^{-6}}{6.00} = 2.00\\ \\mu\\mathrm{F}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The stored energy",
+          think:"U = ½QV — why the half? (Preview: the charging history.)",
+          model:"U = ½(12 μC)(6 V) = 36.0 μJ.",
+          pose:"write",
+          say:"Energy: one half Q V — thirty six microjoules. The half, whose full biography a later example will write, records that the voltage GREW from zero during charging; the average volt was half the final one. Three equivalent costumes — half Q V, half C V squared, Q squared over two C — pick whichever matches your knowns.",
+          board:[
+            {tex:"U = \\tfrac12QV = \\tfrac12CV^2 = \\frac{Q^2}{2C} = 36.0\\ \\mu\\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Rescale to 9 V",
+          think:"C is fixed by geometry. Q and U scale how?",
+          model:"Q = CV = 18.0 μC (linear); U = 81.0 μJ (quadratic).",
+          pose:"write",
+          say:"Raise the battery to nine volts: the capacitance — a property of metal and geometry — does not budge; the CHARGE scales linearly to eighteen microcoulombs, and the ENERGY quadratically to eighty one microjoules. One device, one C, obedient responses.",
+          board:[
+            {tex:"Q(9.00\\ \\mathrm V) = CV = 18.0\\ \\mu\\mathrm C; \\qquad U = \\tfrac12CV^2 = 81.0\\ \\mu\\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:3, title:"C belongs to the hardware",
+          think:"What changes C: the battery, the charge, or the plates?",
+          model:"Only geometry (and dielectric): C is to charge storage what R will be to current.",
+          pose:"excited",
+          say:"The conceptual anchor for the whole tutorial: capacitance belongs to the HARDWARE — plate area, gap, filling — and not to the circumstances of its charging. Batteries set V, V and C set Q; but C itself is set with a ruler at the factory. The next example takes exactly that ruler to a pair of plates.",
+          board:[
+            {label:"The anchor", text:"C is fixed by geometry + dielectric. Circumstances choose Q and V; the ratio never moves.", kind:"key"},
+            {label:"Reusable method", text:"C = Q/V → U = ½QV (any costume) → rescaling: Q linear in V, U quadratic", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Sizing a parallel-plate capacitor",
+      problem:"Two plates of area 0.0500 m² are separated by 0.500 mm. Find the capacitance with air, and with a dielectric of κ = 4.00.",
+      goal:"Goal → C₀ and κC₀",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Geometry formula","Evaluate","Dielectric","Why farads are huge"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(4.2),x2:ctx.M.X(9),y2:ctx.M.Y(4.2),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(2.8),x2:ctx.M.X(9),y2:ctx.M.Y(2.8),stroke:BLUE,'stroke-width':4},ctx.svg);
+    label(ctx, 3.5,5.0, 'A = 0.05 m²', {fs:10, color:DIMC});
+    label(ctx, 3.5,1.8, 'd = 0.5 mm', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Geometry becomes capacitance",
+          think:"C = ε₀A/d: which changes help, and why physically?",
+          model:"Big area stores more charge per volt; small gap raises field per volt: both raise C.",
+          pose:"talk",
+          say:"For parallel plates the ruler's verdict is epsilon nought A over d. Bigger plates: more room for charge at a given voltage. Smaller gap: the same voltage produces a fiercer field and pulls more charge onto the plates. Area up top, distance below — the formula is the intuition, transcribed.",
+          board:[
+            {label:"The formula", tex:"C_0 = \\frac{\\varepsilon_0A}{d}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate the air-gap value",
+          think:"Plug in: expect an unimpressive number.",
+          model:"C₀ = 0.885 nF.",
+          pose:"write",
+          say:"Numbers: eight point eight five four ten to the minus twelve, times five hundredths, over five ten to the minus four — zero point eight eight five NANOfarads. A capacitor the size of a paperback, delivering under a billionth of a farad. The farad, we discover, is an enormous unit.",
+          board:[
+            {tex:"C_0 = \\frac{(8.854\\times10^{-12})(0.0500)}{5.00\\times10^{-4}} = 8.85\\times10^{-10}\\ \\mathrm F = 0.885\\ \\mathrm{nF}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Insert the dielectric",
+          think:"κ multiplies C. New value?",
+          model:"C = κC₀ = 3.54 nF.",
+          pose:"write",
+          say:"Slide in a dielectric of kappa four and the capacitance multiplies accordingly: three point five four nanofarads. The dielectric's polarised molecules partially cancel the field, so the same charge costs less voltage — more appetite per volt, by exactly the factor kappa.",
+          board:[
+            {tex:"C = \\kappa C_0 = 4.00\\times0.885 = 3.54\\ \\mathrm{nF}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"How real farads are built",
+          think:"To reach even 1 μF this way needs what area? How does industry cheat?",
+          model:"Rolled foils, porous electrodes: huge effective A, tiny d — until breakdown limits thinness.",
+          pose:"excited",
+          say:"To reach one FARAD with this recipe would demand plates the size of a county. Industry cheats on both variables at once: kilometres of metallised film ROLLED into a can — vast area, pocket volume — and dielectric layers thinned to microns. The thinning race ends where every capacitor's datasheet warns: at the breakdown voltage, where the dielectric stops insulating and starts conducting, briefly and spectacularly. Geometry giveth; breakdown taketh away.",
+          board:[
+            {label:"Engineering", text:"Real capacitors: rolled/porous structures for A, micron films for d, bounded by dielectric breakdown.", kind:"key"},
+            {label:"Reusable method", text:"C = κε₀A/d → evaluate → scale by κ → respect the breakdown limit when shrinking d", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Series and parallel: the two rules",
+      problem:"A 3.00 μF and a 6.00 μF capacitor are connected (a) in parallel and (b) in series. Find the equivalent capacitance in each case.",
+      goal:"Goal → C_eq twice",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Parallel","Series","Brackets","Versus resistors"],
+      setup(ctx,w){
+    capSym(ctx, 3.5,5.8, true); capSym(ctx, 3.5,4.2, true);
+    capSym(ctx, 7,1.8, true); capSym(ctx, 9,1.8, true);
+    label(ctx, 1.3,6.6, 'parallel', {fs:11, color:DIMC});
+    label(ctx, 6.2,0.6, 'series', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Parallel: same V, charges add",
+          think:"Both feel the full battery. What quantity adds?",
+          model:"C_eq = C₁ + C₂ = 9.00 μF.",
+          pose:"talk",
+          say:"In parallel, both capacitors enjoy the full battery voltage and each stores its own charge; the charges ADD, so the capacitances add: three plus six — nine microfarads. Parallel plates in parallel are simply more plate.",
+          board:[
+            {tex:"\\text{parallel: } C_{\\rm eq} = 3.00 + 6.00 = 9.00\\ \\mu\\mathrm F", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Series: same Q, voltages add",
+          think:"The middle island's net charge is zero. What is forced equal, and what adds?",
+          model:"1/C_eq = 1/3 + 1/6 = 1/2 → C_eq = 2.00 μF.",
+          pose:"write",
+          say:"In series the capacitors share ONE charge — the isolated island between them can only rearrange, not create — while their voltages stack. Voltages are Q over C, so the RECIPROCALS add: one third plus one sixth is one half; C equivalent, two microfarads.",
+          board:[
+            {tex:"\\text{series: } \\frac{1}{C_{\\rm eq}} = \\frac{1}{3.00}+\\frac{1}{6.00} \\Rightarrow C_{\\rm eq} = 2.00\\ \\mu\\mathrm F", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The bracket check",
+          think:"9 vs the pair; 2 vs the pair: state the general inequalities.",
+          model:"Parallel > the largest; series < the smallest. Instant sanity test.",
+          pose:"point",
+          say:"Carry the brackets as a reflex: parallel EXCEEDS the largest member — nine above six; series UNDERCUTS the smallest — two below three. Any computed equivalent that lands between its components has confused its own wiring.",
+          board:[
+            {label:"Brackets", tex:"C_{\\parallel} > \\max(C_1,C_2); \\qquad C_{\\rm series} < \\min(C_1,C_2)", kind:"key"}
+          ]
+        },
+        { map:3, title:"Mirror image of resistors",
+          think:"Resistors combine the opposite way. What physical difference explains the flip?",
+          model:"Series stacking makes charge storage HARDER (gaps add) but current flow harder too... C measures ease of storage; R measures difficulty of flow.",
+          pose:"excited",
+          say:"And the mnemonic with a reason: these rules are the RESISTOR rules reflected in a mirror. Series capacitors effectively lengthen the gap — storage gets harder, C falls; series resistors lengthen the pipe — flow gets harder, R RISES. The combination laws differ because C measures an ease and R a difficulty. Learn one table and its reflection, and all of circuit topology is yours.",
+          board:[
+            {label:"The mirror", text:"Capacitors: parallel adds, series reciprocals — exactly opposite to resistors, for a reason.", kind:"key"},
+            {label:"Reusable method", text:"parallel: same V, add C → series: same Q, add 1/C → bracket-check every result", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Energy and energy density in a charged capacitor",
+      problem:"A 100 μF capacitor with plate separation 0.100 mm is charged to 300 V. Find the stored energy, the field, and the energy density; verify u × volume = U.",
+      goal:"Goal → U, E, u, and the audit",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["U","E","u = ½ε₀E²","The audit"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(4.1),x2:ctx.M.X(9),y2:ctx.M.Y(4.1),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(2.9),x2:ctx.M.X(9),y2:ctx.M.Y(2.9),stroke:BLUE,'stroke-width':4},ctx.svg);
+    for(let x=2.6;x<9;x+=0.9){ arrow(ctx, x,4.0, x,3.05, {color:DIMC, w:1.3}); }
+  },
+      steps:[
+        { map:0, title:"The energy",
+          think:"½CV² at 100 μF, 300 V: evaluate — and respect it.",
+          model:"U = ½(10⁻⁴)(9×10⁴) = 4.50 J — camera-flash class, hazard class.",
+          pose:"talk",
+          say:"Half C V squared: half of ten to the minus four times ninety thousand — four and a half JOULES. Camera-flash territory, and precisely why disassembled electronics bite the unwary days after unplugging: capacitors are batteries with no patience.",
+          board:[
+            {tex:"U = \\tfrac12CV^2 = \\tfrac12(100\\times10^{-6})(300)^2 = 4.50\\ \\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The field in the gap",
+          think:"E = V/d across 0.1 mm.",
+          model:"E = 3.00×10⁶ V/m — near air's breakdown; real devices use better dielectrics.",
+          pose:"write",
+          say:"The field: three hundred volts across a tenth of a millimetre — three MILLION volts per metre, at the edge of what air tolerates before sparking. Thin gaps buy capacitance at the price of ferocious fields.",
+          board:[
+            {tex:"E = \\frac{V}{d} = \\frac{300}{1.00\\times10^{-4}} = 3.00\\times10^{6}\\ \\mathrm{V/m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Energy per cubic metre of field",
+          think:"u = ½ε₀E²: evaluate. What does this formula CLAIM about where energy sits?",
+          model:"u = 39.8 J/m³ — the energy resides in the field-filled space itself.",
+          pose:"write",
+          say:"Now the profound reframing: energy DENSITY, one half epsilon nought E squared — thirty nine point eight joules per cubic metre. The claim is radical: the energy lives not 'in the capacitor' as a device but in the FIELD-FILLED SPACE between its plates, joule by joule, cubic metre by cubic metre.",
+          board:[
+            {tex:"u = \\tfrac12\\varepsilon_0E^2 = \\tfrac12(8.854\\times10^{-12})(3.00\\times10^{6})^2 = 39.8\\ \\mathrm{J/m^3}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The volume audit",
+          think:"A = Cd/ε₀ — brace for the number — then check uAd = U.",
+          model:"A = 1130 m² (!); volume 0.113 m³; u × volume = 4.50 J ✓.",
+          pose:"excited",
+          say:"The audit requires the plate area: C d over epsilon nought — one THOUSAND ONE HUNDRED thirty square metres, a soccer pitch of foil, which is why the real device is a rolled cylinder you can palm. Volume: area times gap, zero point one one three cubic metres; times thirty nine point eight joules each — four and a half joules. The books close exactly, and the field-energy picture earns its keep. It will earn far more when fields leave the plates entirely and carry sunlight.",
+          board:[
+            {tex:"A = \\frac{Cd}{\\varepsilon_0} = 1.13\\times10^{3}\\ \\mathrm{m^2}; \\quad uAd = (39.8)(0.113) = 4.50\\ \\mathrm J\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"U = ½CV² → E = V/d → u = ½ε₀E² → verify u·(volume) = U: energy lives in the field", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A mixed network: reduce, then expand",
+      problem:"C₁ = 4.00 μF is in series with a parallel pair C₂ = 2.00 μF, C₃ = 6.00 μF, across a 24.0 V battery. Find the charge on and voltage across each capacitor.",
+      goal:"Goal → every Q and V",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Reduce","Total Q","Expand series","Expand parallel"],
+      setup(ctx,w){
+    capSym(ctx, 3,5.5, true);
+    capSym(ctx, 7,6.3, true); capSym(ctx, 7,4.7, true);
+    label(ctx, 2.3,6.3, 'C₁ = 4', {fs:10, color:DIMC});
+    label(ctx, 8.2,6.9, 'C₂ = 2', {fs:10, color:DIMC});
+    label(ctx, 8.2,4.0, 'C₃ = 6', {fs:10, color:DIMC});
+    label(ctx, 3.2,0.6, '24 V', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Reduce to one capacitor",
+          think:"Parallel pair first, then series with C₁.",
+          model:"C₂₃ = 8.00 μF; C_eq = (1/4 + 1/8)⁻¹ = 2.67 μF.",
+          pose:"talk",
+          say:"Strategy for every network: REDUCE inward, then EXPAND back out. The parallel pair adds: eight microfarads. That eight in series with the four: reciprocals add to three eighths — two point six seven microfarads facing the battery. The whole circuit, folded to a point.",
+          board:[
+            {tex:"C_{23} = 2+6 = 8.00\\ \\mu\\mathrm F; \\quad C_{\\rm eq} = \\left(\\tfrac14+\\tfrac18\\right)^{-1} = 2.67\\ \\mu\\mathrm F", kind:"key"}
+          ]
+        },
+        { map:1, title:"The total charge",
+          think:"Q = C_eq V: the series backbone's shared charge.",
+          model:"Q = (2.67)(24.0) = 64.0 μC.",
+          pose:"write",
+          say:"The folded capacitor draws Q equals C V: sixty four microcoulombs. And here is the expansion's master key: everything in the SERIES backbone carries this same sixty four.",
+          board:[
+            {tex:"Q = C_{\\rm eq}V = (2.67)(24.0) = 64.0\\ \\mu\\mathrm C", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Expand the series link",
+          think:"C₁ carries the full Q. Its voltage? What remains for the pair?",
+          model:"V₁ = 64/4 = 16.0 V; V₂₃ = 24 − 16 = 8.00 V (✓ 64/8).",
+          pose:"write",
+          say:"C one, in the backbone, holds all sixty four microcoulombs: voltage sixteen. The parallel pair receives what remains of the battery's twenty four: eight volts — confirmed independently by sixty four over their joint eight microfarads. Two roads, one voltage; the expansion is self-auditing.",
+          board:[
+            {tex:"V_1 = \\frac{64.0}{4.00} = 16.0\\ \\mathrm V; \\quad V_{23} = 24.0-16.0 = 8.00\\ \\mathrm V\\;\\checkmark", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Expand the parallel pair",
+          think:"Both see 8.00 V. Their charges — and the conservation check?",
+          model:"Q₂ = 16.0 μC, Q₃ = 48.0 μC; sum 64.0 ✓.",
+          pose:"excited",
+          say:"Within the pair, both members feel the eight volts: Q two is sixteen microcoulombs, Q three is forty eight. Their sum: sixty four — precisely the charge that arrived through the backbone, not a microcoulomb misplaced. Reduce, expand, audit at every junction: the algorithm that tames any capacitor labyrinth, and next tutorial, every resistor one.",
+          board:[
+            {tex:"Q_2 = (2.00)(8.00) = 16.0; \\quad Q_3 = (6.00)(8.00) = 48.0\\ \\mu\\mathrm C\\ \\ (16+48 = 64\\checkmark)", kind:"answer"},
+            {label:"Reusable method", text:"reduce (parallel adds, series reciprocals) → total Q → series share Q, parallel share V → audit sums", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Inserting a dielectric with the battery connected",
+      problem:"A 2.00 nF air capacitor is connected to a 100 V battery. With the battery attached, a slab of κ = 3.00 fills the gap. Find the new C, Q, U — and account for the energy.",
+      goal:"Goal → C, Q, U + energy audit",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["What's pinned","New values","The battery's bill","Where 20 μJ went"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(4.4),x2:ctx.M.X(9),y2:ctx.M.Y(4.4),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(2.6),x2:ctx.M.X(9),y2:ctx.M.Y(2.6),stroke:BLUE,'stroke-width':4},ctx.svg);
+    boxAt(ctx, 5.5,2.7, 5,1.4, {fill:'rgba(195,154,224,.3)', stroke:PURPLE});
+    label(ctx, 4.4,3.15, 'κ = 3', {fs:11, color:PURPLE});
+  },
+      steps:[
+        { map:0, title:"First question: what is held fixed?",
+          think:"Battery attached vs disconnected — which variable is pinned in each case?",
+          model:"Battery attached pins V; isolation pins Q. Every dielectric problem starts here.",
+          pose:"talk",
+          say:"Every dielectric-insertion problem turns on one question, asked before any formula: WHAT IS HELD FIXED? A connected battery pins the VOLTAGE, feeding or draining charge as needed. An isolated capacitor pins the CHARGE, letting voltage float. Today the battery stays: V is nailed at one hundred volts.",
+          board:[
+            {label:"The question", text:"Battery connected ⇒ V fixed (Q adjusts). Isolated ⇒ Q fixed (V adjusts).", kind:"key"}
+          ]
+        },
+        { map:1, title:"The new state",
+          think:"C triples; V fixed: what do Q and U become?",
+          model:"C = 6 nF; Q: 200 → 600 nC; U: 10 → 30 μJ.",
+          pose:"write",
+          say:"Kappa triples the capacitance to six nanofarads; at the pinned hundred volts the charge triples to six hundred nanocoulombs, and the stored energy — half C V squared — triples to thirty microjoules. Everything up: the dielectric, with the battery's backing, is pure gain. Or is it? Audit the battery.",
+          board:[
+            {tex:"C = 6.00\\ \\mathrm{nF}; \\quad Q: 200\\to600\\ \\mathrm{nC}; \\quad U: 10.0\\to30.0\\ \\mu\\mathrm J", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The battery's invoice",
+          think:"It pushed ΔQ = 400 nC through 100 V. Work done?",
+          model:"W = ΔQ·V = 40.0 μJ — but storage rose only 20 μJ.",
+          pose:"write",
+          say:"The battery drove four hundred fresh nanocoulombs through its full hundred volts: forty microjoules of work performed. Yet the capacitor's account grew by only TWENTY. Half the invoice is unaccounted for — and energy audits do not tolerate unaccounted halves.",
+          board:[
+            {tex:"W_{\\rm battery} = \\Delta Q\\cdot V = (400\\times10^{-9})(100) = 40.0\\ \\mu\\mathrm J \\ne \\Delta U = 20.0\\ \\mu\\mathrm J", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The missing twenty",
+          think:"The fringing field PULLS the slab in. What became of that mechanical work?",
+          model:"The field does 20 μJ of work drawing the slab in — ending as heat/sound when it stops. (Battery off: U DROPS instead.)",
+          pose:"excited",
+          say:"The missing twenty microjoules went into MOTION: the fringing field at the capacitor's mouth grips the polarised slab and actively hauls it inward — the insertion does itself, and those twenty microjoules end as a soft thunk of heat and sound when the slab seats. Contrast the battery-off version: fixed charge, and the stored energy DROPS as the slab enters, the difference again spent pulling it in. Either way the slab is welcomed; only the bookkeeper changes. Ask what is pinned, then follow every joule.",
+          board:[
+            {label:"The audit closes", text:"40 μJ from the battery = 20 μJ stored + 20 μJ of mechanical work pulling the slab in (→ heat).", kind:"key"},
+            {label:"Reusable method", text:"identify the pinned variable → recompute C, Q, U → audit the battery's work; the remainder moved the slab", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Sharing charge between capacitors: where does the energy go?",
+      problem:"A 3.00 μF capacitor at 12.0 V is disconnected, then connected in parallel with an uncharged 6.00 μF capacitor. Find the final voltage and the energy before and after.",
+      goal:"Goal → V_f and the energy loss",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Conserve Q","Final V","Energy audit","The R-independent loss"],
+      setup(ctx,w){
+    capSym(ctx, 3,5, true); capSym(ctx, 8,5, true);
+    label(ctx, 2.0,5.9, '3 μF, 12 V', {fs:10, color:DIMC});
+    label(ctx, 7.2,5.9, '6 μF, empty', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"What survives the connection",
+          think:"No battery in sight: which quantity is conserved when the plates are joined?",
+          model:"CHARGE: 36.0 μC redistributes. (Energy makes no such promise.)",
+          pose:"talk",
+          say:"Disconnect the battery, join the capacitors plus-to-plus: what law governs? Charge conservation — the thirty six microcoulombs on the first capacitor can relocate but not resign. Energy, note well, signs no such contract; we shall watch it break its silence shortly.",
+          board:[
+            {tex:"Q_{\\rm tot} = (3.00)(12.0) = 36.0\\ \\mu\\mathrm C\\ \\text{— conserved}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The final voltage",
+          think:"36 μC over the combined 9 μF: V_f?",
+          model:"V_f = 36/9 = 4.00 V; charges 12 and 24 μC.",
+          pose:"write",
+          say:"Joined in parallel they form nine microfarads sharing thirty six microcoulombs: four volts across both. The charge splits by capacitance — twelve on the small, twenty four on the large — summing, as the law demands, to the original thirty six.",
+          board:[
+            {tex:"V_f = \\frac{36.0}{9.00} = 4.00\\ \\mathrm V; \\quad Q_1 = 12.0, \\ Q_2 = 24.0\\ \\mu\\mathrm C", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The energy audit",
+          think:"½CV² before and after: compare.",
+          model:"216 μJ → 72 μJ: two thirds VANISHED.",
+          pose:"write",
+          say:"Now audit: before, half of three microfarads times one forty four — two hundred sixteen microjoules. After, half of nine times sixteen — seventy two. TWO THIRDS of the energy has vanished, though not a wire was warm to plan for it. The books demand a culprit.",
+          board:[
+            {tex:"U_i = 216\\ \\mu\\mathrm J \\to U_f = 72.0\\ \\mu\\mathrm J: \\ \\tfrac23\\ \\text{lost}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The loss that resistance cannot cure",
+          think:"Would thicker (lower-R) wires save the energy? What actually would?",
+          model:"No: smaller R → bigger, briefer current burst; the I²R total is R-independent. Only slow transfer (inductor/converter) avoids it.",
+          pose:"excited",
+          say:"The culprit: the connecting surge — a violent, brief current heating the wires and even radiating. And here is the jewel: the loss is INDEPENDENT of the wire's resistance. Halve R and the burst doubles in current, halves in duration — the integral of I squared R stubbornly delivers the same one hundred forty four microjoules. To move charge between capacitors WITHOUT the tax, you must go slowly — through an inductor, as switching converters do a million times a second in every phone charger. Nature fines impatience, at a flat rate.",
+          board:[
+            {label:"The theorem", text:"The sharing loss is independent of R. Escape only via gradual transfer (inductors/converters).", kind:"key"},
+            {label:"Reusable method", text:"conserve Q → V_f = Q/ΣC → audit U (expect loss) → know the loss is R-proof", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A capacitor half filled with dielectric, two ways",
+      problem:"C₀ = 1.00 nF empty. A κ = 5.00 slab fills (a) half the AREA (full gap height), or (b) half the GAP (full area). Find C each way.",
+      goal:"Goal → C for both geometries",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Decompose","Side by side","Stacked","Means + limits"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(6.6),x2:ctx.M.X(5),y2:ctx.M.Y(6.6),stroke:RED,'stroke-width':3.5},ctx.svg);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(4.6),x2:ctx.M.X(5),y2:ctx.M.Y(4.6),stroke:BLUE,'stroke-width':3.5},ctx.svg);
+    boxAt(ctx, 2,4.68, 2,1.85, {fill:'rgba(195,154,224,.35)', stroke:PURPLE});
+    label(ctx, 1.2,7.0, '(a) half area', {fs:10, color:DIMC});
+    el('line',{x1:ctx.M.X(6.5),y1:ctx.M.Y(6.6),x2:ctx.M.X(10.5),y2:ctx.M.Y(6.6),stroke:RED,'stroke-width':3.5},ctx.svg);
+    el('line',{x1:ctx.M.X(6.5),y1:ctx.M.Y(4.6),x2:ctx.M.X(10.5),y2:ctx.M.Y(4.6),stroke:BLUE,'stroke-width':3.5},ctx.svg);
+    boxAt(ctx, 8.5,4.68, 4,0.9, {fill:'rgba(195,154,224,.35)', stroke:PURPLE});
+    label(ctx, 6.7,7.0, '(b) half gap', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"See the hidden circuit",
+          think:"Which arrangement shares the plates' VOLTAGE, and which shares the CHARGE flow?",
+          model:"(a) side-by-side = parallel; (b) stacked layers = series. Decompose, then use the rules.",
+          pose:"talk",
+          say:"One slab, two geometries, and the art is seeing the hidden CIRCUIT. Side by side, filled and empty regions hang from the same plates at the same voltage: capacitors in PARALLEL. Stacked, the layers pass the same charge in sequence: capacitors in SERIES. Decompose first; the rules of Example eight do the rest.",
+          board:[
+            {label:"Decomposition", text:"(a) shares V ⇒ parallel halves. (b) shares Q ⇒ series layers.", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Side by side: parallel",
+          think:"Two half-area capacitors, one with κ. Add them.",
+          model:"C = (κ+1)/2 × C₀ = 3.00 nF — the arithmetic mean of κ and 1.",
+          pose:"write",
+          say:"Half the area at kappa five, half at one, added: C equals kappa plus one over two, times C nought — the ARITHMETIC mean of five and one — three nanofarads. Parallel arrangements average like optimists.",
+          board:[
+            {tex:"C_a = \\frac{\\kappa\\varepsilon_0(A/2)}{d}+\\frac{\\varepsilon_0(A/2)}{d} = \\frac{\\kappa+1}{2}C_0 = 3.00\\ \\mathrm{nF}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) Stacked: series",
+          think:"Two half-gap layers in series. Combine reciprocals.",
+          model:"C = 2κ/(κ+1) × C₀ = 1.67 nF — the harmonic mean.",
+          pose:"write",
+          say:"Stacked: each layer has half the gap; reciprocals add. C equals two kappa over kappa plus one, times C nought — the HARMONIC mean — one point six seven nanofarads. Same volume of dielectric as case a, notably less benefit: the series empty layer bottlenecks the storage as a soft spring bottlenecks a chain.",
+          board:[
+            {tex:"C_b = \\frac{2\\kappa}{\\kappa+1}C_0 = \\frac{10}{6}(1.00) = 1.67\\ \\mathrm{nF}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Interrogate the limits",
+          think:"κ → 1: both must give C₀. κ → ∞: what does each approach, and why the difference?",
+          model:"κ→1: C₀ ✓✓. κ→∞: (a) diverges; (b) → 2C₀ only — an infinite-κ half-layer just halves the gap.",
+          pose:"excited",
+          say:"The limits referee the formulas. Kappa to one: both collapse to C nought — no slab, no story. Kappa to INFINITY: the parallel case diverges — half the capacitor becomes a dead short of storage — while the stacked case saturates at merely TWICE C nought, because an infinitely polarisable half-layer behaves as a conductor that shortens the gap by half, no more. Arithmetic versus harmonic, divergence versus saturation: geometry decides how far a good dielectric can take you.",
+          board:[
+            {tex:"\\kappa\\to\\infty: \\ C_a\\to\\infty; \\quad C_b\\to2C_0\\ \\text{(the layer acts as a conductor)}", kind:"key"},
+            {label:"Reusable method", text:"decompose into the hidden circuit → parallel: arithmetic mean; series: harmonic → test κ = 1 and κ = ∞", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Energy by integration, and the force between the plates",
+      problem:"(a) Derive U by charging the capacitor bit by bit. (b) For an isolated parallel-plate capacitor with A = 100 cm², Q = 1.00 μC, find the attractive force between the plates.",
+      goal:"Goal → U = Q²/2C; then F",
+      world:{"x0":-0.2,"x1":1.3,"y0":-0.2,"y1":1.3},
+      pathway:["Charge in dribbles","The half","F = −dU/dx","The E/2 trap"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'q/Q', ylab:'v/V'});
+    plotCurve(ctx, q=>q, 0, 1.15, {color:CHALKC, w:2.5, N:12});
+  },
+      steps:[
+        { map:0, title:"Charge it in dribbles",
+          think:"With q already aboard, what does the NEXT dq cost?",
+          model:"dW = (q/C)dq: the toll rises as the charge accumulates.",
+          pose:"talk",
+          say:"To derive the stored energy honestly, charge the capacitor one dribble at a time. When charge q is already aboard, the plates sit at voltage q over C, and hauling the NEXT d q across costs q over C, d q. The first dribble rides free; the last pays full fare. Sum the fares.",
+          board:[
+            {tex:"dW = \\frac{q}{C}\\,dq", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate: the half explained",
+          think:"∫₀^Q (q/C)dq — and why is it HALF of QV?",
+          model:"U = Q²/2C = ½QV: the average fare was half the final voltage.",
+          pose:"write",
+          say:"Integrate from empty to full: Q squared over two C — equivalently half Q V. And there stands the famous half, explained at last: the voltage RAMPED from zero to V during charging, so the average dribble paid half fare. Graphically, our board: the area of the triangle under the charging line, half the enclosing rectangle Q V.",
+          board:[
+            {tex:"U = \\int_0^Q\\frac{q}{C}dq = \\frac{Q^2}{2C} = \\tfrac12QV\\ \\text{— the ramp's triangle}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[1,0],[1,1]], {color:'rgba(232,172,86,.3)'});
+       label(c, 0.62,0.22, 'U = ½QV', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"Force from the energy",
+          think:"Isolated (Q fixed): U(x) = Q²x/2ε₀A. Differentiate for F.",
+          model:"F = −dU/dx = −Q²/2ε₀A: attractive and separation-INDEPENDENT.",
+          pose:"write",
+          say:"Now put the derivation to work. Isolated plates at separation x store Q squared x over two epsilon nought A — energy LINEAR in the gap. Force is minus the slope: Q squared over two epsilon nought A, attractive, and — mark this — utterly independent of the separation. Numbers: five point six five newtons squeezing our little plates together.",
+          board:[
+            {tex:"F = -\\frac{dU}{dx} = \\frac{Q^2}{2\\varepsilon_0A} = \\frac{(10^{-6})^2}{2(8.854\\times10^{-12})(10^{-2})} = 5.65\\ \\mathrm N", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why ½QE, not QE",
+          think:"Each plate sits in whose field — its own included?",
+          model:"A plate feels only the OTHER plate's E/2: F = Q(E/2). Self-fields don't self-pull.",
+          pose:"excited",
+          say:"The same answer wears a classic trap: one might write force equals plate charge times the gap field E — and be exactly double. Each plate feels only the OTHER plate's field, E over two; its own field cannot pull on itself, any more than a boot can hoist its own straps. F equals Q times E over two, agreeing with the energy route to the decimal. When in doubt, differentiate the energy — energy methods never double-count a self-interaction.",
+          board:[
+            {label:"The trap", tex:"F = Q\\cdot\\frac{E}{2}\\ \\text{(the other plate's field), NOT } QE", kind:"warn"},
+            {label:"Reusable method", text:"charge in dribbles → U = Q²/2C (the ½ = ramp average) → F = −dU/dx at fixed Q → self-fields never pull", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A conducting or dielectric slab inside the gap",
+      problem:"Separation d = 2.00 mm, empty capacitance C₀. A slab of thickness t = 0.500 mm is inserted (position irrelevant). Find C/C₀ for (a) a conductor, (b) κ = 4.00. (c) Show (a) is the κ→∞ limit of (b).",
+      goal:"Goal → C/C₀ both cases + the limit",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Fields by region","Dielectric","Conductor","The limit"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(5.6),x2:ctx.M.X(9),y2:ctx.M.Y(5.6),stroke:RED,'stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(1.4),x2:ctx.M.X(9),y2:ctx.M.Y(1.4),stroke:BLUE,'stroke-width':4},ctx.svg);
+    boxAt(ctx, 5.5,3.0, 7,1.0, {fill:'rgba(195,154,224,.3)', stroke:PURPLE});
+    label(ctx, 4.6,3.35, 'slab, t', {fs:10, color:PURPLE});
+  },
+      steps:[
+        { map:0, title:"Walk the gap, region by region",
+          think:"Fix the plate charge σ. What is E in the empty parts? In the slab?",
+          model:"Empty: E₀ = σ/ε₀. Dielectric: E₀/κ. Sum E·(thickness) for V.",
+          pose:"talk",
+          say:"Fix the plate charge and take a walking tour across the gap, metering the field: in the empty stretches, sigma over epsilon nought; inside the dielectric, the same, discounted by kappa. The voltage is the tour's total — field times thickness, region by region — and the slab's POSITION never enters, only its thickness. C is Q over that V.",
+          board:[
+            {tex:"V = E_0(d-t) + \\frac{E_0}{\\kappa}t\\ \\text{— position-independent}", kind:"key"}
+          ]
+        },
+        { map:1, title:"(b) The dielectric slab",
+          think:"Assemble C/C₀ = d/(d − t + t/κ) and evaluate.",
+          model:"C/C₀ = 2.00/(1.50 + 0.125) = 1.23.",
+          pose:"write",
+          say:"Collect: C equals epsilon nought A over d minus t plus t over kappa — as if the slab SHRANK its own thickness by the factor kappa. Numbers: two over one point six two five — one point two three. A quarter of the gap upgraded, a twenty three percent raise.",
+          board:[
+            {tex:"\\frac{C}{C_0} = \\frac{d}{d-t+t/\\kappa} = \\frac{2.00}{1.50+0.125} = 1.23", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(a) The conducting slab",
+          think:"Inside a conductor E = 0: what does its thickness contribute to V?",
+          model:"Nothing: C = ε₀A/(d−t) → C/C₀ = 1.33. (And t → d shorts the plates.)",
+          pose:"write",
+          say:"Swap in a CONDUCTOR: inside it the field is zero, so its half-millimetre contributes nothing to the walking tour — the slab simply deletes itself from the gap. C over C nought: two over one and a half — one point three three. Push t toward d and C diverges: the plates are shorted, capacitance without limit and without use.",
+          board:[
+            {tex:"\\text{conductor: } \\frac{C}{C_0} = \\frac{d}{d-t} = \\frac{2.00}{1.50} = 1.33", kind:"answer"}
+          ]
+        },
+        { map:3, title:"(c) The limit that unifies",
+          think:"Let κ→∞ in (b). What drops out — and what does it say about conductors?",
+          model:"t/κ → 0 reproduces (a): a conductor IS a κ = ∞ dielectric — total, not partial, cancellation.",
+          pose:"excited",
+          say:"Now marry the cases: send kappa to infinity in the dielectric formula and t over kappa evaporates — case a, recovered exactly. The physics behind the algebra: a dielectric's bound charges partially cancel the field within it; a conductor's FREE charges cancel it completely. A conductor is a dielectric with infinite enthusiasm. One formula, one limit, and the tutorial's two materials become a single spectrum — the kind of unification physics collects like trophies.",
+          board:[
+            {tex:"\\kappa\\to\\infty: \\ \\frac{d}{d-t+t/\\kappa}\\to\\frac{d}{d-t}\\;\\checkmark\\ \\text{— conductor = infinite-}\\kappa\\ \\text{dielectric}", kind:"key"},
+            {label:"Reusable method", text:"fix σ, sum E·thickness per region → slab shrinks by κ (fully if conducting) → unify via the κ→∞ limit", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

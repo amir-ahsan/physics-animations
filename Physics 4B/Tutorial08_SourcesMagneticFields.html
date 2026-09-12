@@ -1400,6 +1400,537 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Field of a household current",
+      problem:"A long straight wire carries 15.0 A. Find the field 5.00 cm away and compare with Earth's (~5×10⁻⁵ T).",
+      goal:"Goal → B, and a benchmark",
+      world:{"x0":-5,"x1":5,"y0":-3.5,"y1":3.8},
+      pathway:["The formula","Evaluate","Compare","Oersted"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.18, {stroke:GOLD, w:4});
+    circleAt(ctx, 0,0, 1.4, {stroke:DIMC, w:1.5, dash:'5,4'});
+    circleAt(ctx, 0,0, 2.6, {stroke:DIMC, w:1.5, dash:'5,4'});
+    label(ctx, 0.3,0.4, 'I (out)', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Circles around a current",
+          think:"B = μ₀I/2πr: what shape are the field lines, and which way do they wrap?",
+          model:"Concentric circles; right hand's thumb along I, fingers give B's sense.",
+          pose:"talk",
+          say:"A current's magnetic field wraps around it in perfect circles — no beginning, no end, just loops centred on the wire, their sense given by the right hand with the thumb riding the current. The strength: mu nought I over two pi r, thinning inversely with distance.",
+          board:[
+            {label:"Straight wire", tex:"B = \\frac{\\mu_0I}{2\\pi r}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate at 5 cm",
+          think:"Use μ₀ = 4π×10⁻⁷ and let the π's cancel.",
+          model:"B = 6.00×10⁻⁵ T.",
+          pose:"write",
+          say:"Numbers, with the pi's obligingly cancelling: two times ten to the minus seven, times fifteen over point zero five — six times ten to the minus five tesla at five centimetres.",
+          board:[
+            {tex:"B = \\frac{(4\\pi\\times10^{-7})(15.0)}{2\\pi(0.0500)} = 6.00\\times10^{-5}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Against the Earth",
+          think:"Compare with 5×10⁻⁵ T: what would a compass do here?",
+          model:"Comparable to Earth's field: a nearby compass swings visibly.",
+          pose:"point",
+          say:"Compare the benchmark: Earth's field is five times ten to the minus five — our wire MATCHES the planet at five centimetres' range. A compass held beside it swings brazenly away from north, torn between a planet and an extension cord. At half a metre the wire's claim fades tenfold and the planet resumes command.",
+          board:[
+            {label:"Comparison", tex:"B_{\\rm wire}(5\\ \\mathrm{cm}) \\approx B_{\\rm Earth}\\ \\text{— a compass notices}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Oersted's lecture accident",
+          think:"Why was a twitching compass needle in 1820 a scientific earthquake?",
+          model:"First proof that electricity and magnetism are one subject — the unification this course completes.",
+          pose:"excited",
+          say:"And that swinging compass is a re-enactment of the most productive accident in physics: eighteen twenty, Hans Christian Oersted, mid-lecture, notices a needle twitch beside a current-carrying wire — the first crack in the wall between electricity and magnetism. Within months Ampere had the force law; within decades Maxwell had light itself. Your bench-top compass deflection is the opening sentence of electromagnetic unification.",
+          board:[
+            {label:"History", text:"Oersted 1820: current moves a compass — electricity and magnetism are one subject. This course finishes his sentence.", kind:"key"},
+            {label:"Reusable method", text:"B = μ₀I/2πr, circles by the right hand → benchmark against Earth's 5×10⁻⁵ T", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Field at the center of a coil",
+      problem:"A flat circular coil of 20 turns, radius 10.0 cm, carries 3.00 A. Find the field at its center.",
+      goal:"Goal → B at the center",
+      world:{"x0":-5,"x1":5,"y0":-3.5,"y1":3.8},
+      pathway:["One loop","N turns","Direction","Concentration"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.4, {stroke:GOLD, w:3});
+    circleAt(ctx, 0,0, 2.55, {stroke:GOLD, w:1.5});
+    circleAt(ctx, 0,0, 0.07, {stroke:CHALKC, w:3});
+  },
+      steps:[
+        { map:0, title:"A single loop's center",
+          think:"B = μ₀I/2R for one turn: where does this come from?",
+          model:"Biot–Savart summed around the circle — every element contributes in the same axial direction.",
+          pose:"talk",
+          say:"Bend a wire into a circle and stand at its centre: every element of the loop, by Biot and Savart, contributes a field in the SAME direction — along the axis — with no cancellations to mourn. The sum collapses to mu nought I over two R per turn: geometry at its most cooperative.",
+          board:[
+            {label:"One turn", tex:"B = \\frac{\\mu_0I}{2R}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Stack the turns",
+          think:"20 co-located turns: what multiplies?",
+          model:"B = μ₀NI/2R = 3.77×10⁻⁴ T.",
+          pose:"write",
+          say:"Twenty turns wound tightly together are twenty identical votes: B equals mu nought N I over two R — three point seven seven times ten to the minus four tesla. Six times the Earth's field, from a palm-sized coil and a lab supply.",
+          board:[
+            {tex:"B = \\frac{\\mu_0NI}{2R} = \\frac{(4\\pi\\times10^{-7})(20)(3.00)}{2(0.100)} = 3.77\\times10^{-4}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Which way does it point?",
+          think:"Curl the right hand's fingers with the current: the thumb reports what?",
+          model:"Perpendicular to the coil's plane — the coil's axis is its field's home.",
+          pose:"point",
+          say:"Direction: curl the right fingers around with the current and the thumb spears through the coil's centre, perpendicular to its plane. The coil is a magnetic doorway; its field walks straight through.",
+          board:[
+            {label:"Direction", text:"Curl fingers with I; thumb gives B along the axis. The loop's normal is its field line.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, 0,2.6, {color:PURPLE, w:3, label:'B', fs:13});
+     }
+        },
+        { map:3, title:"Bending concentrates",
+          think:"Same wire straightened: field at 10 cm? Compare and conclude.",
+          model:"A straight wire at r = R gives μ₀I/2πR — π times weaker per turn. Bending focuses the field.",
+          pose:"excited",
+          say:"Compare with leaving the wire straight: at ten centimetres a straight wire manages only mu nought I over two pi R — a factor of PI weaker than the loop's centre, per turn. Bending the wire into a circle wraps its influence around one privileged point. Coil it further into a long helix and the concentration becomes total — but that is the next example's business.",
+          board:[
+            {label:"Concentration", tex:"\\frac{B_{\\rm loop\\ center}}{B_{\\rm straight}(R)} = \\pi\\ \\text{— circles focus their field}", kind:"key"},
+            {label:"Reusable method", text:"one turn: μ₀I/2R → N turns multiply → right-hand curl for direction", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Inside a solenoid",
+      problem:"A solenoid 50.0 cm long with 1000 turns carries 2.00 A. Find the field inside. Does the radius matter?",
+      goal:"Goal → B; the radius question",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["n, not N","Evaluate","No radius","Uniformity"],
+      setup(ctx,w){
+    for(let x=1;x<=9.4;x+=0.7){ el('ellipse',{cx:ctx.M.X(x),cy:ctx.M.Y(3.5),rx:5,ry:34,fill:'none',stroke:GOLD,'stroke-width':2},ctx.svg); }
+    arrow(ctx, 2,3.5, 8.6,3.5, {color:PURPLE, w:3, label:'B', fs:13, at:'mid'});
+  },
+      steps:[
+        { map:0, title:"The density is the variable",
+          think:"B = μ₀nI: why turns-per-metre rather than total turns?",
+          model:"n = N/L = 2000 turns/m — Ampère's law counts what a unit length encloses.",
+          pose:"talk",
+          say:"For the solenoid the operative number is not the turn COUNT but the turn DENSITY: n equals N over L, two thousand windings per metre here. Ampere's law, run around a rectangular loop straddling the coil's wall, bills exactly the current threading per unit length — n I — and nothing else.",
+          board:[
+            {tex:"n = \\frac{1000}{0.500} = 2000\\ \\mathrm{turns/m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate",
+          think:"B = μ₀nI with our numbers.",
+          model:"B = 5.03×10⁻³ T — a hundred Earths, uniformly filling the bore.",
+          pose:"write",
+          say:"B equals mu nought n I: four pi ten to the minus seven times two thousand times two — five point zero three MILLItesla, a hundred Earth-fields strong, filling the bore from wall to wall.",
+          board:[
+            {tex:"B = \\mu_0nI = (4\\pi\\times10^{-7})(2000)(2.00) = 5.03\\times10^{-3}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The radius never appeared",
+          think:"Fat solenoid, thin solenoid, same n and I: what changes inside?",
+          model:"Nothing: the ideal solenoid's interior field is radius-independent AND uniform.",
+          pose:"point",
+          say:"Interrogate the formula for the radius and find it absent: wind the same density on a drinking straw or a drainpipe and the interior field is IDENTICAL — and, more remarkably, UNIFORM across the whole cross-section, not merely on the axis. The solenoid manufactures the magnetic analogue of the parallel-plate capacitor: a region of clean, constant field with the mess exiled outside.",
+          board:[
+            {label:"Radius-free", text:"Ideal solenoid: B = μ₀nI everywhere inside, any radius; B ≈ 0 outside.", kind:"key"}
+          ]
+        },
+        { map:3, title:"The workhorse of field-making",
+          think:"Need double the field? Name the two knobs. Where do MRI magnets fit?",
+          model:"Double n or I. MRI: superconducting solenoids at ~3 T — this formula, cooled to 4 K.",
+          pose:"excited",
+          say:"Hence the solenoid's tenure as physics' field factory: two knobs — wind tighter, drive harder — each linear, no geometry surprises. Push the recipe to its industrial extreme: kilometres of superconducting wire, helium-cooled so I can be enormous, and mu nought n I reaches three tesla — the machine we call MRI, into which patients are slid daily through the bore of this very equation.",
+          board:[
+            {label:"The workhorse", tex:"B = \\mu_0nI\\ \\text{— two linear knobs; at superconducting scale, an MRI}", kind:"key"},
+            {label:"Reusable method", text:"n = N/L → B = μ₀nI inside, uniform, radius-free → scale by winding density or current", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Two parallel wires: field at two points",
+      problem:"Two long parallel wires 10.0 cm apart carry 5.00 A and 8.00 A in the same direction. Find B (a) midway between and (b) 5.00 cm from the 5 A wire on the far side.",
+      goal:"Goal → B at both points",
+      world:{"x0":-9,"x1":9,"y0":-4,"y1":4.6},
+      pathway:["Directions first","Between","Outside","The null"],
+      setup(ctx,w){
+    circleAt(ctx, -3,0, 0.25, {stroke:GOLD, w:4});
+    circleAt(ctx, 3,0, 0.3, {stroke:GOLD, w:4});
+    label(ctx, -3.6,0.7, '5 A', {fs:11, color:GOLD});
+    label(ctx, 2.5,0.8, '8 A', {fs:11, color:GOLD});
+    label(ctx, -4.2,-1.1, '(both out of page)', {fs:9, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Right hands before arithmetic",
+          think:"Both currents out of the page: which way does each field point midway? Outside?",
+          model:"Between: the two circulations OPPOSE. Outside the pair: they agree. Directions decide the arithmetic.",
+          pose:"talk",
+          say:"Two wires, two families of circles, and the first job is DIRECTIONS. Both currents out of the page: each field circulates counterclockwise around its own wire. Midway, one wire's field points up while the other's points down — opposition. Outside the pair, both point the same way — alliance. Only now may the calculator speak.",
+          board:[
+            {label:"Directions", text:"Same-direction currents: fields OPPOSE between the wires, AGREE outside.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0.3, 0,1.5, {color:BLUE, w:2.5, label:'from 5A', fs:9, side:-1});
+       arrow(c, 0,-0.3, 0,-1.5, {color:RED, w:2.5, label:'from 8A', fs:9});
+     }
+        },
+        { map:1, title:"(a) Midway: subtract",
+          think:"Both at r = 5 cm: net magnitude and winner?",
+          model:"B = 2×10⁻⁷(8−5)/0.05 = 1.20×10⁻⁵ T, the 8 A's way.",
+          pose:"write",
+          say:"Midway, both wires stand five centimetres off: their opposing fields subtract, leaving two ten to the minus seven times three over point zero five — one point two times ten to the minus five tesla, circulating the stronger current's way. Democracy weighted by amperes.",
+          board:[
+            {tex:"B = 2\\times10^{-7}\\frac{(8.00-5.00)}{0.0500} = 1.20\\times10^{-5}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) Outside: add",
+          think:"5 cm from the 5 A wire, 15 cm from the 8 A wire, fields aligned.",
+          model:"B = 2×10⁻⁷(5/0.05 + 8/0.15) = 3.07×10⁻⁵ T.",
+          pose:"write",
+          say:"On the outside flank the fields align and add: the near wire's hundred amperes-per-metre-equivalent plus the far wire's fifty three — three point zero seven times ten to the minus five tesla. Same two wires, same laws; the POSITION rewrote the arithmetic from subtraction to addition.",
+          board:[
+            {tex:"B = 2\\times10^{-7}\\left(\\frac{5.00}{0.0500}+\\frac{8.00}{0.150}\\right) = 3.07\\times10^{-5}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The silent point",
+          think:"Where between them does B vanish? Set 5/r = 8/(0.1−r).",
+          model:"r = 3.85 cm from the 5 A wire — nearer the weaker, as with electric nulls.",
+          pose:"excited",
+          say:"And between the wires, somewhere, the tug of war reaches stalemate: five over r equals eight over ten minus r — three point eight five centimetres from the weaker wire. Nearer the weakling, exactly as with the electric null two tutorials past: balance always grants the underdog home advantage. The same three-act play — directions, magnitudes, null — will serve for any pair of currents you ever meet.",
+          board:[
+            {tex:"\\frac{5}{r} = \\frac{8}{0.100-r} \\Rightarrow r = 3.85\\ \\mathrm{cm\\ from\\ the\\ 5\\ A\\ wire}", kind:"answer"},
+            {label:"Reusable method", text:"right-hand directions per region → oppose: subtract; agree: add → null nearer the weaker current", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Force between the wires",
+      problem:"For the same wires (5.00 A, 8.00 A, 10.0 cm apart), find the force per unit length. Attractive or repulsive?",
+      goal:"Goal → F/ℓ and its sense",
+      world:{"x0":-9,"x1":9,"y0":-4,"y1":4.6},
+      pathway:["Each in the other's field","Evaluate","Attract","The ampere"],
+      setup(ctx,w){
+    circleAt(ctx, -3,0, 0.25, {stroke:GOLD, w:4});
+    circleAt(ctx, 3,0, 0.3, {stroke:GOLD, w:4});
+    arrow(ctx, -2.5,0, -0.8,0, {color:GREEN, w:2.5});
+    arrow(ctx, 2.5,0, 0.8,0, {color:GREEN, w:2.5});
+  },
+      steps:[
+        { map:0, title:"One wire bathes in the other's field",
+          think:"Wire 2 sits in B₁ = μ₀I₁/2πd. What force per length results?",
+          model:"F/ℓ = I₂B₁ = μ₀I₁I₂/2πd — Biot–Savart feeding IℓB.",
+          pose:"talk",
+          say:"Each wire is both a source and a customer: wire one paints the space with its circular field, and wire two, carrying current through that paint, feels I ell cross B. Per metre: F over ell equals mu nought I one I two over two pi d — the two chapters of magnetism shaking hands.",
+          board:[
+            {tex:"\\frac{F}{\\ell} = I_2B_1 = \\frac{\\mu_0I_1I_2}{2\\pi d}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate",
+          think:"2×10⁻⁷ × 5 × 8 / 0.1.",
+          model:"F/ℓ = 8.00×10⁻⁵ N/m — gentle but implacable.",
+          pose:"write",
+          say:"Numbers: two ten to the minus seven times forty over a tenth — eight times ten to the minus five newtons per metre. Featherweight for our bench; multiplied across a power station's busbars at kiloampere currents, a force that bends steel and dictates bracing schedules.",
+          board:[
+            {tex:"\\frac{F}{\\ell} = \\frac{(2\\times10^{-7})(5.00)(8.00)}{0.100} = 8.00\\times10^{-5}\\ \\mathrm{N/m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Attraction, certified by the right hand",
+          think:"Run Iℓ×B on wire 2 in wire 1's field. Toward or away?",
+          model:"Parallel currents ATTRACT; antiparallel repel. (And Newton's third law holds, each on each.)",
+          pose:"point",
+          say:"Direction: at wire two, wire one's field points — right hand — perpendicular to the plane of the pair; cross it with wire two's current and the force aims squarely AT wire one. Parallel currents attract; reverse either and they repel. Currents flowing together draw together — companionable, unlike charges.",
+          board:[
+            {label:"The rule", text:"Parallel currents attract; antiparallel repel. Each wire feels the same magnitude (third law).", kind:"key"}
+          ]
+        },
+        { map:3, title:"The force that defined the ampere",
+          think:"Why is μ₀ exactly 4π×10⁻⁷ in the old SI? What did two wires 1 m apart define?",
+          model:"1 A was DEFINED as the current giving 2×10⁻⁷ N/m at 1 m separation — this formula, enthroned.",
+          pose:"excited",
+          say:"And a piece of metrological history lives in this formula: for most of a century, the AMPERE itself was defined as the current which, in two parallel wires a metre apart, produces exactly two times ten to the minus seven newtons per metre — whence mu nought's suspiciously tidy four pi ten to the minus seven. The unit of current was literally this example, enacted with precision balances. The twenty nineteen SI rebuilt the foundations on fixed constants, but the tidy mu nought remains as the formula's monument.",
+          board:[
+            {label:"Metrology", text:"The classical ampere: 2×10⁻⁷ N/m between 1 m wires — this force law WAS the unit's definition.", kind:"key"},
+            {label:"Reusable method", text:"F/ℓ = μ₀I₁I₂/2πd → parallel attract, antiparallel repel → symmetric on both wires", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Field on the axis of a coil",
+      problem:"For the 20-turn, R = 10.0 cm, 3.00 A coil, find B on the axis at x = 10.0 cm. Check both limits.",
+      goal:"Goal → B(x) and the limits",
+      world:{"x0":-0.05,"x1":0.42,"y0":-0.4e-4,"y1":4.4e-4},
+      pathway:["The formula","Evaluate","x = 0 limit","Dipole limit"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'B (T)'});
+    plotCurve(ctx, x=>3.77e-4*Math.pow(1+(x/0.1)*(x/0.1),-1.5), 0, 0.4, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"Off-center, on-axis",
+          think:"B(x) = μ₀NIR²/2(R²+x²)^{3/2}: where does the 3/2 power come from?",
+          model:"Biot–Savart around the loop, axial components surviving: the tilt and distance costs combine.",
+          pose:"talk",
+          say:"Step off the centre along the axis and each loop element's contribution both weakens with distance AND tilts, only its axial component surviving; Biot and Savart tally the two penalties into the three-halves power: mu nought N I R squared over twice R squared plus x squared to the three halves. One formula for the whole axis.",
+          board:[
+            {tex:"B(x) = \\frac{\\mu_0NIR^2}{2(R^2+x^2)^{3/2}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"At one radius out",
+          think:"x = R: what fraction of the center value?",
+          model:"B = B(0)/2^{3/2} = 1.33×10⁻⁴ T — 35% of the center.",
+          pose:"write",
+          say:"At one radius out, R squared plus x squared is twice R squared, and the field is the centre value over two to the three halves — thirty five percent. Numerically: one point three three times ten to the minus four tesla. The coil's influence fades quickly but gracefully along its axis.",
+          board:[
+            {tex:"B(R) = \\frac{B(0)}{2^{3/2}} = 0.354\\,B(0) = 1.33\\times10^{-4}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Limit one: come home",
+          think:"x → 0: does the formula return the center-field result?",
+          model:"B → μ₀NI/2R ✓ — the previous example, recovered.",
+          pose:"write",
+          say:"Send x to zero and the formula folds neatly into mu nought N I over two R — the centre-field expression of the earlier example, recovered without argument. First limit: passed.",
+          board:[
+            {tex:"x\\to0: \\ B\\to\\frac{\\mu_0NI}{2R}\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"Limit two: the dipole afar",
+          think:"x ≫ R: expand. What power law, and what electric cousin?",
+          model:"B ≈ μ₀μ/2πx³ with μ = NIπR²: a magnetic dipole, twin of the electric dipole's axis field.",
+          pose:"excited",
+          say:"March far away and the bracket surrenders its R: B approaches mu nought times the magnetic moment over two pi x cubed — a DIPOLE field, falling as one over x cubed, formally identical to the electric dipole's axial field with mu nought mu standing in for p over epsilon nought. From across the room, every current loop is a little bar magnet; every bar magnet, we shall find, is little current loops. The far field is where magnetism confesses its unity.",
+          board:[
+            {tex:"x\\gg R: \\ B\\to\\frac{\\mu_0\\mu}{2\\pi x^3}, \\ \\mu = NI\\pi R^2\\ \\text{— the magnetic dipole}", kind:"key"},
+            {label:"Reusable method", text:"axis formula with the 3/2 power → check x = 0 and x ≫ R → far field = dipole, always", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Inside a thick wire",
+      problem:"A wire of radius R = 2.00 mm carries 10.0 A uniformly. Find B at r = 1.00 mm and at the surface.",
+      goal:"Goal → B inside and at the skin",
+      world:{"x0":-0.2,"x1":6.5,"y0":-0.1e-3,"y1":1.2e-3},
+      pathway:["Enclosed fraction","Inside","Surface","The profile"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'r (mm)', ylab:'B (T)'});
+    plotCurve(ctx, r=>r<=2? 5e-4*r : 1e-3*2/r, 0, 6.2, {color:CHALKC, w:2.5, N:60});
+    dashLine(ctx, 2,0, 2,1.05e-3, {});
+  },
+      steps:[
+        { map:0, title:"Ampère with a partial census",
+          think:"An Ampèrian circle at r < R encloses what fraction of I?",
+          model:"I_enc = I·r²/R² — area ratio, for uniform current density.",
+          pose:"talk",
+          say:"Inside a fat wire, Ampere's law still holds court; only the census changes. A circular loop of radius r embraces just the fraction of current whose area it covers: r squared over R squared of the total, for uniform density. The law is unbothered; the bookkeeping is everything.",
+          board:[
+            {tex:"I_{\\rm enc} = I\\frac{r^2}{R^2}\\ \\text{(uniform density)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Inside: linear growth",
+          think:"B·2πr = μ₀I r²/R²: solve and evaluate at 1 mm.",
+          model:"B_in = μ₀Ir/2πR² = 5.00×10⁻⁴ T at r = 1 mm.",
+          pose:"write",
+          say:"Apply: B times two pi r equals mu nought I r squared over R squared. One r cancels, leaving B LINEAR in r — zero on the axis, growing outward. At one millimetre: five times ten to the minus four tesla. The same linear interior we met in the charged cylinder — Gauss and Ampere are cousins with matching table manners.",
+          board:[
+            {tex:"B_{\\rm in} = \\frac{\\mu_0Ir}{2\\pi R^2} = 5.00\\times10^{-4}\\ \\mathrm T\\ \\text{at } r = 1.00\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The surface maximum",
+          think:"At r = R both formulas must meet. Value?",
+          model:"B(R) = μ₀I/2πR = 1.00×10⁻³ T — the peak; outside falls as 1/r.",
+          pose:"write",
+          say:"At the skin the interior ramp meets the exterior one-over-r precisely: mu nought I over two pi R — one millitesla, the profile's summit. Inside, each added radius recruits more current; outside, distance only dilutes. The surface is where recruitment ends and dilution begins.",
+          board:[
+            {tex:"B(R) = \\frac{\\mu_0I}{2\\pi R} = 1.00\\times10^{-3}\\ \\mathrm T\\ \\text{— the maximum; seam continuous}\\;\\checkmark", kind:"answer"}
+          ]
+        },
+        { map:3, title:"When the interior empties",
+          think:"At high frequency, current crowds the surface (skin effect). What happens to this interior field?",
+          model:"Skin-effect current ⇒ hollow census ⇒ interior B collapses; the profile becomes shell-like.",
+          pose:"excited",
+          say:"A closing note from the real world: at high FREQUENCIES, alternating currents refuse the wire's interior and crowd into a thin surface skin — the skin effect. The Ampere census inside then comes up nearly empty, and our tidy linear ramp collapses; the field, like the current, lives at the surface. Litz wire, hollow conductors, silver plating on microwave gear — an industry of workarounds for a census that moved out. The formula survives; the density profile is the variable.",
+          board:[
+            {label:"Skin effect", text:"AC crowds current to the surface: interior I_enc → 0, interior B collapses. The census is everything.", kind:"key"},
+            {label:"Reusable method", text:"Ampèrian circle → census by area fraction → linear inside, 1/r outside, seam at R → density profile rules", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Field at the center of a square loop",
+      problem:"A square loop of side a = 20.0 cm carries I = 2.00 A. Find the field at its center (via the finite-segment formula).",
+      goal:"Goal → B at the square's center",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Segment formula","One side","Four sides","Square vs circle"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(3),y:ctx.M.Y(5.5),width:ctx.M.X(8)-ctx.M.X(3),height:ctx.M.Y(1.5)-ctx.M.Y(5.5),fill:'none',stroke:GOLD,'stroke-width':3},ctx.svg);
+    circleAt(ctx, 5.5,3.5, 0.08, {stroke:CHALKC, w:3});
+  },
+      steps:[
+        { map:0, title:"The finite-segment tool",
+          think:"B = (μ₀I/4πd)(sinθ₂ − sinθ₁): what do the angles measure?",
+          model:"The segment's ends, seen from the field point, measured from the perpendicular foot.",
+          pose:"talk",
+          say:"For any straight SEGMENT of current, Biot and Savart integrate to a compact tool: mu nought I over four pi d, times the difference of sines of the angles subtended by the segment's ends, measured from the perpendicular. Master this one workhorse and every polygon of wire falls to it, side by side.",
+          board:[
+            {label:"The tool", tex:"B_{\\rm seg} = \\frac{\\mu_0I}{4\\pi d}(\\sin\\theta_2 - \\sin\\theta_1)", kind:"key"}
+          ]
+        },
+        { map:1, title:"One side of the square",
+          think:"From the center: d = a/2, ends at ±45°. Evaluate the side's field.",
+          model:"B_side = (μ₀I/4π(a/2))·2sin45° = √2μ₀I/2πa.",
+          pose:"write",
+          say:"From the square's centre, each side sits at distance a over two, its two corners subtending plus and minus forty five degrees. The bracket gives twice sine forty five — root two — so each side donates root two mu nought I over two pi a, aimed by the right hand straight out of the plane.",
+          board:[
+            {tex:"B_{\\rm side} = \\frac{\\mu_0I}{4\\pi(a/2)}\\cdot2\\sin45^{\\circ} = \\frac{\\sqrt2\\,\\mu_0I}{2\\pi a}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Four allies",
+          think:"Do the four sides' fields cooperate at the center? Total?",
+          model:"All four point the same way: B = 2√2μ₀I/πa = 1.13×10⁻⁵ T.",
+          pose:"write",
+          say:"Walk the current around the square and every side's contribution — right hand, current counterclockwise — punches the same way through the centre. Four allies: two root two mu nought I over pi a — one point one three times ten to the minus five tesla for our dimensions.",
+          board:[
+            {tex:"B = 4B_{\\rm side} = \\frac{2\\sqrt2\\,\\mu_0I}{\\pi a} = 1.13\\times10^{-5}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Square versus circle — and a limit",
+          think:"Same perimeter circle: stronger or weaker at center? And θ → 90° in the tool: what reappears?",
+          model:"Circle of equal perimeter: 9.9×10⁻⁶ T — the square wins slightly. θ→90° recovers the infinite wire.",
+          pose:"excited",
+          say:"Two closing pleasures. Bend the same eighty centimetres of wire into a CIRCLE and the centre field reads nine point nine micro-tesla — slightly WEAKER than our square, whose flat sides pass closer to the centre than the circle's arc. And stretch the segment formula's angles to ninety degrees: the bracket becomes two, and out falls mu nought I over two pi d — the infinite wire, hiding inside the finite tool as its patient limit. Every formula in this tutorial is one limiting case away from another; that web of limits IS your understanding.",
+          board:[
+            {tex:"\\text{equal-perimeter circle: } 9.9\\times10^{-6}\\ \\mathrm T < \\text{square}; \\quad \\theta\\to90^{\\circ}: \\ \\text{infinite wire}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"segment tool per side → symmetry aligns the contributions → sum → check limits against known fields", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Field inside a toroid",
+      problem:"A toroid: 500 turns, inner radius 10.0 cm, outer 15.0 cm, current 2.00 A. Find B at r = 12.0 cm and at both edges. What is B outside?",
+      goal:"Goal → B(r) inside; outside",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":4.5},
+      pathway:["The geometry","Ampère","Not uniform","Confinement"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.0, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 0,0, 3.2, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 0,0, 2.6, {stroke:PURPLE, w:1.5, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"A solenoid biting its tail",
+          think:"Field lines inside a toroid: what shape must they be?",
+          model:"Circles concentric with the axis — the bore's own geometry.",
+          pose:"talk",
+          say:"Curl a solenoid into a doughnut until it swallows its own tail: the toroid. Its symmetry is rotational, so the field lines inside the winding can only be CIRCLES about the central axis — the field chases itself around the bore forever, never needing an exit.",
+          board:[
+            {label:"Geometry", text:"Field lines: circles around the toroid's axis, confined to the bore.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Ampère around the bore",
+          think:"A circle of radius r inside the winding threads how many turns?",
+          model:"All N: B·2πr = μ₀NI → B = μ₀NI/2πr = 1.67 mT at 12 cm.",
+          pose:"write",
+          say:"Run Ampere around one such circle: it threads every one of the five hundred turns. B times two pi r equals mu nought N I: at twelve centimetres, one point six seven millitesla. The winding count is total, but the circumference grows with r — and there lies the wrinkle.",
+          board:[
+            {tex:"B = \\frac{\\mu_0NI}{2\\pi r} = \\frac{(4\\pi\\times10^{-7})(500)(2.00)}{2\\pi(0.120)} = 1.67\\times10^{-3}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"A field with a gradient",
+          think:"Evaluate at 10 and 15 cm: how uniform is the core?",
+          model:"2.00 mT inner, 1.33 mT outer: a 1/r fall across the bore — unlike the solenoid.",
+          pose:"write",
+          say:"At the inner edge: two millitesla; at the outer, one point three three — a one-over-r decline ACROSS the core, the inner wall always richer. The straight solenoid's perfect uniformity was an artifact of its infinite pretence; the honest doughnut keeps a gradient. Slender toroids — bore small beside radius — approach uniformity; fat ones must live with the slope.",
+          board:[
+            {tex:"B(10\\ \\mathrm{cm}) = 2.00, \\quad B(15\\ \\mathrm{cm}) = 1.33\\ \\mathrm{mT\\ — a } 1/r\\ \\text{profile}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The perfectly private field",
+          think:"Ampère circles in the hole and outside the body: what do they enclose?",
+          model:"Hole: no current. Outside: N in + N out = 0. B = 0 both places — total confinement.",
+          pose:"excited",
+          say:"Now audit the surroundings. A circle inside the doughnut's HOLE threads no current at all: field zero. One drawn OUTSIDE the whole body threads every turn twice — once going in, once coming out — net zero: field zero again. The toroid keeps its entire magnetic estate within its own walls, leaking nothing — which is why interference-shy electronics and every tokamak fusion vessel are built on this shape. Privacy, by Ampere.",
+          board:[
+            {tex:"\\text{hole and exterior: } I_{\\rm enc} = 0 \\Rightarrow B = 0\\ \\text{— total confinement}", kind:"key"},
+            {label:"Reusable method", text:"circular Ampère loops → inside winding: all N turns, B ∝ 1/r → hole/outside: zero → the private field", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Field and moment of a spinning charged disk",
+      problem:"A nonconducting disk, R = 10.0 cm, σ = 1.00 μC/m², spins at ω = 100 rad/s. Find (a) B at its center and (b) its magnetic moment.",
+      goal:"Goal → B(0) and μ",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["Charge → current","B at center","The moment","Scaling insight"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.3, {stroke:RED, w:2.5});
+    circleAt(ctx, 0,0, 1.5, {stroke:RED, w:1.5, dash:'5,4'});
+    circleAt(ctx, 0,0, 0.7, {stroke:RED, w:1.5, dash:'5,4'});
+    arc(ctx, 0,0, 2.55, 20, 70, {color:GOLD, w:2});
+    arrow(ctx, 0.87,2.48, 0.5,2.62, {color:GOLD, w:2});
+  },
+      steps:[
+        { map:0, title:"Spinning charge IS current",
+          think:"A ring of charge dq passing a point ω/2π times per second: what dI?",
+          model:"dI = dq·ω/2π = σωr dr per ring: the disk is nested current loops.",
+          pose:"talk",
+          say:"No wires anywhere — yet a spinning charged disk is a stack of currents: each ring of charge sweeps past any fixed line omega over two pi times per second, making a bona fide current d I equals sigma omega r d r. Moving charge is current, whatever the vehicle; the disk is nested loops by geometry alone.",
+          board:[
+            {tex:"dI = \\frac{dq\\,\\omega}{2\\pi} = \\sigma\\omega r\\,dr", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) Field at the center",
+          think:"Each ring gives μ₀dI/2r there. Integrate — watch the r's cancel.",
+          model:"B = ∫μ₀σωr dr/2r = μ₀σωR/2 = 6.3×10⁻¹² T.",
+          pose:"write",
+          say:"Each ring donates its centre-field mu nought d I over two r — and the r's cancel, every ring contributing EQUALLY per unit width. The integral is trivial: mu nought sigma omega R over two — six times ten to the minus twelve tesla. Picotesla: honest, and humble.",
+          board:[
+            {tex:"B = \\int_0^R\\frac{\\mu_0\\sigma\\omega r\\,dr}{2r} = \\frac{\\mu_0\\sigma\\omega R}{2} = 6.3\\times10^{-12}\\ \\mathrm T", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) The magnetic moment",
+          think:"Each ring: dμ = dI·πr². Integrate — which power of R emerges?",
+          model:"μ = ∫πσωr³dr = πσωR⁴/4 = 7.9×10⁻⁹ A·m².",
+          pose:"write",
+          say:"The moment weights each ring's current by its AREA, pi r squared: an r-cubed integrand, integrating to pi sigma omega R to the FOURTH over four — seven point nine nano-ampere-metre-squared. The exponents diverge — field linear in R, moment quartic — and that divergence is the insight.",
+          board:[
+            {tex:"\\mu = \\int_0^R\\pi\\sigma\\omega r^3\\,dr = \\frac{\\pi\\sigma\\omega R^4}{4} = 7.9\\times10^{-9}\\ \\mathrm{A\\cdot m^2}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Where each quantity lives",
+          think:"B ∝ R but μ ∝ R⁴: which rings dominate each — and what atomic estimate does this method seed?",
+          model:"Center field: all rings equal. Moment: the rim rules. Same calculation with e and electron spin → first atomic moment estimates.",
+          pose:"excited",
+          say:"Read the two exponents as a census: the CENTRE FIELD collects equally from every ring — the close ones are weak but near, the far ones strong but distant, a perfect wash. The MOMENT is aristocratic: the outer rings, with their great areas, own nearly everything. And the pedigree of this humble integral: run it again with an electron's charge and its classical spin, and you have the first back-of-envelope estimate of ATOMIC magnetic moments — the seed of the Bohr magneton, of spin, of MRI's signal itself. A spinning disk of picotesla, and the door to quantum magnetism creaks open.",
+          board:[
+            {label:"The census", tex:"B\\propto R\\ \\text{(all rings equal)}; \\quad \\mu\\propto R^4\\ \\text{(the rim rules)}", kind:"key"},
+            {label:"Reusable method", text:"spinning charge → dI = dq·ω/2π per ring → integrate for B (r's cancel) and μ (r³) → scale to atoms", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

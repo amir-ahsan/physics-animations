@@ -845,6 +845,11 @@
       }
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1364,6 +1369,538 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Switching on a field",
+      problem:"A 200-turn coil of area 0.0100 m² sits perpendicular to a field rising uniformly from 0 to 0.500 T in 0.100 s. Find the induced emf. What when B stops changing?",
+      goal:"Goal → ε during and after",
+      world:{"x0":-0.02,"x1":0.32,"y0":-0.1,"y1":0.65},
+      pathway:["Faraday","Evaluate","Then zero","Lenz's sign"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'B (T)'});
+    plotCurve(ctx, t=>t<0.1? 5*t : 0.5, 0, 0.3, {color:CHALKC, w:2.5, N:40});
+  },
+      steps:[
+        { map:0, title:"Faraday's law, N turns",
+          think:"ε = −N dΦ/dt: which quantity's CHANGE matters?",
+          model:"Flux change per time, multiplied by the turn count.",
+          pose:"talk",
+          say:"Faraday's law, the tutorial's constitution: the induced emf equals minus N times the rate of change of flux. Not the flux — its RATE OF CHANGE. A coil dozing in the mightiest steady field generates nothing; a coil in a modest but restless one, plenty.",
+          board:[
+            {label:"Faraday", tex:"\\mathcal{E} = -N\\frac{d\\Phi_B}{dt} = -NA\\frac{dB}{dt}", kind:"key"}
+          ]
+        },
+        { map:1, title:"During the ramp",
+          think:"NA·ΔB/Δt with our numbers.",
+          model:"|ε| = (200)(0.01)(5.00) = 10.0 V.",
+          pose:"write",
+          say:"During the ramp: two hundred turns times a hundredth of a square metre times five tesla per second — ten volts, steady for the tenth of a second the field spends climbing. Two hundred turns because each winding is a lap of the changing flux, and laps add.",
+          board:[
+            {tex:"|\\mathcal{E}| = (200)(0.0100)\\frac{0.500}{0.100} = 10.0\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:2, title:"After the ramp: silence",
+          think:"B now large but constant: ε = ?",
+          model:"Zero — however big B is. Induction taxes change only.",
+          pose:"write",
+          say:"The instant the field levels off — at a robust half tesla — the emf collapses to ZERO. The magnitude of B is irrelevant; only its motion pays. Induction is a tax on change, and a constant field is untaxable.",
+          board:[
+            {tex:"B\\ \\text{constant} \\Rightarrow \\mathcal{E} = 0\\ \\text{— regardless of } |B|", kind:"answer"}
+          ]
+        },
+        { map:3, title:"What the minus sign wants",
+          think:"During the rise, which way would an induced current circulate, and why?",
+          model:"So its own field OPPOSES the growth (Lenz): nature resists changes in flux.",
+          pose:"excited",
+          say:"And the minus sign is a personality, not a decoration: LENZ'S law. During the rise, any induced current circulates so that its own field pushes BACK against the growth — the loop defends its old flux like a curmudgeon defending his routine. Were the sign opposite, induced currents would feed their own cause and the universe would end in a spark. The minus sign is stability itself, notarised.",
+          board:[
+            {label:"Lenz", text:"Induced effects OPPOSE the change that made them. The minus sign is energy conservation's signature.", kind:"key"},
+            {label:"Reusable method", text:"ε = −N dΦ/dt → only rates pay → Lenz fixes the direction, always opposing", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Motional emf on a moving rod",
+      problem:"A 0.500 m rod slides at 4.00 m/s on rails ⊥ to a 0.200 T field, closed by 2.00 Ω. Find the emf, current, needed force, and dissipated power.",
+      goal:"Goal → ε, I, F, P — and the balance",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["ε = Bℓv","I","Lenz's drag","Energy books"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(5.5),x2:ctx.M.X(10),y2:ctx.M.Y(5.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(1.5),x2:ctx.M.X(10),y2:ctx.M.Y(1.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(5.5),x2:ctx.M.X(5),y2:ctx.M.Y(1.5),stroke:GOLD,'stroke-width':4},ctx.svg);
+    boxAt(ctx, 1,2.8, 0.7,1.4, {fill:'none', stroke:'#5C4B30'}); label(ctx, 0.2,4.6, 'R', {fs:12, color:'#c9b98a'});
+    arrow(ctx, 5.6,3.5, 7.4,3.5, {color:GREEN, w:2.5, label:'v', fs:12, side:-1});
+  },
+      steps:[
+        { map:0, title:"The emf of motion",
+          think:"Charges in the rod move with it through B: what force acts along the rod?",
+          model:"qv×B drives charge along the rod: ε = Bℓv = 0.400 V.",
+          pose:"talk",
+          say:"Slide a conducting rod through a field and every charge within rides along at v, feeling q v cross B ALONG the rod — a pump with no battery. The emf: B ell v — point two times point five times four — zero point four volts, sustained as long as the sliding lasts.",
+          board:[
+            {tex:"\\mathcal{E} = B\\ell v = (0.200)(0.500)(4.00) = 0.400\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The circuit responds",
+          think:"I = ε/R around the rail circuit.",
+          model:"I = 0.400/2.00 = 0.200 A.",
+          pose:"write",
+          say:"Closed through the rails and resistor, the pump drives a current: point four volts over two ohms — point two amperes, circulating as long as the rod keeps its appointment with motion.",
+          board:[
+            {tex:"I = \\frac{\\mathcal{E}}{R} = 0.200\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Lenz sends the bill",
+          think:"The current-carrying rod sits in B: which way does IℓB push?",
+          model:"F = IℓB = 0.0200 N, OPPOSING v: free electricity is not on offer.",
+          pose:"point",
+          say:"But now the rod carries current through a magnetic field, and I ell B — twenty millinewtons — pushes it BACKWARD, against its own motion, by Lenz's unfailing spite. To keep the rod at constant speed, someone must push with exactly that force. The generator has presented its invoice.",
+          board:[
+            {tex:"F = I\\ell B = (0.200)(0.500)(0.200) = 0.0200\\ \\mathrm N\\ \\text{(opposing } v)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The books balance to the milliwatt",
+          think:"Compare Fv with I²R.",
+          model:"Fv = 0.0800 W = I²R ✓: mechanical work in, heat out — a generator in miniature.",
+          pose:"excited",
+          say:"Audit: the pusher spends F v — eighty milliwatts of honest mechanical work. The resistor dissipates I squared R — eighty milliwatts of heat. Equal to the decimal: the rod is a perfect broker, converting muscle to electricity to warmth with nothing skimmed. Scale this sliding rod up, curl it into a rotating coil, and you have every power station on Earth. The invoice and the receipt always match; that is what Lenz's law is FOR.",
+          board:[
+            {tex:"F v = 0.0800\\ \\mathrm W = I^2R\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"ε = Bℓv → I = ε/R → Lenz drag F = IℓB → verify Fv = I²R", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"A magnet approaches a loop: direction and size",
+      problem:"A north pole approaches a loop; flux rises from 2.00 to 5.00 mWb in 0.0500 s. Find the average emf and the induced current's direction (seen from the magnet).",
+      goal:"Goal → ε and the direction",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Average emf","Lenz reasoning","Direction","Feel the push"],
+      setup(ctx,w){
+    boxAt(ctx, 2,2.6, 2.4,1.6, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 1.2,4.6, 'N →', {fs:13, color:RED});
+    el('ellipse',{cx:ctx.M.X(8),cy:ctx.M.Y(3.5),rx:14,ry:56,fill:'none',stroke:GOLD,'stroke-width':3},ctx.svg);
+    arrow(ctx, 3.4,3.5, 5.6,3.5, {color:DIMC, w:2, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"The average emf",
+          think:"ΔΦ/Δt over the given interval.",
+          model:"|ε| = 3.00 mWb / 0.0500 s = 0.0600 V.",
+          pose:"talk",
+          say:"The arithmetic half is brief: three milliwebers of flux gained in a twentieth of a second — sixty millivolts of average emf. The interesting half of this example is the DIRECTION, and that belongs entirely to Lenz.",
+          board:[
+            {tex:"|\\mathcal{E}| = \\frac{(5.00-2.00)\\times10^{-3}}{0.0500} = 0.0600\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Lenz's reasoning, step by step",
+          think:"The flux FROM the magnet, THROUGH the loop, is INCREASING. What must the loop's own field do inside the loop?",
+          model:"Oppose the increase: point back toward the magnet within the loop.",
+          pose:"point",
+          say:"Reason like Lenz, in order: the north pole's field points away from the magnet, threading the loop — and it is GROWING. The loop must resist: its own induced field, inside the loop, must point BACK toward the magnet, cancelling as much of the newcomer as it can. What current arrangement does that? The right hand answers next.",
+          board:[
+            {label:"The logic", text:"Flux (toward loop, from N) increasing ⇒ induced field inside the loop points BACK at the magnet.", kind:"key"}
+          ]
+        },
+        { map:2, title:"The current's direction",
+          think:"Right-hand: a field toward the magnet requires which circulation, viewed FROM the magnet?",
+          model:"Counterclockwise as seen from the magnet — the loop shows the magnet a north face.",
+          pose:"write",
+          say:"Curl the right hand so the thumb points at the magnet: the fingers run COUNTERCLOCKWISE as seen from the magnet's side. That is the induced current — and note what it makes: the loop's near face becomes a NORTH pole, glaring back at the approaching north. Like poles, face to face.",
+          board:[
+            {tex:"\\text{From the magnet: counterclockwise — the loop presents a north pole to the north pole.}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"You can feel Lenz's law",
+          think:"Two norths face off: what does the pusher feel? And on withdrawal?",
+          model:"Repulsion approaching, attraction withdrawing — ALWAYS resisting you. Drop a magnet down a copper pipe to feel it.",
+          pose:"excited",
+          say:"And so the law becomes tactile: the loop repels the arriving magnet — you feel a soft, invisible cushion. Withdraw, and everything reverses: the current flips, the loop turns south-faced and clings. Coming or going, the loop is always AGAINST you — for were it ever with you, it would accelerate the very change feeding it, energy would gush from nowhere, and thermodynamics would file suit. Drop a magnet down a copper pipe some day: Lenz's law will lower it for you, gently, like a courteous undertaker.",
+          board:[
+            {label:"The feel", text:"Approach: repelled. Retreat: attracted. Always opposed — the energy-conservation handshake.", kind:"key"},
+            {label:"Reusable method", text:"|ε| = ΔΦ/Δt → name the flux's change → induced field opposes it → right hand names the current", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A simple AC generator",
+      problem:"A coil of 100 turns, area 0.0200 m², rotates at 60.0 Hz in a 0.300 T field. Find the peak and rms emf, and when in the cycle the emf peaks.",
+      goal:"Goal → ε_max, ε_rms, timing",
+      world:{"x0":-0.002,"x1":0.037,"y0":-260,"y1":300},
+      pathway:["Rotating flux","Peak","rms","The timing paradox"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'ε (V)'});
+    plotCurve(ctx, t=>226*Math.sin(377*t), 0, 0.034, {color:CHALKC, w:2.5, N:90});
+  },
+      steps:[
+        { map:0, title:"Spin the coil, wave the flux",
+          think:"Φ = NBA cos ωt: differentiate for ε(t).",
+          model:"ε = NBAω sin ωt — rotation turns a constant field into AC.",
+          pose:"talk",
+          say:"Rotate a coil in a steady field and the flux through it waves as the cosine of omega t; Faraday differentiates, and out pours a SINE of emf: N B A omega, sine omega t. A constant field, a turning frame, and alternating current is born — this is the machine humming behind every wall socket.",
+          board:[
+            {tex:"\\Phi = NBA\\cos\\omega t \\;\\Rightarrow\\; \\mathcal{E} = NBA\\omega\\sin\\omega t", kind:"key"}
+          ]
+        },
+        { map:1, title:"The peak",
+          think:"NBAω with ω = 2π(60): evaluate.",
+          model:"ε_max = 226 V.",
+          pose:"write",
+          say:"The amplitude: one hundred turns, point three tesla, a fiftieth of a square metre, and omega — three hundred seventy seven radians per second. Two hundred twenty six volts at the crest. Note omega's presence: spin faster and the SAME field yields more voltage — the generator's throttle.",
+          board:[
+            {tex:"\\mathcal{E}_{\\max} = NBA\\omega = (100)(0.300)(0.0200)(377) = 226\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The rms",
+          think:"Divide by √2 — and recall why rms is the honest average for power.",
+          model:"ε_rms = 160 V — the number the wall socket quotes.",
+          pose:"write",
+          say:"Divide by root two for the rms: one hundred sixty volts — the figure a meter reads and a utility bills, because rms is the steady voltage that would heat a resistor equally. Wall-socket ratings worldwide are rms values of exactly such sinusoids.",
+          board:[
+            {tex:"\\mathcal{E}_{\\rm rms} = \\frac{226}{\\sqrt2} = 160\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Peak emf at ZERO flux",
+          think:"Where is sin ωt = ±1 — at maximum flux, or at maximum flux CHANGE?",
+          model:"ε peaks when the coil's plane is PARALLEL to B (Φ = 0, changing fastest); ε = 0 at full flux.",
+          pose:"excited",
+          say:"And the timing carries this tutorial's favourite paradox: the emf PEAKS at the instant the flux is ZERO — coil plane parallel to the field, flux sweeping through its sign change at maximum speed — and VANISHES at full flux, where the cosine idles at its crest. Faraday taxes the derivative, and derivatives peak where functions cross zero. Say it once more, for it decides every induction problem: not the flux — the RATE.",
+          board:[
+            {label:"The paradox", text:"ε_max at Φ = 0 (fastest change); ε = 0 at Φ_max (momentarily static). The derivative rules.", kind:"warn"},
+            {label:"Reusable method", text:"Φ = NBA cos ωt → ε = NBAω sin ωt → rms = peak/√2 → timing: rate, not value", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A loop entering a field region",
+      problem:"A square loop, side 10.0 cm, R = 0.500 Ω, moves at 2.00 m/s into a 0.800 T region. Find ε, I, and the retarding force during entry; describe the fully-inside phase.",
+      goal:"Goal → entry values; inside behavior",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Entry = moving rod","Numbers","Inside: nothing","Eddy brakes"],
+      setup(ctx,w){
+    shadePoly(ctx, [[5,0.5],[10.5,0.5],[10.5,6.5],[5,6.5]], {color:'rgba(159,180,163,.15)'});
+    label(ctx, 7.6,6.0, 'B region (into page)', {fs:9, color:DIMC});
+    el('rect',{x:ctx.M.X(2.6),y:ctx.M.Y(4.6),width:ctx.M.X(4.8)-ctx.M.X(2.6),height:ctx.M.Y(2.4)-ctx.M.Y(4.6),fill:'none',stroke:GOLD,'stroke-width':3},ctx.svg);
+    arrow(ctx, 4.9,3.5, 6.3,3.5, {color:GREEN, w:2.5, label:'v', fs:12, side:-1});
+  },
+      steps:[
+        { map:0, title:"Only the leading edge counts",
+          think:"During entry, which side of the loop generates emf — and why not the others?",
+          model:"The leading edge is a Bℓv rod; the trailing edge is still outside; the sides contribute nothing along themselves.",
+          pose:"talk",
+          say:"As the loop crosses the boundary, only its LEADING edge swims in the field — a B ell v rod in disguise — while the trailing edge idles in field-free space. The enclosed flux grows at rate B ell v, and Faraday and the moving-rod picture give identical answers, as they always must.",
+          board:[
+            {tex:"\\mathcal{E} = B\\ell v = (0.800)(0.100)(2.00) = 0.160\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Current and drag",
+          think:"I = ε/R, then F = IℓB on the leading edge.",
+          model:"I = 0.320 A; F = 0.0256 N opposing; entry lasts 0.0500 s.",
+          pose:"write",
+          say:"The circuit answers with point three two amperes, and the field bills the current-carrying leading edge I ell B — twenty five point six millinewtons of pure obstruction, for the twentieth of a second the entry lasts. Lenz, as ever, votes against admission.",
+          board:[
+            {tex:"I = 0.320\\ \\mathrm A; \\quad F = I\\ell B = 0.0256\\ \\mathrm N\\ \\text{(opposing)}; \\quad t_{\\rm entry} = 0.0500\\ \\mathrm s", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Fully inside: total amnesty",
+          think:"Both edges now in the field: what is dΦ/dt? The force?",
+          model:"Flux constant → ε = I = F = 0: the loop coasts free.",
+          pose:"write",
+          say:"The instant the trailing edge crosses in, the story ends: the enclosed flux — now maximal — stops CHANGING, and emf, current, and force all vanish together. Deep inside the strongest field, the loop coasts as freely as in vacuum. Uniform fields punish only border crossings; residency is free. Departure, of course, will be taxed again, and in the same braking direction.",
+          board:[
+            {tex:"\\text{inside: } \\frac{d\\Phi}{dt} = 0 \\Rightarrow \\mathcal{E} = I = F = 0\\ \\text{— free coasting}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"From loop to eddy brake",
+          think:"Replace the loop with a solid copper sheet crossing the boundary: what currents flow, and what device results?",
+          model:"Swirling eddy currents brake the sheet: train brakes, damped balances, the slow-falling magnet.",
+          pose:"excited",
+          say:"Now dissolve the wire loop into a solid copper plate crossing the same boundary: the induced circulations no longer follow one tidy square but swirl through the metal as EDDY currents — and the braking persists, contactless and frictionless. High-speed trains stop on this principle, laboratory balances settle by it, and amusement-park drop towers owe their gentle catch to nothing but Lenz's stubbornness at a field boundary. A tax on crossing, engineered into a brake.",
+          board:[
+            {label:"Eddy brakes", text:"Solid conductors crossing field boundaries brake via eddy currents — trains, balances, drop towers.", kind:"key"},
+            {label:"Reusable method", text:"entering: leading edge = Bℓv rod → I, F = IℓB opposing → inside: all zero → exit brakes again", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Exponentially decaying field: emf and total charge",
+      problem:"A 50-turn coil, A = 4.00×10⁻³ m², R = 10.0 Ω, in B = B₀e^(−t/τ), B₀ = 0.200 T, τ = 0.0500 s. Find ε at t = 0 and 0.100 s, and the TOTAL charge through the coil.",
+      goal:"Goal → ε(0), ε(2τ), Q_total",
+      world:{"x0":-0.01,"x1":0.26,"y0":-0.08,"y1":0.9},
+      pathway:["Differentiate","Evaluate","The charge trick","Ballistic galvanometer"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'ε (V)'});
+    plotCurve(ctx, t=>0.8*Math.exp(-t/0.05), 0, 0.24, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"Differentiate the decay",
+          think:"Φ = NAB₀e^(−t/τ): what is ε(t)?",
+          model:"ε = (NAB₀/τ)e^(−t/τ) — the decay differentiates into itself.",
+          pose:"talk",
+          say:"An exponentially dying field: differentiate and the exponential — vainest of functions — reproduces itself, scaled by one over tau. The emf starts at N A B nought over tau and fades on the same clock as the field.",
+          board:[
+            {tex:"\\mathcal{E} = -\\frac{d\\Phi}{dt} = \\frac{NAB_0}{\\tau}e^{-t/\\tau}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate at 0 and 2τ",
+          think:"The prefactor, then ×e⁻².",
+          model:"ε(0) = 0.800 V; ε(0.100) = 0.108 V.",
+          pose:"write",
+          say:"At the stroke of release: fifty times four thousandths times point two, over point zero five — zero point eight volts. Two time constants later: times e to the minus two — zero point one zero eight. The coil shouts, then murmurs, on the field's own schedule.",
+          board:[
+            {tex:"\\mathcal{E}(0) = 0.800\\ \\mathrm V; \\quad \\mathcal{E}(2\\tau) = 0.800e^{-2} = 0.108\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The charge shortcut",
+          think:"Q = ∫I dt = (1/R)∫ε dt = ΔΦ_total/R: why does the timing drop out?",
+          model:"Q = NAB₀/R = 4.00×10⁻³ C — depends ONLY on the total flux change.",
+          pose:"write",
+          say:"Now the jewel: the TOTAL charge is the integral of current — one over R times the integral of emf — which is nothing but the TOTAL flux change over R. The schedule, the time constant, the whole exponential biography: irrelevant. Fifty times four thousandths times point two, over ten ohms — four millicoulombs, whether the field died in a microsecond or a month.",
+          board:[
+            {tex:"Q = \\frac{1}{R}\\int\\mathcal{E}\\,dt = \\frac{N A B_0}{R} = 4.00\\times10^{-3}\\ \\mathrm C\\ \\text{— timing-free}", kind:"answer", move:"∫ collapses"}
+          ]
+        },
+        { map:3, title:"The instrument in the theorem",
+          think:"Flip a small coil in an unknown field, measure the charge pulse: what have you measured?",
+          model:"ΔΦ = QR gives B directly: the ballistic galvanometer — field metrology before Hall probes.",
+          pose:"excited",
+          say:"And the theorem was an instrument all along: flip a small search coil over in an unknown field, catch the gulp of charge on a BALLISTIC galvanometer, and the flux — hence B — is read off as Q R over N A, with no need to control the flip's speed at all. Generations of magneticians mapped fields exactly thus before Hall probes existed. When an integral makes the messy variable vanish, an instrument is usually hiding in the result.",
+          board:[
+            {label:"The instrument", text:"Search coil + charge measurement = B, flip-speed-independent: the ballistic galvanometer.", kind:"key"},
+            {label:"Reusable method", text:"ε(t) by differentiating → Q = ΔΦ/R, schedule-free → flux metrology by charge", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Terminal speed of a falling rod on vertical rails",
+      problem:"A rod (m = 0.100 kg, ℓ = 0.500 m) slides without friction down vertical rails in a horizontal 0.500 T field, closed by R = 0.200 Ω. Find the terminal speed.",
+      goal:"Goal → v_t",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The feedback","Balance","Evaluate","Energy at terminal"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(6.5),x2:ctx.M.X(3),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(8),y1:ctx.M.Y(6.5),x2:ctx.M.X(8),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(4.5),x2:ctx.M.X(8),y2:ctx.M.Y(4.5),stroke:GOLD,'stroke-width':4},ctx.svg);
+    arrow(ctx, 5.5,4.1, 5.5,2.6, {color:GREEN, w:2.5, label:'falls', fs:11});
+  },
+      steps:[
+        { map:0, title:"A self-strengthening brake",
+          think:"Faster fall → more emf → more current → more upward force. What must happen eventually?",
+          model:"F_mag = B²ℓ²v/R grows with v until it matches mg: terminal speed.",
+          pose:"talk",
+          say:"The falling rod builds its own brake: speed makes emf, emf makes current, current in the field makes an UPWARD force — B squared ell squared v over R — that grows with every gained metre per second. Gravity is constant; the brake is progressive; their meeting is inevitable. Terminal velocity, by feedback.",
+          board:[
+            {label:"The brake", tex:"F_{\\rm mag} = \\frac{B^2\\ell^2v}{R}\\ \\text{— grows with } v\\ \\text{until it meets } mg", kind:"key"}
+          ]
+        },
+        { map:1, title:"Set the balance",
+          think:"B²ℓ²v_t/R = mg: solve symbolically.",
+          model:"v_t = mgR/B²ℓ² — every symbol's role visible.",
+          pose:"write",
+          say:"At terminal speed the ledger closes: B squared ell squared v over R equals m g. Solve: v terminal equals m g R over B squared ell squared. Read the roles: heavier falls faster, more resistance falls faster — a weaker brake — while field and length, squared in the brake, slow everything emphatically.",
+          board:[
+            {tex:"v_t = \\frac{mgR}{B^2\\ell^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate",
+          think:"Insert the numbers.",
+          model:"v_t = 3.14 m/s.",
+          pose:"write",
+          say:"Numbers: point one times nine point eight times point two, over a quarter times a quarter — three point one four metres per second. The rod falls, but at a bicycle pace, chaperoned by its own induction.",
+          board:[
+            {tex:"v_t = \\frac{(0.100)(9.80)(0.200)}{(0.500)^2(0.500)^2} = 3.14\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Where the gravity goes",
+          think:"At terminal speed, KE is constant. Verify mgv_t = I²R — and name the famous demo.",
+          model:"3.07 W of falling = 3.07 W of heat (I = 3.92 A) ✓. The magnet-in-copper-pipe demo runs on this.",
+          pose:"excited",
+          say:"At terminal speed the kinetic account is frozen, so gravity's entire income — m g v, three point zero seven watts — must be laundered directly into resistor heat: I squared R with three point nine two amperes — three point zero seven watts. Balanced. And the beloved demonstration: drop a magnet down a copper pipe and watch it descend in dignified slow motion — the same equation, with the pipe's eddy currents playing the resistor. Gravity in, warmth out, wonder retained.",
+          board:[
+            {tex:"mgv_t = 3.07\\ \\mathrm W = I^2R\\ (I = 3.92\\ \\mathrm A)\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"brake ∝ v meets constant mg → v_t = mgR/B²ℓ² → verify the power ledger at terminal", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Loop beside a wire carrying alternating current",
+      problem:"A rectangular loop (a = 10.0 cm ⊥ wire, b = 20.0 cm ∥) has its near side d = 5.00 cm from a wire carrying I₀sin ωt, I₀ = 10.0 A, f = 60 Hz. Find the flux and peak emf.",
+      goal:"Goal → Φ(t), ε_peak",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Nonuniform flux","The log","Differentiate","Hum and frequency"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(0.3),x2:ctx.M.X(1.5),y2:ctx.M.Y(6.7),stroke:GOLD,'stroke-width':4},ctx.svg);
+    el('rect',{x:ctx.M.X(3.5),y:ctx.M.Y(5.5),width:ctx.M.X(7.5)-ctx.M.X(3.5),height:ctx.M.Y(1.5)-ctx.M.Y(5.5),fill:'none',stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    label(ctx, 0.4,3.4, 'I(t)', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"A flux that must be integrated",
+          think:"B = μ₀I/2πr varies across the loop's width. Slice how?",
+          model:"Strips parallel to the wire, width dr, length b: dΦ = (μ₀I/2πr)b dr.",
+          pose:"talk",
+          say:"The wire's field fades across the loop's width, so the flux is an integral, not a product: slice the loop into strips parallel to the wire — each at its own distance r, sipping its own B — and sum from the near side to the far.",
+          board:[
+            {tex:"\\Phi = \\int_d^{d+a}\\frac{\\mu_0I}{2\\pi r}b\\,dr", kind:"key"}
+          ]
+        },
+        { map:1, title:"The logarithm, again",
+          think:"∫dr/r over [d, d+a]: assemble Φ(t).",
+          model:"Φ = (μ₀Ib/2π)ln(3) sin ωt = 4.39×10⁻⁷ sin ωt Wb.",
+          pose:"write",
+          say:"The integral of d r over r delivers its logarithm: mu nought I b over two pi, times log of d plus a over d — log three, here. The flux: four point four times ten to the minus seven webers, oscillating with the wire's sine. Note the log where naive estimation would put a over d; they agree only for skinny, distant loops.",
+          board:[
+            {tex:"\\Phi = \\frac{\\mu_0I_0b}{2\\pi}\\ln\\frac{d+a}{d}\\sin\\omega t = (4.39\\times10^{-7})\\sin\\omega t\\ \\mathrm{Wb}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Differentiate for the emf",
+          think:"ε = −dΦ/dt: the ω steps out front.",
+          model:"ε_peak = ωΦ_max = (377)(4.39×10⁻⁷) = 1.66×10⁻⁴ V.",
+          pose:"write",
+          say:"Faraday differentiates the sine: omega marches out front, and the peak emf is three seventy seven times our little flux — one hundred sixty six microvolts. Small — but audible, as any audio engineer who has chased mains hum will attest through gritted teeth.",
+          board:[
+            {tex:"\\mathcal{E}_{\\rm peak} = \\omega\\Phi_{\\max} = (377)(4.39\\times10^{-7}) = 1.66\\times10^{-4}\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Interference scales with ω",
+          think:"Same geometry at 60 kHz: ε_peak? What does this teach about crosstalk?",
+          model:"×1000 in f → 0.17 V: high frequencies leap between circuits. Twist, shield, separate.",
+          pose:"excited",
+          say:"And the engineering forecast in that leading omega: run the same geometry at sixty KILOhertz and the coupling grows a thousandfold, to a sixth of a volt — enough to corrupt any nearby signal line. Interference climbs with frequency, which is why fast circuits twist their pairs, wear shields, and keep their distance from power conductors. Every layout rule in electronics is Faraday's omega, drawn as a wiring diagram.",
+          board:[
+            {label:"The forecast", tex:"\\mathcal{E}\\propto\\omega: \\ \\text{at 60 kHz, } 0.17\\ \\mathrm V\\ \\text{— crosstalk grows with frequency}", kind:"key"},
+            {label:"Reusable method", text:"strip-integrate the 1/r field (log appears) → ε = ωΦ_max → coupling scales with ω: shield accordingly", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"The Faraday disk (homopolar generator)",
+      problem:"A copper disk of radius 20.0 cm spins at 3000 rev/min in a uniform 0.500 T axial field. Find the emf between axle and rim.",
+      goal:"Goal → ε axle-to-rim",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["A rod per radius","Integrate","Flux-rule caution","History"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.3, {stroke:GOLD, w:3});
+    circleAt(ctx, 0,0, 0.12, {stroke:CHALKC, w:3});
+    arrow(ctx, 0.15,0.1, 2.2,0.5, {color:PURPLE, w:2.5, label:'radius = rod', fs:10, at:'mid', side:-1});
+    arc(ctx, 0,0, 2.55, 20, 70, {color:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"A rod whose speed grows with r",
+          think:"Each element dr of a spinning radius moves at v = ωr. What does it contribute?",
+          model:"dε = Bv dr = Bωr dr: the radius is a motional-emf rod with varying speed.",
+          pose:"talk",
+          say:"Regard one radius of the spinning disk as a rod — but a rod whose speed grows along its length, v equals omega r. Each element d r pumps its own B omega r d r of motional emf, axle toward rim; the total is an integral in waiting.",
+          board:[
+            {tex:"d\\mathcal{E} = B\\omega r\\,dr", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate axle to rim",
+          think:"∫₀ᴿ r dr = R²/2; ω = 314 rad/s. Evaluate.",
+          model:"ε = ½BωR² = ½(0.5)(314)(0.04) = 3.14 V.",
+          pose:"write",
+          say:"Integrate: one half B omega R squared. Three thousand revolutions per minute is three hundred fourteen radians per second: half times point five times three fourteen times point zero four — three point one four volts standing between axle and rim, as long as the spin endures.",
+          board:[
+            {tex:"\\mathcal{E} = \\int_0^RB\\omega r\\,dr = \\tfrac12B\\omega R^2 = 3.14\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Where the flux rule stumbles",
+          think:"What fixed loop has changing flux here? None — so where does the emf come from?",
+          model:"Pure qv×B on the metal's charges: motional emf without a changing-flux loop. Apply the flux rule with care.",
+          pose:"point",
+          say:"Now the celebrated subtlety: name a fixed circuit whose flux is changing. There is none — the field is steady, the geometry constant — yet three volts insist. The emf here is PURELY motional: q v cross B acting on charges carried around by the metal itself. Faraday's flux rule is a magnificent accountant for circuits of fixed identity, but sliding contacts and spinning conductors demand the microscopic force law directly. Know both tools; know which one the geometry has hired.",
+          board:[
+            {label:"The caution", text:"No changing flux through any fixed loop — the emf is qv×B on the moving metal. The flux rule needs care with sliding contacts.", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The first generator",
+          think:"1831, Faraday's disk: what did it prove, and where do homopolar machines serve today?",
+          model:"The first continuous generator. Low voltage, colossal current — one thick conductor: welders, launchers, pulsed power.",
+          pose:"excited",
+          say:"And the pedigree: this unassuming disk IS the first electric generator — Faraday, eighteen thirty one, spinning copper between magnet poles and drawing the first continuous man-made current in history. Its descendants, the homopolar machines, still serve where their peculiar talent shines: a few volts but titanic current, the whole disk being one fat conductor — welding rigs, pulsed-power banks, experimental launchers. Every generator since is a refinement; this one is the ancestor, and it fits on a bench.",
+          board:[
+            {label:"History", text:"Faraday 1831: the first generator. Homopolar today: low V, huge I — welders and pulsed power.", kind:"key"},
+            {label:"Reusable method", text:"spinning radius = variable-speed rod → ε = ½BωR² → trust qv×B when contacts slide", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A coasting rod: exponential slowdown and energy audit",
+      problem:"A rod (m = 0.100 kg, ℓ = 0.500 m) on horizontal rails with R = 0.200 Ω in a 0.500 T field gets v₀ = 2.00 m/s and is released. Find v(t), the total distance, and the total heat.",
+      goal:"Goal → v(t), x_∞, W_R",
+      world:{"x0":-0.1,"x1":1.7,"y0":-0.2,"y1":2.3},
+      pathway:["The ODE","Solve","Finite distance","Heat audit","Scaling"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (m/s)'});
+    plotCurve(ctx, t=>2*Math.exp(-t/0.32), 0, 1.6, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"Drag proportional to speed",
+          think:"The rod's own induced current brakes it: write Newton.",
+          model:"m dv/dt = −B²ℓ²v/R: the self-braking ODE.",
+          pose:"talk",
+          say:"Shove the rod and let go: its motion makes current, its current makes drag, and the drag is proportional to the speed itself. Newton records a differential equation: m d v d t equals minus B squared ell squared over R, times v. The rod writes its own deceleration schedule.",
+          board:[
+            {tex:"m\\frac{dv}{dt} = -\\frac{B^2\\ell^2}{R}v", kind:"key"}
+          ]
+        },
+        { map:1, title:"Exponential coasting",
+          think:"Separate variables; identify τ.",
+          model:"v = v₀e^(−t/τ), τ = mR/B²ℓ² = 0.320 s.",
+          pose:"write",
+          say:"Separate and integrate: v equals v nought e to the minus t over tau, with tau equal to m R over B squared ell squared — zero point three two seconds. The same exponential that drains capacitors now drains momentum; nature reuses her paperwork.",
+          board:[
+            {tex:"v(t) = v_0e^{-t/\\tau}, \\quad \\tau = \\frac{mR}{B^2\\ell^2} = 0.320\\ \\mathrm s", kind:"answer"}
+          ]
+        },
+        { map:2, title:"A finite journey that never ends",
+          think:"x_∞ = ∫v dt: evaluate — and savor the paradox.",
+          model:"x_∞ = v₀τ = 0.640 m: never quite stopping, yet bounded.",
+          pose:"write",
+          say:"The total distance: the integral of the exponential — v nought tau — sixty four centimetres. The rod never mathematically halts, yet can never pass that mark: an infinite time confined to a finite journey, the boat-in-water example of Tutorial two of mechanics, reborn with magnetic drag.",
+          board:[
+            {tex:"x_{\\infty} = \\int_0^{\\infty}v\\,dt = v_0\\tau = 0.640\\ \\mathrm m", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The heat audit",
+          think:"All of ½mv₀² must appear in R. Verify by the integral.",
+          model:"∫I²R dt = (B²ℓ²v₀²/R)(τ/2) = 0.200 J = ½mv₀² ✓.",
+          pose:"write",
+          say:"The energy books: the rod began with a fifth of a joule of kinetic wealth and ends destitute; the resistor must hold the whole estate. Integrate I squared R with the decaying current: B squared ell squared v nought squared over R, times tau over two — exactly one half m v nought squared. Audited, and clean.",
+          board:[
+            {tex:"W_R = \\int_0^{\\infty}I^2R\\,dt = \\tfrac12mv_0^2 = 0.200\\ \\mathrm J\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:4, title:"The design dials",
+          think:"Double B: what happens to τ and the stopping distance?",
+          model:"τ, x_∞ ∝ 1/B²: field strength is a fierce lever. Magnetic damping, tuned by B.",
+          pose:"excited",
+          say:"Close by reading the dials: tau and the coasting distance both carry B squared ell squared in their denominators — DOUBLE the field and the rod stops in a QUARTER the time and distance. Magnetic damping is exquisitely tunable, which is why laboratory balances, seismometer needles, and exercise bikes all hide a magnet whose position sets exactly this tau. One differential equation, a catalogue of quiet machines.",
+          board:[
+            {label:"Scaling", tex:"\\tau, x_{\\infty} \\propto \\frac{1}{B^2}: \\ \\text{field is the damping dial}", kind:"key"},
+            {label:"Reusable method", text:"drag ∝ v → exponential v(t), τ = mR/B²ℓ² → x = v₀τ finite → heat = initial KE, verified", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

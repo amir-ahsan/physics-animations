@@ -1343,6 +1343,561 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Peak versus rms",
+      problem:"A European outlet supplies 240 V rms at 50 Hz to a 2.00 kW heater. Find the peak voltage, the rms current, and the peak current.",
+      goal:"Goal → V₀, I_rms, I₀",
+      world:{"x0":-0.002,"x1":0.045,"y0":-400,"y1":420},
+      pathway:["√2","Currents","Instantaneous power","Why rms exists"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (V)'});
+    plotCurve(ctx, t=>339*Math.sin(314*t), 0, 0.042, {color:CHALKC, w:2.5, N:90});
+    dashLine(ctx, 0,240, 0.042,240, {});
+    label(ctx, 0.03,275, 'rms', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"The peak behind the label",
+          think:"V₀ = √2 V_rms: what does the socket ACTUALLY swing between?",
+          model:"V₀ = 339 V: the 240 V wall socket peaks near ±339 V a hundred times a second.",
+          pose:"talk",
+          say:"The socket's label is an rms average; the wire's truth is a sinusoid peaking root-two higher: three hundred thirty nine volts, twice per cycle, in each direction. Anyone probing 'two-forty-volt' mains meets three-forty at the crests — a fact best learned from a chalkboard rather than a screwdriver.",
+          board:[
+            {tex:"V_0 = \\sqrt2\\,V_{\\rm rms} = \\sqrt2(240) = 339\\ \\mathrm V", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The currents",
+          think:"P = V_rms I_rms for a resistive load; then ×√2.",
+          model:"I_rms = 8.33 A; I₀ = 11.8 A.",
+          pose:"write",
+          say:"For the purely resistive heater, power is rms volts times rms amps: two thousand over two forty — eight point three three amperes rms, peaking at root two times that, eleven point eight. In-phase and obedient, as resistors always are.",
+          board:[
+            {tex:"I_{\\rm rms} = \\frac{2000}{240} = 8.33\\ \\mathrm A; \\qquad I_0 = \\sqrt2\\,I_{\\rm rms} = 11.8\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Power that flickers",
+          think:"p(t) = v·i swings between what extremes — and does the heater care?",
+          model:"0 to 2P = 4.00 kW at 100 Hz. The thermal mass irons it flat.",
+          pose:"point",
+          say:"The instantaneous power is no constant: it pulses from ZERO — at every voltage crossing — up to TWICE the average, four kilowatts, a hundred times per second. The heater's thermal inertia laughs at the flicker; incandescent filaments barely dimmed with it, and only high-speed cameras and hum-sensitive audio gear ever catch the grid blinking.",
+          board:[
+            {tex:"p(t): 0 \\leftrightarrow 2P = 4.00\\ \\mathrm{kW}\\ \\text{at } 100\\ \\mathrm{Hz}", kind:"key"}
+          ]
+        },
+        { map:3, title:"The reason rms exists",
+          think:"What DC voltage would heat this resistor identically? That definition IS rms.",
+          model:"V_rms is the heat-equivalent DC value — chosen so P = V_rms I_rms works with no factors.",
+          pose:"excited",
+          say:"And the convention's whole purpose: two hundred forty rms volts heats a resistor EXACTLY as two hundred forty DC volts would — root-mean-square is defined by that thermal equivalence, letting every DC power formula survive into AC without corrective factors. The square root of the mean of the square: an average designed by, and for, the heating law. Engineering picks its averages to make its formulas honest.",
+          board:[
+            {label:"The definition", text:"V_rms = the DC-equivalent for heating. P = V_rms I_rms holds factor-free (resistive).", kind:"key"},
+            {label:"Reusable method", text:"peak = √2 × rms → resistive: P = V_rms I_rms → p(t) flickers 0 to 2P at twice the line frequency", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Reactances at line frequency",
+      problem:"At 60.0 Hz find the reactance of (a) a 50.0 mH inductor, (b) a 20.0 μF capacitor — and how each changes if f doubles.",
+      goal:"Goal → X_L, X_C, scalings",
+      world:{"x0":-10,"x1":260,"y0":-15,"y1":320},
+      pathway:["X_L","X_C","Opposite slopes","No heat"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'f (Hz)', ylab:'X (Ω)'});
+    plotCurve(ctx, f=>2*Math.PI*f*0.05, 5, 250, {color:GOLD, w:2.5, N:30});
+    plotCurve(ctx, f=>1/(2*Math.PI*f*20e-6), 12, 250, {color:PURPLE, w:2.5, N:60});
+    label(ctx, 190,75, 'X_L', {fs:11, color:GOLD});
+    label(ctx, 55,190, 'X_C', {fs:11, color:PURPLE});
+  },
+      steps:[
+        { map:0, title:"Inductive reactance",
+          think:"X_L = ωL at 377 rad/s.",
+          model:"X_L = 18.8 Ω; doubling f doubles it.",
+          pose:"talk",
+          say:"Reactance is opposition without dissipation, priced in ohms. The inductor's: omega L — three seventy seven times fifty millihenries — eighteen point eight ohms, and rising in strict proportion to frequency: ask for faster current changes, pay a steeper toll.",
+          board:[
+            {tex:"X_L = \\omega L = (377)(0.0500) = 18.8\\ \\Omega\\ (\\propto f)", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Capacitive reactance",
+          think:"X_C = 1/ωC: evaluate, and the doubling.",
+          model:"X_C = 133 Ω; doubling f HALVES it.",
+          pose:"write",
+          say:"The capacitor's: one over omega C — one hundred thirty three ohms — and FALLING with frequency: rapid reversals never let the plates fill, so the current flows freely. Double the frequency, halve the opposition. The two reactances slope opposite ways, and every filter ever built lives in their disagreement.",
+          board:[
+            {tex:"X_C = \\frac{1}{\\omega C} = \\frac{1}{(377)(20.0\\times10^{-6})} = 133\\ \\Omega\\ (\\propto1/f)", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The DC extremes",
+          think:"ω → 0: what does each element become?",
+          model:"Inductor → wire; capacitor → open. At ω → ∞, they trade places.",
+          pose:"point",
+          say:"Take the limits and recover old friends: at DC the inductor is a plain wire — zero reactance — and the capacitor a perfect gap, infinite. At extreme frequency they exchange roles. The transient rules of the RL and RC chapters were these limits in embryo; AC merely fills in the middle of the dial.",
+          board:[
+            {label:"Extremes", tex:"\\omega\\to0: X_L\\to0, X_C\\to\\infty; \\quad \\omega\\to\\infty: \\text{ roles reversed}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Ohms that make no heat",
+          think:"Reactances store and return energy each cycle. What do they NOT do?",
+          model:"Zero average dissipation: reactive elements borrow and repay, never spend. Phase, next tutorial's hero, is why.",
+          pose:"excited",
+          say:"And the crucial asterisk on those ohms: a reactance DISSIPATES NOTHING. The inductor banks energy in its field for a quarter cycle and refunds it the next; the capacitor likewise. Their currents run ninety degrees out of phase with the voltage, and the average of their power is exactly zero — ohms of opposition, watts of innocence. Resistance spends; reactance borrows. Keeping those books separate is the whole craft of AC.",
+          board:[
+            {label:"No heat", text:"X's store and return energy each cycle: average power = 0. Only R dissipates.", kind:"key"},
+            {label:"Reusable method", text:"X_L = ωL rises, X_C = 1/ωC falls → check the DC/∞ limits → reactance ≠ resistance: no dissipation", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Resonant frequency of a tuned circuit",
+      problem:"A 0.200 H inductor and 5.00 μF capacitor form a series circuit. Find the resonant frequency. To tune to twice that frequency, how must C change?",
+      goal:"Goal → f₀ and the tuning law",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Resonance","f₀","Retune","The radio dial"],
+      steps:[
+        { map:0, title:"Where the reactances collide",
+          think:"X_L rises, X_C falls: at what ω do they meet — and what happens there?",
+          model:"ωL = 1/ωC at ω₀ = 1/√(LC): the reactances cancel and the circuit rings.",
+          pose:"talk",
+          say:"Plot the two reactances against frequency — one climbing, one diving — and they must cross somewhere. At that crossing, omega L equals one over omega C, inductor and capacitor cancel each other's protest entirely, and the circuit RESONATES: omega nought equals one over root L C, the L C oscillator's own frequency, rediscovered from the AC side.",
+          board:[
+            {tex:"\\omega_0 = \\frac{1}{\\sqrt{LC}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate",
+          think:"1/2π√(LC) with 0.2 H and 5 μF.",
+          model:"f₀ = 159 Hz.",
+          pose:"write",
+          say:"For our pair: one over two pi root of ten to the minus six — one hundred fifty nine hertz. The circuit will pass or ring at this frequency and shoulder aside its neighbours; selectivity is resonance's day job.",
+          board:[
+            {tex:"f_0 = \\frac{1}{2\\pi\\sqrt{(0.200)(5.00\\times10^{-6})}} = 159\\ \\mathrm{Hz}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Retune to double",
+          think:"f₀ ∝ 1/√C: for 2f₀, C must become...?",
+          model:"C/4 = 1.25 μF — the square root exacts a quadratic price.",
+          pose:"write",
+          say:"To DOUBLE the resonant frequency, consult the square root: f nought scales as one over root C, so the capacitance must fall to a QUARTER — one point two five microfarads. Frequency is bought from capacitance at a quadratic exchange rate.",
+          board:[
+            {tex:"f_0\\propto\\frac{1}{\\sqrt C}: \\ 2f_0 \\Rightarrow C\\to\\frac{C}{4} = 1.25\\ \\mu\\mathrm F", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The tuning knob",
+          think:"AM band spans 540–1600 kHz (×3 in f): what capacitance RANGE did the old variable capacitor sweep?",
+          model:"×9 in C: the ganged variable capacitor behind every old radio dial.",
+          pose:"excited",
+          say:"And the household application that raised a century of engineers: the RADIO DIAL. Tuning a receiver is dragging this resonance across the band — and since the AM band's threefold frequency span demands a NINEfold capacitance span, the knob turned interleaved plates of a variable capacitor in and out of mesh. Every station you ever dialed in was one over root L C, adjusted by thumb.",
+          board:[
+            {label:"The dial", text:"AM 540–1600 kHz (f ×3) needs C ×9: the variable capacitor was the tuning knob.", kind:"key"},
+            {label:"Reusable method", text:"resonance at X_L = X_C → f₀ = 1/2π√(LC) → retune by the square-root law", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Series RL circuit on the line",
+      problem:"R = 40.0 Ω in series with L = 0.100 H on 120 V rms, 60.0 Hz. Find Z, I_rms, φ, average power, and the power factor.",
+      goal:"Goal → Z, I, φ, P, cos φ",
+      world:{"x0":-1,"x1":6,"y0":-1,"y1":5},
+      pathway:["Impedance","Current","Phase","Power","Apparent vs real"],
+      setup(ctx,w){
+    arrow(ctx, 0,0, 4,0, {color:GREEN, w:3, label:'R = 40', fs:11, at:'mid'});
+    arrow(ctx, 4,0, 4,3.77, {color:GOLD, w:3, label:'X_L = 37.7', fs:11});
+    arrow(ctx, 0,0, 4,3.77, {color:PURPLE, w:3, label:'Z', fs:12, at:'mid', side:-1});
+  },
+      steps:[
+        { map:0, title:"Impedance: add at right angles",
+          think:"R and X_L are 90° apart on the phasor diagram. How do they combine?",
+          model:"Z = √(R² + X_L²) = √(40² + 37.7²) = 55.0 Ω.",
+          pose:"talk",
+          say:"Resistance and reactance oppose the current in different PHASES — the resistor in step with it, the inductor a quarter cycle ahead — so they add not along a line but at right angles: Z equals the root of R squared plus X L squared. Forty and thirty seven point seven, hypotenused: fifty five ohms. The phasor triangle on our board IS the arithmetic.",
+          board:[
+            {tex:"X_L = \\omega L = 37.7\\ \\Omega; \\quad Z = \\sqrt{R^2+X_L^2} = 55.0\\ \\Omega", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The current",
+          think:"Ohm's law with Z.",
+          model:"I_rms = 120/55.0 = 2.18 A.",
+          pose:"write",
+          say:"Ohm's law survives with Z in the driver's seat: one twenty over fifty five — two point one eight amperes rms, threading both elements in series.",
+          board:[
+            {tex:"I_{\\rm rms} = \\frac{V_{\\rm rms}}{Z} = \\frac{120}{55.0} = 2.18\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The phase",
+          think:"tan φ = X_L/R: who leads, voltage or current?",
+          model:"φ = 43.3°, voltage LEADING (inductive circuits lag their current).",
+          pose:"write",
+          say:"The triangle's angle: inverse tangent of thirty seven point seven over forty — forty three point three degrees — with the VOLTAGE leading, as inductive circuits insist: the coil delays the current's response. Mnemonic of generations: ELI — E before I in an L circuit.",
+          board:[
+            {tex:"\\phi = \\tan^{-1}\\frac{X_L}{R} = 43.3^{\\circ}\\ \\text{(voltage leads)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The power",
+          think:"Only R dissipates: compute I²R, then verify V I cos φ.",
+          model:"P = 191 W = V_rms I_rms cos φ with cos φ = R/Z = 0.728.",
+          pose:"write",
+          say:"Average power: only the resistor spends — I squared R, one hundred ninety one watts. The equivalent formula, V I cosine phi, agrees, with the POWER FACTOR cosine phi equal to R over Z: point seven two eight. That cosine is the fraction of the traffic doing useful work.",
+          board:[
+            {tex:"P = I^2R = 191\\ \\mathrm W = V_{\\rm rms}I_{\\rm rms}\\cos\\phi, \\quad \\cos\\phi = \\frac{R}{Z} = 0.728", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Apparent versus real",
+          think:"V·I = 262 VA but P = 191 W: who cares about the difference?",
+          model:"The utility must carry the full 262 VA of current; only 191 W is billedable work. Hence power-factor economics.",
+          pose:"excited",
+          say:"Multiply volts by amps naively and you get two hundred sixty two — VOLT-AMPERES, the 'apparent power' — while the true wattage is one ninety one. The missing quarter is current that sloshes to the inductor and back, doing no work yet occupying the wires, heating the utility's cables, demanding thicker copper. That is why industrial electricity bills police the power factor — and why a later example will hire a capacitor to fix one. In AC, amperes and watts are different careers.",
+          board:[
+            {tex:"V_{\\rm rms}I_{\\rm rms} = 262\\ \\mathrm{VA} > P = 191\\ \\mathrm W\\ \\text{— the power-factor gap}", kind:"key"},
+            {label:"Reusable method", text:"Z by right-angle addition → I = V/Z → φ from the triangle → P = I²R = VI cos φ", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"An RC filter's crossover frequency",
+      problem:"A 1.00 kΩ resistor and 0.100 μF capacitor in series across a source. At what frequency are V_R and V_C equal? Which dominates at high frequency?",
+      goal:"Goal → the corner frequency",
+      world:{"x0":1.5,"x1":5.5,"y0":-0.15,"y1":1.15},
+      pathway:["Equal drops","The corner","1/√2 subtlety","Filters everywhere"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'log₁₀ f', ylab:'V/V_in'});
+    plotCurve(ctx, lf=>{const f=Math.pow(10,lf); const x=1/(2*Math.PI*f*1e-7*1000); return x/Math.sqrt(1+x*x);}, 1.7, 5.4, {color:PURPLE, w:2.5, N:70});
+    plotCurve(ctx, lf=>{const f=Math.pow(10,lf); const x=1/(2*Math.PI*f*1e-7*1000); return 1/Math.sqrt(1+x*x);}, 1.7, 5.4, {color:GOLD, w:2.5, N:70});
+    label(ctx, 1.9,0.93, 'V_C', {fs:11, color:PURPLE});
+    label(ctx, 4.8,0.93, 'V_R', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"A divider with a frequency dial",
+          think:"Same current in R and C: V_R = V_C when what condition holds?",
+          model:"R = X_C = 1/ωC — the reactance equals the resistance.",
+          pose:"talk",
+          say:"A resistor and capacitor in series form a voltage divider whose lower leg changes with FREQUENCY: the capacitor's share shrinks as f grows. The two voltages break even where the reactance equals the resistance — R equals one over omega C. One condition, one landmark frequency.",
+          board:[
+            {tex:"V_R = V_C \\iff R = X_C = \\frac{1}{\\omega C}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The corner",
+          think:"f = 1/2πRC: evaluate.",
+          model:"f = 1.59 kHz — the filter's corner (or crossover) frequency.",
+          pose:"write",
+          say:"Solve: f equals one over two pi R C — one point five nine kilohertz for our kilohm and tenth-microfarad. Engineers call it the CORNER, and specify every filter by it; note it is the RC time constant's reciprocal wearing a two-pi.",
+          board:[
+            {tex:"f_c = \\frac{1}{2\\pi RC} = \\frac{1}{2\\pi(1000)(10^{-7})} = 1.59\\ \\mathrm{kHz}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Each carries 1/√2, not 1/2",
+          think:"At the corner, V_R = V_C — but what fraction of the input is each? Why not half?",
+          model:"Each = V_in/√2 (−3 dB): they are 90° apart and add in quadrature.",
+          pose:"point",
+          say:"A subtlety that separates the initiated: at the corner each element carries not HALF the input but one over root two of it — seventy one percent apiece — because the two voltages stand ninety degrees apart and add as a right triangle, not a sum. Audio engineers name this the minus-three-decibel point; the hypotenuse bookkeeping of AC strikes again.",
+          board:[
+            {tex:"\\text{at } f_c: \\ V_R = V_C = \\frac{V_{\\rm in}}{\\sqrt2}\\ \\text{(quadrature, the −3 dB point)}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Two outputs, two filters",
+          think:"Tap across R vs across C: which passes highs, which lows — and name the household uses.",
+          model:"Across R: high-pass. Across C: low-pass. Tone controls and speaker crossovers are exactly this.",
+          pose:"excited",
+          say:"And the payoff is a two-for-one instrument: tap the output across the RESISTOR and high frequencies pass while lows are eaten by the capacitor's large reactance — a HIGH-pass filter; tap across the CAPACITOR and the roles invert — a LOW-pass. Your amplifier's bass and treble knobs, the crossover network splitting a loudspeaker's woofer from its tweeter, the de-hissing of a phone line: one resistor, one capacitor, and a corner placed with intent.",
+          board:[
+            {label:"The pair", text:"Output on R: high-pass; on C: low-pass; corner at 1/2πRC. Speaker crossovers live here.", kind:"key"},
+            {label:"Reusable method", text:"corner where R = X_C → f_c = 1/2πRC → quadrature: −3 dB each → choose the tap for pass direction", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Series RLC off resonance: voltages that do not add up",
+      problem:"R = 50.0 Ω, L = 0.100 H, C = 10.0 μF in series on 100 V rms at 100 Hz. Find Z, I, φ, and each element's rms voltage.",
+      goal:"Goal → Z, I, φ, all V's",
+      world:{"x0":-1,"x1":6,"y0":-4.2,"y1":3.2},
+      pathway:["Reactances","Z and I","Phase","The scandal","Quadrature audit"],
+      setup(ctx,w){
+    arrow(ctx, 0,0, 2.3,0, {color:GREEN, w:3, label:'V_R', fs:11, at:'mid'});
+    arrow(ctx, 2.3,0, 2.3,2.9, {color:GOLD, w:2.5, label:'V_L', fs:11});
+    arrow(ctx, 2.3,2.9, 2.3,-3.5, {color:PURPLE, w:2.5, label:'V_C', fs:11});
+    arrow(ctx, 0,0, 2.3,-1.55, {color:RED, w:3, label:'V_source', fs:11, at:'mid', side:-1});
+  },
+      steps:[
+        { map:0, title:"Price the reactances",
+          think:"X_L and X_C at 100 Hz: which wins below resonance?",
+          model:"X_L = 62.8 Ω, X_C = 159 Ω: the capacitor dominates — we are below f₀ = 159 Hz.",
+          pose:"talk",
+          say:"At one hundred hertz: the inductor charges sixty two point eight ohms, the capacitor a heavier one fifty nine. The capacitor outweighs — we are BELOW the resonance these two would share at one fifty nine hertz — and the circuit will behave capacitively, a fact the phase will shortly announce.",
+          board:[
+            {tex:"X_L = 62.8\\ \\Omega, \\quad X_C = 159\\ \\Omega\\ \\text{(below resonance: capacitive)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Impedance and current",
+          think:"Z = √(R² + (X_L−X_C)²): note the SUBTRACTION.",
+          model:"Z = √(50² + 96.3²) = 109 Ω; I = 0.921 A.",
+          pose:"write",
+          say:"The two reactances, pulling opposite ways in phase, SUBTRACT before squaring: Z equals root of fifty squared plus minus ninety six point three squared — one hundred nine ohms. Current: one hundred over that — point nine two one amperes through the chain.",
+          board:[
+            {tex:"Z = \\sqrt{R^2+(X_L-X_C)^2} = 109\\ \\Omega; \\quad I = \\frac{100}{109} = 0.921\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The phase verdict",
+          think:"tan φ = (X_L−X_C)/R: sign and meaning?",
+          model:"φ = −62.6°: current LEADS — the capacitive signature (ICE).",
+          pose:"write",
+          say:"Phase: inverse tangent of minus ninety six over fifty — minus sixty two point six degrees, the CURRENT leading the voltage, as capacitor-dominated circuits require. ICE, the mnemonic's other half: I before E in a C circuit.",
+          board:[
+            {tex:"\\phi = \\tan^{-1}\\frac{X_L-X_C}{R} = -62.6^{\\circ}\\ \\text{(current leads)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Voltages that 'exceed' the source",
+          think:"Compute IR, IX_L, IX_C — and sum them arithmetically. Scandal?",
+          model:"V_R = 46.1, V_L = 57.9, V_C = 147 V: 'sum' 251 V from a 100 V source. And V_C alone beats the supply!",
+          pose:"point",
+          say:"Now the voltmeter tour: forty six across the resistor, fifty eight across the coil, and one hundred FORTY SEVEN across the capacitor — from a hundred-volt source! Add them like a DC student: two hundred fifty one volts. Either Kirchhoff has fallen, or these numbers refuse plain addition. And note well the isolated scandal: a series element bearing MORE voltage than the entire supply — routine near resonance, and hard on underrated capacitors.",
+          board:[
+            {tex:"V_R = 46.1, \\ V_L = 57.9, \\ V_C = 147\\ \\mathrm V\\ \\text{— arithmetic sum } 251 \\ne 100!", kind:"warn"}
+          ]
+        },
+        { map:4, title:"Phasors restore the law",
+          think:"V_L and V_C are 180° apart; V_R is 90° from both. Do the quadrature sum.",
+          model:"√(46.1² + (57.9−147)²) = 100 V ✓ — Kirchhoff, in phasor form.",
+          pose:"excited",
+          say:"The reconciliation: these voltages are not simultaneous maxima but phasors — the inductor's and capacitor's stand back-to-back and largely cancel, leaving minus eighty nine, while the resistor's stands at right angles. Root of forty six squared plus eighty nine squared: one hundred volts, to the decimal. Kirchhoff never wavered; he merely speaks vector in AC. Add voltmeter readings by triangle, or not at all.",
+          board:[
+            {tex:"\\sqrt{V_R^2+(V_L-V_C)^2} = \\sqrt{46.1^2+(-89.1)^2} = 100\\ \\mathrm V\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"X's subtract in Z → I = V/Z → element voltages IX each → verify by quadrature, never arithmetic", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Stepping down a distribution line",
+      problem:"A transformer steps 8000 V rms down to 240 V rms for a house drawing 12.0 kW. Find the turns ratio and both currents.",
+      goal:"Goal → N_p/N_s, I_s, I_p",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Turns ratio","Secondary","Primary","The trade"],
+      setup(ctx,w){
+    for(let y=1.5;y<=5.5;y+=0.45){ el('ellipse',{cx:ctx.M.X(4.4),cy:ctx.M.Y(y),rx:16,ry:4,fill:'none',stroke:GOLD,'stroke-width':1.8},ctx.svg); }
+    for(let y=2.3;y<=4.7;y+=0.45){ el('ellipse',{cx:ctx.M.X(6.6),cy:ctx.M.Y(y),rx:16,ry:4,fill:'none',stroke:PURPLE,'stroke-width':1.8},ctx.svg); }
+    el('line',{x1:ctx.M.X(5.5),y1:ctx.M.Y(0.8),x2:ctx.M.X(5.5),y2:ctx.M.Y(6.2),stroke:CHALKC,'stroke-width':5},ctx.svg);
+    label(ctx, 2.6,6.3, 'primary', {fs:10, color:GOLD});
+    label(ctx, 6.9,6.3, 'secondary', {fs:10, color:PURPLE});
+  },
+      steps:[
+        { map:0, title:"Voltage follows turns",
+          think:"Same flux threads every turn: V per turn is common. Ratio?",
+          model:"N_p/N_s = V_p/V_s = 8000/240 = 33.3.",
+          pose:"talk",
+          say:"Inside an ideal transformer one changing flux threads every winding, so each TURN, primary or secondary, receives the same volts. The voltages therefore stand in the ratio of the turn counts: eight thousand to two forty — thirty three and a third primary turns for every secondary turn.",
+          board:[
+            {tex:"\\frac{N_p}{N_s} = \\frac{V_p}{V_s} = \\frac{8000}{240} = 33.3", kind:"answer"}
+          ]
+        },
+        { map:1, title:"The house's current",
+          think:"I_s = P/V_s at 12 kW.",
+          model:"I_s = 50.0 A — thick wire territory.",
+          pose:"write",
+          say:"The household side: twelve kilowatts at two forty volts — fifty amperes, which is why the cable dropping to your meter is as thick as a thumb.",
+          board:[
+            {tex:"I_s = \\frac{P}{V_s} = \\frac{12000}{240} = 50.0\\ \\mathrm A", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The line's current",
+          think:"Ideal: power in = power out. I_p?",
+          model:"I_p = P/V_p = 1.50 A — thin wire, high voltage.",
+          pose:"write",
+          say:"The ideal transformer creates no energy, only re-denominates it: the primary carries the same twelve kilowatts at eight thousand volts — one and a half amperes, manageable by a wire of pencil-lead thinness. Fifty amps in, one and a half out... no: same POWER, traded between volts and amps at the turns ratio.",
+          board:[
+            {tex:"I_p = \\frac{P}{V_p} = \\frac{12000}{8000} = 1.50\\ \\mathrm A\\ \\ (= I_s\\frac{N_s}{N_p}\\checkmark)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Voltage for current: the great trade",
+          think:"Why do the primary and secondary windings LOOK so different? And what efficiency do real units reach?",
+          model:"Thin wire/many turns vs thick wire/few turns. Real: 98–99%; the missing % heats the core.",
+          pose:"excited",
+          say:"Open a transformer and the trade is visible in copper: the high-voltage winding is a gossamer of many thin turns, the low-voltage side a few brutal bars — each sized precisely for its current. Real units run at ninety eight, ninety nine percent efficiency, the shortfall warming the iron core through hysteresis and eddy currents — the hum you hear beneath a substation is that missing one percent, singing at twice the line frequency. The transformer's cheap perfection is the single fact that shaped the entire electric grid, as the final example will total up.",
+          board:[
+            {label:"The trade", text:"V·I conserved: step down 33× in V = step up 33× in I. 98–99% real efficiency; the hum is the loss.", kind:"key"},
+            {label:"Reusable method", text:"V ratio = turns ratio → currents from P/V each side → windings sized to their currents", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Correcting the power factor of a motor",
+      problem:"A motor on 240 V, 60 Hz draws 10.0 A rms at lagging pf 0.700. (a) Find the real power. (b) What parallel capacitance raises the pf to 1.00, and what line current results?",
+      goal:"Goal → P, C, new I",
+      world:{"x0":-1,"x1":9,"y0":-8.5,"y1":2},
+      pathway:["Real power","Split the current","Cancel with C","The payoff"],
+      setup(ctx,w){
+    arrow(ctx, 0,0, 7,0, {color:GREEN, w:3, label:'7.00 A in phase', fs:11, at:'mid'});
+    arrow(ctx, 7,0, 7,-7.14, {color:GOLD, w:2.5, label:'7.14 A lagging', fs:10});
+    arrow(ctx, 0,0, 7,-7.14, {color:RED, w:3, label:'10 A drawn', fs:11, at:'mid', side:-1});
+  },
+      steps:[
+        { map:0, title:"(a) The real power",
+          think:"P = VI cos φ; also find φ.",
+          model:"P = (240)(10)(0.7) = 1.68 kW; φ = 45.6°.",
+          pose:"talk",
+          say:"The motor draws ten amperes, but at a power factor of point seven only that fraction works: P equals two forty times ten times point seven — one point six eight kilowatts of honest shaft-turning power, the current lagging the voltage by forty five point six degrees, as motors' windings — big inductors — make inevitable.",
+          board:[
+            {tex:"P = VI\\cos\\phi = (240)(10.0)(0.700) = 1.68\\ \\mathrm{kW}; \\quad \\phi = 45.6^{\\circ}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Anatomize the ten amperes",
+          think:"Resolve I into in-phase and quadrature parts.",
+          model:"I cos φ = 7.00 A works; I sin φ = 7.14 A merely sloshes, lagging 90°.",
+          pose:"write",
+          say:"Dissect the current: seven amperes flow in phase, doing the work; seven point one four lag a full quarter cycle — pure magnetizing slosh, borrowing energy for the motor's field each half cycle and returning it, occupying the line without pay.",
+          board:[
+            {tex:"I_{\\parallel} = I\\cos\\phi = 7.00\\ \\mathrm A; \\quad I_{\\perp} = I\\sin\\phi = 7.14\\ \\mathrm A\\ \\text{(lagging)}", kind:"key"}
+          ]
+        },
+        { map:2, title:"(b) Hire a capacitor",
+          think:"A parallel C draws leading current. Choose it to cancel 7.14 A.",
+          model:"X_C = 240/7.14 = 33.6 Ω → C = 78.9 μF.",
+          pose:"write",
+          say:"Now the elegant fix: a capacitor across the motor draws current that LEADS by ninety — the exact mirror of the lagging slosh. Size it to draw seven point one four amperes: X C equals two forty over that, thirty three point six ohms — seventy eight point nine microfarads. The two reactive currents now circulate privately between motor and capacitor, an energy pas-de-deux the utility never sees.",
+          board:[
+            {tex:"X_C = \\frac{240}{7.14} = 33.6\\ \\Omega \\Rightarrow C = \\frac{1}{2\\pi(60)(33.6)} = 78.9\\ \\mu\\mathrm F", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The line exhales",
+          think:"What current does the line now carry? What changed for the motor? For the wiring losses?",
+          model:"Line: 7.00 A (was 10). Motor unchanged. I²R supply losses fall by half. Utilities bill for this.",
+          pose:"excited",
+          say:"After the correction: the LINE carries only the working seven amperes — down from ten — while the motor, still receiving its full ten, notices nothing. Real power unchanged, but the supply wiring's I squared R losses fall by HALF, and the utility's transformers breathe easier. This is why industrial plants bristle with capacitor banks and why utilities surcharge poor power factors: reactive current is traffic without freight, and one well-chosen capacitor takes it off the road.",
+          board:[
+            {tex:"I_{\\rm line}: 10.0\\to7.00\\ \\mathrm A; \\ \\ I^2R\\ \\text{supply losses} \\downarrow 51\\%", kind:"key"},
+            {label:"Reusable method", text:"split I by cos/sin φ → parallel C cancels the quadrature part → line carries only the working current", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Average power by integrating v(t)·i(t)",
+      problem:"v = V₀cos ωt, i = I₀cos(ωt − φ). Derive the cycle-average power; evaluate for V₀ = 170 V, I₀ = 3.00 A, φ = 30.0°.",
+      goal:"Goal → P_avg, derived honestly",
+      world:{"x0":-0.2,"x1":6.7,"y0":-1.4,"y1":1.6},
+      pathway:["Expand","Average the pieces","The formula","Limits"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'ωt', ylab:''});
+    plotCurve(ctx, t=>Math.cos(t)*Math.cos(t-0.524), 0, 6.4, {color:GOLD, w:2.5, N:90});
+    dashLine(ctx, 0,0.433, 6.4,0.433, {});
+    label(ctx, 4.6,1.25, 'p(t) = vi', {fs:11, color:GOLD});
+    label(ctx, 0.3,0.6, 'average', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Multiply and expand",
+          think:"Expand i's cosine with the angle-difference identity.",
+          model:"p = V₀I₀[cos²ωt cos φ + cos ωt sin ωt sin φ].",
+          pose:"talk",
+          say:"Instantaneous power is the raw product v times i. Expand the shifted cosine and the product splits into two characters: a cosine-SQUARED term escorted by cosine phi, and a cosine-times-sine term escorted by sine phi. Their cycle averages will decide everything.",
+          board:[
+            {tex:"p(t) = V_0I_0\\left[\\cos^2\\omega t\\cos\\phi + \\cos\\omega t\\sin\\omega t\\sin\\phi\\right]", kind:"key"}
+          ]
+        },
+        { map:1, title:"Average each character",
+          think:"⟨cos²⟩ = ½; ⟨cos·sin⟩ = ⟨½sin 2ωt⟩ = ?",
+          model:"½ and 0: the first term survives, the second — pure reactive slosh — dies.",
+          pose:"write",
+          say:"Over a full cycle: cosine squared averages to one HALF — its old faithful value — while cosine times sine, being half of sine two omega t, averages to ZERO exactly. The second character was the reactive energy, flowing out and back in perfect balance; the average forgets it completely.",
+          board:[
+            {tex:"\\langle\\cos^2\\omega t\\rangle = \\tfrac12; \\quad \\langle\\cos\\omega t\\sin\\omega t\\rangle = 0", kind:"key"}
+          ]
+        },
+        { map:2, title:"The master formula",
+          think:"Assemble, convert to rms, evaluate.",
+          model:"P = ½V₀I₀cos φ = V_rms I_rms cos φ = 221 W.",
+          pose:"write",
+          say:"What survives: one half V nought I nought cosine phi — equivalently rms volts times rms amps times the power factor, the very formula we have been trusting, now derived rather than decreed. Numbers: half of one seventy times three, times cosine thirty — two hundred twenty one watts.",
+          board:[
+            {tex:"P_{\\rm avg} = \\tfrac12V_0I_0\\cos\\phi = \\tfrac12(170)(3.00)\\cos30^{\\circ} = 221\\ \\mathrm W", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Interrogate the limits",
+          think:"φ = ±90°: P = ? φ = 0: where does the ½ (and the √2 of rms) come from?",
+          model:"Pure L or C: exactly zero average. Resistor: ½V₀I₀ — the ½ that made rms = peak/√2.",
+          pose:"excited",
+          say:"And the limits close the circle of the whole tutorial: at phi equal ninety — pure inductor or capacitor — cosine dies and the average power is EXACTLY zero: our earlier claim that reactances never dissipate, now a theorem. At phi zero — the resistor — P is half V nought I nought, and THAT half, pushed inside as two square roots, is precisely where root-two-rms was born. One integral, and every convention of AC power stands accounted for.",
+          board:[
+            {tex:"\\phi = \\pm90^{\\circ}: P = 0\\ \\text{(reactances)}; \\quad \\phi = 0: P = \\tfrac12V_0I_0\\ \\text{(the origin of rms)}", kind:"key"},
+            {label:"Reusable method", text:"expand vi → ⟨cos²⟩ = ½, ⟨cos·sin⟩ = 0 → P = V_rms I_rms cos φ → check both limits", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Why transmission lines run at hundreds of kilovolts",
+      problem:"A plant delivers 100 MW through a line of total resistance 5.00 Ω. Compare the line loss at (a) 500 kV and (b) 50 kV transmission.",
+      goal:"Goal → losses at both voltages",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["I = P/V","500 kV","50 kV","The law","The grid"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(4.5),x2:ctx.M.X(10.5),y2:ctx.M.Y(4.5),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(2.5),x2:ctx.M.X(10.5),y2:ctx.M.Y(2.5),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(5.6),x2:ctx.M.X(1.5),y2:ctx.M.Y(1.4),stroke:'#8a7d60','stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(9.5),y1:ctx.M.Y(5.6),x2:ctx.M.X(9.5),y2:ctx.M.Y(1.4),stroke:'#8a7d60','stroke-width':4},ctx.svg);
+    label(ctx, 4.3,5.6, '5.00 Ω total', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The delivery current",
+          think:"Fixed P: the current the line must carry is set by what?",
+          model:"I = P/V: raise the voltage, and the same megawatts ride on fewer amperes.",
+          pose:"talk",
+          say:"To move a fixed hundred megawatts, the line's current is dictated by the chosen voltage: I equals P over V. The line's RESISTANCE will tax that current as I squared R — so the entire economics of transmission hangs on how few amperes we can get away with.",
+          board:[
+            {tex:"I = \\frac{P}{V}; \\qquad P_{\\rm loss} = I^2R", kind:"key"}
+          ]
+        },
+        { map:1, title:"(a) At half a megavolt",
+          think:"I and loss at 500 kV.",
+          model:"I = 200 A; loss = 0.2 MW — 0.2%.",
+          pose:"write",
+          say:"At five hundred kilovolts: two hundred amperes suffice, and the five ohms collect two hundred squared times five — a fifth of a megawatt. Two tenths of one percent of the cargo, spent on delivery. Excellent freight rates.",
+          board:[
+            {tex:"I = 200\\ \\mathrm A; \\quad P_{\\rm loss} = (200)^2(5.00) = 0.2\\ \\mathrm{MW}\\ (0.2\\%)", kind:"answer"}
+          ]
+        },
+        { map:2, title:"(b) At a tenth the voltage",
+          think:"Same P at 50 kV: I and loss?",
+          model:"I = 2000 A; loss = 20 MW — a fifth of everything.",
+          pose:"write",
+          say:"Drop to fifty kilovolts and the same cargo demands two THOUSAND amperes: loss, two thousand squared times five — TWENTY megawatts, a full fifth of the shipment burned as line heat. Same wire, same power, ruinous freight.",
+          board:[
+            {tex:"I = 2000\\ \\mathrm A; \\quad P_{\\rm loss} = 20\\ \\mathrm{MW}\\ (20\\%)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The quadratic law",
+          think:"Extract the general P_loss(V) formula.",
+          model:"P_loss = P²R/V²: ten times the voltage, one hundred times less loss.",
+          pose:"point",
+          say:"Extract the law: loss equals P squared R over V SQUARED. Tenfold voltage, hundredfold savings — a quadratic bargain no engineering committee could refuse. The only alternative — fattening the conductor a hundredfold — would hang unliftable copper from unaffordable towers.",
+          board:[
+            {tex:"P_{\\rm loss} = \\frac{P^2R}{V^2}\\ \\text{— the } 1/V^2\\ \\text{bargain}", kind:"key"}
+          ]
+        },
+        { map:4, title:"Why AC won the war",
+          think:"What device makes high-V transmission practical — and what did it decide historically?",
+          model:"The transformer changes AC voltage cheaply: hence Tesla/Westinghouse over Edison's DC, and today's 100 kV+ grid.",
+          pose:"excited",
+          say:"And the history sealed by this arithmetic: the one over V squared bargain is redeemable only if voltage can be changed CHEAPLY at each end — stepped up for the long haul, down for the parlour — and the device that does so, the transformer, works on alternating current alone. Thus Tesla and Westinghouse's AC defeated Edison's DC in the war of the currents, and thus every long line on Earth hums at hundreds of kilovolts before your neighbourhood transformer — Example twelve's — hands it back tamed. Our tutorial ends where the power grid begins: with a square in a denominator.",
+          board:[
+            {label:"The verdict", text:"Cheap AC voltage conversion (transformers) unlocks the 1/V² savings: AC won, and the grid runs at 100s of kV.", kind:"key"},
+            {label:"Reusable method", text:"I = P/V → loss = P²R/V² → high V + transformers = the electric grid's founding theorem", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================
