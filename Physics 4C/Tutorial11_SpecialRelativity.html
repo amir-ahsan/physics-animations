@@ -1444,6 +1444,485 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Time dilation at 0.6c",
+  problem:"A clock aboard a ship at 0.600c ticks off 10.0 s. How much elapses on Earth? Which is the proper time?",
+  goal:"Compute γ, identify the proper time correctly, and defuse the symmetry paradox.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["γ first","Who owns proper time","Dilate","Audit: the symmetry"],
+  setup(ctx, w){
+    boxAt(ctx, 2.6, 4.6, 2.6, 1.2, {fill:'none', stroke:GOLD});
+    label(ctx, 2.6, 5.3, 'ship, 0.600c', {fs:11, color:GOLD});
+    arrow(ctx, 4.1, 5.2, 5.6, 5.2, {color:GOLD, w:2});
+    circleAt(ctx, 2.6, 2.0, 0.65, {stroke:BLUE, w:2.5});
+    label(ctx, 2.6, 0.9, 'Earth', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"The factor that runs the chapter", pose:"write",
+      think:"γ = 1/√(1 − v²/c²) at v = 0.6c — a Pythagorean-triple gift.",
+      say:"Every relativity problem begins by computing gamma. At six tenths of c: one over root of one minus zero point three six — one over zero point eight — one point two five. The three-four-five triangle in disguise; examiners love zero point six c for exactly this tidiness.",
+      board:[
+        {label:"Gamma", tex:"\\gamma = \\frac{1}{\\sqrt{1 - 0.36}} = \\frac{1}{0.800} = 1.25", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Who owns the proper time?", pose:"talk",
+      think:"Proper time: both ticks at the same place — in whose frame?",
+      say:"Now the concept that sorts every dilation problem: proper time belongs to the clock that witnesses both events at the same location. The ship's clock ticks its start and its end at the same spot on the ship — the ship owns the proper time, ten seconds. Earth sees those two ticks at different places, and pays the gamma surcharge.",
+      board:[
+        {label:"Proper time", tex:"\\Delta t_0 = 10.0\\ \\text{s (ship: both ticks at one place)}", kind:"key"}
+      ]
+    },
+    { map:2, title:"Dilate", pose:"write",
+      think:"Earth's interval is γ times the proper one.",
+      say:"Earth measures gamma times the proper time: twelve and a half seconds. Moving clocks run slow — the ship's ten seconds stretch to twelve point five on Earth's ledger. The proper time is always the shortest anyone measures.",
+      board:[
+        {label:"Earth time", tex:"\\Delta t = \\gamma\\,\\Delta t_0 = (1.25)(10.0) = 12.5\\ \\text{s}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: but the ship says the same of Earth!", pose:"think",
+      think:"The ship judges Earth's clocks slow too — contradiction?",
+      say:"The audit faces the famous discomfort: from the ship, Earth is the one moving, and Earth's clocks run slow by the same factor. Both statements are true, and no contradiction survives inspection — because the two frames disagree about which distant events are simultaneous, they are never comparing the same pairs of readings. Each is right about its own comparison. And at human speeds? A jetliner's gamma minus one is three and a half parts in ten to the thirteen — thirty nanoseconds a day, measured by flying atomic clocks, confirming all of this to the decimal. Reusable method: compute gamma, award proper time to the same-place clock, multiply outward — and never compare clocks without asking who defines simultaneity.",
+      board:[
+        {label:"Symmetry", tex:"\\text{each frame sees the other's clocks slow — simultaneity differs}", kind:"key"},
+        {label:"Reusable method", text:"γ first; proper time = same-place clock; Δt = γΔt₀. Everyday speeds: γ−1 ≈ ½(v/c)².", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Length contraction of a starship",
+  problem:"A starship is 100 m long in its own frame. How long to an observer it passes at 0.800c? Is its width contracted?",
+  goal:"Divide the proper length by γ — along the motion only — and see what contraction really is.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["γ at 0.8c","Contract the length","Width untouched","Audit: not a squashing"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 4.4, 6.4, 1.3, {fill:'none', stroke:GOLD});
+    label(ctx, 5.0, 6.2, 'rest frame: L₀ = 100 m', {fs:11, color:GOLD});
+    arrow(ctx, 8.6, 5.05, 9.6, 5.05, {color:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"Gamma at four fifths of c", pose:"write",
+      think:"1 − 0.64 = 0.36 — another Pythagorean special.",
+      say:"Zero point eight c: one minus zero point six four is zero point three six, root zero point six — gamma is five thirds, one point six six seven. The other beloved exam speed, courtesy of the same three-four-five triangle.",
+      board:[
+        {label:"Gamma", tex:"\\gamma = \\frac{1}{\\sqrt{1 - 0.64}} = \\frac{1}{0.600} = 1.667", kind:"answer"}
+      ]
+    },
+    { map:1, title:"The moving ship is shorter", pose:"write",
+      think:"Proper length is the rest-frame length; observers divide by γ.",
+      say:"The hundred metres is the proper length — measured in the ship's own frame, where it sits still. The passing observer measures it shorter by gamma: sixty metres. Where time dilated by multiplying, length contracts by dividing; the two effects are the same geometry read along different axes.",
+      board:[
+        {label:"Contracted", tex:"L = \\frac{L_0}{\\gamma} = \\frac{100}{1.667} = 60.0\\ \\text{m}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 5.0, 1.6, 3.85, 1.3, {fill:'none', stroke:BLUE});
+        label(c, 5.0, 0.9, 'observer measures: 60.0 m', {fs:11, color:BLUE});
+        arrow(c, 7.15, 2.25, 8.15, 2.25, {color:BLUE, w:2});
+      }
+    },
+    { map:2, title:"Width and height are exempt", pose:"talk",
+      think:"Contraction acts along which direction only?",
+      say:"Only the dimension along the motion contracts. Width and height cross the velocity at right angles and pass unmolested — perpendicular metre sticks agree between frames, which is in fact the lemma that makes the whole framework consistent. The starship arrives shortened, never thinned.",
+      board:[
+        {label:"Along only", tex:"L_\\parallel = \\frac{L_0}{\\gamma};\\qquad L_\\perp\\ \\text{unchanged}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: no press, no strain", pose:"think",
+      think:"And the crew sees the observer's metre sticks how? What is contraction, really?",
+      say:"The audit removes the last cartoon. The crew feels no squeeze — in their frame the ship is its full hundred metres, and it is the observer's metre sticks that look sixty centimetres long. Symmetric, like the clocks. What contraction really is: measuring a moving object's length means marking both ends simultaneously, and the two frames disagree about which pairs of events are simultaneous — different event pairs, different lengths, no forces anywhere. Geometry of spacetime, not mechanics of matter. Reusable method: proper length lives in the object's rest frame; divide by gamma along the motion only; and trace any 'paradox' back to simultaneity, where it always dissolves.",
+      board:[
+        {label:"The truth", tex:"\\text{contraction = disagreement over simultaneous end-marking}", kind:"key"},
+        {label:"Reusable method", text:"L = L₀/γ, parallel only, symmetric between frames. No physical squashing — no stress, no strain.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Rest energy",
+  problem:"Find the rest energy of (a) an electron in MeV, (b) one gram of matter in joules; compare (b) with burning a gram of gasoline (~4.6×10⁴ J).",
+  goal:"Evaluate mc² twice and calibrate the scale of locked-up energy.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The identity","(a) The electron's 0.511","(b) A gram of anything","Audit: the release ladder"],
+  setup(ctx, w){
+    label(ctx, 5.0, 5.6, 'E₀ = mc²', {fs:20, color:GOLD});
+    circleAt(ctx, 2.6, 2.6, 0.25, {stroke:BLUE, w:2.5});
+    label(ctx, 2.6, 1.7, 'electron', {fs:10, color:DIMC});
+    boxAt(ctx, 7.2, 2.1, 1.2, 1.0, {fill:'none', stroke:CHALKC});
+    label(ctx, 7.2, 1.5, '1 gram', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Mass is frozen energy", pose:"talk",
+      think:"c² is huge — what does that make even tiny masses worth?",
+      say:"Einstein's most quoted line is an exchange rate: every kilogram of mass is c squared joules of energy, banked. And c squared is nine times ten to the sixteen — an exchange rate so extravagant that everyday masses hide astronomical energies. Let us price an electron, then a gram of anything.",
+      board:[
+        {label:"Rest energy", tex:"E_0 = mc^2", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The electron", pose:"write",
+      think:"9.11×10⁻³¹ kg × c² — then convert to MeV.",
+      say:"The electron: nine point one one times ten to the minus thirty-one kilograms, times c squared — eight point two times ten to the minus fourteen joules. In the particle physicist's currency: zero point five one one M e V. Commit that number to permanent memory — it recurs in every quantum and nuclear chapter to come.",
+      board:[
+        {label:"(a) Electron", tex:"E_0 = (9.11\\times10^{-31})(2.998\\times10^{8})^2 = 0.511\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) One gram, priced honestly", pose:"write",
+      think:"10⁻³ kg × 9×10¹⁶ — and set gasoline beside it.",
+      say:"One gram — a paperclip, a raisin: nine times ten to the thirteen joules, a small city's daily consumption. Burning the same gram of gasoline liberates forty-six kilojoules. The ratio: two billion. Chemistry withdraws two parts in ten to the nine of what the mass account holds; the rest sleeps on.",
+      board:[
+        {label:"(b) One gram", tex:"E_0 = (10^{-3})(2.998\\times10^{8})^2 = 9.0\\times10^{13}\\ \\text{J}", kind:"answer"},
+        {label:"Vs gasoline", tex:"\\frac{9.0\\times10^{13}}{4.6\\times10^{4}} \\approx 2\\times10^{9}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the ladder of release", pose:"think",
+      think:"Chemical ~10⁻⁹, nuclear ~10⁻³, annihilation = 1 — of what?",
+      say:"The audit organises the energy economy of the universe on one ladder: what fraction of m c squared each process unlocks. Chemistry, a part in a billion — electrons rearranging in their shells. Nuclear fission and fusion, a part in a thousand — nucleons rearranging in their wells, a million times richer, hence reactors and stars. And only matter meeting antimatter cashes the entire account. Reusable method: E nought equals m c squared prices any mass; compare energy releases as fractions of it, and you know instantly which physics — chemical, nuclear, or annihilative — you are watching.",
+      board:[
+        {label:"The ladder", tex:"\\text{chemical} \\sim 10^{-9};\\ \\text{nuclear} \\sim 10^{-3};\\ \\text{annihilation} = 1", kind:"key"},
+        {label:"Reusable method", text:"0.511 MeV (electron) and 931.5 MeV (per u) are the working units. Fraction of mc² released names the mechanism.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Two ships approaching head-on",
+  problem:"Two ships approach Earth from opposite sides, each at 0.700c relative to Earth. How fast does each measure the other approaching?",
+  goal:"Use the relativistic composition law and reconcile Earth's honest 1.40c closing rate.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Why not 1.4c","Compose properly","The limits behave","Audit: Earth's closing rate is legal"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 3.5, 0.5, {stroke:BLUE, w:2.5});
+    label(ctx, 5.0, 2.5, 'Earth', {fs:11, color:BLUE});
+    boxAt(ctx, 1.4, 3.1, 1.5, 0.8, {fill:'none', stroke:GOLD});
+    arrow(ctx, 2.3, 4.4, 3.4, 4.4, {color:GOLD, w:2, label:'0.7c', fs:10});
+    boxAt(ctx, 8.6, 3.1, 1.5, 0.8, {fill:'none', stroke:GREEN});
+    arrow(ctx, 7.7, 4.4, 6.6, 4.4, {color:GREEN, w:2, label:'0.7c', fs:10, side:1});
+  },
+  steps:[
+    { map:0, title:"The naive sum is illegal", pose:"talk",
+      think:"0.7c + 0.7c = 1.4c — what principle forbids this as a measured speed?",
+      say:"Instinct says each pilot sees the other closing at one point four c. But no object may be measured moving faster than light in any frame — the naive sum must be wrong, and the error is Galilean addition itself, a low-speed approximation we have outgrown. Velocities do not add; they compose.",
+      board:[
+        {label:"Composition law", tex:"u' = \\frac{u + v}{1 + \\dfrac{uv}{c^2}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Compose", pose:"write",
+      think:"u = v = 0.7c: numerator 1.4c, denominator 1.49.",
+      say:"Sit in ship A: Earth streams past at zero point seven c, and ship B moves at zero point seven c relative to Earth, same direction. Compose: one point four c over one plus zero point four nine — zero point nine four c. Fast, ferocious — and legal. The denominator is relativity's customs officer, taxing every sum back below c.",
+      board:[
+        {label:"Result", tex:"u' = \\frac{0.700c + 0.700c}{1 + (0.700)(0.700)} = \\frac{1.40c}{1.49} = 0.940c", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Stress-test the law", pose:"write",
+      think:"Compose c with anything; compose two small speeds — sensible limits?",
+      say:"Interrogate the formula at its frontiers. Let one speed be c itself — light from ship B: the algebra returns exactly c, regardless of the other speed. The second postulate, honoured automatically. Let both speeds be small: the denominator melts to one and Galileo returns, as he must — the old law was the small print of the new one.",
+      board:[
+        {label:"Limits", tex:"u = c \\Rightarrow u' = c;\\qquad uv \\ll c^2 \\Rightarrow u' \\approx u + v", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: and yet Earth says 1.40c", pose:"think",
+      think:"Earth measures the gap shrinking at 1.4c — is Earth wrong?",
+      say:"The audit rehabilitates the naive number. Earth observers watch the gap between the ships shrink at one point four c — and they are perfectly correct. No law is bruised, because that is the rate of change of a distance Earth measures, not the velocity of any single object through Earth's frame. Nothing material moves at one point four c; a gap is not a thing. Distinguishing 'speed of an object in my frame' from 'closing rate I compute between others' resolves half the paradoxes ever posed at dinner parties. Reusable method: compose any object's velocity with the full formula; closing rates between third parties may exceed c freely, carrying neither matter nor message.",
+      board:[
+        {label:"Closing rate", tex:"\\text{Earth's } 1.40c\\ \\text{is a gap-shrink rate — allowed}", kind:"key"},
+        {label:"Reusable method", text:"Objects: compose, never add. Gaps between others: any rate up to 2c, harmlessly. Ask WHOSE measurement it is.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Momentum of a fast proton",
+  problem:"Find the momentum of a proton at 0.900c and compare with the classical mv.",
+  goal:"Compute p = γmv, price the classical shortfall, and see who caught it first.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["γ at 0.9c","The true momentum","The classical deficit","Audit: machines that know"],
+  setup(ctx, w){
+    circleAt(ctx, 2.2, 3.5, 0.28, {stroke:GOLD, w:2.5});
+    arrow(ctx, 2.6, 3.5, 5.6, 3.5, {color:GOLD, w:2.5, label:'0.900c', fs:11});
+    label(ctx, 2.2, 2.5, 'proton', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Gamma steepens", pose:"write",
+      think:"1 − 0.81 = 0.19 — γ is climbing fast now.",
+      say:"Nine tenths of c: one minus zero point eight one, root zero point one nine — gamma is two point two nine. Notice the trend: gamma crawled at low speed, but past ninety per cent of c it climbs a wall. Everything relativistic inherits that wall.",
+      board:[
+        {label:"Gamma", tex:"\\gamma = \\frac{1}{\\sqrt{1 - 0.81}} = 2.29", kind:"answer"}
+      ]
+    },
+    { map:1, title:"The honest momentum", pose:"write",
+      think:"p = γmv — assemble the four factors.",
+      say:"Relativistic momentum is gamma m v: two point two nine times the proton mass times zero point nine c — one point zero four times ten to the minus eighteen kilogram-metres per second. The gamma rides along with the mass, and grows without bound as v creeps toward c: momentum has no ceiling even though speed does.",
+      board:[
+        {label:"Momentum", tex:"p = \\gamma mv = (2.29)(1.673\\times10^{-27})(0.900)(2.998\\times10^{8}) = 1.04\\times10^{-18}\\ \\text{kg·m/s}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Newton's shortfall", pose:"write",
+      think:"mv alone gives 4.5×10⁻¹⁹ — low by what factor exactly?",
+      say:"The classical formula returns four point five times ten to the minus nineteen — low by exactly the factor gamma, two point two nine. Not a small correction to be footnoted: the true momentum is more than double the Newtonian claim, and every further decimal of speed widens the gap.",
+      board:[
+        {label:"Classical", tex:"mv = 4.51\\times10^{-19}\\ \\text{kg·m/s — low by } \\gamma = 2.29", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the accelerators testify", pose:"think",
+      think:"r = p/qB in a magnetic field — what did cyclotrons discover the hard way?",
+      say:"The audit calls the machines as witnesses. In a magnetic field the orbit radius is p over q B — so this proton circles on a track two point two nine times wider than Newton predicts. Early cyclotrons discovered this the hard way: their fixed-frequency kick fell out of step as gamma grew, and the beam died. The cure — ramping the field and frequency to chase gamma — is the synchrotron, and every ring since CERN's first is an engineering monument to gamma m v. Reusable method: momentum is always gamma m v; in fields, radius p over q B diagnoses gamma directly; and when a classical formula fails by a clean factor, that factor is usually gamma itself.",
+      board:[
+        {label:"Testimony", tex:"r = \\frac{p}{qB} = \\gamma\\,r_{\\text{classical}}:\\ \\text{synchrotrons ramp to follow}", kind:"key"},
+        {label:"Reusable method", text:"p = γmv, unbounded as v→c. Magnetic bending measures p, hence γ — accelerators live on this formula.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Speed of a 1 MeV electron",
+  problem:"An electron has kinetic energy 1.00 MeV. Find γ and its speed. What does the classical formula predict?",
+  goal:"Invert K = (γ−1)mc² for γ, then v — and expose the classical absurdity.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["K defines γ","Back out the speed","The classical absurdity","Audit: energy without speed"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.9, y0:1.0, xLab:'v/c', yLab:'K'});
+    plotCurve(ctx, t => [t, 1.0 + 0.55*Math.pow(t-0.9,2)], 0.9, 6.2, {color:DIMC, w:2, dash:'5 4'});
+    plotCurve(ctx, t => [t, 1.0 + 15.5/((9.05-t)) - 15.5/8.15], 0.9, 8.6, {color:GOLD, w:2.5});
+    dashLine(ctx, 8.95, 1.0, 8.95, 6.6, {color:RED});
+    label(ctx, 8.85, 6.9, 'v = c', {fs:10, color:RED});
+    label(ctx, 3.3, 1.6, 'classical', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Kinetic energy names gamma", pose:"write",
+      think:"K = (γ−1)mc² — with K and mc² both in MeV, γ is a one-liner.",
+      say:"Relativistic kinetic energy is gamma minus one, times the rest energy. Work in M e V and the electron's rest energy is our memorised zero point five one one: gamma is one plus one over zero point five one one — two point nine six. The particle carries nearly twice its rest energy as motion.",
+      board:[
+        {label:"Gamma", tex:"\\gamma = 1 + \\frac{K}{mc^2} = 1 + \\frac{1.00}{0.511} = 2.96", kind:"answer", move:"invert K = (γ−1)mc²"}
+      ]
+    },
+    { map:1, title:"From gamma to speed", pose:"write",
+      think:"v/c = √(1 − 1/γ²) — the standard inversion.",
+      say:"Unwind gamma for the speed: v over c is root of one minus one over gamma squared — zero point nine four one. An old television tube, at a casual million volts of accumulated kicks, launched electrons at ninety-four per cent of light speed toward your childhood cartoons.",
+      board:[
+        {label:"Speed", tex:"\\frac{v}{c} = \\sqrt{1 - \\frac{1}{\\gamma^2}} = \\sqrt{1 - \\frac{1}{8.74}} = 0.941", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Newton predicts the impossible", pose:"write",
+      think:"v = √(2K/m) — evaluate and wince.",
+      say:"Feed the same M e V to the classical formula and it answers: one point nine eight c. Faster than light — not inaccurate but absurd, a formula wandering outside its jurisdiction. The border of that jurisdiction is precise: once K rivals m c squared, relativity is mandatory. For electrons that border is half a million volts — laboratory-trivial; for protons, a full G e V.",
+      board:[
+        {label:"Classical", tex:"v = \\sqrt{\\frac{2K}{m}} = 1.98c\\ \\text{✗ nonsense}", kind:"warn"},
+        {label:"The border", tex:"K \\sim mc^2 \\Rightarrow \\text{relativity mandatory}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: pour in energy, gain no speed", pose:"think",
+      think:"Double K to 2 MeV — how much does v rise?",
+      say:"The audit reveals the asymptote's tyranny. Double the kinetic energy to two M e V: gamma jumps to four point nine — but the speed inches from zero point nine four one to zero point nine seven nine c. Every further M e V buys almost no velocity; the energy pours into gamma — into momentum, into inertia — while v presses its face against the ceiling. This is why accelerator physicists quote beams in energy, never in speed: the LHC's protons and a hospital linac's electrons differ by metres per second and by factors of thousands in physics. Reusable method: from K, gamma is one plus K over m c squared; from gamma, the speed; and past gamma of a few, stop thinking in velocity at all.",
+      board:[
+        {label:"Diminishing", tex:"K = 2\\ \\text{MeV}:\\ v = 0.979c\\ \\text{— energy} \\to \\gamma,\\ \\text{not speed}", kind:"key"},
+        {label:"Reusable method", text:"γ = 1 + K/mc², v = c√(1−1/γ²). Near c, energy is the honest coordinate; speed saturates.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Redshift of a receding galaxy",
+  problem:"Hydrogen's 656.3 nm line appears at 700.0 nm in a galaxy's spectrum. Find the recession speed, and the distance via Hubble's law (H₀ = 70 km/s/Mpc).",
+  goal:"Invert the relativistic Doppler formula, then step onto the cosmic distance ladder.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Doppler without a medium","Invert for β","Hubble's ladder","Audit: approximation and symmetry"],
+  setup(ctx, w){
+    circleAt(ctx, 1.8, 3.5, 0.55, {stroke:PURPLE, w:2.5});
+    label(ctx, 1.8, 2.4, 'galaxy', {fs:10, color:DIMC});
+    arrow(ctx, 1.8, 4.3, 1.8, 5.4, {color:PURPLE, w:2, label:'v', fs:10});
+    plotCurve(ctx, t => [2.5 + 5.8*t, 3.5 + 0.3*Math.sin(11*t*(1+0.5*t))], 0, 1, {color:RED, w:2});
+    circleAt(ctx, 8.9, 3.5, 0.3, {stroke:CHALKC, w:2});
+    label(ctx, 8.9, 2.7, 'us', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Doppler, but no air", pose:"talk",
+      think:"Light has no medium — what replaces the sound formulas' two cases?",
+      say:"Sound's Doppler needed two formulas — source moving or observer moving — because the air kept score. Light carries no medium: only the relative velocity exists, and one formula serves all. For recession, the observed wavelength stretches by root of one plus beta over one minus beta — part classical stretching, part time dilation of the emitting atoms themselves.",
+      board:[
+        {label:"Relativistic Doppler", tex:"\\frac{\\lambda_{\\text{obs}}}{\\lambda_0} = \\sqrt{\\frac{1+\\beta}{1-\\beta}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Invert for the speed", pose:"write",
+      think:"With r = λ_obs/λ₀, solve: β = (r²−1)/(r²+1).",
+      say:"Hydrogen's fingerprint, six fifty-six point three, arrives at seven hundred: the ratio r is one point zero six six six. Square it, and beta is r squared minus one over r squared plus one: zero point zero six four four. The galaxy flees at nineteen thousand three hundred kilometres per second — six per cent of light speed, read from a shifted spectral line.",
+      board:[
+        {label:"Invert", tex:"\\beta = \\frac{r^2 - 1}{r^2 + 1} = \\frac{0.1376}{2.1376} = 0.0644", kind:"answer", move:"solve for β"},
+        {label:"Speed", tex:"v = 1.93\\times10^{4}\\ \\text{km/s}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Hubble converts speed to distance", pose:"write",
+      think:"d = v/H₀ — the recession speed doubles as a ruler.",
+      say:"Now the cosmological dividend. Hubble's law: recession speed is proportional to distance, seventy kilometres per second per megaparsec. Divide: two hundred seventy-six megaparsecs — nine hundred million light-years. The light entering the spectrograph tonight left that galaxy before animals crawled onto Earth's land. A wavelength ratio has measured a cosmic distance.",
+      board:[
+        {label:"Distance", tex:"d = \\frac{v}{H_0} = \\frac{19\\,300}{70} = 276\\ \\text{Mpc} \\approx 9\\times10^{8}\\ \\text{ly}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the shortcut's error, the law's symmetry", pose:"think",
+      think:"How good is β ≈ Δλ/λ here? And why is light's Doppler symmetric?",
+      say:"Two audits. Numerically: the low-speed shortcut beta equals delta lambda over lambda gives zero point zero six six six — three per cent high already at six per cent of c; by half of c it is badly wrong, so use the exact form whenever the shift is more than a few per cent. Conceptually: light's formula is symmetric — it cannot matter whether we recede from the galaxy or it from us, because with no medium there is no fact of the matter about who moves. Einstein's first postulate, written into a wavelength. Reusable method: form r, invert for beta exactly, then Hubble for distance — redshift is the astronomer's speedometer and tape measure in one.",
+      board:[
+        {label:"Shortcut error", tex:"\\beta \\approx \\frac{\\Delta\\lambda}{\\lambda_0} = 0.0666\\ \\text{(3\\% high)}", kind:"warn"},
+        {label:"Reusable method", text:"Exact: β = (r²−1)/(r²+1). Only relative velocity exists — the formula is source–observer symmetric.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Range of an energetic muon",
+  problem:"A muon (rest energy 105.7 MeV, proper lifetime 2.20 μs) is made with total energy 1.00 GeV. How far does it travel on average? Explain from the muon's own frame.",
+  goal:"Get γ from energy, compute the range twice — once per frame — and find one invariant fact.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["γ straight from E","Lab: dilated life, long road","Muon: short life, short road","Audit: one fact, two stories"],
+  setup(ctx, w){
+    label(ctx, 5.0, 6.5, 'upper atmosphere', {fs:11, color:DIMC});
+    dashLine(ctx, 0.6, 6.0, 9.4, 6.0, {color:DIMC});
+    ground(ctx, 0.6, 9.4, 0.9);
+    circleAt(ctx, 5.0, 5.5, 0.18, {stroke:GOLD, w:2.5});
+    arrow(ctx, 5.0, 5.2, 5.0, 3.6, {color:GOLD, w:2, label:'μ', fs:12});
+  },
+  steps:[
+    { map:0, title:"Energy hands us gamma", pose:"write",
+      think:"γ = E/mc² — total energy over rest energy, no square roots needed.",
+      say:"When a particle's total energy is given, gamma arrives by pure division: one thousand M e V over one hundred five point seven — nine point four six. And from gamma, the speed: ninety-nine point four per cent of c. The muon is relativistic to its core.",
+      board:[
+        {label:"Gamma", tex:"\\gamma = \\frac{E}{mc^2} = \\frac{1000}{105.7} = 9.46,\\quad v = 0.994c", kind:"answer"}
+      ]
+    },
+    { map:1, title:"The laboratory's story", pose:"write",
+      think:"Lab lifetime γτ, times v — the range.",
+      say:"In the lab, the moving muon's internal clock runs slow: its two point two microseconds stretch to twenty point eight. Travelling at essentially c, it covers six point two kilometres before decaying — versus a mere six hundred sixty metres if Newton kept the books. Time dilation is the difference between dying in the stratosphere and reaching the ground.",
+      board:[
+        {label:"Lab range", tex:"v\\gamma\\tau = (0.994c)(20.8\\ \\mu\\text{s}) = 6.2\\ \\text{km}", kind:"answer"},
+        {label:"Without relativity", tex:"v\\tau = 0.66\\ \\text{km only}", kind:"note"}
+      ]
+    },
+    { map:2, title:"The muon's own story", pose:"talk",
+      think:"The muon's clock reads only 2.20 μs — how does IT explain arriving?",
+      say:"Now interview the muon. Its clock is not slow to itself — it lives its honest two point two microseconds, no more. But in its frame the atmosphere is the thing rushing past at zero point nine nine four c, and that six point two kilometres of air is length-contracted by gamma to six hundred sixty metres — a distance it crosses comfortably in its brief life. Where the lab invokes dilated time, the muon invokes contracted space.",
+      board:[
+        {label:"Muon frame", tex:"\\frac{6.2\\ \\text{km}}{\\gamma} = 0.66\\ \\text{km, crossed in } 2.20\\ \\mu\\text{s}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the invariant at the bottom", pose:"think",
+      think:"The two stories share exactly one claim — which?",
+      say:"The audit distils the deepest lesson in the chapter. Two frames, two mutually alien narratives — slow clock over long road, honest clock over short road — and yet one shared, frame-proof fact: the muon reaches the ground. Events are invariant; the coordinates draping them are negotiable. Cosmic-ray muons pattering through your body right now, several per second, are this calculation running live: sea-level muon counts are among the oldest daily confirmations of relativity. Reusable method: gamma from E over m c squared; range as v gamma tau in the lab or contracted distance over v aboard; and when frames seem to disagree, find the invariant event — they never disagree about that.",
+      board:[
+        {label:"Invariant", tex:"\\text{dilation (lab)} \\equiv \\text{contraction (muon)}:\\ \\text{same arrival}", kind:"key"},
+        {label:"Reusable method", text:"γ = E/mc². Tell the story in both frames as a cross-check — coordinates differ, events agree.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Mass into energy: the Sun and a fission reactor",
+  problem:"(a) The Sun radiates 3.83×10²⁶ W — how much mass does it shed per second? (b) ²³⁵U fission releases ~200 MeV — what fraction of the nuclear mass converts?",
+  goal:"Run E = mc² as a rate equation and as a fraction, and read it as bookkeeping.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The identity as a rate","(a) Four million tonnes","(b) Fission's tithe","Audit: bookkeeping, not alchemy"],
+  setup(ctx, w){
+    circleAt(ctx, 2.6, 4.4, 1.3, {stroke:GOLD, w:3});
+    label(ctx, 2.6, 4.35, 'Sun', {fs:12, color:GOLD});
+    circleAt(ctx, 7.6, 2.2, 0.5, {stroke:GREEN, w:2.5});
+    label(ctx, 7.6, 1.2, 'U-235', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Energy out means mass out", pose:"talk",
+      think:"If E and m are two names for one conserved quantity, radiated power implies what?",
+      say:"Read E equals m c squared not as a recipe but as an identity: energy and mass are two units for a single conserved bookkeeping entry. Whatever energy leaves a system, the corresponding mass leaves with it — divide any power by c squared and you have a mass-loss rate. Let us weigh sunlight.",
+      board:[
+        {label:"Rate form", tex:"\\frac{\\Delta m}{\\Delta t} = \\frac{P}{c^2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Weighing the sunshine", pose:"write",
+      think:"3.83×10²⁶ over 9×10¹⁶ — tonnes upon tonnes.",
+      say:"The Sun's luminosity over c squared: four point three billion kilograms per second. Four million tonnes of Sun, converted to light, every second — and yet audit the lifetime total: over four point six billion years it sums to barely three hundredths of one per cent of the solar mass. Prodigious spending, bottomless account.",
+      board:[
+        {label:"(a) Rate", tex:"\\frac{3.83\\times10^{26}}{(2.998\\times10^{8})^2} = 4.3\\times10^{9}\\ \\text{kg/s}", kind:"answer"},
+        {label:"Lifetime", tex:"\\sim6\\times10^{26}\\ \\text{kg so far} = 0.03\\%\\ M_\\odot", kind:"note"}
+      ]
+    },
+    { map:2, title:"(b) Fission's modest tithe", pose:"write",
+      think:"Rest energy of ²³⁵U ≈ 235 × 931.5 MeV — divide 200 by it.",
+      say:"Uranium's turn. The nucleus's rest energy: two hundred thirty-five times nine thirty-one and a half — about two point two times ten to the five M e V. The fission prize of two hundred M e V is thus nine parts in ten thousand of the mass — less than a tenth of a per cent. The 'vanished' mass is the binding-energy gap between uranium and its fragments, flying off as their kinetic energy. Modest fraction; yet a million times chemistry's, which is the whole story of nuclear power.",
+      board:[
+        {label:"(b) Fraction", tex:"\\frac{200}{(235)(931.5)} = 9.1\\times10^{-4}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: no alchemy anywhere", pose:"think",
+      think:"Does 'converting mass to energy' create anything? Weigh the sealed box.",
+      say:"The audit dissolves a persistent myth. Nothing is 'converted' in the sense of alchemy: seal the fissioning uranium in a perfectly insulated box and the box's weight never changes — the fragments' kinetic energy still has mass, and it is all still inside. Only when heat leaks out does the box lighten, by exactly the leaked energy over c squared. E equals m c squared is a conservation ledger, not a furnace: energy departs, and its mass departs on the same ticket. Reusable method: P over c squared converts any luminosity to mass loss; released energy over total m c squared classifies the mechanism; and when confused, weigh the closed system — it never lies.",
+      board:[
+        {label:"Sealed box", tex:"\\text{insulated box: weight constant — mass leaves only with energy}", kind:"key"},
+        {label:"Reusable method", text:"E and m: one ledger, two units. Δm = E_released/c² for whatever actually escapes the system.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"The invariant interval",
+  problem:"Two lab events: 600 m apart, 3.00 μs between. (a) Compute the interval. (b) Find the frame where they coincide in space, and the time there. (c) Could any frame see them simultaneous?",
+  goal:"Wield the one quantity all observers share, and let it classify what is possible.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The invariant","(a) Timelike","(b) The co-located frame","(c) Simultaneity denied","Audit: causality's ledger"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'x', yLab:'ct'});
+    circleAt(ctx, 2.4, 1.8, 0.12, {stroke:GOLD, w:2.5});
+    label(ctx, 1.8, 1.5, 'E₁', {fs:11, color:GOLD});
+    circleAt(ctx, 5.4, 6.0, 0.12, {stroke:GOLD, w:2.5});
+    label(ctx, 6.1, 6.0, 'E₂', {fs:11, color:GOLD});
+    dashLine(ctx, 1.2, 1.0, 7.4, 6.6, {color:DIMC});
+    label(ctx, 8.3, 6.5, 'light line', {fs:9, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"What everyone agrees on", pose:"talk",
+      think:"Times dilate, lengths contract — does anything survive the frame change intact?",
+      say:"After a chapter of quantities that bend with the observer, meet the one that does not. The spacetime interval — c delta t squared minus delta x squared — comes out identical in every inertial frame, the Pythagorean theorem of spacetime with a crucial minus sign. Frames trade time for space like currencies, but the interval is the gold standard beneath them.",
+      board:[
+        {label:"Invariant interval", tex:"(\\Delta s)^2 = (c\\,\\Delta t)^2 - (\\Delta x)^2\\ \\text{— same in all frames}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Compute and classify", pose:"write",
+      think:"cΔt = 899 m against Δx = 600 m — which wins?",
+      say:"Convert the time to metres: c times three microseconds is eight ninety-nine. Interval squared: eight ninety-nine squared minus six hundred squared — positive, four point four nine times ten to the five square metres. Positive means timelike: the temporal separation dominates, and the events are close enough in space, patient enough in time, that one could have caused the other.",
+      board:[
+        {label:"(a)", tex:"(\\Delta s)^2 = 899^2 - 600^2 = 4.49\\times10^{5}\\ \\text{m}^2 > 0:\\ \\text{timelike}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The frame where they touch", pose:"write",
+      think:"A frame travelling Δx in Δt sees both at one spot — find v, then Δt′.",
+      say:"Timelike events can be brought to the same place: ride a frame covering six hundred metres in three microseconds — two thirds of c. There the interval is pure time, and its square root, six hundred seventy metres of light-travel, is two point two four microseconds: the proper time between the events. Cross-check with the dilation formula — gamma is one point three four two, and three microseconds over gamma is precisely two point two four. The machinery meshes.",
+      board:[
+        {label:"(b) Frame", tex:"v = \\frac{\\Delta x}{\\Delta t} = \\frac{600}{3.00\\ \\mu\\text{s}} = 0.667c", kind:"answer"},
+        {label:"Proper time", tex:"\\Delta t' = \\frac{\\sqrt{4.49\\times10^{5}}}{c} = 2.24\\ \\mu\\text{s} = \\frac{\\Delta t}{\\gamma}\\ \\checkmark", kind:"answer"}
+      ]
+    },
+    { map:3, title:"(c) Simultaneity is forbidden", pose:"write",
+      think:"Simultaneous means Δt′ = 0 — what sign would the interval need?",
+      say:"Could some cleverly moving observer see the events simultaneous? Simultaneity means delta t prime zero, leaving the interval squared negative — but the interval is invariant and ours is stubbornly positive. No frame in the universe sees these events at the same moment, and none can reverse their order. Their sequence is absolute.",
+      board:[
+        {label:"(c)", tex:"\\text{simultaneous} \\Rightarrow (\\Delta s)^2 < 0\\ \\text{✗ — impossible here}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: causality's bookkeeper", pose:"think",
+      think:"Timelike vs spacelike — what does each sign permit and forbid?",
+      say:"The audit crowns the invariant as causality's bookkeeper. Positive — timelike: some frame sees the events co-located, none sees them simultaneous, their order is fixed forever, and cause may flow between them — a signal at two thirds c could carry it here. Negative — spacelike: the mirror image — some frame sees simultaneity, none co-location, the order flips with the observer, and causation is geometrically impossible; no paradox can be built because no influence can bridge them. The sign of one number partitions the universe into what can and cannot touch what. Reusable method: compute c delta t and delta x in the same units, form the interval, and read its sign before any other analysis — it is the question every relativity problem secretly asks.",
+      board:[
+        {label:"The partition", tex:"(\\Delta s)^2 > 0:\\ \\text{order absolute, causation possible};\\ < 0:\\ \\text{order relative, causation impossible}", kind:"key"},
+        {label:"Reusable method", text:"Interval first, always. Timelike → proper time frame exists; spacelike → simultaneity frame exists. Never both.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

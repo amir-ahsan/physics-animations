@@ -1476,6 +1476,503 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Energy ladder of a small box",
+  problem:"An electron sits in an infinite square well 0.200 nm wide. Find its three lowest energy levels.",
+  goal:"Evaluate E₁ = h²/8mL², scale by n², and read the ladder's two signatures.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The quantised box","Ground state","Scale by n²","Audit: no rest, and the L² dial"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.5, 1.0 + 5.4*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [7.5, 1.0 + 5.4*t], 0, 1, {color:CHALKC, w:3});
+    dashLine(ctx, 2.5, 1.0, 7.5, 1.0, {color:DIMC});
+    label(ctx, 5.0, 0.5, 'L = 0.200 nm', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Walls quantise", pose:"talk",
+      think:"The wave must vanish at both walls — the same fitting as a guitar string. What follows for E?",
+      say:"The particle in a box is quantum mechanics' guitar string: the wave function must die at both infinite walls, so only whole half-wavelengths fit, and with wavelength quantised, momentum and energy follow. The allowed energies climb as n squared times a base rung set by the box.",
+      board:[
+        {label:"The ladder", tex:"E_n = \\frac{n^2h^2}{8mL^2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The bottom rung", pose:"write",
+      think:"Assemble h²/8m_eL² at L = 0.2 nm.",
+      say:"Evaluate the base: h squared over eight electron masses times L squared — nine point four zero electron-volts. An atom-sized box charges atomic-scale rent; the formula and the chemistry agree on the price.",
+      board:[
+        {label:"Ground state", tex:"E_1 = \\frac{(6.626\\times10^{-34})^2}{8(9.11\\times10^{-31})(2.00\\times10^{-10})^2} = 9.40\\ \\text{eV}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 2.5, 1.7, 7.5, 1.7, {color:GOLD});
+        label(c, 8.4, 1.7, 'n=1: 9.4', {fs:10, color:GOLD});
+      }
+    },
+    { map:2, title:"Climb by n squared", pose:"write",
+      think:"E₂ = 4E₁, E₃ = 9E₁ — the gaps widen going up.",
+      say:"The upper rungs are multiples: four times and nine times the base — thirty-seven point six and eighty-four point six e V. Notice the ladder's signature: gaps widen as you climb, the opposite of hydrogen's crowding levels. Show me a spectrum's spacing pattern and I will tell you the shape of its confinement.",
+      board:[
+        {label:"Excited", tex:"E_2 = 4E_1 = 37.6\\ \\text{eV},\\qquad E_3 = 9E_1 = 84.6\\ \\text{eV}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 2.5, 3.1, 7.5, 3.1, {color:GREEN});
+        label(c, 8.5, 3.1, 'n=2: 37.6', {fs:10, color:GREEN});
+        dashLine(c, 2.5, 5.5, 7.5, 5.5, {color:PURPLE});
+        label(c, 8.5, 5.5, 'n=3: 84.6', {fs:10, color:PURPLE});
+      }
+    },
+    { map:3, title:"Audit: the floor is not zero", pose:"think",
+      think:"Why can't E = 0? And what does halving L do to every level?",
+      say:"Two audits. First, the profound one: the lowest rung is nine point four e V, not zero — a confined particle can never be at rest, for rest would mean exact position and exact zero momentum together, which Heisenberg forbids; this is the confinement energy of last tutorial, now exact. Second, the engineering dial: L squared sits downstairs, so halving the box quadruples every level — size is the master volume knob of quantum energies. Reusable method: E n equals n squared h squared over eight m L squared; the floor is E one, never zero, and widening gaps as n squared fingerprint the hard-walled box.",
+      board:[
+        {label:"No rest", tex:"E_{\\min} = E_1 > 0\\ \\text{— zero-point energy, Heisenberg enforced}", kind:"key"},
+        {label:"Reusable method", text:"Base rung from h²/8mL², scale by n². L ÷ 2 ⇒ E × 4. Gaps ∝ (2n+1): they widen upward.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Light from a transition",
+  problem:"The electron of Example 7 drops from n = 2 to n = 1. What wavelength is emitted?",
+  goal:"Convert a level gap to a photon and discover the quantum dot's colour dial.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Photons ride the gaps","Compute the line","Audit: tuning by size"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.5, 1.0 + 5.4*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [7.5, 1.0 + 5.4*t], 0, 1, {color:CHALKC, w:3});
+    dashLine(ctx, 2.5, 1.7, 7.5, 1.7, {color:GOLD});
+    label(ctx, 8.3, 1.7, 'n=1', {fs:10, color:GOLD});
+    dashLine(ctx, 2.5, 4.6, 7.5, 4.6, {color:GREEN});
+    label(ctx, 8.3, 4.6, 'n=2', {fs:10, color:GREEN});
+  },
+  steps:[
+    { map:0, title:"Spectra are gap reports", pose:"talk",
+      think:"We never see levels directly — what do we actually observe?",
+      say:"No spectrometer has ever seen an energy level; what we observe are the jumps between them. When the electron drops a rung, the energy difference departs as one photon — h f equals E initial minus E final. Spectra are the ladder's shadow, and reading them backwards is how every level diagram in physics was ever drawn.",
+      board:[
+        {label:"Emission", tex:"hf = E_i - E_f", kind:"key"}
+      ]
+    },
+    { map:1, title:"Price the drop", pose:"write",
+      think:"E₂ − E₁ = 3E₁ — then 1240 over it.",
+      say:"Two to one: the gap is four minus one — three times the base rung, twenty-eight point two e V. The photon: twelve forty over twenty-eight point two — forty-four nanometres, extreme ultraviolet. Our atom-sized box emits well beyond what eyes or glass can handle.",
+      board:[
+        {label:"Gap", tex:"\\Delta E = E_2 - E_1 = 3E_1 = 28.2\\ \\text{eV}", kind:"answer"},
+        {label:"Wavelength", tex:"\\lambda = \\frac{1240}{28.2} = 44.0\\ \\text{nm (extreme UV)}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.0, 4.6, 5.0, 1.8, {color:PURPLE, w:2.5});
+        plotCurve(c, t => [5.3 + 3.2*t, 3.2 + 0.25*Math.sin(16*t)], 0, 1, {color:PURPLE, w:2});
+        label(c, 7.0, 2.4, 'hf = 28.2 eV', {fs:10, color:PURPLE});
+      }
+    },
+    { map:2, title:"Audit: the colour is the size", pose:"think",
+      think:"ΔE ∝ 1/L² — how big a box brings this line into the visible?",
+      say:"The audit turns our toy into a product on store shelves. The gap scales as one over L squared: widen the box from a fifth of a nanometre to a few nanometres and the line slides from deep ultraviolet into the visible. That is exactly a semiconductor quantum dot — a crystal a few nanometres across whose glow colour is chosen by its diameter at manufacture: big dots red, small dots blue, pure particle-in-a-box economics lighting your television screen. Reusable method: gaps, not levels, make light; twelve forty converts; and one over L squared is the tuning dial nature and industry both use.",
+      board:[
+        {label:"Quantum dots", tex:"\\Delta E \\propto \\frac{1}{L^2}:\\ \\text{size} \\to \\text{colour — QLED displays}", kind:"key"},
+        {label:"Reusable method", text:"λ = 1240/ΔE(eV). Levels are inferred, transitions observed. Bigger box, redder light.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Normalizing the ground-state wave function",
+  problem:"The ground state is ψ = A sin(πx/L) on 0 ≤ x ≤ L. Find A, and the probability of the left half of the well.",
+  goal:"Impose total probability one, then let symmetry answer before calculus can.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Probability must total one","Fix A","Left half by symmetry","Audit: symmetry first, always"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.0, 1.2 + 5.0*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [8.0, 1.2 + 5.0*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [t, 1.2 + 3.6*Math.sin(Math.PI*(t-2.0)/6.0)], 2.0, 8.0, {color:GOLD, w:2.5});
+    label(ctx, 5.0, 5.6, 'ψ = A sin(πx/L)', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"The wave function's contract", pose:"talk",
+      think:"|ψ|² is probability density — what must its total integral be?",
+      say:"Born's rule gives the wave function its meaning: psi squared is probability density, and the particle must certainly be somewhere in the box, so the integral of psi squared over the well equals exactly one. That contract — normalisation — is what pins the amplitude A, which the Schrödinger equation alone leaves free.",
+      board:[
+        {label:"Normalisation", tex:"\\int_0^L |\\psi|^2\\,dx = 1", kind:"key"}
+      ]
+    },
+    { map:1, title:"Fix the amplitude", pose:"write",
+      think:"The average of sin² over whole half-periods is ½ — no integral table needed.",
+      say:"The integral of sine squared across the well needs no table: over complete half-periods, sine squared averages one half, so the integral is L over two. A squared times L over two equals one: A is root two over L. Every infinite-well state, any n, carries this same amplitude — the average-of-a-half argument never cares how many humps.",
+      board:[
+        {label:"Amplitude", tex:"A^2\\frac{L}{2} = 1 \\Rightarrow A = \\sqrt{\\frac{2}{L}}", kind:"answer", move:"⟨sin²⟩ = ½"}
+      ]
+    },
+    { map:2, title:"The left half, without integrating", pose:"write",
+      think:"|ψ|² is mirror-symmetric about the centre — split the total.",
+      say:"Now the left-half probability — and hold your pencil. The density sine squared is perfectly mirror-symmetric about the centre of the well: left and right halves must carry equal shares of the total one. The answer is one half, exactly, by inspection. The integral would have cost five minutes and delivered the same number.",
+      board:[
+        {label:"Left half", tex:"|\\psi|^2\\ \\text{symmetric about } \\tfrac{L}{2} \\Rightarrow P = \\tfrac{1}{2}\\ \\text{exactly}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 5.0, 1.2, 5.0, 5.3, {color:DIMC});
+        label(c, 3.4, 1.7, 'P = ½', {fs:12, color:GREEN});
+        label(c, 6.6, 1.7, 'P = ½', {fs:12, color:GREEN});
+      }
+    },
+    { map:3, title:"Audit: the tool hierarchy", pose:"think",
+      think:"When symmetry can't answer — asymmetric intervals — what's the next tool?",
+      say:"The audit files the tools in order of reach. First tool: symmetry — instant, exact, and immune to algebra slips; it settled today's question outright. Second tool: the honest integral with the half-angle identity — required the moment the interval breaks the symmetry, as the very next example's middle third will. Reaching for calculus before checking symmetry is the amateur's tell. Reusable method: normalise with the sine-squared-averages-to-half shortcut, giving root two over L for every well state; then interrogate each probability interval for symmetry before integrating anything.",
+      board:[
+        {label:"Hierarchy", tex:"\\text{1: symmetry (exact, free)};\\quad \\text{2: } \\sin^2 = \\tfrac{1-\\cos}{2}\\ \\text{integral}", kind:"key"},
+        {label:"Reusable method", text:"A = √(2/L) for all n. Symmetric interval ⇒ read off the fraction; else integrate — next example does.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Probability in the middle third",
+  problem:"For the ground state, find the probability of L/3 ≤ x ≤ 2L/3, and compare with the classical answer.",
+  goal:"Do the honest integral, then watch quantum pile up where classical spreads flat.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["No symmetry shortcut now","The integral","61% vs 33%","Audit: the classical limit returns"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.0, 1.2 + 5.0*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [8.0, 1.2 + 5.0*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [t, 1.2 + 3.3*Math.pow(Math.sin(Math.PI*(t-2.0)/6.0),2)], 2.0, 8.0, {color:GOLD, w:2.5});
+    dashLine(ctx, 4.0, 1.2, 4.0, 5.2, {color:DIMC});
+    dashLine(ctx, 6.0, 1.2, 6.0, 5.2, {color:DIMC});
+    label(ctx, 5.0, 5.9, '|ψ|², middle third shaded', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"This time we must integrate", pose:"talk",
+      think:"The middle third IS symmetric about L/2 — so why isn't the answer ⅓?",
+      say:"The middle third is symmetric about the centre — but symmetry only tells us the outer thirds match each other; it cannot say how much the peaked middle claims. When symmetry runs dry, the half-angle identity opens the sine-squared integral: sine squared u is one minus cosine two u, over two. To work.",
+      board:[
+        {label:"The tool", tex:"\\sin^2 u = \\frac{1 - \\cos 2u}{2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Run the integral", pose:"write",
+      think:"Antiderivative: x/L − sin(2πx/L)/2π, evaluated at the thirds.",
+      say:"With normalisation two over L in front, the antiderivative is x over L minus sine of two pi x over L, over two pi. At the limits: the straight piece gives one third, and the sine terms — at two-thirds pi and four-thirds pi — conspire into root three over two pi. Total: zero point six zero nine.",
+      board:[
+        {label:"Integral", tex:"P = \\left[\\frac{x}{L} - \\frac{1}{2\\pi}\\sin\\frac{2\\pi x}{L}\\right]_{L/3}^{2L/3} = \\frac{1}{3} + \\frac{\\sqrt{3}}{2\\pi}", kind:"key"},
+        {label:"Value", tex:"P = 0.609", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Sixty-one against thirty-three", pose:"write",
+      think:"What would a classical bouncing particle give for the same interval?",
+      say:"Now the comparison that gives the number teeth. A classical particle bouncing wall to wall at constant speed spends equal time everywhere: the middle third gets exactly one third. Our quantum ground state concentrates sixty-one per cent there — nearly double — because psi squared crests at the centre and dies toward the walls. Where the thing is depends on which mechanics you ask.",
+      board:[
+        {label:"Face-off", tex:"P_{\\text{quantum}} = 0.609\\quad \\text{vs}\\quad P_{\\text{classical}} = 0.333", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: crank n and watch Newton return", pose:"think",
+      think:"At n = 50, |ψ|² has fifty humps in the interval — what does the average do?",
+      say:"The audit asks where the disagreement goes as we climb the ladder. At large n the density becomes a rapid flutter of many narrow humps; any interval wide enough to hold several averages them to one half, and the probability of the middle third slides back to one third — the classical answer, recovered from within quantum mechanics. Bohr's correspondence principle again: the old physics is the smoothed limit of the new. Reusable method: half-angle identity for any sine-squared stretch; benchmark against the classical uniform density; and expect the two to reconcile as n grows.",
+      board:[
+        {label:"Correspondence", tex:"n \\gg 1:\\ \\langle\\sin^2\\rangle \\to \\tfrac{1}{2} \\Rightarrow P \\to \\tfrac{1}{3}\\ \\text{(classical)}", kind:"key"},
+        {label:"Reusable method", text:"P = ∫(2/L)sin² dx via half-angle. Ground states bulge centrally; high states flatten to classical uniformity.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Vibrational quantum of carbon monoxide",
+  problem:"CO vibrates at f = 6.42×10¹³ Hz. Find the level spacing, the zero-point energy, and the 0→1 absorption wavelength.",
+  goal:"Meet the harmonic oscillator's even ladder and its working consequences.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The even ladder","Spacing and zero-point","The infrared line","Audit: why all CO sits at n = 0"],
+  setup(ctx, w){
+    circleAt(ctx, 3.4, 3.0, 0.45, {stroke:GOLD, w:2.5});
+    label(ctx, 3.4, 3.0, 'C', {fs:12, color:GOLD});
+    circleAt(ctx, 6.6, 3.0, 0.5, {stroke:BLUE, w:2.5});
+    label(ctx, 6.6, 3.0, 'O', {fs:12, color:BLUE});
+    plotCurve(ctx, t => [3.85 + 2.25*t, 3.0 + 0.16*Math.sin(22*t)], 0, 1, {color:CHALKC, w:1.5});
+    arrow(ctx, 3.4, 4.0, 2.8, 4.0, {color:DIMC, w:1.5});
+    arrow(ctx, 6.6, 4.0, 7.2, 4.0, {color:DIMC, w:1.5});
+  },
+  steps:[
+    { map:0, title:"A spring between atoms", pose:"talk",
+      think:"The bond is a spring — what does quantum mechanics do to its oscillator?",
+      say:"The carbon–oxygen bond is a stiff little spring, and the molecule a mass on it, humming at sixty-four terahertz. Quantised, the harmonic oscillator yields the second great ladder of this course: E n equals n plus one half, times h-bar omega. Mark the contrast with the box — these rungs are evenly spaced, every gap identical.",
+      board:[
+        {label:"Oscillator ladder", tex:"E_n = \\left(n + \\tfrac{1}{2}\\right)\\hbar\\omega\\ \\text{— even rungs}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Spacing, and the restless floor", pose:"write",
+      think:"ħω from 2πf; the floor is half a rung up.",
+      say:"Omega is two pi f; h-bar omega comes to zero point two six six e V — the universal gap of this ladder. And the floor: half a quantum, zero point one three three e V, present even at absolute zero. Cool CO to the last microkelvin and the bond still trembles — zero-point motion, Heisenberg's tax on any particle held in a potential's grip.",
+      board:[
+        {label:"Spacing", tex:"\\hbar\\omega = (1.055\\times10^{-34})(4.03\\times10^{14}) = 0.266\\ \\text{eV}", kind:"answer"},
+        {label:"Zero point", tex:"E_0 = \\tfrac{1}{2}\\hbar\\omega = 0.133\\ \\text{eV — motion at } T = 0", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The molecule's infrared signature", pose:"write",
+      think:"1240 over 0.266 — where in the spectrum does CO absorb?",
+      say:"The zero-to-one absorption: twelve forty over zero point two six six — four point six seven microns, mid-infrared. That single line is carbon monoxide's fingerprint across the universe: astronomers map interstellar clouds by it, and the sensor in your garage sniffs exhaust with it. One spring constant, read at interstellar and domestic range alike.",
+      board:[
+        {label:"Absorption", tex:"\\lambda = \\frac{1240}{0.266} = 4.67\\ \\mu\\text{m (infrared)}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: a cold ladder in a warm room", pose:"think",
+      think:"Compare ħω with k_BT at 300 K — where does the population sit?",
+      say:"The audit joins this ladder to thermodynamics. Room temperature's thermal coin, k B T, is about one fortieth of an e V — our rung costs ten of those. The Boltzmann factor, e to the minus ten, is a hundredth of a per cent: virtually every CO molecule in this room sits on the ground rung, its vibration frozen out. There is the resolution of the kinetic-theory staircase — diatomic heat capacities miss the vibrational contribution at three hundred kelvin for precisely this reason. Reusable method: h-bar omega prices the rung, twelve forty places the line, and the ratio h-bar omega to k B T decides whether the mode is alive or frozen.",
+      board:[
+        {label:"Frozen", tex:"\\frac{\\hbar\\omega}{k_BT} \\approx 10 \\Rightarrow e^{-10}:\\ \\text{all in } n = 0", kind:"key"},
+        {label:"Reusable method", text:"Even rungs ħω; floor at ħω/2. Mode active only when k_BT ≳ ħω — the quantum root of C_V's staircase.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"The correspondence principle: a bead in a groove",
+  problem:"A 1.00 g bead slides at 1.00 cm/s in a 1.00 cm closed groove. Find its quantum number n and the fractional level spacing.",
+  goal:"Apply box quantisation to a macroscopic object and watch the ladder dissolve.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Quantum laws, kitchen object","n = 3×10²⁶","The vanishing rungs","Audit: why Newton never noticed"],
+  setup(ctx, w){
+    ground(ctx, 1.4, 8.6, 2.6);
+    plotCurve(ctx, t => [1.4, 2.6 + 1.2*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [8.6, 2.6 + 1.2*t], 0, 1, {color:CHALKC, w:2.5});
+    circleAt(ctx, 4.2, 3.1, 0.4, {stroke:GOLD, w:2.5});
+    arrow(ctx, 4.7, 3.1, 6.2, 3.1, {color:GOLD, w:2, label:'1 cm/s', fs:10});
+  },
+  steps:[
+    { map:0, title:"No object is excused", pose:"talk",
+      think:"The box formula applies to anything confined — so apply it to a bead.",
+      say:"Quantum mechanics writes no exemptions: the bead in its groove is a particle in a box, subject to the same E n as the electron. The fun is in the numbers. We know the bead's energy — half m v squared — so let us ask which rung of its ladder it occupies.",
+      board:[
+        {label:"Setup", tex:"E_n = \\frac{n^2h^2}{8mL^2} = \\frac{1}{2}mv^2", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve for the rung number", pose:"write",
+      think:"n = 2mvL/h — milligrams and centimetres against 10⁻³⁴.",
+      say:"Solve: n equals two m v L over h. Grams, centimetres per second, centimetres — against Planck's ten to the minus thirty-four. The quotient: three times ten to the twenty-six. The bead sits on rung number three hundred trillion trillion. Perfectly quantised, absurdly high.",
+      board:[
+        {label:"Quantum number", tex:"n = \\frac{2mvL}{h} = \\frac{2(10^{-3})(10^{-2})(10^{-2})}{6.626\\times10^{-34}} = 3.0\\times10^{26}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Measure the rung gaps", pose:"write",
+      think:"ΔE/E = (2n+1)/n² ≈ 2/n — evaluate at n = 3×10²⁶.",
+      say:"Adjacent rungs differ fractionally by two over n: seven parts in ten to the twenty-seven. No thermometer, interferometer, or conceivable instrument resolves such a hair — the ladder is, for every purpose, a continuous ramp. The bead's wavelength tells the same story: ten to the minus twenty-nine metres, laughably beyond detection.",
+      board:[
+        {label:"Spacing", tex:"\\frac{\\Delta E}{E} \\approx \\frac{2}{n} = 7\\times10^{-27}\\ \\text{— continuum in practice}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: Newton as a limiting case", pose:"think",
+      think:"Same laws, different n — what makes classical physics 'true'?",
+      say:"The audit states the correspondence principle in its cleanest form. Nothing about the bead escapes quantum law — it obeys the identical formula as the electron in Example seven. But at n of ten to the twenty-six, discreteness smooths into continuity, wavelengths shrink below all meaning, and the quantum equations reproduce Newton's answers to more decimal places than reality can check. Classical mechanics is not overthrown; it is quantum mechanics viewed from the top of a very tall ladder. Reusable method: compute n for any confined object via two m v L over h — n near one demands the full quantum treatment; n astronomical certifies the classical shortcut, with two over n as your error bar.",
+      board:[
+        {label:"Correspondence", tex:"n \\to \\infty:\\ \\text{quantum} \\to \\text{classical, seamlessly}", kind:"key"},
+        {label:"Reusable method", text:"n = 2mvL/h is the quantum-classical gauge: n ~ 1 quantum; n ≫ 1 Newton, accurate to ~2/n.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"How far does a bound electron leak into the wall?",
+  problem:"An electron of 2.00 eV is bound in a 5.00 eV-deep finite well. Find the decay constant κ and penetration depth 1/κ, and the effect on the levels.",
+  goal:"Solve the forbidden region's exponential and read its consequences for real wells.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The forbidden region","Compute κ","An atomic-scale leak","Audit: levels sink, states swell"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [3.0, 1.4 + 3.4*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [7.0, 1.4 + 3.4*t], 0, 1, {color:CHALKC, w:2.5});
+    dashLine(ctx, 0.8, 4.8, 3.0, 4.8, {color:CHALKC});
+    dashLine(ctx, 7.0, 4.8, 9.2, 4.8, {color:CHALKC});
+    dashLine(ctx, 3.0, 2.6, 7.0, 2.6, {color:GOLD});
+    label(ctx, 5.0, 2.1, 'E = 2.00 eV', {fs:10, color:GOLD});
+    label(ctx, 8.2, 5.4, 'U₀ = 5.00 eV', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Beyond the classical fence", pose:"talk",
+      think:"Outside, E < U₀ — classically off-limits. What does Schrödinger's equation do there?",
+      say:"Classically, our two-e V electron can never stand where the potential charges five — the wall is absolute. Schrödinger's equation is gentler: in the forbidden region it reads psi double prime equals kappa squared psi, whose bounded solution is a dying exponential. The wave function does not stop at the wall; it fades into it.",
+      board:[
+        {label:"Forbidden region", tex:"\\psi'' = \\kappa^2\\psi \\Rightarrow \\psi \\propto e^{-\\kappa x}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Compute the fade rate", pose:"write",
+      think:"κ from the energy deficit U₀ − E = 3 eV.",
+      say:"Kappa is set by the deficit — how far below the barrier the electron sits: root of two m times three e V, over h-bar. Nine ish times ten to the nine per metre. Its reciprocal, the penetration depth, is zero point one one three nanometres — the distance over which the presence fades by a factor e.",
+      board:[
+        {label:"Decay constant", tex:"\\kappa = \\frac{\\sqrt{2m_e(U_0 - E)}}{\\hbar} = 8.87\\times10^{9}\\ \\text{m}^{-1}", kind:"answer"},
+        {label:"Depth", tex:"\\frac{1}{\\kappa} = 0.113\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"An atom-deep haunting", pose:"write",
+      think:"0.113 nm compared with an atomic diameter — the leak is not negligible.",
+      say:"Pause on the scale: the electron maintains real, measurable probability a full atomic diameter inside the classically impossible zone. Not a mathematical courtesy — scanning tunnelling microscopes harvest exactly these spilled tails to image surfaces atom by atom. The forbidden region is merely expensive, not closed.",
+      board:[
+        {label:"Scale", tex:"\\frac{1}{\\kappa} \\approx \\text{one atomic diameter of trespass}", kind:"key"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 2.6 + 1.1*Math.sin(Math.PI*(t-3.0)/4.0)], 3.0, 7.0, {color:BLUE, w:2.5});
+        plotCurve(c, t => [t, 2.6 + 1.1*Math.exp(-(t-7.0)/0.45)*0.0 + 1.1*Math.exp(-(t-7.0)*2.2)*(t>7.0?1:0)], 7.0, 9.0, {color:RED, w:2});
+        plotCurve(c, t => [t, 2.6 + 1.1*Math.exp((t-3.0)*2.2)], 1.2, 3.0, {color:RED, w:2});
+        label(c, 8.3, 3.6, 'e^(−κx) tail', {fs:10, color:RED});
+      }
+    },
+    { map:3, title:"Audit: what the leak does to the ladder", pose:"think",
+      think:"Spilling makes the well 'effectively wider' — so each E_n moves which way? And as binding weakens?",
+      say:"Two consequences for the audit. First, the levels: the spilling tails give the wave function extra elbow room — an effectively wider well — and since energies run inversely with width squared, every level sits lower than its infinite-well counterpart. Second, the trend: as the deficit U nought minus E shrinks, kappa falls and the tail stretches — weakly bound states balloon into diffuse halos, which is why an atom's outermost electron and the barely bound deuteron sprawl so far beyond their nominal radii. Reusable method: kappa from the energy deficit; one over kappa gauges the trespass; finite walls always lower levels; and the shallower the binding, the larger the state.",
+      board:[
+        {label:"Levels sink", tex:"\\text{effective } L\\uparrow \\Rightarrow E_n\\ \\text{below infinite-well values}", kind:"key"},
+        {label:"Reusable method", text:"κ = √(2mΔU)/ħ; tail length 1/κ ∝ 1/√deficit. Loosely bound = spatially huge. STM reads these tails.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Tunneling probability through a barrier",
+  problem:"A 5.00 eV electron meets a 10.0 eV barrier. Estimate T ≈ e^(−2κL) for widths 0.500 nm and 1.00 nm.",
+  goal:"Price two barrier widths and grasp the exponential's savage sensitivity.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Through, not over","κ for this barrier","Two widths, five orders","Audit: STM and alpha decay"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.4, 1.8, 3.8, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 5.7, 'U₀ = 10 eV', {fs:10, color:DIMC});
+    arrow(ctx, 0.7, 2.6, 3.9, 2.6, {color:GOLD, w:2.5, label:'E = 5 eV', fs:10});
+    arrow(ctx, 6.1, 2.6, 9.3, 2.6, {color:GOLD, w:1.5, dash:'5 4'});
+  },
+  steps:[
+    { map:0, title:"The wall that isn't", pose:"talk",
+      think:"The tail e^(−κx) reaches the far side of a thin barrier — then what?",
+      say:"Last example's dying tail becomes this example's escape route: if the barrier is thin enough, the exponential reaches the far side still alive, and there the wave resumes free oscillation — the particle has tunnelled. The transmission probability is governed by e to the minus two kappa L: the tail's squared remnant after the crossing.",
+      board:[
+        {label:"Tunneling", tex:"T \\approx e^{-2\\kappa L}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Kappa for this barrier", pose:"write",
+      think:"Deficit U₀ − E = 5 eV — assemble κ.",
+      say:"The deficit is five e V: kappa comes to one point one five times ten to the ten per metre. Every nanometre of barrier costs the exponent twenty-three — keep that exchange rate in mind as we price the two widths.",
+      board:[
+        {label:"Decay constant", tex:"\\kappa = \\frac{\\sqrt{2m_e(5.00\\ \\text{eV})}}{\\hbar} = 1.15\\times10^{10}\\ \\text{m}^{-1}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Two widths, five orders apart", pose:"write",
+      think:"2κL = 11.5 then 22.9 — exponentiate both.",
+      say:"Half a nanometre: exponent eleven and a half — transmission one in ninety thousand. Double to a full nanometre: exponent twenty-three — one in ten billion. Doubling the wall multiplied the opacity a hundred-thousand-fold. No classical quantity responds to geometry with such violence; this is the exponential at full fury.",
+      board:[
+        {label:"0.500 nm", tex:"T \\approx e^{-11.5} = 1.1\\times10^{-5}", kind:"answer"},
+        {label:"1.00 nm", tex:"T \\approx e^{-22.9} = 1.1\\times10^{-10}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: sensitivity as a career", pose:"think",
+      think:"What instruments and phenomena are BUILT on this hair-trigger dependence?",
+      say:"The audit turns the fury into employment. The scanning tunnelling microscope parks a needle an atom's breadth above a surface and reads the tunnelling current: because T swings an order of magnitude per ångström of gap, the needle senses single-atom bumps — the exponential is the magnifying glass. And ahead in nuclear physics: alpha particles tunnel out of nuclei through Coulomb barriers, where modest variations in barrier size swing half-lives across thirty orders of magnitude, from microseconds to aeons — same exponent, cosmic stakes. A prefactor of order unity — here about four — never competes with e to the minus twenty. Reusable method: kappa from the deficit, T as e to the minus two kappa L, and whenever data spans absurd ranges, suspect an exponent linear in some modest parameter.",
+      board:[
+        {label:"Employment", tex:"\\text{STM: atomic relief};\\quad \\alpha\\text{-decay: } 10^{30}\\ \\text{range of half-lives}", kind:"key"},
+        {label:"Reusable method", text:"T ≈ e^(−2κL); each 1/κ of width costs e². Exponential sensitivity IS the instrument.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A particle in a cubic box: degeneracy",
+  problem:"An electron in a 1.00 nm cube: write the levels, find the ground and first excited energies, and count the states sharing the excited level.",
+  goal:"Separate the box into three quantum numbers and meet degeneracy born of symmetry.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Three numbers, energies add","Ground state","First excited: three ways","Audit: symmetry broken, levels split"],
+  setup(ctx, w){
+    boxAt(ctx, 4.2, 1.6, 3.2, 3.2, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 2.6, 4.8, 3.7, 5.9, {color:DIMC});
+    dashLine(ctx, 5.8, 4.8, 6.9, 5.9, {color:DIMC});
+    dashLine(ctx, 3.7, 5.9, 6.9, 5.9, {color:DIMC});
+    dashLine(ctx, 5.8, 1.6, 6.9, 2.7, {color:DIMC});
+    dashLine(ctx, 6.9, 2.7, 6.9, 5.9, {color:DIMC});
+    label(ctx, 4.2, 0.9, 'cube, L = 1.00 nm', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Three directions, three numbers", pose:"talk",
+      think:"The wave separates into x, y, z factors — what do the energies do?",
+      say:"In three dimensions the box problem falls apart — in the best sense: the wave function factors into an x wave, a y wave, and a z wave, each with its own quantum number, and the energies simply add. One base unit, h squared over eight m L squared — here zero point three seven six e V — multiplied by the sum of three squares.",
+      board:[
+        {label:"3D box", tex:"E = \\frac{h^2}{8m_eL^2}\\left(n_1^2 + n_2^2 + n_3^2\\right),\\quad \\frac{h^2}{8m_eL^2} = 0.376\\ \\text{eV}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The unique ground floor", pose:"write",
+      think:"(1,1,1): sum of squares = 3 — how many ways to write it?",
+      say:"The ground state takes the minimum in each direction: one, one, one — sum of squares three, energy one point one three e V. And only one wave function achieves it: the ground floor is single occupancy.",
+      board:[
+        {label:"Ground", tex:"(1,1,1):\\ E = 3(0.376) = 1.13\\ \\text{eV — unique}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The first excited: a three-way tie", pose:"write",
+      think:"Promote ONE axis to 2: (2,1,1), (1,2,1), (1,1,2) — same sum of squares.",
+      say:"To excite, promote one direction to two: sum of squares six, energy two point two six e V. But which direction? The cube does not care — x, y, and z are indistinguishable — so three genuinely different wave functions, humping along three different axes, share one identical energy. That is degeneracy: distinct states, one price, bought by symmetry.",
+      board:[
+        {label:"First excited", tex:"(2,1,1),\\ (1,2,1),\\ (1,1,2):\\ E = 6(0.376) = 2.26\\ \\text{eV}", kind:"answer"},
+        {label:"Degeneracy", tex:"g = 3\\ \\text{— the cube's three axes are twins}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: break the symmetry, split the tie", pose:"think",
+      think:"Stretch one edge of the box slightly — what happens to the threefold level?",
+      say:"The audit performs the diagnostic experiment of all spectroscopy. Stretch the box along z by a hair: the z-excited state cheapens — bigger L, lower cost — while its two siblings hold price, and the single threefold level splits into resolved lines. Degeneracy is symmetry's signature, and its splitting is symmetry's obituary: exactly this logic underlies the p x, p y, p z orbitals of atoms and the Zeeman splitting of spectral lines in a magnetic field, where the field plays the role of the stretch. Count the split lines, and you have counted the hidden states. Reusable method: separable potentials give additive energies over quantum-number triples; tally degeneracies by counting permutations of the squares; and read any level-splitting as a symmetry being broken.",
+      board:[
+        {label:"The diagnostic", tex:"\\text{stretch } z:\\ (1,1,2)\\ \\text{drops — one line becomes two}", kind:"key"},
+        {label:"Reusable method", text:"E ∝ n₁²+n₂²+n₃²; degeneracy = permutation count. Splitting patterns reveal broken symmetries — Zeeman's trick.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A quantum state that moves: superposing two levels",
+  problem:"In the 0.200 nm well, Ψ = (ψ₁e^(−iE₁t/ħ) + ψ₂e^(−iE₂t/ħ))/√2. Show |Ψ|² oscillates, find the frequency, and contrast with a stationary state.",
+  goal:"Watch superposition create motion, and find emission's frequency hiding in the beat.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two clocks, one state","The cross term","The sloshing frequency","Audit: why atoms radiate — and when not"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.0, 1.2 + 4.8*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [8.0, 1.2 + 4.8*t], 0, 1, {color:CHALKC, w:3});
+    plotCurve(ctx, t => [t, 1.2 + 2.2*Math.sin(Math.PI*(t-2.0)/6.0)], 2.0, 8.0, {color:GOLD, w:2});
+    plotCurve(ctx, t => [t, 1.2 + 1.6*Math.sin(2*Math.PI*(t-2.0)/6.0)], 2.0, 8.0, {color:GREEN, w:2, dash:'5 4'});
+    label(ctx, 3.1, 5.3, 'ψ₁', {fs:11, color:GOLD});
+    label(ctx, 6.6, 5.3, 'ψ₂', {fs:11, color:GREEN});
+  },
+  steps:[
+    { map:0, title:"Each level carries its own clock", pose:"talk",
+      think:"Every energy eigenstate spins a phase e^(−iEt/ħ) — at its OWN rate. What if we mix two?",
+      say:"In quantum time evolution, every energy level spins an invisible phase clock, e to the minus i E t over h-bar — faster for higher rungs. A single level alone: one clock, and its phase cancels in psi squared. But prepare the electron in a superposition of two levels and two clocks tick at different rates. Their disagreement is about to become visible.",
+      board:[
+        {label:"The state", tex:"\\Psi = \\frac{1}{\\sqrt{2}}\\left[\\psi_1e^{-iE_1t/\\hbar} + \\psi_2e^{-iE_2t/\\hbar}\\right]", kind:"key"}
+      ]
+    },
+    { map:1, title:"Square, and find the beat", pose:"write",
+      think:"|a+b|² = |a|²+|b|²+2Re(a*b) — the cross term keeps the clock difference.",
+      say:"Take the modulus squared. The diagonal terms drop their phases as always. But the cross term retains the ratio of the clocks — e to the i delta E t over h-bar plus its conjugate: a cosine of the energy difference times time. The probability density inherits a heartbeat.",
+      board:[
+        {label:"Density", tex:"|\\Psi|^2 = \\tfrac{1}{2}\\left[\\psi_1^2 + \\psi_2^2 + 2\\psi_1\\psi_2\\cos\\frac{(E_2-E_1)t}{\\hbar}\\right]", kind:"answer", move:"cross term survives"}
+      ]
+    },
+    { map:2, title:"Watch the charge slosh", pose:"write",
+      think:"ψ₁ψ₂ is positive on the left, negative on the right — the cosine swings the weight.",
+      say:"Read the geometry: psi one psi two is positive in the left half of the well and negative in the right, so as the cosine swings, probability sloshes left, then right, then left — the electron's charge cloud rocks in the box like water in a carried pan. The angular frequency: delta E over h-bar — four point three times ten to the sixteen radians per second, petahertz territory.",
+      board:[
+        {label:"Frequency", tex:"\\omega = \\frac{E_2 - E_1}{\\hbar} = 4.28\\times10^{16}\\ \\text{rad/s},\\quad f = 6.8\\times10^{15}\\ \\text{Hz}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 3.6, 0.6, 6.4, 0.6, {color:PURPLE, w:2});
+        arrow(c, 6.4, 0.3, 3.6, 0.3, {color:PURPLE, w:2});
+        label(c, 5.0, 6.6, 'charge sloshes at ΔE/ħ', {fs:11, color:PURPLE});
+      }
+    },
+    { map:3, title:"Audit: the origin of spectral lines", pose:"think",
+      think:"Compare this f with the 2→1 photon of Example 8 — and what does 'stationary' now mean?",
+      say:"The audit closes the deepest loop in the tutorial. Compare our sloshing frequency with the photon emitted in the two-to-one transition, Example eight: identical, to the digit. And a rocking charge distribution is an oscillating dipole — which radiates at its rocking frequency. There is emission, explained: an atom mid-transition is a superposition, its charge sloshing at delta E over h-bar, broadcasting light at precisely that frequency until the upper component drains away. Conversely a pure energy state has one clock, a frozen psi squared, and radiates nothing — 'stationary' is not a metaphor; it is why atoms in eigenstates persist instead of collapsing in a flash. Motion, in quantum mechanics, is always an interference between energies. Reusable method: superpose, square, and keep the cross term — its cosine at delta E over h-bar is at once the system's internal motion and the frequency of any light it exchanges.",
+      board:[
+        {label:"The loop closes", tex:"f_{\\text{slosh}} = f_{\\text{photon}}(2\\to1)\\ \\text{— emission is sloshing charge}", kind:"key"},
+        {label:"Reusable method", text:"Eigenstate: static |Ψ|², no radiation. Superposition: beats at ΔE/ħ — the quantum origin of every spectral line.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

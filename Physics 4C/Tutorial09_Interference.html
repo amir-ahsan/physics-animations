@@ -1439,6 +1439,515 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Fringe spacing in a double-slit pattern",
+  problem:"A He–Ne laser (633 nm) hits slits 0.200 mm apart; the screen is 2.00 m away. Find the spacing of adjacent bright fringes.",
+  goal:"Apply Δy = λL/d and appreciate the lever that makes nanometres visible.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The layout","Compute Δy","Audit: the 10⁴ lever"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.2, 0.8 + 5.2*t], 0, 1, {color:CHALKC, w:2.5});
+    circleAt(ctx, 2.2, 3.1, 0.09, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.2, 3.9, 0.09, {stroke:GOLD, w:2});
+    label(ctx, 2.2, 0.3, 'slits, d', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [8.6, 0.8 + 5.2*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 8.6, 0.3, 'screen', {fs:10, color:DIMC});
+    arrow(ctx, 0.5, 3.5, 1.6, 3.5, {color:RED, w:2.5, label:'633 nm', fs:10});
+    dashLine(ctx, 2.2, 3.5, 8.6, 3.5, {color:DIMC});
+    label(ctx, 5.4, 2.9, 'L = 2.00 m', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Two slits, one wave", pose:"talk",
+      think:"Where do bright fringes fall, in terms of path difference?",
+      say:"Each slit re-broadcasts the laser as a coherent wavelet, and the screen scores their rivalry: bright wherever the path difference is a whole number of wavelengths, dark at the half-integers. For small angles the arithmetic condenses into one formula — fringe positions m lambda L over d, so neighbouring bright fringes sit lambda L over d apart.",
+      board:[
+        {label:"Fringe spacing", tex:"\\Delta y = \\frac{\\lambda L}{d}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Compute", pose:"write",
+      think:"Watch the powers of ten: nm × m over mm.",
+      say:"Six thirty-three nanometres times two metres, over a fifth of a millimetre: six point three three millimetres. Fringes you can measure with a school ruler — from light whose wavelength is smaller than a bacterium.",
+      board:[
+        {label:"Spacing", tex:"\\Delta y = \\frac{(633\\times10^{-9})(2.00)}{0.200\\times10^{-3}} = 6.33\\ \\text{mm}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [8.6, 0.8 + 5.2*t], 0, 1, {color:CHALKC, w:2.5});
+        circleAt(c, 8.6, 3.5, 0.12, {stroke:RED, w:3});
+        circleAt(c, 8.6, 2.6, 0.12, {stroke:RED, w:3});
+        circleAt(c, 8.6, 4.4, 0.12, {stroke:RED, w:3});
+        circleAt(c, 8.6, 1.7, 0.12, {stroke:RED, w:3});
+        circleAt(c, 8.6, 5.3, 0.12, {stroke:RED, w:3});
+        label(c, 9.55, 3.05, 'Δy', {fs:11, color:RED});
+      }
+    },
+    { map:2, title:"Audit: the lever ratio", pose:"think",
+      think:"What dimensionless ratio amplified 633 nm into 6.33 mm?",
+      say:"Audit the amplification: L over d is ten thousand — a lever that magnifies the invisible wavelength ten-thousand-fold onto the screen. Every knob obeys it: narrow the slits or lengthen the throw and the pattern spreads; switch red for blue and it contracts. This layout, run backwards, is the standard laboratory measurement of wavelength itself — as the next examples will exploit. Reusable method: delta y equals lambda L over d, valid for small angles; think of L over d as the magnification of the wavelength.",
+      board:[
+        {label:"The lever", tex:"\\frac{L}{d} = 10^4:\\ \\text{sub-micron } \\lambda \\to \\text{mm fringes}", kind:"key"},
+        {label:"Reusable method", text:"Δy = λL/d. Spread ∝ λ and L, ∝ 1/d. Red fringes are wider than blue — dispersion by interference.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Bright or dark? Reading the path difference",
+  problem:"Two in-phase sources emit 500 nm light. At one screen point the paths differ by 1.50 μm; at another, 1.25 μm. What is seen at each?",
+  goal:"Divide path difference by wavelength and read the remainder.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The division test","1.50 μm: bright","1.25 μm: dark","Audit: everything in between"],
+  setup(ctx, w){
+    circleAt(ctx, 1.6, 4.6, 0.16, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 1.6, 2.4, 0.16, {stroke:GOLD, w:2.5});
+    plotCurve(ctx, t => [1.6 + 6.6*t, 4.6 - 0.55*t], 0, 1, {color:DIMC, w:1.5, dash:'5 5'});
+    plotCurve(ctx, t => [1.6 + 6.6*t, 2.4 + 1.65*t], 0, 1, {color:DIMC, w:1.5, dash:'5 5'});
+    circleAt(ctx, 8.2, 4.05, 0.12, {stroke:CHALKC, w:2});
+    label(ctx, 9.0, 4.05, 'P', {fs:12, color:CHALKC});
+  },
+  steps:[
+    { map:0, title:"Measure distance in wavelengths", pose:"talk",
+      think:"The only question at any point: how many wavelengths is Δr?",
+      say:"For sources launched in phase, everything at the screen reduces to one division: path difference over wavelength. Whole number — the crests arrive stacked, constructive, bright. Half-integer — crest meets trough, destructive, dark. The wavelength is the only ruler that matters.",
+      board:[
+        {label:"The test", tex:"\\frac{\\Delta r}{\\lambda} = m:\\ \\text{bright};\\qquad m + \\tfrac{1}{2}:\\ \\text{dark}", kind:"key"}
+      ]
+    },
+    { map:1, title:"First point: 1.50 μm", pose:"write",
+      think:"1.50/0.500 — integer or half-integer?",
+      say:"One point five microns over half a micron: exactly three. A whole number — the second wave arrives precisely three cycles behind, indistinguishable from in step. Bright: this is the m equals three fringe.",
+      board:[
+        {label:"Point 1", tex:"\\frac{1.50}{0.500} = 3.00 \\Rightarrow \\text{bright } (m = 3)", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Second point: 1.25 μm", pose:"write",
+      think:"1.25/0.500 = 2.5 — what arrives together at this point?",
+      say:"One point two five over half: two and a half. Crest lands on trough — total cancellation, darkness. Two healthy light waves, summing to none: the dark fringe between the m two and m three maxima.",
+      board:[
+        {label:"Point 2", tex:"\\frac{1.25}{0.500} = 2.50 \\Rightarrow \\text{dark}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the smooth in-between", pose:"think",
+      think:"What about Δr/λ = 2.75 — how bright is that point?",
+      say:"The audit fills in the continuum. Between the extremes the intensity follows cosine squared of pi delta r over lambda — at two point seven five wavelengths, cosine squared of a quarter turn past... half the maximum. Fringes are not stripes with edges but smooth cosine hills. And two caveats travel with the rule: it assumes equal amplitudes, and no phase flips en route — reflections off denser media add half-wavelength surprises, which is precisely the plot of the thin-film examples ahead. Reusable method: divide delta r by lambda; integer bright, half-integer dark, cosine squared in between — and audit for hidden phase flips before trusting it.",
+      board:[
+        {label:"Continuum", tex:"I = I_{\\max}\\cos^2\\left(\\frac{\\pi\\,\\Delta r}{\\lambda}\\right)", kind:"key"},
+        {label:"Reusable method", text:"Path difference in units of λ decides everything — but reflections can add hidden half-λ flips. Films ahead!", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Thinnest soap film that reflects one color",
+  problem:"Find the minimum thickness of a soap film (n = 1.33) in air that strongly reflects 600 nm light at normal incidence.",
+  goal:"Track the single phase flip, then solve 2t = (m + ½)λ/n for m = 0.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two reflections, one flip","The condition","Quarter-wave answer","Audit: the black film"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 2.6, 7.0, 1.6, {fill:'none', stroke:BLUE});
+    label(ctx, 5.0, 4.7, 'air above', {fs:10, color:DIMC});
+    label(ctx, 5.0, 3.4, 'soap, n = 1.33', {fs:10, color:BLUE});
+    label(ctx, 5.0, 2.0, 'air below', {fs:10, color:DIMC});
+    arrow(ctx, 2.6, 6.2, 3.4, 4.3, {color:GOLD, w:2});
+    arrow(ctx, 3.5, 4.25, 4.3, 6.2, {color:GOLD, w:2});
+    arrow(ctx, 4.4, 4.2, 5.0, 2.75, {color:GOLD, w:1.5, dash:'5 4'});
+    arrow(ctx, 5.1, 2.75, 5.7, 4.2, {color:GOLD, w:1.5, dash:'5 4'});
+    arrow(ctx, 5.8, 4.25, 6.6, 6.2, {color:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"Interrogate each reflection", pose:"talk",
+      think:"Air→soap flips phase; soap→air doesn't. Why the asymmetry?",
+      say:"Two glints leave the film: one off the front face, one off the back. Rule of reflections: bouncing off a denser medium flips the phase by half a cycle; off a rarer one, no flip. Front face, air to soap: flip. Back face, soap to air: none. One flip total — the two glints start their rivalry already half a wavelength at odds.",
+      board:[
+        {label:"Flip census", tex:"\\text{front (low}\\to\\text{high): flip};\\quad \\text{back (high}\\to\\text{low): none}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The condition, flip included", pose:"write",
+      think:"The path 2t must supply the OTHER half-wavelength — and in soap, λ is λ/n.",
+      say:"To reunite them in phase, the back glint's extra journey — twice the thickness — must contribute the missing half wavelength: two t equals m plus one half times lambda over n. The n matters: inside soap, the light's ruler has shrunk to lambda over one point three three.",
+      board:[
+        {label:"Constructive (one flip)", tex:"2t = \\left(m + \\tfrac{1}{2}\\right)\\frac{\\lambda}{n}", kind:"key"}
+      ]
+    },
+    { map:2, title:"The thinnest solution", pose:"write",
+      think:"m = 0 gives the quarter-wave film.",
+      say:"Minimum thickness takes m equals zero: t is lambda over four n — six hundred over five point three two — one hundred thirteen nanometres. A quarter of the in-film wavelength: the celebrated quarter-wave layer, the atom of optical coating design.",
+      board:[
+        {label:"Minimum", tex:"t_{\\min} = \\frac{\\lambda}{4n} = \\frac{600}{4(1.33)} = 113\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the film that turns black", pose:"think",
+      think:"Let t → 0 — the path term vanishes, but the flip remains. Result?",
+      say:"Audit at the limit that soap bubbles perform for free. As a film drains and t approaches zero, the path contribution dies — but the lone phase flip remains, and the two glints cancel for every colour at once. The film goes black, reflecting nothing, moments before it bursts. Watch the top of an old bubble: the spreading dark patch is destructive interference announcing the end. Reusable method: census the flips first — odd count means half-integer condition, even means integer — then use lambda over n inside the film, and m equals zero for the thinnest case.",
+      board:[
+        {label:"Black film", tex:"t \\to 0:\\ \\text{only the flip survives} \\Rightarrow \\text{cancellation, all } \\lambda", kind:"key"},
+        {label:"Reusable method", text:"Count flips (denser = flip), pick the matching condition, shrink λ by n inside. The black film is the m = 0 limit.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Measuring a wavelength with a ruler",
+  problem:"Slits 0.500 mm apart, screen 3.00 m away; ten bright-fringe spacings span 25.0 mm. Find the wavelength.",
+  goal:"Invert Δy = λL/d, average over many fringes, and mind the fencepost trap.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Average over many","Invert for λ","Audit: precision and fenceposts"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [8.4, 0.7 + 5.6*t], 0, 1, {color:CHALKC, w:2.5});
+    circleAt(ctx, 8.4, 1.3, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 2.0, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 2.7, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 3.4, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 4.1, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 4.8, 0.1, {stroke:PURPLE, w:3});
+    circleAt(ctx, 8.4, 5.5, 0.1, {stroke:PURPLE, w:3});
+    arrow(ctx, 9.3, 1.3, 9.3, 5.5, {color:DIMC, w:1.5, label:'25 mm', fs:10});
+    label(ctx, 3.4, 3.5, 'measure across many,', {fs:11, color:DIMC});
+    label(ctx, 3.4, 2.8, 'divide once', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Why ten and not one", pose:"talk",
+      think:"Your ruler reads to ±0.25 mm — what does spanning ten spacings do to that error?",
+      say:"An experimentalist never measures one fringe when ten are on offer. The ruler's quarter-millimetre uncertainty afflicts the twenty-five-millimetre span just once — divide by ten and the per-fringe error shrinks tenfold. Span, then divide: two point five zero millimetres per spacing, known to one per cent.",
+      board:[
+        {label:"Average", tex:"\\Delta y = \\frac{25.0\\ \\text{mm}}{10} = 2.50\\ \\text{mm}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Invert the fringe formula", pose:"write",
+      think:"λ = d Δy / L — assemble and name the colour.",
+      say:"Now run Young's formula backwards: lambda equals d delta y over L. Half a millimetre times two and a half, over three metres: four hundred seventeen nanometres — violet. A metre stick and a ruler have just measured four ten-thousandths of a millimetre.",
+      board:[
+        {label:"Wavelength", tex:"\\lambda = \\frac{d\\,\\Delta y}{L} = \\frac{(0.500\\times10^{-3})(2.50\\times10^{-3})}{3.00} = 417\\ \\text{nm}", kind:"answer", move:"invert Δy = λL/d"}
+      ]
+    },
+    { map:2, title:"Audit: the fencepost trap", pose:"think",
+      think:"Ten FRINGES measured centre-to-centre contain how many spacings?",
+      say:"The audit guards a subtle boundary. Count ten bright fringes and measure centre-to-centre from the first to the last: that distance holds nine spacings, not ten — fenceposts and fence panels. Our problem said ten spacings span twenty-five millimetres, so dividing by ten was right; misread it as ten fringes and your wavelength inflates by eleven per cent, silently. State which you counted, always. Reusable method: span the maximum number of spacings, divide once, invert for lambda — and settle the fencepost question before touching the ruler.",
+      board:[
+        {label:"Fenceposts", tex:"N\\ \\text{fringes, centre-to-centre} = N-1\\ \\text{spacings}", kind:"warn"},
+        {label:"Reusable method", text:"Many-fringe span ÷ count = Δy with error suppressed; λ = dΔy/L. Fringes vs spacings: check twice.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Young's experiment under water",
+  problem:"The Example 7 setup (Δy = 6.33 mm in air) is submerged in water (n = 1.33), laser frequency unchanged. Find the new fringe spacing.",
+  goal:"Let the in-medium wavelength drive the geometry, and keep colour out of it.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["What water changes","Scale the spacing","Audit: colour vs geometry"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 0.7, 9.0, 5.6, {fill:'none', stroke:BLUE});
+    label(ctx, 5.0, 6.6, 'whole apparatus under water', {fs:11, color:BLUE});
+    plotCurve(ctx, t => [2.4, 1.4 + 4.4*t], 0, 1, {color:CHALKC, w:2});
+    circleAt(ctx, 2.4, 3.2, 0.08, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.4, 3.8, 0.08, {stroke:GOLD, w:2});
+    plotCurve(ctx, t => [8.0, 1.4 + 4.4*t], 0, 1, {color:CHALKC, w:2});
+  },
+  steps:[
+    { map:0, title:"Interference sees the local ruler", pose:"talk",
+      think:"Δy = λL/d — which of the three symbols does water touch?",
+      say:"Submerge everything. The slits stay a fifth of a millimetre apart; the screen stays two metres off. But the light between them now travels in water, where its wavelength contracts to lambda over n — four hundred seventy-six nanometres. Interference geometry consults only the wavelength in the medium; it neither knows nor cares what the light did in air.",
+      board:[
+        {label:"In water", tex:"\\lambda_n = \\frac{\\lambda}{n} = \\frac{633}{1.33} = 476\\ \\text{nm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Scale the pattern", pose:"write",
+      think:"Δy ∝ λ, so the whole pattern divides by n.",
+      say:"With d and L untouched, the spacing simply divides by n: six point three three over one point three three — four point seven six millimetres. The fringes crowd together by exactly a third: the pattern is a live readout of the wavelength around it.",
+      board:[
+        {label:"New spacing", tex:"\\Delta y = \\frac{\\lambda_n L}{d} = \\frac{6.33\\ \\text{mm}}{1.33} = 4.76\\ \\text{mm}", kind:"answer", move:"÷ n"}
+      ]
+    },
+    { map:2, title:"Audit: still red, and a free instrument", pose:"think",
+      think:"476 nm is 'blue' in vacuum tables — did the light turn blue? And what can this sensitivity measure?",
+      say:"Two audits. First, the colour trap resprings: four seventy-six nanometres reads as blue on a vacuum chart, but colour is frequency, and the frequency never moved — an underwater observer sees red fringes, packed tighter. Second, the sensitivity is a gift: admit a gas slowly into a chamber in one beam's path and the fringes creep sideways as its index rises — counting fringes measures n to parts per million. The crowding that seemed a curiosity is a precision instrument. Reusable method: replace lambda by lambda over n everywhere geometry is computed; leave colour to the frequency; and read moving fringes as changing optical path.",
+      board:[
+        {label:"Still red", tex:"f\\ \\text{unchanged} \\Rightarrow \\text{colour unchanged}", kind:"key"},
+        {label:"Reusable method", text:"Interference formulas take the in-medium λ. Fringe motion ↔ optical path change: an index meter for free.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Color of an oil slick",
+  problem:"Oil (n = 1.45), 300 nm thick, floats on water (n = 1.33). Which visible wavelengths reflect strongly at normal incidence?",
+  goal:"Census the flips for a three-medium stack, then harvest the visible survivor.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Flip census: 1.45 vs 1.33","The condition","Harvest the orders","Audit: swap the substrate"],
+  setup(ctx, w){
+    label(ctx, 5.0, 6.3, 'air (1.00)', {fs:10, color:DIMC});
+    boxAt(ctx, 5.0, 3.6, 8.4, 1.5, {fill:'none', stroke:GOLD});
+    label(ctx, 5.0, 4.4, 'oil, n = 1.45, t = 300 nm', {fs:10, color:GOLD});
+    boxAt(ctx, 5.0, 1.2, 8.4, 2.0, {fill:'none', stroke:BLUE});
+    label(ctx, 5.0, 2.2, 'water, n = 1.33', {fs:10, color:BLUE});
+    arrow(ctx, 2.6, 6.5, 3.3, 5.2, {color:CHALKC, w:2});
+    arrow(ctx, 3.4, 5.15, 4.1, 6.5, {color:CHALKC, w:2});
+  },
+  steps:[
+    { map:0, title:"Census with three media", pose:"talk",
+      think:"Air→oil: up in n. Oil→water: up or down?",
+      say:"The soap film's logic returns with a twist in the basement. Front face, air to oil — one point zero to one point four five, denser: flip. Back face, oil to water — one point four five down to one point three three: rarer, no flip. One flip total, same census as soap — but only because water is less dense than oil; that comparison is where these problems are won or lost.",
+      board:[
+        {label:"Census", tex:"1.00 \\to 1.45:\\ \\text{flip};\\quad 1.45 \\to 1.33:\\ \\text{none — one flip}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Write the condition", pose:"write",
+      think:"One flip: constructive needs 2nt = (m + ½)λ.",
+      say:"One flip means the half-integer condition for brightness: two n t equals m plus one half lambda. The optical path two n t is fixed — twice one point four five times three hundred: eight hundred seventy nanometres. Each order m claims its own wavelength.",
+      board:[
+        {label:"Constructive", tex:"\\lambda = \\frac{2nt}{m + \\tfrac{1}{2}} = \\frac{870\\ \\text{nm}}{m + \\tfrac{1}{2}}", kind:"key"}
+      ]
+    },
+    { map:2, title:"Harvest the orders", pose:"write",
+      think:"m = 0, 1, 2 — which lands between 400 and 700 nm?",
+      say:"Run the orders: m zero, seventeen forty nanometres — deep infrared, invisible. m one, five hundred eighty — yellow, visible! m two, three forty-eight — ultraviolet, gone. One survivor: the slick glows yellow at this spot. And since the film's thickness wanders, neighbouring patches crown different colours — the swirling rainbow on a wet car park is a contour map of oil thickness, drawn in interference.",
+      board:[
+        {label:"Orders", tex:"m=0: 1740;\\quad m=1: 580\\ \\text{(visible!)};\\quad m=2: 348\\ \\text{nm}", kind:"answer"},
+        {label:"Verdict", tex:"\\text{the slick reflects yellow here}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: put the oil on glass", pose:"think",
+      think:"Substrate n = 1.5 > 1.45 — recount the flips. What happens to the colours?",
+      say:"The audit swaps the substrate and watches the physics invert. Oil on glass: the back face now goes one point four five to one point five — denser, flip! Two flips cancel, the condition swaps to whole numbers, and every formerly bright wavelength goes dark: the reflected colours turn complementary. Same oil, same thickness, same light — the layer underneath rewrites the answer. This is why anti-reflection coatings choose their index between air and glass: engineering by flip census. Reusable method: census both faces against their neighbours, one flip half-integers, zero or two flips integers, then harvest only the orders that land in the visible.",
+      board:[
+        {label:"On glass", tex:"1.45 \\to 1.50:\\ \\text{flip too} \\Rightarrow 2nt = m\\lambda:\\ \\text{colours complement}", kind:"key"},
+        {label:"Reusable method", text:"The substrate's n decides the condition. One flip: (m+½)λ; two or zero: mλ. Filter orders through 400–700 nm.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Newton's rings",
+  problem:"A convex lens (R = 5.00 m) rests on flat glass, viewed in reflection at 589 nm. Derive the radius of the mth dark ring, evaluate m = 10, and explain the dark center.",
+  goal:"Turn the sagitta into a wedge condition and read the √m crowding.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The air wedge","Dark-ring condition","Evaluate","The dark centre","Audit: rings as instruments"],
+  setup(ctx, w){
+    ground(ctx, 0.8, 9.2, 2.2);
+    arc(ctx, 5.0, 14.6, 12.4, 253, 287, {color:CHALKC, w:2.5});
+    label(ctx, 5.0, 5.9, 'lens, R = 5.00 m', {fs:10, color:DIMC});
+    label(ctx, 7.9, 2.75, 'air gap t(r)', {fs:10, color:GOLD});
+    arrow(ctx, 5.0, 0.9, 5.0, 2.1, {color:DIMC, w:1.5});
+    label(ctx, 5.0, 0.4, 'contact point', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A wedge of air, circularly wrapped", pose:"talk",
+      think:"How thick is the air gap a distance r from the contact point?",
+      say:"Where the curved lens kisses the flat plate, a thin wedge of air opens between them — thickness zero at the touch, growing outward. The geometry is the sagitta of a circle: at radius r, the gap is r squared over two R. Interference in that gap, wrapped around the contact point, must paint circles. Newton saw them; the rings bear his name.",
+      board:[
+        {label:"Gap profile", tex:"t(r) \\approx \\frac{r^2}{2R}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Census, then condition", pose:"write",
+      think:"Top of gap: glass→air. Bottom: air→glass. How many flips?",
+      say:"Census the gap's two faces: top reflection, glass to air — rarer, no flip. Bottom, air to glass — denser, flip. One flip, so darkness — cancellation — falls where the path difference is a whole number of wavelengths: two t equals m lambda. Substitute the sagitta: r m equals root of m lambda R.",
+      board:[
+        {label:"Dark rings", tex:"2t = m\\lambda \\Rightarrow \\frac{r_m^2}{R} = m\\lambda \\Rightarrow r_m = \\sqrt{m\\lambda R}", kind:"answer", move:"insert t = r²/2R"}
+      ]
+    },
+    { map:2, title:"The tenth ring", pose:"write",
+      think:"√(10 × 589 nm × 5 m) — millimetres expected.",
+      say:"Evaluate the tenth: root of ten times five hundred eighty-nine nanometres times five metres — five point four three millimetres. Visible to the naked eye, delicately concentric, crowding closer as root m stretches ever more slowly.",
+      board:[
+        {label:"m = 10", tex:"r_{10} = \\sqrt{(10)(589\\times10^{-9})(5.00)} = 5.43\\ \\text{mm}", kind:"answer"}
+      ],
+      action(c){
+        circleAt(c, 5.0, 2.2, 0.5, {stroke:PURPLE, w:2});
+        circleAt(c, 5.0, 2.2, 0.72, {stroke:PURPLE, w:2});
+        circleAt(c, 5.0, 2.2, 0.88, {stroke:PURPLE, w:2});
+        circleAt(c, 5.0, 2.2, 1.02, {stroke:PURPLE, w:2});
+      }
+    },
+    { map:3, title:"Why the centre is dark", pose:"think",
+      think:"At the contact point t = 0 — yet the reflection cancels. What survives to cancel it?",
+      say:"Now the seeming paradox: at the very contact point the gap is zero, path difference nothing — surely bright? No: the lone phase flip remains, and with no path to offset it the two reflections cancel exactly. The centre of Newton's rings is dark — the same physics as the black soap film, glass playing the film's role. m equals zero in our formula: radius zero, dark. The formula knew all along.",
+      board:[
+        {label:"Dark centre", tex:"t = 0:\\ \\text{only the flip} \\Rightarrow \\text{cancellation } (m = 0)", kind:"key"}
+      ]
+    },
+    { map:4, title:"Audit: rings as a lens-maker's gauge", pose:"think",
+      think:"Invert r_m = √(mλR) — what does measuring rings tell you? And water in the gap?",
+      say:"The audit turns the toy into a tool. Invert the formula: measure the rings, know R — lens makers have tested curvature this way for three centuries, spotting a wavelength's error as a ring out of place, and any asymmetry in the rings betrays a surface that isn't truly spherical. Flood the gap with water and lambda shrinks by n: every ring contracts by root one point three three — a checkable prediction. Reusable method: express the gap geometry as t of r, apply the flip-counted condition, and expect root-m spacing whenever thickness grows quadratically.",
+      board:[
+        {label:"Instrument", tex:"R = \\frac{r_m^2}{m\\lambda}:\\ \\text{curvature metrology};\\quad \\text{water: rings} \\div \\sqrt{1.33}", kind:"key"},
+        {label:"Reusable method", text:"Wedge interference: t(r) from geometry + flip census. Quadratic gap ⇒ √m rings; ring errors map surface errors.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Intensity between the fringes",
+  problem:"In the Example 7 pattern (Δy = 6.33 mm), find I/I_max at 1.06 mm (one sixth of a spacing) from centre, and where I falls to half.",
+  goal:"Convert position to phase, apply cos², and extract the universal fringe width.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Position → phase","At one sixth","The half-intensity points","Audit: why gratings win"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.8, y0:1.0, xLab:'y', yLab:'I'});
+    plotCurve(ctx, t => [t, 1.0 + 4.4*Math.pow(Math.cos(1.05*(t-5.0)), 2)], 0.9, 9.3, {color:GOLD, w:2.5});
+  },
+  steps:[
+    { map:0, title:"The dictionary: millimetres to radians", pose:"talk",
+      think:"One full fringe spacing corresponds to how much phase?",
+      say:"The screen is a dial: sliding one full fringe spacing winds the phase between the two waves through one full turn — two pi. So position converts to phase by the cleanest dictionary imaginable: phi equals two pi y over delta y. With phase in hand, the phasor result from earlier gives intensity as cosine squared of half the phase.",
+      board:[
+        {label:"Dictionary", tex:"\\phi = \\frac{2\\pi y}{\\Delta y},\\qquad I = I_{\\max}\\cos^2\\frac{\\phi}{2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"One sixth of the way", pose:"write",
+      think:"y = Δy/6 → φ = π/3 → cos²(π/6).",
+      say:"One sixth of a spacing: phi is sixty degrees, half of it thirty. Cosine of thirty squared: three quarters. A sixth of the way to the next fringe, the light has surrendered only a quarter of its brightness — cosine hills have broad, flat summits.",
+      board:[
+        {label:"At Δy/6", tex:"\\phi = \\frac{\\pi}{3}:\\ I = I_{\\max}\\cos^2\\frac{\\pi}{6} = 0.750\\,I_{\\max}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The half-intensity points", pose:"write",
+      think:"cos²(φ/2) = ½ at φ/2 = 45° — translate back to position.",
+      say:"Half brightness demands cosine squared equal one half — phi over two at forty-five degrees, phi a quarter turn, y a quarter spacing. So each bright fringe, measured between its half-intensity shoulders, is half a fringe spacing wide. Not a property of our laser or slits — of every two-slit pattern ever made.",
+      board:[
+        {label:"Half intensity", tex:"y = \\frac{\\Delta y}{4}:\\ \\text{FWHM} = \\frac{\\Delta y}{2}\\ \\text{(universal)}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 0.9, 3.2, 9.3, 3.2, {color:DIMC});
+        label(c, 9.0, 3.7, 'I/2', {fs:10, color:DIMC});
+      }
+    },
+    { map:3, title:"Audit: fat fringes and the grating's cure", pose:"think",
+      think:"FWHM = Δy/2 means two-slit peaks are broad — what needs them narrow, and what fixes it?",
+      say:"The audit asks what those fat fringes cost. Half-a-spacing-wide peaks are hopeless for telling two nearby wavelengths apart — their broad summits smear together. The cure is more slits: N slits require all N phasors to align, which happens only in razor-thin directions — maxima narrow as one over N. A grating with ten thousand grooves turns our soft hills into needles, and needles resolve the sodium doublet where two slits see one blurred line. Reusable method: convert position to phase through the spacing, apply cosine squared, and remember two-slit patterns locate wavelengths but only gratings separate them.",
+      board:[
+        {label:"The cure", tex:"N\\ \\text{slits: peak width} \\propto \\frac{1}{N}\\ \\text{— gratings resolve}", kind:"key"},
+        {label:"Reusable method", text:"φ = 2πy/Δy, I = I_max cos²(φ/2), FWHM = Δy/2. Sharpness costs slits; that is the grating's whole business.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Two radio antennas as a two-slit system",
+  problem:"Two antennas 10.0 m apart broadcast in phase at 30.0 MHz. Find the directions of strongest and zero signal; then swap to 180° out of phase.",
+  goal:"Do Young at d = λ exactly, then steer the lobes by phase alone.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["λ from f: d = λ","Maxima","Minima","Flip the phase","Audit: the phased array"],
+  setup(ctx, w){
+    circleAt(ctx, 4.4, 3.5, 0.18, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 5.6, 3.5, 0.18, {stroke:GOLD, w:2.5});
+    label(ctx, 5.0, 2.6, 'antennas, 10.0 m', {fs:10, color:DIMC});
+    arc(ctx, 4.4, 3.5, 0.7, 0, 360, {color:DIMC, w:1});
+    arc(ctx, 5.6, 3.5, 0.7, 0, 360, {color:DIMC, w:1});
+  },
+  steps:[
+    { map:0, title:"Young's slits, ten million times larger", pose:"talk",
+      think:"λ = c/f at 30 MHz — how does it compare with the 10 m spacing?",
+      say:"Thirty megahertz gives a wavelength of exactly ten metres — the same as the antenna spacing. d equals lambda, a deliciously special case: Young's experiment blown up by ten million, with fringes you could walk between carrying a receiver. The angles will be large, so no small-angle shortcuts — honest sines only.",
+      board:[
+        {label:"Setup", tex:"\\lambda = \\frac{c}{f} = \\frac{3\\times10^{8}}{3\\times10^{7}} = 10.0\\ \\text{m} = d", kind:"key"}
+      ]
+    },
+    { map:1, title:"Where the signal is strongest", pose:"write",
+      think:"d sin θ = mλ with d = λ: sin θ = m. Which m survive?",
+      say:"Maxima: d sine theta equals m lambda, and with d equal to lambda, sine theta equals m itself. Sine lives between minus one and one, so only m of zero and plus or minus one qualify: straight out along the perpendicular — and squarely along the antenna line, both ways. Four beams.",
+      board:[
+        {label:"Maxima", tex:"\\sin\\theta = m:\\ \\theta = 0^\\circ\\ \\text{and}\\ \\pm90^\\circ", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.0, 4.0, 5.0, 6.4, {color:GREEN, w:2.5});
+        arrow(c, 5.0, 3.0, 5.0, 0.6, {color:GREEN, w:2.5});
+        arrow(c, 6.0, 3.5, 9.3, 3.5, {color:GREEN, w:2.5});
+        arrow(c, 4.0, 3.5, 0.7, 3.5, {color:GREEN, w:2.5});
+      }
+    },
+    { map:2, title:"Where it vanishes", pose:"write",
+      think:"Half-integer condition: sin θ = ±½ — the silent directions.",
+      say:"Minima: sine theta equals plus or minus one half — thirty degrees either side of straight ahead, four silent directions by symmetry. A listener there, between two working transmitters, hears nothing: the towers erase each other.",
+      board:[
+        {label:"Minima", tex:"\\sin\\theta = \\pm\\tfrac{1}{2}:\\ \\theta = \\pm30^\\circ\\ \\text{(and mirrored)}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 5.0, 3.5, 7.5, 5.6, {color:RED});
+        dashLine(c, 5.0, 3.5, 7.5, 1.4, {color:RED});
+        dashLine(c, 5.0, 3.5, 2.5, 5.6, {color:RED});
+        dashLine(c, 5.0, 3.5, 2.5, 1.4, {color:RED});
+        label(c, 8.3, 5.9, 'silent', {fs:10, color:RED});
+      }
+    },
+    { map:3, title:"Throw the phase switch", pose:"excited",
+      think:"Drive antenna 2 at 180° — every condition shifts by half a wavelength. What swaps?",
+      say:"Now touch no hardware — just drive the second antenna half a cycle late. That standing half-wavelength offset converts every meeting: former agreements become cancellations and vice versa. The forward beam dies; the thirty-degree silences bloom into beams. The broadcast pattern has rotated, electronically, in a microsecond.",
+      board:[
+        {label:"Out of phase", tex:"\\text{maxima} \\leftrightarrow \\text{minima}:\\ \\text{beams now at } \\pm30^\\circ", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the phased array is born", pose:"think",
+      think:"If 180° swaps the lobes, what do intermediate phases do?",
+      say:"The audit generalises the switch into an industry. If half a cycle swaps the beams, intermediate phase offsets steer them continuously — any direction, no moving parts. Stack hundreds of elements and you have the phased array: radar that sweeps the sky in milliseconds, 5G panels that aim at your phone, radio telescopes synthesised across continents. All of it is Young's experiment with adjustable phase. Reusable method: with sources comparable to lambda apart, use exact sines; count directions by bounding sine between minus one and one; and treat source phase as a free steering wheel.",
+      board:[
+        {label:"Steering law", tex:"\\text{phase offset } \\delta \\Rightarrow \\text{beam at } \\sin\\theta = \\frac{\\delta\\lambda}{2\\pi d}", kind:"key"},
+        {label:"Reusable method", text:"d ~ λ: exact geometry, few discrete lobes. Electronic phase = mechanical rotation. Antennas ARE slits.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Coherence length: why thin films show colors and thick ones don't",
+  problem:"With ℓ_c ≈ λ²/Δλ, estimate the coherence length of (a) a He–Ne laser (Δλ = 0.001 nm at 633 nm) and (b) white light (550 nm, Δλ ≈ 300 nm). Why do oil slicks show colours but window panes don't?",
+  goal:"Estimate two coherence lengths and use them to referee which interference is visible.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["What coherence limits","(a) Laser: 0.4 m","(b) White light: 1 μm","The referee's rulings","Audit: recover the pane's fringes"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 5.4 + 0.4*Math.sin(6*(t-0.5))], 0.5, 5.0, {color:RED, w:2});
+    label(ctx, 7.3, 5.4, 'laser: long train', {fs:10, color:RED});
+    plotCurve(ctx, t => [t, 2.6 + 0.4*Math.sin(9*(t-0.5))*Math.exp(-Math.pow(t-1.6,2)/0.5)], 0.5, 3.4, {color:CHALKC, w:2});
+    label(ctx, 6.2, 2.6, 'white light: short bursts', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Every source is a chorus", pose:"talk",
+      think:"A source with spread Δλ makes many overlapping patterns — when do they agree?",
+      say:"No source sings one pure wavelength; each is a chorus spanning delta lambda, and every chorister paints her own fringe pattern. Near zero path difference the patterns coincide. But at path difference delta r, patterns of lambda and lambda plus delta lambda slip apart — a full fringe out of step when delta r roughly equals lambda squared over delta lambda. Beyond that, the summed patterns smear to uniform grey. That distance is the coherence length: the source's memory of its own phase.",
+      board:[
+        {label:"Coherence length", tex:"\\ell_c \\approx \\frac{\\lambda^2}{\\Delta\\lambda}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The laser's long memory", pose:"write",
+      think:"633² nm² over 0.001 nm — convert carefully.",
+      say:"The helium–neon laser, with its absurdly narrow line: six thirty-three squared over a thousandth of a nanometre — forty centimetres. The laser remembers its phase across a desk. That is why Michelson mirrors can roam freely and why holography — which records phase itself — is possible at all.",
+      board:[
+        {label:"(a) Laser", tex:"\\ell_c = \\frac{(633\\times10^{-9})^2}{10^{-12}} = 0.40\\ \\text{m}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) White light's amnesia", pose:"write",
+      think:"550² over 300 — barely more than a wavelength.",
+      say:"White light spans the whole visible chorus: five fifty squared over three hundred — one micron. Two wavelengths of memory, no more. White light forgets its phase almost as soon as it states it.",
+      board:[
+        {label:"(b) White", tex:"\\ell_c = \\frac{(550\\times10^{-9})^2}{300\\times10^{-9}} = 1.0\\ \\mu\\text{m}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The referee rules on films", pose:"write",
+      think:"Oil film: Δr = 2nt ≲ 1 μm. Window: Δr ~ 1 cm. Compare each with ℓ_c.",
+      say:"Now referee the two defendants. The oil slick, a few hundred nanometres thick: its path difference, twice n t, stays under a micron — inside even sunlight's tiny coherence — so the colours blaze. The window pane, some millimetres thick: path difference around a centimetre, ten thousand coherence lengths — every colour's fringes pile up incoherently into plain transparency. Thin films shimmer and thick ones do not, and the boundary between them is lambda squared over delta lambda.",
+      board:[
+        {label:"Rulings", tex:"\\text{oil: } 2nt < \\ell_c\\ \\checkmark\\ \\text{colours};\\quad \\text{pane: } \\Delta r \\sim 10^4\\ell_c\\ \\text{✗ grey}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: resurrect the pane's fringes", pose:"think",
+      think:"Illuminate the window with the laser instead — prediction?",
+      say:"The audit proposes the decisive experiment. The window pane's interference never vanished — it was merely smeared by the source's forgetfulness. Illuminate the same pane with our forty-centimetre-coherence laser and faint fringes duly reappear in the reflection: the pane was always interfering; white light just couldn't hold the thought. Coherence is a property of the illumination, not the object. Reusable method: compute lambda squared over delta lambda, compare with the path difference at stake, and when fringes are missing, ask first whether the source's memory — not the geometry — is what failed.",
+      board:[
+        {label:"The experiment", tex:"\\text{laser on the pane: fringes return}", kind:"key"},
+        {label:"Reusable method", text:"Visibility test: Δr ≶ λ²/Δλ. Missing fringes indict the source's bandwidth before the apparatus.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

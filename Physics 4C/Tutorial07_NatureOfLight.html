@@ -1440,6 +1440,511 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Light inside glass",
+  problem:"Light of vacuum wavelength 600 nm enters glass with n = 1.50. Find its speed, wavelength, and frequency in the glass.",
+  goal:"Divide v and λ by n, keep f sacred — and settle what colour really is.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["What n rescales","Speed and wavelength","Frequency is sacred","Audit: what is colour?"],
+  setup(ctx, w){
+    boxAt(ctx, 7.0, 0.9, 4.6, 5.2, {fill:'none', stroke:CHALKC});
+    label(ctx, 7.0, 0.4, 'glass, n = 1.50', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [t, 3.5 + 0.6*Math.sin(2.1*(t-0.4))], 0.4, 4.7, {color:GOLD, w:2.5});
+    plotCurve(ctx, t => [t, 3.5 + 0.6*Math.sin(3.15*(t-4.7) + 2.1*4.3)], 4.7, 9.2, {color:GOLD, w:2.5});
+  },
+  steps:[
+    { map:0, title:"The index is a slowdown factor", pose:"talk",
+      think:"n = 1.5 means the light does what, by what factor?",
+      say:"The refractive index is simply the slowdown factor: in glass, light moves at c over n. Everything else follows from asking which properties must adjust to that slower pace and which are locked from outside. Let us sort the three — speed, wavelength, frequency — into movable and immovable.",
+      board:[
+        {label:"Definition", tex:"v = \\frac{c}{n}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Speed and wavelength shrink together", pose:"write",
+      think:"If crests arrive at a fixed rate but move slower, what happens to their spacing?",
+      say:"Speed: two hundred thousand kilometres per second — light loses a third of its pace. And since crests keep arriving at the same rate but crawl more slowly, they bunch up: the wavelength divides by the same n, six hundred down to four hundred nanometres.",
+      board:[
+        {label:"Speed", tex:"v = \\frac{3.00\\times10^{8}}{1.50} = 2.00\\times10^{8}\\ \\text{m/s}", kind:"answer"},
+        {label:"Wavelength", tex:"\\lambda_n = \\frac{\\lambda}{n} = \\frac{600}{1.50} = 400\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Frequency cannot budge", pose:"write",
+      think:"The glass atoms are driven by the incoming wave — at whose rhythm?",
+      say:"Frequency stays at five times ten to the fourteen hertz, and must: the oscillating charges in the glass are driven by the incoming wave and have no choice but to keep its rhythm — like dancers following a drummer who never changes tempo. Any boundary, any medium: frequency is the invariant.",
+      board:[
+        {label:"Frequency", tex:"f = \\frac{c}{\\lambda} = \\frac{3.00\\times10^{8}}{6.00\\times10^{-7}} = 5.00\\times10^{14}\\ \\text{Hz (unchanged)}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: colour lives in frequency", pose:"think",
+      think:"Inside the glass λ = 400 nm — violet's vacuum wavelength. Does the light turn violet?",
+      say:"Now the audit that catches a beautiful confusion. Inside the glass the wavelength is four hundred nanometres — violet's calling card in vacuum. Has our orange light turned violet? No: your eye's receptors respond to the frequency of the field arriving at them, and frequency never changed. Orange in air, orange in glass, orange in your eye. Wavelength is a medium-dependent costume; colour is the frequency underneath. Reusable method: crossing into a medium, divide v and lambda by n, keep f fixed — and when in doubt about colour, ask the frequency.",
+      board:[
+        {label:"Colour", tex:"\\text{colour} \\leftrightarrow f,\\ \\text{not } \\lambda", kind:"key"},
+        {label:"Reusable method", text:"n rescales v and λ; f is set by the source forever. Quote λ in vacuum unless told otherwise.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Refraction into water",
+  problem:"A ray in air strikes a calm pond at 40.0° from the normal. Find the refraction angle in water (n = 1.33).",
+  goal:"Apply Snell's law cleanly — and never measure from the surface.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Snell's law","Solve for θ₂","Audit: the normal, always"],
+  setup(ctx, w){
+    dashLine(ctx, 0.6, 3.5, 9.4, 3.5, {color:BLUE});
+    label(ctx, 8.7, 3.0, 'water', {fs:11, color:BLUE});
+    dashLine(ctx, 5.0, 0.7, 5.0, 6.3, {color:DIMC});
+    label(ctx, 5.9, 6.1, 'normal', {fs:10, color:DIMC});
+    arrow(ctx, 2.6, 6.0, 4.9, 3.6, {color:GOLD, w:2.5});
+    arc(ctx, 5.0, 3.5, 1.3, 90, 133, {color:GOLD, w:1.5});
+    label(ctx, 4.0, 5.2, '40°', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"The law of the boundary", pose:"talk",
+      think:"Snell's law balances n sin θ on the two sides — angles from what reference?",
+      say:"Snell's law is the boundary's contract: n one sine theta one equals n two sine theta two, with every angle measured from the normal — the perpendicular to the surface — never from the surface itself. Into a slower medium the ray bends toward the normal; out of one, away. Keep that qualitative compass and you can check every answer before finishing the algebra.",
+      board:[
+        {label:"Snell", tex:"n_1\\sin\\theta_1 = n_2\\sin\\theta_2", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve", pose:"write",
+      think:"n₁ = 1 for air — isolate sin θ₂ and expect a smaller angle.",
+      say:"Air's index is one. Sine of forty over one point three three: zero point four eight three, so theta two is twenty-eight point nine degrees. Smaller than forty — bent toward the normal — exactly as entry into slower water demands. Prediction and calculation agree; that is the sound of a healthy solution.",
+      board:[
+        {label:"Refraction", tex:"\\sin\\theta_2 = \\frac{\\sin 40.0^\\circ}{1.33} = 0.483 \\Rightarrow \\theta_2 = 28.9^\\circ", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.0, 3.5, 6.4, 0.9, {color:GREEN, w:2.5});
+        arc(c, 5.0, 3.5, 1.5, -90, -62, {color:GREEN, w:1.5});
+        label(c, 5.8, 1.9, '28.9°', {fs:11, color:GREEN});
+      }
+    },
+    { map:2, title:"Audit: the surface impostor", pose:"think",
+      think:"If 40° had been measured from the SURFACE, what incidence angle is that really?",
+      say:"The audit names the classic ambush. Suppose the problem had said forty degrees from the surface — glancing low over the pond. That is a fifty-degree angle of incidence, and Snell would return thirty-five point two degrees, a wholly different answer. Exam-setters adore this trap. Reusable method: before touching Snell, locate the normal, translate every stated angle to it, and verify the bend direction — toward the normal into higher n — as the free sanity check.",
+      board:[
+        {label:"The trap", tex:"40^\\circ\\ \\text{from surface} = 50^\\circ\\ \\text{incidence} \\Rightarrow \\theta_2 = 35.2^\\circ", kind:"warn"},
+        {label:"Reusable method", text:"Angles from the normal, always. Into higher n: toward the normal; out: away. Check direction before algebra.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Two polarizers",
+  problem:"Unpolarized light of 10.0 W/m² passes a polarizer, then a second at 60.0° to the first. Find the intensity after each.",
+  goal:"Halve the unpolarized light, then apply Malus's cos² — and see why sunglasses work.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Stage one: the half","Stage two: Malus","Audit: extremes and sunglasses"],
+  setup(ctx, w){
+    boxAt(ctx, 3.4, 1.6, 0.5, 3.8, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [3.4, 1.9 + 3.2*t], 0, 1, {color:GOLD, w:2});
+    label(ctx, 3.4, 0.9, 'P₁', {fs:11, color:DIMC});
+    boxAt(ctx, 6.6, 1.6, 0.5, 3.8, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [6.6 - 1.35*Math.sin(1.047)*t + 1.35*Math.sin(1.047), 3.5 - 1.35*Math.cos(1.047) + 2.7*Math.cos(1.047)*t], 0, 1, {color:GOLD, w:2});
+    label(ctx, 6.6, 0.9, 'P₂ at 60°', {fs:11, color:DIMC});
+    arrow(ctx, 0.6, 3.5, 2.6, 3.5, {color:BLUE, w:2.5, label:'10 W/m²', fs:11});
+  },
+  steps:[
+    { map:0, title:"Unpolarized meets its first gate", pose:"talk",
+      think:"Unpolarized light is all angles at once — what does cos² average to?",
+      say:"Unpolarized light is a democracy of orientations — its electric field points every which way, moment to moment. A polarizer passes the component along its axis, and averaging cosine squared over all angles gives exactly one half. So the first gate takes fifty per cent, no trigonometry required: five watts per square metre, now marching in a single polarization.",
+      board:[
+        {label:"Unpolarized rule", tex:"I_1 = \\tfrac{1}{2}I_0 = 5.00\\ \\text{W/m}^2", kind:"answer"}
+      ]
+    },
+    { map:1, title:"The second gate: Malus's law", pose:"write",
+      think:"Now the light IS polarized — the cos² applies at the actual angle.",
+      say:"The second polarizer meets light with a definite orientation, so now Malus's law applies literally: intensity times cosine squared of the angle between axes. Cosine of sixty is one half; squared, one quarter. One and a quarter watts per square metre emerges — an eighth of what began the journey.",
+      board:[
+        {label:"Malus", tex:"I_2 = I_1\\cos^2\\theta = 5.00\\cos^2 60^\\circ = 5.00(0.250) = 1.25\\ \\text{W/m}^2", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: extremes, then the real world", pose:"think",
+      think:"Check θ = 0° and 90° — then explain glare on a road.",
+      say:"Audit at the extremes: aligned axes pass all five watts; crossed at ninety, nothing — the classic blackout of crossed polarizers. Both fall straight out of cosine squared. And the everyday payoff: glare bouncing off roads and water is partly horizontally polarized — the next examples will show why — so sunglasses with vertical axes are simply our first gate, oriented to assassinate that glare specifically. Reusable method: one half for the first passage of unpolarized light, cosine squared of the axis angle for every polarized passage thereafter.",
+      board:[
+        {label:"Extremes", tex:"\\theta = 0^\\circ: 5.00;\\quad \\theta = 90^\\circ: 0\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Unpolarized → ×½ once. Then chain cos²θ per polarizer, θ measured between successive axes.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Critical angles for two interfaces",
+  problem:"Find the critical angle for glass (n = 1.50) meeting (a) air and (b) water (n = 1.33). Which interface traps light more easily?",
+  goal:"Compute sin θ_c = n₂/n₁ twice and read the consequences for prisms and diamonds.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["When refraction fails","(a) Glass–air","(b) Glass–water","Audit: prisms and diamonds"],
+  setup(ctx, w){
+    dashLine(ctx, 0.6, 4.4, 9.4, 4.4, {color:CHALKC});
+    label(ctx, 1.4, 5.0, 'air / water above', {fs:10, color:DIMC});
+    label(ctx, 1.5, 3.7, 'glass below', {fs:10, color:DIMC});
+    arrow(ctx, 2.4, 1.4, 4.9, 4.3, {color:GOLD, w:2});
+    arrow(ctx, 5.1, 4.3, 7.6, 1.4, {color:GOLD, w:2, dash:'6 5'});
+    dashLine(ctx, 5.0, 1.2, 5.0, 6.4, {color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Refraction's breaking point", pose:"talk",
+      think:"Leaving a dense medium, θ₂ > θ₁ — what happens as θ₂ approaches 90°?",
+      say:"Light leaving a dense medium bends away from the normal — the outside angle always exceeds the inside one. Steepen the inside ray and the refracted ray flattens toward the surface, until at the critical angle it grazes along it: ninety degrees, refraction's last gasp. Beyond that, Snell has no solution, and the surface becomes a flawless mirror — total internal reflection.",
+      board:[
+        {label:"Critical angle", tex:"\\sin\\theta_c = \\frac{n_2}{n_1}\\quad (n_1 > n_2)", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Glass against air", pose:"write",
+      think:"sin θ_c = 1/1.5 — memorable number ahead.",
+      say:"Glass to air: sine inverse of two thirds — forty-one point eight degrees. Anything steeper than about forty-two degrees cannot leave; it reflects with one hundred per cent fidelity, better than any metallic mirror ever coated.",
+      board:[
+        {label:"(a)", tex:"\\sin\\theta_c = \\frac{1.00}{1.50} \\Rightarrow \\theta_c = 41.8^\\circ", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Glass against water", pose:"write",
+      think:"n₂/n₁ = 0.887 now — closer indices, so θ_c moves which way?",
+      say:"Glass to water: the indices are closer cousins, so escape is easier and the critical angle retreats to sixty-two and a half degrees. General rule: the closer the two indices, the harder it is to trap light between them.",
+      board:[
+        {label:"(b)", tex:"\\sin\\theta_c = \\frac{1.33}{1.50} = 0.887 \\Rightarrow \\theta_c = 62.5^\\circ", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the 45° prism and the diamond", pose:"think",
+      think:"A 45° prism in air: above or below θ_c? And under water?",
+      say:"Audit with hardware. Binoculars fold light with forty-five-degree prisms: in air, forty-five beats forty-two — total reflection, a perfect mirror with no silvering to tarnish. Dunk the same prism in water and forty-five falls short of sixty-two and a half: the mirror springs a leak. And diamond, with n of two point four two, has a critical angle of just twenty-four degrees — light entering a well-cut stone is trapped into bouncing until it exits through the crown toward your eye: the fire is imprisonment, by geometry. Reusable method: sine theta c equals n two over n one, dense side only; then compare your actual angle against it — trapped or free is a one-line verdict.",
+      board:[
+        {label:"Hardware", tex:"45^\\circ > 41.8^\\circ\\ \\text{(air: mirror)};\\quad 45^\\circ < 62.5^\\circ\\ \\text{(water: leak)}", kind:"key"},
+        {label:"Diamond", tex:"n = 2.42:\\ \\theta_c = 24.4^\\circ\\ \\text{— light imprisoned, hence fire}", kind:"note"},
+        {label:"Reusable method", text:"TIR needs dense → rare and θ > θ_c. Closer indices raise θ_c; extreme n lowers it dramatically.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Deviation by a prism",
+  problem:"Light enters an equilateral prism (n = 1.50, apex 60.0°) at 50.0°. Find the exit angle and total deviation.",
+  goal:"Chain Snell–geometry–Snell, then audit for trapping and minimum deviation.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The three-step chain","Enter: Snell","Cross: geometry","Exit: Snell again","Audit: trap check and δ_min"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.6 + 2.4*t, 1.2 + 4.6*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [5.0 + 2.4*t, 5.8 - 4.6*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [2.6 + 4.8*t, 1.2], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 5.0, 6.4, 'A = 60°', {fs:11, color:DIMC});
+    arrow(ctx, 0.7, 2.4, 3.35, 2.65, {color:GOLD, w:2.5});
+  },
+  steps:[
+    { map:0, title:"A journey in three acts", pose:"talk",
+      think:"Two refractions with a geometric relay between — what links r₁ and r₂?",
+      say:"A prism problem is a relay race: Snell at the first face, a purely geometric handoff inside, Snell at the second face. The handoff is the secret — the two internal angles always add up to the apex angle. With that, the problem solves itself in sequence.",
+      board:[
+        {label:"The relay", tex:"\\text{Snell} \\to\\ r_1 + r_2 = A\\ \\to \\text{Snell}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Act one: entering", pose:"write",
+      think:"Air to glass at 50° — bend toward the normal.",
+      say:"Entry: sine fifty over one point five gives r one of thirty point seven degrees — bent toward the normal, as glass demands.",
+      board:[
+        {label:"First face", tex:"\\sin r_1 = \\frac{\\sin 50.0^\\circ}{1.50} \\Rightarrow r_1 = 30.7^\\circ", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [3.35 + 2.5*t, 2.65 + 0.35*t], 0, 1, {color:GOLD, w:2});
+      }
+    },
+    { map:2, title:"Act two: the geometric handoff", pose:"write",
+      think:"r₁ + r₂ = A — pure triangle bookkeeping, no physics.",
+      say:"Inside, no physics — just the triangle: r two equals sixty minus thirty point seven, twenty-nine point three degrees. This is the angle at which the ray presents itself to the second face, from the glass side.",
+      board:[
+        {label:"Inside", tex:"r_2 = A - r_1 = 60.0^\\circ - 30.7^\\circ = 29.3^\\circ", kind:"answer", move:"triangle sum"}
+      ]
+    },
+    { map:3, title:"Act three: exit, and the deviation", pose:"write",
+      think:"Snell reversed: sin e = n sin r₂. Then δ = i + e − A.",
+      say:"Exit: one point five times sine twenty-nine point three is zero point seven three four — e is forty-seven point two degrees. The total deviation — how far the prism swung the ray from its original heading — has the tidy formula i plus e minus A: thirty-seven point two degrees.",
+      board:[
+        {label:"Second face", tex:"\\sin e = 1.50\\sin 29.3^\\circ = 0.734 \\Rightarrow e = 47.2^\\circ", kind:"answer"},
+        {label:"Deviation", tex:"\\delta = i + e - A = 50.0 + 47.2 - 60.0 = 37.2^\\circ", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.85, 3.0, 8.7, 1.05, {color:GREEN, w:2.5});
+      }
+    },
+    { map:4, title:"Audit: the trap dodged, the minimum found", pose:"think",
+      think:"Was r₂ safely below θ_c? And why is 37.2° also δ_min here?",
+      say:"Two audits. First, danger: had r two exceeded the glass–air critical angle of forty-one point eight, the ray would have been trapped inside — always check; ours cleared it by a wide margin. Second, elegance: deviation is minimised when the passage is symmetric, i equal to e. Our fifty and forty-seven are nearly so, which is why our thirty-seven point two is essentially the minimum deviation — and measuring delta min is the classical precision method for determining an index of refraction. Reusable method: Snell, r one plus r two equals A, Snell; then delta equals i plus e minus A, with a critical-angle check at the second face as standard hygiene.",
+      board:[
+        {label:"Trap check", tex:"r_2 = 29.3^\\circ < \\theta_c = 41.8^\\circ\\ \\checkmark", kind:"key"},
+        {label:"Minimum", tex:"\\delta_{\\min}\\ \\text{at } i = e\\ \\text{(symmetric passage)} \\Rightarrow n = \\frac{\\sin\\frac{A+\\delta_{\\min}}{2}}{\\sin\\frac{A}{2}}", kind:"note"},
+        {label:"Reusable method", text:"Prism = Snell / triangle / Snell. Always test r₂ against θ_c; symmetry minimises δ and measures n.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Brewster's angle for water",
+  problem:"At what incidence is sunlight off a lake completely polarized? Find the refraction angle then, and identify which polarization survives.",
+  goal:"Use tan θ_B = n₂/n₁, verify the 90° geometry, and aim your sunglasses.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The special angle","Verify the right angle","Which polarization survives","Audit: sunglasses geometry"],
+  setup(ctx, w){
+    dashLine(ctx, 0.6, 3.2, 9.4, 3.2, {color:BLUE});
+    label(ctx, 8.8, 2.7, 'lake', {fs:11, color:BLUE});
+    dashLine(ctx, 5.0, 0.8, 5.0, 6.4, {color:DIMC});
+    arrow(ctx, 1.6, 5.8, 4.9, 3.3, {color:GOLD, w:2.5});
+    arrow(ctx, 5.1, 3.3, 8.4, 5.8, {color:GOLD, w:2, dash:'6 5'});
+    label(ctx, 7.6, 6.3, 'reflected', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"The angle that purifies", pose:"talk",
+      think:"Brewster's condition is a tangent, not a sine — compute it for water.",
+      say:"At one special incidence, reflection becomes a perfect polarizing filter: the reflected beam emerges completely polarized. Brewster's angle obeys a tangent law — tangent theta B equals n two over n one. For water: tangent inverse of one point three three, fifty-three point one degrees from the vertical. The Sun then stands about thirty-seven degrees above the horizon — a late-afternoon glare angle.",
+      board:[
+        {label:"Brewster", tex:"\\tan\\theta_B = \\frac{n_2}{n_1} = 1.33 \\Rightarrow \\theta_B = 53.1^\\circ", kind:"answer"}
+      ]
+    },
+    { map:1, title:"The hidden right angle", pose:"write",
+      think:"Find θ₂ from Snell and add it to θ_B — what do you get?",
+      say:"Run Snell at this angle: theta two comes out at thirty-six point nine degrees. Add: fifty-three point one plus thirty-six point nine — exactly ninety. The reflected and refracted rays are perpendicular. That is no numerical accident; it is the mechanism itself.",
+      board:[
+        {label:"Refraction", tex:"\\sin\\theta_2 = \\frac{\\sin 53.1^\\circ}{1.33} \\Rightarrow \\theta_2 = 36.9^\\circ", kind:"answer"},
+        {label:"The geometry", tex:"\\theta_B + \\theta_2 = 90.0^\\circ\\ \\checkmark", kind:"key"}
+      ]
+    },
+    { map:2, title:"Why one polarization dies", pose:"talk",
+      think:"Reflected light is re-radiated by dipoles in the water — can a dipole radiate along its own axis?",
+      say:"Here is the physics in one image. The reflected beam is re-radiated by charges in the water oscillating along the refracted light's field. A dipole cannot radiate along its own axis of oscillation. At Brewster's angle, the would-be reflected direction lies exactly along the oscillation axis of the in-plane polarization — so that component simply cannot reflect. Only the field parallel to the surface — horizontal — survives in the reflection; the other component passes entirely into the water.",
+      board:[
+        {label:"Survivor", tex:"\\text{reflected light: polarized parallel to surface (horizontal)}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: point your sunglasses", pose:"think",
+      think:"Glare is horizontal — what axis must polarizing lenses have?",
+      say:"The audit puts the physics on your face. Lake glare at and near Brewster's angle is horizontally polarized, so polarizing sunglasses carry vertical transmission axes — crossed with the glare, they extinguish it while ordinary scenery, largely unpolarized, merely dims by half. Tilt your head sideways and watch the glare resurrect: you have rotated your analyser. Reusable method: tangent for Brewster, verify the ninety-degree geometry, and remember the survivor is always polarized parallel to the reflecting surface.",
+      board:[
+        {label:"Sunglasses", tex:"\\text{vertical axis} \\perp \\text{horizontal glare} \\Rightarrow \\text{extinction}", kind:"key"},
+        {label:"Reusable method", text:"tan θ_B = n₂/n₁; reflected ⊥ refracted; reflected polarization ∥ surface. Head-tilt is the experimental test.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Acceptance angle and pulse spreading in an optical fiber",
+  problem:"A fiber has core n₁ = 1.48, cladding n₂ = 1.46. (a) Largest entry angle in air that is still guided? (b) Over 1.00 km, how much later does the steepest ray arrive than the axial one?",
+  goal:"Chain TIR at the wall with Snell at the face, then price the zigzag in nanoseconds.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Guiding by TIR","The acceptance cone","Numerical aperture","The zigzag tax","Audit: bandwidth verdict"],
+  setup(ctx, w){
+    boxAt(ctx, 5.6, 2.6, 8.2, 1.8, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 1.5, 3.5, 9.7, 3.5, {color:DIMC});
+    plotCurve(ctx, t => [1.5 + 8.2*t, 3.5 + 0.75*Math.abs(Math.sin(6*t))], 0, 1, {color:GOLD, w:2});
+    label(ctx, 5.6, 5.3, 'core n₁ = 1.48, cladding n₂ = 1.46', {fs:10, color:DIMC});
+    arrow(ctx, 0.3, 4.6, 1.4, 3.7, {color:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"A light pipe built from TIR", pose:"talk",
+      think:"What keeps light inside a strand of glass for kilometres?",
+      say:"An optical fiber is total internal reflection industrialised: a glass core sheathed in slightly-lower-index cladding, so rays striking the wall beyond the critical angle bounce forever inward, kilometre after kilometre. The indices differ by little — one point four eight against one point four six — and that stinginess, we shall see, is deliberate.",
+      board:[
+        {label:"Wall condition", tex:"\\sin\\theta_c = \\frac{n_2}{n_1} = \\frac{1.46}{1.48}", kind:"key"}
+      ]
+    },
+    { map:1, title:"From wall angle to entry cone", pose:"write",
+      think:"A ray at θ_c on the wall makes angle 90° − θ_c with the axis — now Snell at the face.",
+      say:"Chain backwards from the wall to the entrance. A ray grazing the critical condition travels at ninety minus theta c from the axis. Snell at the flat entrance face converts that internal inclination to an external one: sine theta max equals n one cosine theta c — which simplifies beautifully to the root of n one squared minus n two squared.",
+      board:[
+        {label:"Chain", tex:"\\sin\\theta_{\\max} = n_1\\cos\\theta_c = \\sqrt{n_1^2 - n_2^2}", kind:"key", move:"Snell at the face"}
+      ]
+    },
+    { map:2, title:"The numerical aperture", pose:"write",
+      think:"√(1.48² − 1.46²) — small difference, workable cone.",
+      say:"Numbers: root of two point one nine minus two point one three — zero point two four two. Theta max is fourteen degrees: light within a twenty-eight-degree cone is captured and guided. This root — the numerical aperture — is the single figure of merit printed on every fiber spool.",
+      board:[
+        {label:"(a) Acceptance", tex:"\\sin\\theta_{\\max} = \\sqrt{1.48^2 - 1.46^2} = 0.242 \\Rightarrow \\theta_{\\max} = 14.0^\\circ", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The zigzag pays a time tax", pose:"write",
+      think:"The steepest ray's path is longer by the factor n₁/n₂ — price it over 1 km.",
+      say:"Part b prices the geometry. The steepest guided ray zigzags, lengthening its path by the factor n one over n two compared with the straight axial ray. Over a kilometre, that costs sixty-eight nanoseconds of lateness. Sixty-eight nanoseconds sounds like nothing — until you try to send data.",
+      board:[
+        {label:"(b) Spread", tex:"\\Delta t = \\frac{Ln_1}{c}\\left(\\frac{n_1}{n_2} - 1\\right) = \\frac{(1000)(1.48)}{3.00\\times10^{8}}(0.0137) = 68\\ \\text{ns}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the bandwidth verdict", pose:"think",
+      think:"Pulses smearing 68 ns/km — what bit rate survives? And the engineering cures?",
+      say:"The audit turns nanoseconds into money. A pulse entering crisp exits smeared across sixty-eight nanoseconds — so pulses closer together than that merge, capping this fiber near ten megabits per second over the kilometre. Modal dispersion is the enemy, and now the stingy index gap explains itself: a smaller gap means a slimmer acceptance cone but less zigzag spread. The radical cure is a core a few microns wide, admitting only the axial mode — single-mode fiber, the backbone of the internet. Reusable method: acceptance from root n one squared minus n two squared; spread from the n one over n two path stretch; and read every fiber as a bargain between capturing light and keeping pulses sharp.",
+      board:[
+        {label:"Verdict", tex:"\\sim10\\ \\text{Mb/s over 1 km — modal dispersion limited}", kind:"key"},
+        {label:"Reusable method", text:"NA = √(n₁²−n₂²) captures; Δt = (Ln₁/c)(n₁/n₂ − 1) smears. Thin cores (single-mode) kill the zigzag entirely.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Dispersion: splitting white light at a surface",
+  problem:"Crown glass: n = 1.514 (red), 1.528 (blue). White light hits at 60.0°. Find the angle between refracted red and blue — and why windows show no colours while prisms do.",
+  goal:"Run Snell per colour, then explain the window's alibi and the prism's guilt.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One n per colour","Snell twice","The window's alibi","Audit: prisms and rainbows"],
+  setup(ctx, w){
+    dashLine(ctx, 0.6, 4.0, 9.4, 4.0, {color:CHALKC});
+    label(ctx, 8.6, 4.5, 'glass below', {fs:10, color:DIMC});
+    dashLine(ctx, 5.0, 1.0, 5.0, 6.5, {color:DIMC});
+    arrow(ctx, 1.4, 6.1, 4.9, 4.1, {color:CHALKC, w:2.5});
+    label(ctx, 2.0, 6.5, 'white', {fs:11, color:CHALKC});
+  },
+  steps:[
+    { map:0, title:"The index is colour-blind no more", pose:"talk",
+      think:"Why should blue light feel a larger n than red?",
+      say:"So far we pretended each glass has one index. In truth n depends on frequency: blue light, oscillating nearer the glass atoms' natural resonances, is slowed more than red — n of one point five two eight against one point five one four. A fraction of a per cent. Watch how nature amplifies or buries it, depending on the geometry.",
+      board:[
+        {label:"Dispersion", tex:"n_{\\text{red}} = 1.514,\\quad n_{\\text{blue}} = 1.528", kind:"key"}
+      ]
+    },
+    { map:1, title:"Snell, once per colour", pose:"write",
+      think:"Higher n, smaller refraction angle — blue bends more.",
+      say:"Snell for each: red refracts to thirty-four point nine degrees, blue to thirty-four point five. Blue bends more — always, in normal glass. The fan between them: barely a third of a degree. White light has been split, but only just.",
+      board:[
+        {label:"Red", tex:"\\sin r = \\frac{\\sin 60^\\circ}{1.514} \\Rightarrow r = 34.9^\\circ", kind:"answer"},
+        {label:"Blue", tex:"r = 34.5^\\circ:\\ \\text{spread } 0.37^\\circ", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.0, 4.0, 6.8, 1.2, {color:RED, w:2});
+        arrow(c, 5.0, 4.0, 6.6, 1.1, {color:BLUE, w:2});
+      }
+    },
+    { map:2, title:"The window's perfect alibi", pose:"write",
+      think:"The second surface of a parallel pane is parallel to the first — what does it undo?",
+      say:"Why is your window not a rainbow machine? Because its two faces are parallel: the second refraction is the first run backwards, restoring every colour to its original direction. Red and blue emerge parallel again, displaced sideways from one another by a few hundredths of a millimetre — a separation your eye cannot begin to resolve. The window splits the light and then, faces conspiring, quietly reunites it.",
+      board:[
+        {label:"Parallel faces", tex:"\\text{second surface undoes the first: colours exit parallel}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: tilt the second face and confess", pose:"think",
+      think:"A prism's faces are NOT parallel — what do the deviations do instead?",
+      say:"The prism's guilt is now obvious: its second face is tilted, so instead of cancelling, the two refractions add their deviations — thirty-seven degrees of bend, differing by about a degree between red and blue — and the spectrum fans wide across the wall. Raindrops go further: refraction, internal reflection, refraction again, wringing a rainbow from that same humble zero point zero one four of index difference. Reusable method: dispersion is one Snell per colour; parallel surfaces cancel it, non-parallel ones accumulate it — geometry decides whether the colours ever show.",
+      board:[
+        {label:"Prism", tex:"\\text{tilted face: deviations add} \\Rightarrow \\text{spectrum}\\ (\\sim1^\\circ\\ \\text{red–blue})", kind:"key"},
+        {label:"Reusable method", text:"Run Snell per colour. Parallel exit face: colours re-merge (offset only). Tilted: differences accumulate — prism, rainbow.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Sunlight's push on the whole Earth",
+  problem:"Sunlight (1361 W/m²) hits Earth as an absorbing disk of radius 6.37×10⁶ m. Find the radiation force and compare with the Sun's gravity.",
+  goal:"Compute a planetary radiation force, then read the R² vs R³ scaling that sorts dust from planets.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Momentum rains on a disk","The push","Gravity's grip","Audit: the 1/R law"],
+  setup(ctx, w){
+    circleAt(ctx, 1.5, 3.5, 0.65, {stroke:GOLD, w:2.5});
+    label(ctx, 1.5, 2.3, 'Sun', {fs:11, color:GOLD});
+    circleAt(ctx, 7.8, 3.5, 0.85, {stroke:BLUE, w:2.5});
+    label(ctx, 7.8, 2.1, 'Earth', {fs:11, color:BLUE});
+    arrow(ctx, 2.4, 4.1, 6.7, 4.1, {color:GOLD, w:2});
+    arrow(ctx, 2.4, 2.9, 6.7, 2.9, {color:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"Light's momentum, planet-scale", pose:"talk",
+      think:"The Earth intercepts sunlight over what effective area?",
+      say:"Sunlight carries momentum at the rate I over c per square metre, and the Earth intercepts it over its cross-sectional disk — pi R squared, not the full sphere, since the far side is night. Multiply push per area by disk area: a planetary radiation force. Let us see how big a shove the Sun's light gives a world.",
+      board:[
+        {label:"Radiation force", tex:"F = \\frac{I\\pi R_E^2}{c}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The push, in ships", pose:"write",
+      think:"Estimate first: 10³ × 10¹⁴ / 10⁸ ≈ 10⁹ N.",
+      say:"Compute: one thousand three hundred sixty-one times pi times four times ten to the thirteen, over c: five point eight times ten to the eight newtons. Six hundred million newtons — the weight of a loaded supertanker, pressing on the entire planet, continuously, forever.",
+      board:[
+        {label:"Push", tex:"F = \\frac{(1361)\\pi(6.37\\times10^{6})^2}{3.00\\times10^{8}} = 5.8\\times10^{8}\\ \\text{N}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Gravity's counter-grip", pose:"write",
+      think:"GMm/r² with solar mass — expect an astronomical number.",
+      say:"Now gravity: G times the Sun's mass times the Earth's, over the orbital distance squared — three and a half times ten to the twenty-two newtons. The ratio: light's push is sixteen parts in a quadrillion of gravity's pull. Sunlight bends Earth's orbit by precisely nothing anyone can measure.",
+      board:[
+        {label:"Gravity", tex:"F_g = \\frac{GM_\\odot M_E}{r^2} = 3.5\\times10^{22}\\ \\text{N}", kind:"answer"},
+        {label:"Ratio", tex:"\\frac{F_{\\text{rad}}}{F_g} = 1.6\\times10^{-14}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: shrink the planet until light wins", pose:"think",
+      think:"F_rad ∝ R², F_g ∝ R³ (mass) — so the ratio scales how?",
+      say:"The audit extracts the law hiding in the comparison. Radiation force rides the cross-section — R squared. Gravity rides the mass — R cubed. Their ratio therefore grows as one over R: halve the body and light doubles its relative say. Follow that line down thirteen orders of magnitude from planet to micron-sized grain and the ratio passes unity — which is why comet dust streams away from the Sun in glowing tails while the comet itself, and every planet, stays obediently in orbit. One scaling law sorts the whole solar system by size. Reusable method: I pi R squared over c for the push; when comparing area-forces to volume-forces, extract the ratio's R-scaling first — it tells you who wins at which size.",
+      board:[
+        {label:"Scaling", tex:"\\frac{F_{\\text{rad}}}{F_g} \\propto \\frac{R^2}{R^3} = \\frac{1}{R}:\\ \\text{small bodies feel light}", kind:"key"},
+        {label:"Reusable method", text:"Area forces (∝R²) vs volume forces (∝R³): ratio ∝ 1/R. Unity near a = 0.3 μm — dust blows, planets stay.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Fermat's principle: deriving Snell's law",
+  problem:"Light goes from A (height a above an interface) to B (depth b below), horizontal separation d; speeds v₁ above, v₂ below. Show the least-time path obeys Snell's law.",
+  goal:"Write t(x), differentiate, recognise the sines — and meet the principle beneath all of geometric optics.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The lifeguard's dilemma","Write the time","Differentiate","Recognise the sines","Audit: one principle, all of optics"],
+  setup(ctx, w){
+    dashLine(ctx, 0.6, 3.5, 9.4, 3.5, {color:CHALKC});
+    circleAt(ctx, 1.8, 5.9, 0.16, {stroke:GOLD, w:2.5});
+    label(ctx, 1.2, 5.9, 'A', {fs:12, color:GOLD});
+    circleAt(ctx, 8.4, 1.1, 0.16, {stroke:BLUE, w:2.5});
+    label(ctx, 9.0, 1.1, 'B', {fs:12, color:BLUE});
+    label(ctx, 2.6, 4.3, 'fast v₁', {fs:10, color:DIMC});
+    label(ctx, 6.8, 2.6, 'slow v₂', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [1.8 + 3.4*t, 5.9 - 2.4*t], 0, 1, {color:DIMC, w:1.5, dash:'5 5'});
+    plotCurve(ctx, t => [5.2 + 3.2*t, 3.5 - 2.4*t], 0, 1, {color:DIMC, w:1.5, dash:'5 5'});
+  },
+  steps:[
+    { map:0, title:"Nature the lifeguard", pose:"talk",
+      think:"A lifeguard runs fast on sand, swims slow — is the straight line to the swimmer fastest?",
+      say:"Fermat's principle claims light chooses the path of least time. Picture a lifeguard: fast on sand, slow in water, aiming for a swimmer. The straight line wastes precious speed by entering the water too soon; the clever path runs farther on the beach, then takes a steeper plunge. Light, says Fermat, computes the same trade at every interface. Let us hold it to that claim.",
+      board:[
+        {label:"Fermat", tex:"\\text{light takes the path of least time}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Write the total time", pose:"write",
+      think:"One unknown: the crossing point x. Two hypotenuses, two speeds.",
+      say:"Parametrise by the single unknown: the crossing point, a horizontal distance x from below A. Above: a hypotenuse of a squared plus x squared, at speed v one. Below: b squared plus d minus x squared, at v two. The total time is their quotient sum — one function, one variable.",
+      board:[
+        {label:"Time function", tex:"t(x) = \\frac{\\sqrt{a^2 + x^2}}{v_1} + \\frac{\\sqrt{b^2 + (d-x)^2}}{v_2}", kind:"key"}
+      ]
+    },
+    { map:2, title:"Set the derivative to zero", pose:"write",
+      think:"Differentiate each square root — chain rule, then equate.",
+      say:"Minimise: differentiate and set to zero. Each term yields its numerator's derivative over the root: x over v one root, minus d minus x over v two root. The stationary point balances them. And the second derivative is positive — this is honestly a minimum, not a saddle.",
+      board:[
+        {label:"Stationarity", tex:"\\frac{dt}{dx} = \\frac{x}{v_1\\sqrt{a^2+x^2}} - \\frac{d-x}{v_2\\sqrt{b^2+(d-x)^2}} = 0", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The sines step forward", pose:"excited",
+      think:"x over its hypotenuse — which trig ratio of which angle is that?",
+      say:"Now look at the fractions with a geometer's eye: x over its hypotenuse is the sine of the upper angle from the normal; d minus x over its hypotenuse, the sine of the lower. The condition reads sine theta one over v one equals sine theta two over v two — and with v equal to c over n, that is Snell's law, letter for letter. Calculus has derived what experiment decreed.",
+      board:[
+        {label:"Recognise", tex:"\\frac{\\sin\\theta_1}{v_1} = \\frac{\\sin\\theta_2}{v_2} \\iff n_1\\sin\\theta_1 = n_2\\sin\\theta_2", kind:"answer", move:"v = c/n"}
+      ],
+      action(c){
+        plotCurve(c, t => [1.8 + 3.7*t, 5.9 - 2.4*t], 0, 1, {color:GOLD, w:2.5});
+        plotCurve(c, t => [5.5 + 2.9*t, 3.5 - 2.4*t], 0, 1, {color:GOLD, w:2.5});
+        label(c, 5.5, 4.0, 'least time', {fs:10, color:GOLD});
+      }
+    },
+    { map:4, title:"Audit: how much does one principle buy?", pose:"think",
+      think:"Set v₁ = v₂ — what law falls out? Let n vary continuously — what phenomena?",
+      say:"Audit the principle's reach. Equal speeds: the minimisation gives equal angles — the law of reflection, free of charge. Let the index vary continuously with height, as over hot asphalt, and least-time paths curve — mirages, both the shimmering road and the looming ships of polar seas. One economic principle underwrites every ray diagram we have drawn this term. And a deeper truth waits in quantum mechanics: light explores all paths, and the least-time one survives by constructive interference — Fermat is the classical shadow of Feynman. Reusable method: parametrise the path by its free point, write total time, differentiate, and translate the geometry into sines — the variational template of physics.",
+      board:[
+        {label:"The harvest", tex:"\\text{reflection, refraction, mirages — one principle}", kind:"key"},
+        {label:"Reusable method", text:"Variational recipe: one parameter, one time function, dt/dx = 0, read angles from the geometry. Straight is not always fastest.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

@@ -1421,6 +1421,489 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Speed of sound on a warm day",
+  problem:"Sound travels at 331 m/s at 0°C. Find its speed at 30°C. Does pressure matter?",
+  goal:"Scale v ∝ √T in kelvin, and see why pressure cancels out.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Why √T","Scale to 30°C","Audit: the pressure that wasn't"],
+  setup(ctx, w){
+    label(ctx, 2.4, 6.0, 'cold: 331 m/s', {fs:12, color:BLUE});
+    label(ctx, 7.4, 6.0, 'warm: ?', {fs:12, color:RED});
+    plotCurve(ctx, t => [t, 4.6 + 0.35*Math.sin(4.5*t)], 0.6, 4.4, {color:BLUE, w:2});
+    plotCurve(ctx, t => [t, 4.6 + 0.35*Math.sin(4.5*t)], 5.6, 9.4, {color:RED, w:2});
+  },
+  steps:[
+    { map:0, title:"Sound rides molecular speed", pose:"talk",
+      think:"Sound is passed molecule to molecule — what sets the messengers' pace?",
+      say:"Sound is a rumour relayed by molecular collisions, so its speed tracks the molecules' own thermal speed — which grows as the square root of absolute temperature. The full formula is root of gamma R T over M, but for today the working part is simply v proportional to root T, in kelvin.",
+      board:[
+        {label:"The formula", tex:"v = \\sqrt{\\frac{\\gamma RT}{M}} \\propto \\sqrt{T}\\ \\text{(kelvin!)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Scale to the warm day", pose:"write",
+      think:"No need for γ, R, M — take the ratio of the two temperatures.",
+      say:"Never recompute what you can scale. Three-oh-three over two seventy-three, square-rooted, times three thirty-one: three hundred forty-nine metres per second. Thirty degrees of warmth buys eighteen metres per second — about five per cent.",
+      board:[
+        {label:"At 30°C", tex:"v = 331\\sqrt{\\frac{303}{273}} = 349\\ \\text{m/s}", kind:"answer", move:"ratio, then √"}
+      ]
+    },
+    { map:2, title:"Audit: pressure's perfect alibi", pose:"think",
+      think:"Compressing air stiffens it AND densifies it — in what proportion?",
+      say:"Why no pressure in the formula? Compress air and you stiffen it — the bulk modulus is gamma p — but you thicken it in exactly the same proportion, and speed is the root of stiffness over density. The two effects cancel to the last decimal. Temperature, though, has consequences you have heard: sound bends toward cold air, so over an evening lake it curves down to the water and carries impossibly far, and outdoor concerts change character at dusk. Humidity nudges v up a whisker, water vapour being lighter than air. Reusable method: scale v by root T-ratio in kelvin, and refuse to let pressure into the argument.",
+      board:[
+        {label:"Cancellation", tex:"v = \\sqrt{\\frac{\\gamma p}{\\rho}}:\\ p\\ \\text{and}\\ \\rho\\ \\text{rise together}", kind:"key"},
+        {label:"Reusable method", text:"v(T₂) = v(T₁)√(T₂/T₁), kelvin only. Pressure never matters; humidity and wind slightly do.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Decibels and adding sources",
+  problem:"A machine produces 1.00×10⁻⁵ W/m² at a worker's ear. Find the sound level. What if ten identical machines run?",
+  goal:"Use β = 10 log(I/I₀), add intensities — and internalise the +10/+3 dB rules.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The decibel ladder","One machine: 70 dB","Ten machines: +10 dB","Audit: the ear's arithmetic"],
+  setup(ctx, w){
+    arrow(ctx, 1.4, 0.8, 1.4, 6.4, {color:CHALKC, w:2});
+    label(ctx, 1.4, 6.9, 'dB', {fs:12, color:CHALKC});
+    dashLine(ctx, 1.4, 1.4, 8.6, 1.4, {color:DIMC});
+    label(ctx, 9.0, 1.4, '0: threshold', {fs:10, color:DIMC});
+    dashLine(ctx, 1.4, 3.6, 8.6, 3.6, {color:DIMC});
+    label(ctx, 9.0, 3.6, '60: speech', {fs:10, color:DIMC});
+    dashLine(ctx, 1.4, 5.6, 8.6, 5.6, {color:DIMC});
+    label(ctx, 9.0, 5.6, '120: pain', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A logarithmic ladder", pose:"talk",
+      think:"The ear spans 10¹² in intensity — what scale tames that range?",
+      say:"Your ear works from a whisper at ten to the minus twelve watts per square metre up to a trillion times that — no linear scale can hold such a range. The decibel takes the logarithm of intensity over the hearing threshold and multiplies by ten: every factor of ten in intensity is a neat step of ten on the ladder.",
+      board:[
+        {label:"Sound level", tex:"\\beta = 10\\log_{10}\\frac{I}{I_0},\\qquad I_0 = 10^{-12}\\ \\text{W/m}^2", kind:"key"}
+      ]
+    },
+    { map:1, title:"One machine", pose:"write",
+      think:"10⁻⁵ over 10⁻¹² is 10⁷ — the log does the rest.",
+      say:"Our machine sits ten million times above threshold: log of ten to the seven is seven, times ten — seventy decibels. Busy-street loud; wearing, not yet harmful.",
+      board:[
+        {label:"One machine", tex:"\\beta = 10\\log_{10}\\frac{10^{-5}}{10^{-12}} = 70\\ \\text{dB}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Ten machines: add intensities first", pose:"write",
+      think:"Incoherent sources — do you add decibels or add intensities?",
+      say:"Ten machines. The cardinal rule: incoherent sources add their intensities, never their decibels. Ten to the minus four total — and the level ticks up to eighty. Tenfold power, ten decibels. Two machines at seventy make seventy-three — not one hundred forty!",
+      board:[
+        {label:"Add I, not dB", tex:"I = 10\\times10^{-5} = 10^{-4}\\ \\text{W/m}^2 \\Rightarrow \\beta = 80\\ \\text{dB}", kind:"answer", move:"×10 in I = +10 dB"},
+        {label:"The trap", tex:"70\\ \\text{dB} + 70\\ \\text{dB} = 73\\ \\text{dB, not } 140", kind:"warn"}
+      ]
+    },
+    { map:3, title:"Audit: what the ladder means for ears", pose:"think",
+      think:"×10 → +10 dB, ×2 → +3 dB — why does this mirror hearing?",
+      say:"The audit is practical. Memorise two conversions: times ten is plus ten decibels; times two is plus three. The scale matches perception — each equal step sounds like a similar loudness increase — which is exactly why it was built logarithmic. And the safety line: sustained exposure above eighty-five decibels erodes hearing, so our eighty-decibel floor with ten machines running calls for protection before the eleventh arrives. Reusable method: convert to intensity, add intensities, convert back — and navigate with the plus-ten and plus-three landmarks.",
+      board:[
+        {label:"Landmarks", tex:"\\times10 \\to +10\\ \\text{dB};\\quad \\times2 \\to +3\\ \\text{dB}", kind:"key"},
+        {label:"Reusable method", text:"dB never add. I-domain for arithmetic, dB for reporting. 85 dB sustained = damage threshold.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Open and closed pipes of the same length",
+  problem:"A 0.500 m pipe is (a) open at both ends, (b) closed at one end. Find the fundamental and first two overtones of each (v = 343 m/s).",
+  goal:"Fit antinodes and nodes to the ends, and hear why clarinets sound hollow.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Ends dictate the pattern","(a) Open–open","(b) Open–closed","Audit: the octave and the timbre"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 4.6, 7.0, 1.2, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 6.2, '(a) open–open, L = 0.500 m', {fs:11, color:DIMC});
+    boxAt(ctx, 5.0, 1.2, 7.0, 1.2, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [8.5, 1.2 + 1.2*t], 0, 1, {color:GOLD, w:3});
+    label(ctx, 5.0, 0.5, '(b) open–closed', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"What each end demands", pose:"talk",
+      think:"Open end: air free to move. Closed end: air pinned. Node or antinode?",
+      say:"Air columns obey their ends. An open end lets air slosh freely — a displacement antinode. A closed end pins the air against a wall — a node. The allowed standing waves are whatever patterns satisfy both ends at once, and that single difference will split our two pipes by an octave.",
+      board:[
+        {label:"Boundary rules", tex:"\\text{open end: antinode};\\qquad \\text{closed end: node}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Open at both ends", pose:"write",
+      think:"Antinode to antinode — the same fitting as a string, all n allowed.",
+      say:"Open–open wants antinodes at both ends: n half-wavelengths fit in L, every integer n welcome. v over two L is three forty-three hertz, then six eighty-six, then ten twenty-nine — the full harmonic series, the flute's recipe.",
+      board:[
+        {label:"(a) All harmonics", tex:"f_n = \\frac{nv}{2L} = n(343)\\ \\text{Hz}:\\ 343,\\ 686,\\ 1029\\ \\text{Hz}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 4.6 + 0.45*Math.cos(Math.PI*(t-1.5)/7.0)], 1.5, 8.5, {color:BLUE, w:2});
+        plotCurve(c, t => [t, 4.6 - 0.45*Math.cos(Math.PI*(t-1.5)/7.0)], 1.5, 8.5, {color:BLUE, w:1.5, dash:'4 4'});
+      }
+    },
+    { map:2, title:"(b) Close one end", pose:"write",
+      think:"Node at the wall, antinode at the mouth — a quarter wave fits first. Which n survive?",
+      say:"Close the right end and the geometry changes species: node at the wall, antinode at the mouth — the shortest fit is a quarter wavelength, and the series runs on odd multiples only. One seventy-one and a half, then five fourteen and a half, then eight fifty-seven and a half. Odd harmonics alone: one, three, five.",
+      board:[
+        {label:"(b) Odd only", tex:"L = \\frac{n\\lambda}{4},\\ n\\ \\text{odd}:\\ f_n = \\frac{nv}{4L} = 171.5,\\ 514.5,\\ 857.5\\ \\text{Hz}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 1.2 + 0.45*Math.cos(Math.PI*(t-1.5)/14.0)], 1.5, 8.45, {color:GOLD, w:2});
+        circleAt(c, 8.45, 1.2, 0.08, {stroke:RED, w:2});
+      }
+    },
+    { map:3, title:"Audit: octave down, hollowed out", pose:"think",
+      think:"Same pipe, one cork — two audible consequences. Name both.",
+      say:"The audit is musical. Consequence one: the fundamental halved — a stopped organ pipe sounds a full octave below its open twin, free of charge; organ builders bank on it to save ceiling height. Consequence two: the missing even harmonics hollow out the tone — that woody, cylindrical sound of a clarinet against the flute's brightness is precisely this arithmetic made audible. Reusable method: assign antinodes to open ends, nodes to closed ones, fit the smallest pattern, and count up — all n for open–open, odd n for open–closed.",
+      board:[
+        {label:"The octave", tex:"f_1^{\\text{closed}} = \\tfrac{1}{2}f_1^{\\text{open}}", kind:"key"},
+        {label:"Reusable method", text:"Ends first, formula second: 2L/n fits open–open; 4L/n (n odd) fits open–closed. Missing evens = hollow timbre.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"How far away was the lightning?",
+  problem:"You see a flash and hear thunder 5.00 s later. How far away was the strike? Does the light's travel time matter?",
+  goal:"Range with a slow wave, then justify neglecting the fast one.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One event, two messengers","Range it","Audit: the light's alibi"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [1.8 + 0.35*Math.sin(6*t), 6.3 - 2.9*t], 0, 1, {color:GOLD, w:2.5});
+    label(ctx, 1.8, 6.7, 'strike', {fs:11, color:GOLD});
+    circleAt(ctx, 8.6, 2.6, 0.3, {stroke:CHALKC, w:2});
+    label(ctx, 8.6, 1.7, 'you', {fs:11, color:DIMC});
+    arc(ctx, 1.8, 3.3, 1.3, -60, 60, {color:BLUE, w:1.5});
+    arc(ctx, 1.8, 3.3, 2.2, -50, 50, {color:BLUE, w:1.5});
+    arc(ctx, 1.8, 3.3, 3.1, -40, 40, {color:BLUE, w:1.5});
+  },
+  steps:[
+    { map:0, title:"Two messengers, one start gun", pose:"talk",
+      think:"Flash and thunder leave together — why do they arrive apart?",
+      say:"The strike issues light and sound simultaneously — a natural starting gun. Light arrives essentially at once; sound plods behind at three hundred forty-three metres per second. The five-second gap is therefore, almost entirely, the sound's travel time — and travel time at known speed is distance.",
+      board:[
+        {label:"Ranging", tex:"d = v_{\\text{sound}}\\,\\Delta t", kind:"key"}
+      ]
+    },
+    { map:1, title:"Range the strike", pose:"write",
+      think:"343 × 5 — and recall the folk rule this reproduces.",
+      say:"Three forty-three times five: one point seven two kilometres — close to a mile, which is the old counsel of counting five seconds per mile. Every second of gap is three and a half football pitches of distance.",
+      board:[
+        {label:"Distance", tex:"d = (343)(5.00) = 1.72\\ \\text{km}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: convict sound, acquit light", pose:"think",
+      think:"Quantify the light's travel time before ignoring it.",
+      say:"Good practice never neglects a term without pricing it. The light crossed our one point seven kilometres in five point seven microseconds — a millionth of the gap; the approximation is safe to seven digits. This one-slow-messenger trick is a whole industry: sonar times echoes to map the seafloor, and an array of microphones, comparing arrival times of a single bang, triangulates a gunshot to metres. Reusable method: when two signals share a birth, the arrival gap times the slow speed is the range — but always audit the fast messenger's contribution before dropping it.",
+      board:[
+        {label:"Light's share", tex:"t_{\\text{light}} = \\frac{1.72\\times10^{3}}{3.00\\times10^{8}} = 5.7\\ \\mu\\text{s} \\ll 5\\ \\text{s}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Common-origin signals: Δt × v_slow = d. Verify the neglected travel time numerically — never by habit.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Doppler shift for a moving listener",
+  problem:"A stationary siren emits 400 Hz. A cyclist approaches at 20.0 m/s, then recedes at the same speed. Find the frequency heard each way (v = 343 m/s).",
+  goal:"Shift the observer through fixed wavefronts, and contrast with a moving source.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Fixed crests, moving ear","Approaching","Receding","Audit: observer vs source"],
+  setup(ctx, w){
+    circleAt(ctx, 2.2, 3.5, 0.35, {stroke:GOLD, w:2.5});
+    label(ctx, 2.2, 2.5, 'siren 400 Hz', {fs:11, color:GOLD});
+    arc(ctx, 2.2, 3.5, 1.0, -75, 75, {color:DIMC, w:1.5});
+    arc(ctx, 2.2, 3.5, 1.9, -60, 60, {color:DIMC, w:1.5});
+    arc(ctx, 2.2, 3.5, 2.8, -50, 50, {color:DIMC, w:1.5});
+    circleAt(ctx, 8.0, 3.5, 0.28, {stroke:BLUE, w:2.5});
+    arrow(ctx, 7.6, 3.5, 6.5, 3.5, {color:BLUE, w:2, label:'20 m/s', fs:11});
+  },
+  steps:[
+    { map:0, title:"The crests stand their ground", pose:"talk",
+      think:"The source is at rest — so what is true of the wavelength in the air?",
+      say:"The siren is stationary, so the air holds a fixed pattern: crests spaced eighty-six centimetres apart, marching outward at three forty-three. Nothing about the medium changes when the cyclist moves — the cyclist merely harvests crests at a different rate. Faster harvest, higher pitch. That is the entire mechanism for a moving observer.",
+      board:[
+        {label:"Unchanged in air", tex:"\\lambda = \\frac{v}{f} = \\frac{343}{400} = 0.858\\ \\text{m}", kind:"key"},
+        {label:"Moving observer", tex:"f' = f\\,\\frac{v \\pm v_o}{v}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Riding into the crests", pose:"write",
+      think:"Closing speed with the crests is v + v_o.",
+      say:"Approaching, the cyclist closes with the crests at three sixty-three metres per second and reaps them at four hundred twenty-three per second: a pitch raised by twenty-three hertz — almost a semitone.",
+      board:[
+        {label:"Approaching", tex:"f' = 400\\,\\frac{343 + 20.0}{343} = 423\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Riding away", pose:"write",
+      think:"Now the crests must catch up at v − v_o.",
+      say:"Past the siren, the crests must chase the fleeing ear, overtaking at only three twenty-three: three hundred seventy-seven hertz. The drop as the cyclist passes — from four twenty-three to three seventy-seven — is what your ear knows from every roadside.",
+      board:[
+        {label:"Receding", tex:"f' = 400\\,\\frac{343 - 20.0}{343} = 377\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: swap who moves", pose:"think",
+      think:"Same 20 m/s, but the SOURCE moves — same shift or not?",
+      say:"The audit swaps roles. A source approaching at the same twenty metres per second gives four hundred twenty-five hertz — two hertz more than our four twenty-three. Different mechanism, different number: a moving source physically squeezes the wavelength ahead of it, while a moving observer only samples fixed crests faster. At everyday speeds the difference is a curiosity; at a good fraction of v it matters greatly — and for light, relativity erases the distinction altogether. Reusable method: ask who moves relative to the medium — observer motion scales the numerator, source motion the denominator, approach always raising the pitch.",
+      board:[
+        {label:"Source moving instead", tex:"f' = \\frac{400(343)}{343 - 20} = 425\\ \\text{Hz} \\neq 423", kind:"key"},
+        {label:"Reusable method", text:"Observer: changes harvest rate (numerator). Source: changes λ itself (denominator). The medium is the referee.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Tuning a guitar with beats",
+  problem:"A guitar string against a 440 Hz fork gives 3 beats/s. Tightening slightly makes the beats slow down. Find the original frequency and advise the player.",
+  goal:"Break the ±3 Hz ambiguity with the response to tightening.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Beats measure a difference","Two suspects","The tightening test","Audit: why beats beat ears"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 5.2 + 0.5*Math.sin(9*(t-0.5))*Math.cos(0.8*(t-0.5))], 0.5, 9.5, {color:BLUE, w:2});
+    label(ctx, 5.0, 6.5, 'beats: loud–soft–loud', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A slow throb from two tones", pose:"talk",
+      think:"Two nearby frequencies drift in and out of step — at what rate?",
+      say:"Sound the string against the fork and the two waves drift in and out of step, swelling and fading — beats — at exactly the difference of the frequencies. Three beats per second means the string sits three hertz from four forty. But on which side? The beat rate alone cannot say: absolute value hides the sign.",
+      board:[
+        {label:"Beat rate", tex:"f_{\\text{beat}} = |f_{\\text{string}} - 440| = 3\\ \\text{Hz}", kind:"key"},
+        {label:"Two suspects", tex:"f_{\\text{string}} = 437\\ \\text{or}\\ 443\\ \\text{Hz}", kind:"note"}
+      ]
+    },
+    { map:1, title:"Design the discriminating experiment", pose:"write",
+      think:"Tightening raises the string's pitch — what happens to each suspect?",
+      say:"So we perturb and watch. Tightening raises the string's frequency. If the string were at four forty-three, raising it would widen the gap — beats speed up. If at four thirty-seven, raising narrows the gap — beats slow. Ours slowed: verdict, four hundred thirty-seven hertz, from below.",
+      board:[
+        {label:"The test", tex:"\\text{tighten} \\Rightarrow f_{\\text{string}}\\uparrow;\\ \\text{beats slowed} \\Rightarrow \\text{gap closing}", kind:"key"},
+        {label:"Verdict", tex:"f_{\\text{string}} = 437\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Advise the player", pose:"talk",
+      think:"Continue in which direction, until what signal?",
+      say:"The advice writes itself: keep tightening, gently, and listen for the beats to stretch out — two per second, one, one every few seconds — until they vanish entirely. Silence of the throb is perfection of the tuning. Had the beats sped up at the first test, the answer would have been four forty-three: loosen instead.",
+      board:[
+        {label:"Procedure", tex:"\\text{tighten until } f_{\\text{beat}} \\to 0", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the precision of a throb", pose:"think",
+      think:"Could the ear hear 439.5 vs 440 as pitches? As beats?",
+      say:"The audit explains why every musician trusts this trick. As pitches, four thirty-nine and a half against four forty is hopeless — far below the ear's discrimination. As beats, it is one swell every two seconds: unmissable. Beats convert a tiny frequency difference into a slow amplitude clock the ear reads effortlessly — heterodyne detection, the same principle inside radio receivers. Reusable method: beat rate gives the gap's size; a deliberate nudge in a known direction reveals its sign; then drive the beats to zero.",
+      board:[
+        {label:"Sensitivity", tex:"0.5\\ \\text{Hz mismatch} = \\text{1 beat per 2 s — plainly audible}", kind:"key"},
+        {label:"Reusable method", text:"|Δf| from beats; sign from a known perturbation; tune to silence. A difference too small to hear becomes a rhythm.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Intensity, level, and range of a siren",
+  problem:"A siren radiates 50.0 W uniformly. Find I and β at 100 m, and the distance where the level falls to 60 dB.",
+  goal:"Chain P/4πr² with the dB scale, both directions, and learn the −6 dB per doubling rule.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Spread over spheres","I and β at 100 m","Invert for the 60 dB range","Audit: dB per doubling"],
+  setup(ctx, w){
+    circleAt(ctx, 1.6, 3.5, 0.3, {stroke:GOLD, w:2.5});
+    arc(ctx, 1.6, 3.5, 1.2, -70, 70, {color:DIMC, w:1.5});
+    arc(ctx, 1.6, 3.5, 2.2, -55, 55, {color:DIMC, w:1.5});
+    arc(ctx, 1.6, 3.5, 3.2, -45, 45, {color:DIMC, w:1.5});
+    label(ctx, 1.6, 2.5, '50 W', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Power thins over spheres", pose:"talk",
+      think:"At radius r, the same 50 W crosses what area?",
+      say:"An isotropic source spreads its fixed fifty watts over ever-larger spheres — intensity falls as one over r squared. Then the decibel scale reports the result logarithmically. Today we run the chain forwards to get a level, and backwards to get a range — both directions belong in your toolkit.",
+      board:[
+        {label:"Inverse square", tex:"I = \\frac{P}{4\\pi r^2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"At one hundred metres", pose:"write",
+      think:"Compute I, then hand it to the log.",
+      say:"At a hundred metres the sphere has a hundred twenty-six thousand square metres: intensity four times ten to the minus four. The log of that over threshold: eighty-six decibels — an alarm you feel in your chest.",
+      board:[
+        {label:"Intensity", tex:"I = \\frac{50.0}{4\\pi(100)^2} = 3.98\\times10^{-4}\\ \\text{W/m}^2", kind:"answer"},
+        {label:"Level", tex:"\\beta = 10\\log_{10}\\frac{3.98\\times10^{-4}}{10^{-12}} = 86.0\\ \\text{dB}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Invert: where is 60 dB?", pose:"write",
+      think:"60 dB → what intensity? Then solve the sphere for r.",
+      say:"Now backwards. Sixty decibels decodes to ten to the minus six watts per square metre. Solve the sphere formula for r: root of P over four pi I — two kilometres. The siren's sixty-decibel contour is a circle four kilometres across.",
+      board:[
+        {label:"Decode", tex:"60\\ \\text{dB} \\Rightarrow I = 10^{-6}\\ \\text{W/m}^2", kind:"key"},
+        {label:"Range", tex:"r = \\sqrt{\\frac{P}{4\\pi I}} = \\sqrt{\\frac{50.0}{4\\pi(10^{-6})}} = 2.0\\ \\text{km}", kind:"answer", move:"invert for r"}
+      ]
+    },
+    { map:3, title:"Audit: six decibels per doubling", pose:"think",
+      think:"Doubling r quarters I — how many dB is that? Check 86 → 60.",
+      say:"The audit installs a field rule: doubling the distance quarters the intensity — minus six decibels. From eighty-six down to sixty is twenty-six decibels, about four and a third doublings — a factor of twenty in distance. One hundred metres times twenty: two kilometres. The rule reproduces the algebra. Reality bends both ways: real sirens beam horizontally rather than wasting power on sky and soil, so they carry farther; wind shear refracts sound upward and can silence them early. Reusable method: inverse square in the intensity domain, logs only at the ends, and minus six dB per doubling as the sanity check.",
+      board:[
+        {label:"Field rule", tex:"r \\to 2r:\\ \\beta \\to \\beta - 6\\ \\text{dB}", kind:"key"},
+        {label:"Check", tex:"26\\ \\text{dB} \\approx 4.3\\ \\text{doublings}:\\ 100\\ \\text{m}\\times20 = 2\\ \\text{km}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"P/4πr² ↔ dB, invertible both ways. −6 dB per distance doubling; directional sources break isotropy in your favor.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Ambulance and car approaching each other",
+  problem:"A 700 Hz siren moves at 30.0 m/s toward a car moving at 25.0 m/s toward it. Find the heard frequency before and after they pass (v = 343 m/s).",
+  goal:"Combine both Doppler effects in one fraction with signs chosen by physics.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Both move: one formula","Approaching: 823 Hz","Receding: 597 Hz","Audit: reading the fraction"],
+  setup(ctx, w){
+    boxAt(ctx, 2.2, 3.1, 1.8, 1.0, {fill:'none', stroke:RED});
+    label(ctx, 2.2, 2.4, 'siren 700 Hz', {fs:10, color:RED});
+    arrow(ctx, 3.2, 3.9, 4.4, 3.9, {color:RED, w:2, label:'30 m/s', fs:10});
+    boxAt(ctx, 7.8, 3.1, 1.6, 0.9, {fill:'none', stroke:BLUE});
+    label(ctx, 7.8, 2.4, 'car', {fs:10, color:BLUE});
+    arrow(ctx, 6.9, 3.9, 5.7, 3.9, {color:BLUE, w:2, label:'25 m/s', fs:10, side:1});
+  },
+  steps:[
+    { map:0, title:"Two effects, one fraction", pose:"talk",
+      think:"Observer motion and source motion act differently — where does each sit in the formula?",
+      say:"Both parties move, so both Doppler mechanisms fire at once: the driver sweeps through crests faster — that lives in the numerator — while the siren compresses the wavelength ahead of itself — that lives in the denominator. One fraction holds both, and the signs are chosen by a single principle: approach must raise the pitch.",
+      board:[
+        {label:"General Doppler", tex:"f' = f\\,\\frac{v \\pm v_o}{v \\mp v_s}\\quad\\text{(approach} \\Rightarrow \\text{higher)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Before they pass", pose:"write",
+      think:"Approach: numerator grows (+25), denominator shrinks (−30).",
+      say:"Approaching: add the driver's twenty-five upstairs, subtract the siren's thirty downstairs. Seven hundred times three sixty-eight over three thirteen: eight hundred twenty-three hertz. The siren screams a hundred twenty-three hertz sharp.",
+      board:[
+        {label:"Approaching", tex:"f' = 700\\,\\frac{343 + 25.0}{343 - 30.0} = 823\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"After they pass", pose:"write",
+      think:"Both signs flip — pitch must now fall.",
+      say:"They pass, and both signs flip: subtract upstairs, add downstairs. Seven hundred times three eighteen over three seventy-three: five hundred ninety-seven hertz. The swoop from eight twenty-three down to five ninety-seven — two hundred twenty-six hertz, nearly a musical fourth — is the nee-naw every pedestrian knows.",
+      board:[
+        {label:"Receding", tex:"f' = 700\\,\\frac{343 - 25.0}{343 + 30.0} = 597\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: what the fraction knows", pose:"think",
+      think:"Why do v_o and v_s refuse to combine into one relative speed?",
+      say:"Audit the anatomy. Notice the two speeds cannot be merged into a single relative velocity — twenty-five in the numerator and thirty in the denominator do different jobs, because the medium is a genuine third party: motion through the air is what counts, not motion relative to each other. Wind would enter by shifting the air itself; the ground never enters at all. For light, with no medium, only the relative velocity survives — but that is another tutorial. Reusable method: place the observer upstairs, the source downstairs, set each sign by asking 'does this motion bring them together?', and flip both at the moment of passing.",
+      board:[
+        {label:"The medium is real", tex:"v_o, v_s\\ \\text{measured relative to the air — not each other}", kind:"key"},
+        {label:"Reusable method", text:"Numerator = observer, denominator = source; approach raises pitch fixes every sign. Wind shifts the medium; ground is irrelevant.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Resonance tube: measuring the speed of sound",
+  problem:"A 500 Hz fork over a water-adjustable tube resonates at column lengths 16.0 cm and 50.0 cm. Find the speed of sound and the tube's end correction.",
+  goal:"Use the difference of two resonances to cancel a systematic error.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The apparatus","Difference kills the error","v = fλ","Audit: the end correction measured"],
+  setup(ctx, w){
+    boxAt(ctx, 3.0, 0.8, 1.4, 5.4, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [2.3 + 1.4*t, 2.6], 0, 1, {color:BLUE, w:2});
+    label(ctx, 5.3, 2.6, 'water level', {fs:10, color:BLUE});
+    label(ctx, 3.0, 6.8, 'fork 500 Hz', {fs:11, color:GOLD});
+    plotCurve(ctx, t => [2.6 + 0.15*Math.sin(20*t), 6.3], 0, 1, {color:GOLD, w:2});
+    plotCurve(ctx, t => [3.4 + 0.15*Math.sin(20*t), 6.3], 0, 1, {color:GOLD, w:2});
+    arrow(ctx, 1.5, 2.6, 1.5, 6.2, {color:DIMC, w:1.5, label:'L', fs:11});
+  },
+  steps:[
+    { map:0, title:"A tunable closed pipe", pose:"talk",
+      think:"The water surface is the closed end — what patterns resonate?",
+      say:"The water surface is a movable closed end: node at the water, antinode near the open top. Lower the water and the column lengthens through successive resonances — the air roars each time a quarter-wave pattern fits. We caught two roars: sixteen and fifty centimetres.",
+      board:[
+        {label:"Resonances", tex:"L_1 = 16.0\\ \\text{cm},\\qquad L_2 = 50.0\\ \\text{cm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Subtract: the flaw cancels", pose:"write",
+      think:"Consecutive closed-pipe resonances differ by exactly what length?",
+      say:"Here is the professional move. Successive resonances of a closed pipe differ by exactly half a wavelength — whatever imperfections lurk at the open end afflict both readings identically and vanish in the subtraction. Fifty minus sixteen: thirty-four centimetres is lambda over two, so lambda is sixty-eight.",
+      board:[
+        {label:"Difference", tex:"\\frac{\\lambda}{2} = L_2 - L_1 = 34.0\\ \\text{cm} \\Rightarrow \\lambda = 0.680\\ \\text{m}", kind:"answer", move:"subtraction cancels systematics"}
+      ]
+    },
+    { map:2, title:"The speed of sound, tabletop edition", pose:"write",
+      think:"v = fλ with the fork's trusted 500 Hz.",
+      say:"The fork's frequency is trustworthy — five hundred hertz — so v equals f lambda: three hundred forty metres per second. A metre of pipe, a fork, and some water have measured a fundamental constant of the room to within a per cent.",
+      board:[
+        {label:"Speed", tex:"v = f\\lambda = (500)(0.680) = 340\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: expose the error we dodged", pose:"think",
+      think:"What would the first resonance ALONE have given — and why is it wrong?",
+      say:"Now measure the very flaw we sidestepped. Naively, the first resonance should sit at a quarter wavelength — seventeen centimetres — but we found sixteen. The missing centimetre is the end correction: the antinode actually floats slightly above the rim, by about six tenths of the tube's diameter — so our tube is about one point seven centimetres across. Using L one alone would have delivered three hundred twenty metres per second, six per cent low, with no warning. Reusable method: measure twice and subtract — differences are immune to constant offsets, which is why experimentalists everywhere prefer them to absolute readings.",
+      board:[
+        {label:"End correction", tex:"\\frac{\\lambda}{4} - L_1 = 17.0 - 16.0 = 1.0\\ \\text{cm} \\approx 0.6\\,d", kind:"answer"},
+        {label:"The dodged error", tex:"L_1\\ \\text{alone}: v = 320\\ \\text{m/s — 6\\% low, silently}", kind:"warn"},
+        {label:"Reusable method", text:"Two resonances, one subtraction: offsets cancel. Then the residual from λ/4 measures the offset itself.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Sonic boom from a supersonic jet",
+  problem:"A jet flies at Mach 1.50 at 5.00 km altitude, where v = 300 m/s. Find the Mach cone's half-angle and the delay between overhead passage and the boom.",
+  goal:"Build the cone from spreading wavefronts, then run its geometry to the ground.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Outrunning your own sound","The cone angle","Geometry to the ground","The delay","Audit: the silent approach"],
+  setup(ctx, w){
+    boxAt(ctx, 7.8, 5.6, 1.2, 0.5, {fill:'none', stroke:CHALKC});
+    arrow(ctx, 8.5, 5.85, 9.4, 5.85, {color:CHALKC, w:2});
+    circleAt(ctx, 6.2, 5.85, 0.75, {stroke:DIMC, w:1.5});
+    circleAt(ctx, 4.4, 5.85, 1.35, {stroke:DIMC, w:1.5});
+    circleAt(ctx, 2.6, 5.85, 1.95, {stroke:DIMC, w:1.5});
+    ground(ctx, 0.4, 9.6, 0.9);
+    label(ctx, 8.2, 4.7, 'M = 1.5', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"When the source wins the race", pose:"talk",
+      think:"Each emitted wavefront spreads at v while the jet moves at 1.5v — what envelope forms?",
+      say:"A subsonic source stays inside its own ripples. A supersonic one escapes them: each wavefront spreads at three hundred metres per second while the jet advances at four hundred fifty, leaving its sound history behind as a nested set of spheres. Their common envelope is a cone dragged from the jet's nose — the Mach cone — and its surface is where all that sound arrives at once: the boom.",
+      board:[
+        {label:"The envelope", tex:"\\text{spheres of radius } vt\\ \\text{behind a source at } v_st", kind:"key"}
+      ]
+    },
+    { map:1, title:"The cone's opening angle", pose:"write",
+      think:"Sound radius vt against travel v_st — the sine of the half-angle.",
+      say:"The geometry is one right triangle: in time t the sound reaches radius v t while the jet covers v s t, so the sine of the half-angle is v over v s — one over the Mach number. Mach one and a half: sine inverse of two thirds, forty-one point eight degrees.",
+      board:[
+        {label:"Mach angle", tex:"\\sin\\theta = \\frac{v}{v_s} = \\frac{1}{M} \\Rightarrow \\theta = \\sin^{-1}\\frac{1}{1.50} = 41.8^\\circ", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 8.4, 5.85, 1.2, 0.9, {color:GOLD});
+        dashLine(c, 8.4, 5.85, 1.2, 6.8, {color:GOLD});
+        label(c, 3.2, 4.6, 'Mach cone', {fs:11, color:GOLD});
+      }
+    },
+    { map:2, title:"Where the cone meets the ground", pose:"write",
+      think:"When the cone's edge reaches you, how far past overhead is the jet?",
+      say:"You stand below. The boom arrives when the cone's skirt sweeps over you — by which moment the jet is well past overhead. The horizontal lag is altitude over tangent theta: five kilometres over zero point eight nine four — five point five nine kilometres beyond the zenith.",
+      board:[
+        {label:"Lag distance", tex:"x = \\frac{h}{\\tan\\theta} = \\frac{5000}{0.894} = 5.59\\ \\text{km}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The delay", pose:"write",
+      think:"That distance at the jet's own 450 m/s gives the wait.",
+      say:"The jet covers those five point six kilometres at four hundred fifty metres per second: twelve point four seconds. You watch it pass in silence overhead, count a dozen seconds — then the double crack, nose shock and tail shock, from a plane already far down the sky.",
+      board:[
+        {label:"Delay", tex:"t = \\frac{x}{v_s} = \\frac{5590}{450} = 12.4\\ \\text{s}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the limits of the cone", pose:"think",
+      think:"Push M → 1 and M → ∞ — does the geometry behave sensibly?",
+      say:"Audit at the extremes. As Mach drops to one, the sine wants to be one: the cone flattens into a plane travelling with the jet, and the boom arrives exactly at overhead passage — the 'sound barrier' pile-up. As Mach soars, the cone narrows and the delay stretches: the faster the jet, the later and more oblique the news of it. And through it all, the approaching jet is perfectly silent — it outruns every syllable of its own noise. Reusable method: sine theta equals one over Mach builds the cone; altitude and tangent give the lag; and always test a geometric formula at its limiting angles.",
+      board:[
+        {label:"Limits", tex:"M \\to 1:\\ \\theta \\to 90^\\circ\\ \\text{(flat)};\\quad M\\uparrow:\\ \\text{narrower, later}", kind:"key"},
+        {label:"Reusable method", text:"Mach cone: sin θ = 1/M; ground delay = (h/tan θ)/v_s. No sound precedes a supersonic source.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

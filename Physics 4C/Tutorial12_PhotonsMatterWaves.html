@@ -1455,6 +1455,474 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Photon energies across the spectrum",
+  problem:"Find the photon energy of (a) 500 nm green light and (b) 0.100 nm X-rays.",
+  goal:"Wield hc = 1240 eV·nm and calibrate light against chemistry.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The 1240 shortcut","(a) Green: 2.48 eV","(b) X-ray: 12.4 keV","Audit: suntan vs burn"],
+  setup(ctx, w){
+    arrow(ctx, 0.6, 3.5, 9.4, 3.5, {color:CHALKC, w:2});
+    label(ctx, 1.8, 4.2, 'radio', {fs:10, color:GOLD});
+    label(ctx, 4.4, 4.2, 'visible', {fs:10, color:GREEN});
+    label(ctx, 7.6, 4.2, 'X-ray', {fs:10, color:BLUE});
+    label(ctx, 5.0, 2.6, 'λ decreasing →  E rising', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Light comes in coins", pose:"talk",
+      think:"E = hf = hc/λ — what tidy value does hc take in eV·nm?",
+      say:"Quantum optics begins with a currency change: light arrives in indivisible coins of energy h f — equivalently h c over lambda. Memorise the exchange rate in the working units: h c is twelve hundred forty electron-volt nanometres. One division then prices any photon in the spectrum, and we shall use it a dozen times before this tutorial ends.",
+      board:[
+        {label:"The shortcut", tex:"E = \\frac{hc}{\\lambda} = \\frac{1240\\ \\text{eV·nm}}{\\lambda\\ \\text{(nm)}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) A green coin", pose:"write",
+      think:"1240/500 — compare with a chemical bond.",
+      say:"Green light: twelve forty over five hundred — two point four eight electron-volts. Set that beside chemistry: typical bonds cost one to five e V. Visible photons are exactly the right coin to pay for molecular transactions — which is why light runs photosynthesis, triggers your retina, and slowly bleaches the curtains.",
+      board:[
+        {label:"(a) Green", tex:"E = \\frac{1240}{500} = 2.48\\ \\text{eV — the chemistry scale}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) An X-ray coin", pose:"write",
+      think:"1240/0.100 — three orders of magnitude up.",
+      say:"X-rays at a tenth of a nanometre: twelve thousand four hundred e V. One such coin outbids any chemical bond five-thousandfold — it rips inner electrons from atoms and shatters whatever molecule it meets. Same equation, same light, utterly different physics, purely because lambda shrank.",
+      board:[
+        {label:"(b) X-ray", tex:"E = \\frac{1240}{0.100} = 12.4\\ \\text{keV — ionizing}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the burn is in the coin, not the beam", pose:"think",
+      think:"A bright red laser vs a dim X-ray source — which damages DNA, and why?",
+      say:"The audit explains a safety poster. A powerful red laser delivers torrents of two-e V coins — it can heat you, but no single coin can ionize a molecule. A feeble X-ray source delivers few coins, each worth kilovolts — every single one can break DNA. Damage of the ionizing kind is priced per photon, not per watt: the difference between a suntan and a radiation burn is denomination, not amount. Reusable method: twelve forty over lambda in nanometres gives e V instantly; compare the coin to the bond it must pay for, and you know the photochemistry before any further calculation.",
+      board:[
+        {label:"The rule", tex:"\\text{ionization: per-photon energy decides, not intensity}", kind:"warn"},
+        {label:"Reusable method", text:"E(eV) = 1240/λ(nm). Benchmark: bonds ~ eV, ionization ≳ 10 eV, X-rays ~ keV.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Photons per second from a laser pointer",
+  problem:"A 10.0 mW He–Ne laser emits at 633 nm. How many photons leave it each second?",
+  goal:"Divide power by the photon energy and confront the enormity of the count.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One coin's value","Divide the power","Audit: when graininess shows"],
+  setup(ctx, w){
+    boxAt(ctx, 2.0, 3.0, 2.2, 1.0, {fill:'none', stroke:CHALKC});
+    label(ctx, 2.0, 2.3, '10 mW laser', {fs:10, color:DIMC});
+    arrow(ctx, 3.2, 3.5, 9.2, 3.5, {color:RED, w:2.5});
+    circleAt(ctx, 4.6, 3.5, 0.08, {stroke:GOLD, w:2});
+    circleAt(ctx, 5.8, 3.5, 0.08, {stroke:GOLD, w:2});
+    circleAt(ctx, 7.0, 3.5, 0.08, {stroke:GOLD, w:2});
+    circleAt(ctx, 8.2, 3.5, 0.08, {stroke:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"Value one coin", pose:"write",
+      think:"1240/633 in eV, then joules for the division ahead.",
+      say:"First, one photon's worth: twelve forty over six thirty-three — one point nine six e V, or three point one four times ten to the minus nineteen joules. A pitiful sum per coin; the laser's trick is volume.",
+      board:[
+        {label:"Per photon", tex:"E = \\frac{1240}{633} = 1.96\\ \\text{eV} = 3.14\\times10^{-19}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Divide the payroll", pose:"write",
+      think:"10 mW = 10⁻² J/s over 3.14×10⁻¹⁹ J each.",
+      say:"The laser disburses ten millijoules per second. Divide by the coin: three point two times ten to the sixteen photons per second — thirty-two quadrillion, from a keychain toy. At such counts the stream is indistinguishable from a smooth classical wave, as a river is indistinguishable from its molecules.",
+      board:[
+        {label:"Rate", tex:"N = \\frac{P}{E} = \\frac{10.0\\times10^{-3}}{3.14\\times10^{-19}} = 3.2\\times10^{16}\\ \\text{s}^{-1}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: where the graininess surfaces", pose:"think",
+      think:"Cut the power until clicks separate — and how close is your own eye?",
+      say:"The audit asks when the smoothness breaks. Attenuate to nanowatts and the rate falls to billions — still a blur; to attogales near single-photon detectors, and individual clicks separate, each an indivisible quantum arriving whole or not at all. Astonishingly, your own dark-adapted eye sits near this frontier: rod cells respond to single photons, and a few dozen together cross the threshold of conscious sight — you have nearly seen quanta all your life. Reusable method: rate equals power over h c by lambda; enormous counts justify the classical wave, and the quantum ledger reopens whenever the count per detector per response time approaches one.",
+      board:[
+        {label:"The frontier", tex:"\\text{quantum graininess when } N\\,\\tau_{\\text{detector}} \\sim 1", kind:"key"},
+        {label:"Reusable method", text:"N = P λ/hc. Classical wave = shorthand for 10¹⁶ coins/s; the eye clicks at dozens.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"De Broglie wavelength of an electron and of a baseball",
+  problem:"Find the de Broglie wavelength of (a) an electron at 1.00×10⁶ m/s and (b) a 0.145 kg baseball at 40.0 m/s.",
+  goal:"Apply λ = h/p at both scales and see why only one of them diffracts.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Everything waves","(a) Electron: atomic scale","(b) Baseball: absurd scale","Audit: why pitches fly straight"],
+  setup(ctx, w){
+    circleAt(ctx, 2.6, 4.8, 0.16, {stroke:BLUE, w:2.5});
+    plotCurve(ctx, t => [3.0 + 5.5*t, 4.8 + 0.4*Math.sin(15*t)], 0, 1, {color:BLUE, w:1.5});
+    label(ctx, 2.6, 5.7, 'electron', {fs:10, color:DIMC});
+    circleAt(ctx, 2.6, 1.8, 0.45, {stroke:GOLD, w:2.5});
+    arrow(ctx, 3.2, 1.8, 8.6, 1.8, {color:GOLD, w:2});
+    label(ctx, 2.6, 0.8, 'baseball', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"De Broglie's audacity", pose:"talk",
+      think:"If light waves carry momentum h/λ, what should things with momentum carry?",
+      say:"De Broglie's 1924 thesis ran one syllogism with outrageous nerve: light waves turned out to carry particle momentum h over lambda — so matter particles should carry wave wavelength h over p. Every object that moves, waves. The formula draws no line between electrons and baseballs; only the numbers will.",
+      board:[
+        {label:"Matter waves", tex:"\\lambda = \\frac{h}{p} = \\frac{h}{mv}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The electron", pose:"write",
+      think:"h over (9.11×10⁻³¹ × 10⁶) — compare with atomic spacing.",
+      say:"The electron: Planck's constant over its tiny momentum — zero point seven three nanometres. Hold that against the spacing of atoms in a crystal, a few tenths of a nanometre: comparable! Send such electrons at a crystal lattice and they must diffract like X-rays — a prediction so clean it begged for the experiment, which is coming two examples hence.",
+      board:[
+        {label:"(a) Electron", tex:"\\lambda = \\frac{6.626\\times10^{-34}}{(9.11\\times10^{-31})(10^{6})} = 0.727\\ \\text{nm — atomic scale}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The baseball", pose:"write",
+      think:"h over (0.145 × 40) — prepare for an absurd exponent.",
+      say:"The baseball: same formula, macroscopic momentum — ten to the minus thirty-four metres. Twenty orders of magnitude below a nucleus; no slit, no crystal, no instrument in physical possibility could reveal it. The wave exists in the formalism and vanishes in practice: h is simply too small a constant for kilograms to notice.",
+      board:[
+        {label:"(b) Baseball", tex:"\\lambda = \\frac{6.626\\times10^{-34}}{(0.145)(40.0)} = 1.1\\times10^{-34}\\ \\text{m}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the doorway argument, replayed", pose:"think",
+      think:"Recall λ/a from diffraction — apply it to the pitch.",
+      say:"The audit closes a loop across two tutorials. Recall the doorway: waves spread when lambda rivals the aperture, and travel as rays when lambda over a is negligible. The baseball's lambda over any aperture is ten to the minus thirty-four-ish — the most ray-like ray in the universe; pitches fly straight for precisely the reason light crosses a room straight. Classical mechanics is matter-wave optics in the lambda-to-zero limit, just as ray optics was light-wave optics in the same limit. One principle, now governing everything that exists. Reusable method: lambda equals h over m v; compare it with the obstacle scale — comparable means quantum interference ahead, negligible means Newton is safe.",
+      board:[
+        {label:"The limit", tex:"\\frac{\\lambda}{a} \\to 0:\\ \\text{classical mechanics = geometric optics of matter}", kind:"key"},
+        {label:"Reusable method", text:"λ = h/p, then the λ/a test from diffraction decides quantum vs classical. h's smallness hides the waves.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Photoelectric effect for zinc",
+  problem:"Zinc's work function is 4.30 eV; 250 nm light falls on it. Find K_max, the stopping potential, and the threshold wavelength.",
+  goal:"Run Einstein's photoelectric equation and see why intensity is powerless.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One photon, one electron","K_max and V_s","The threshold","Audit: what waves can't explain"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 0.9, 6.0, 1.2, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 0.4, 'zinc, φ = 4.30 eV', {fs:10, color:DIMC});
+    arrow(ctx, 2.0, 5.8, 3.8, 2.3, {color:PURPLE, w:2.5, label:'250 nm UV', fs:10});
+    circleAt(ctx, 4.6, 2.4, 0.12, {stroke:BLUE, w:2.5});
+    arrow(ctx, 4.75, 2.55, 6.2, 4.6, {color:BLUE, w:2});
+  },
+  steps:[
+    { map:0, title:"Einstein's ledger", pose:"talk",
+      think:"One photon spends itself on one electron: entry fee φ, change K_max.",
+      say:"Einstein read the photoelectric effect as a strictly private transaction: one photon delivers its whole energy to one electron. The metal charges an exit fee — the work function phi — and whatever remains leaves as the electron's kinetic energy. No pooling of photons, no installment plans: each coin pays alone or not at all.",
+      board:[
+        {label:"Photoelectric equation", tex:"K_{\\max} = \\frac{hc}{\\lambda} - \\phi", kind:"key"}
+      ]
+    },
+    { map:1, title:"Pay the fee, pocket the change", pose:"write",
+      think:"1240/250 = 4.96 eV against φ = 4.30 — then V_s from K_max.",
+      say:"Our ultraviolet coin: twelve forty over two fifty — four point nine six e V. Minus zinc's fee of four point three zero: sixty-six hundredths of an e V of change. The stopping potential — the counter-voltage that just halts the fastest electrons — is numerically the same: zero point six six volts. Electron-volts and volts pair off through the electron's own charge.",
+      board:[
+        {label:"Kinetic energy", tex:"K_{\\max} = 4.96 - 4.30 = 0.66\\ \\text{eV}", kind:"answer"},
+        {label:"Stopping potential", tex:"V_s = \\frac{K_{\\max}}{e} = 0.66\\ \\text{V}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The threshold", pose:"write",
+      think:"The longest workable wavelength has E = φ exactly.",
+      say:"The threshold is where the coin exactly covers the fee and nothing more: lambda nought equals twelve forty over four point three zero — two hundred eighty-eight nanometres, ultraviolet. The entire visible spectrum, however blinding its intensity, ejects not one electron from zinc: a floodlight of undersized coins buys nothing.",
+      board:[
+        {label:"Threshold", tex:"\\lambda_0 = \\frac{1240}{\\phi} = \\frac{1240}{4.30} = 288\\ \\text{nm (UV)}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the observations that broke the wave", pose:"think",
+      think:"Double the intensity at 250 nm — what changes, what stubbornly doesn't?",
+      say:"The audit lists what classical waves could never explain, and what won Einstein his Nobel. Double the intensity: twice the electrons per second — but K max and the stopping potential do not budge, for the coins are merely more numerous, not larger. A wave picture predicts the opposite on both counts: energy should grow with intensity and accumulate below threshold given time. It does neither — emission is instant above threshold and absent below, forever. Reusable method: photon energy minus work function gives K max; V s equals K max over e; threshold at twelve forty over phi — and remember intensity buys current, never energy per electron.",
+      board:[
+        {label:"Intensity's role", tex:"I\\uparrow:\\ \\text{more electrons, same } K_{\\max}\\ \\text{— waves can't explain this}", kind:"key"},
+        {label:"Reusable method", text:"Per-photon bookkeeping: E − φ = K_max. Frequency sets energy; intensity sets only the count.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Compton scattering at 90°",
+  problem:"0.0710 nm X-rays scatter from carbon. For photons scattered at 90.0°, find the new wavelength, the scattered photon's energy, and the electron's kinetic energy.",
+  goal:"Apply the Compton shift, then balance the energy books between photon and electron.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Billiards with light","The shift at 90°","Energy bookkeeping","Audit: why X-rays were needed"],
+  setup(ctx, w){
+    arrow(ctx, 0.7, 3.5, 4.6, 3.5, {color:PURPLE, w:2.5, label:'λ', fs:11});
+    circleAt(ctx, 5.0, 3.5, 0.15, {stroke:BLUE, w:2.5});
+    arrow(ctx, 5.0, 3.8, 5.0, 6.3, {color:PURPLE, w:2, label:"λ'", fs:11});
+    arrow(ctx, 5.15, 3.35, 8.6, 1.6, {color:BLUE, w:2, label:'e⁻', fs:11});
+    arc(ctx, 5.0, 3.5, 1.1, 90, 180, {color:DIMC, w:1.5});
+    label(ctx, 4.1, 4.7, '90°', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A photon plays billiards", pose:"talk",
+      think:"If a photon carries p = h/λ, a collision with an electron must do what to λ?",
+      say:"Compton aimed X-rays at electrons and treated the encounter as pure billiards: the photon arrives with momentum h over lambda, strikes, recoils at an angle, and — having surrendered momentum and energy — leaves with less of both. Less energy means longer wavelength. Conservation of energy and momentum, worked through, delivers the shift formula, with a universal yardstick out front: h over m e c, the Compton wavelength.",
+      board:[
+        {label:"Compton shift", tex:"\\Delta\\lambda = \\frac{h}{m_ec}(1 - \\cos\\theta),\\qquad \\frac{h}{m_ec} = 0.00243\\ \\text{nm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Ninety degrees: the clean case", pose:"write",
+      think:"cos 90° = 0 — the shift is exactly one Compton wavelength.",
+      say:"At ninety degrees the cosine dies and the shift is exactly one Compton wavelength: zero point zero zero two four three nanometres. Added to the incident zero point zero seven one zero: zero point zero seven three four. Note what the formula omits: the target material, the incident wavelength — the shift is the same for carbon or lead, X-ray or gamma. Pure kinematics of photon and electron.",
+      board:[
+        {label:"Shift", tex:"\\Delta\\lambda = 0.00243\\ \\text{nm} \\Rightarrow \\lambda' = 0.0734\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Balance the energy books", pose:"write",
+      think:"Price both photons with 1240; the electron pockets the difference.",
+      say:"Now the ledger. Before: twelve forty over zero point zero seven one zero — seventeen point four six k e V. After: sixteen point eight nine. The five hundred eighty e V difference rides off with the electron — enough to send it careering through the target at over a hundredth of light speed. Every quantity checks against conservation; billiards indeed.",
+      board:[
+        {label:"Photon energies", tex:"E = 17.46\\ \\text{keV} \\to E' = 16.89\\ \\text{keV}", kind:"answer"},
+        {label:"Electron", tex:"K_e = E - E' = 0.58\\ \\text{keV}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the yardstick chose the experiment", pose:"think",
+      think:"The same 0.0024 nm shift on 500 nm light — what fraction? On 0.07 nm X-rays?",
+      say:"The audit explains why this discovery waited for X-ray machines. The shift is always the same absolute morsel, zero point zero zero two four nanometres. Against visible light's five hundred: five parts in a million — invisible in any spectrometer of the age, and why the wave theory survived so long. Against our X-ray's zero point zero seven: over three per cent — unmistakable. Compton chose the one probe whose own wavelength was small enough to feel the recoil. Reusable method: shift from one minus cosine theta times the Compton yardstick; energies via twelve forty; electron takes the difference — and choose probes whose scale matches the effect hunted.",
+      board:[
+        {label:"Visibility", tex:"\\frac{0.0024}{500} \\sim 10^{-6}\\ \\text{(invisible)};\\quad \\frac{0.0024}{0.071} = 3.4\\%\\ \\text{(obvious)}", kind:"key"},
+        {label:"Reusable method", text:"Δλ is absolute, not fractional — X-rays or harder probes required. Kinematics only: target-independent.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Electron microscope resolution",
+  problem:"Electrons accelerated through 10.0 kV: find their de Broglie wavelength, compare with 500 nm light, and check whether relativity is needed.",
+  goal:"Convert voltage to wavelength, justify the nonrelativistic shortcut, and price the resolution win.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Voltage to momentum","Check relativity first","The wavelength","Audit: the 40 000× prize"],
+  setup(ctx, w){
+    boxAt(ctx, 2.2, 4.6, 2.4, 1.6, {fill:'none', stroke:CHALKC});
+    label(ctx, 2.2, 6.7, 'e-gun, 10 kV', {fs:10, color:DIMC});
+    arrow(ctx, 3.5, 5.4, 8.8, 5.4, {color:BLUE, w:2});
+    circleAt(ctx, 5.4, 1.9, 0.9, {stroke:GOLD, w:2});
+    label(ctx, 5.4, 0.6, 'specimen', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"The voltage dial sets λ", pose:"talk",
+      think:"K = eV gives momentum via p = √(2mK) — then λ = h/p.",
+      say:"An electron microscope is a wavelength factory with a voltage dial: e V of kinetic energy becomes momentum root two m K, becomes lambda h over p. Crank the volts, shrink the wave. Before computing, an honest physicist checks whether the nonrelativistic momentum formula is still on its jurisdiction.",
+      board:[
+        {label:"Chain", tex:"K = eV \\to p = \\sqrt{2m_eK} \\to \\lambda = \\frac{h}{p}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Jurisdiction check", pose:"write",
+      think:"K = 10 keV against m_ec² = 511 keV — the ratio rules.",
+      say:"Ten k e V against the electron's rest energy of five hundred eleven: gamma is one point zero two. Two per cent into relativistic territory — the classical momentum errs by about one per cent, acceptable today. At the hundred-kilovolt dials of research instruments, gamma reaches one point two and the correction becomes mandatory. Check first, always; the border creeps up on you.",
+      board:[
+        {label:"Check", tex:"\\gamma = 1 + \\frac{10.0}{511} = 1.02\\ \\text{— nonrelativistic OK to} \\sim 1\\%", kind:"key"}
+      ]
+    },
+    { map:2, title:"The wavelength", pose:"write",
+      think:"Or the shortcut: λ = 1.226 nm/√V.",
+      say:"Compute — or use the packaged form, one point two two six nanometres over root volts: over root ten thousand — zero point zero one two three nanometres. Twelve picometres: smaller than a hydrogen atom, forty thousand times shorter than green light.",
+      board:[
+        {label:"Wavelength", tex:"\\lambda = \\frac{1.226\\ \\text{nm}}{\\sqrt{V}} = \\frac{1.226}{100} = 0.0123\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: what the short wave buys", pose:"think",
+      think:"Diffraction limits resolution to ~λ — who actually sets the limit here?",
+      say:"The audit banks the prize. Diffraction chains every microscope to features of order its wavelength: light stalls near two hundred nanometres, hopeless for viruses, proteins, atoms. Our electron wave is forty thousand times finer — atomic resolution in principle. In practice magnetic lenses are mediocre optics, aberration-bound to a few times lambda — yet still a thousandfold beyond light, which is why cell biology's interior world and the atomic lattices of materials science are electron portraits. De Broglie's thesis became an industry. Reusable method: lambda is one point two two six over root V nanometres after a gamma check; resolution follows the wavelength, then the lenses.",
+      board:[
+        {label:"The prize", tex:"\\frac{500\\ \\text{nm}}{0.0123\\ \\text{nm}} \\approx 4\\times10^{4}:\\ \\text{atoms come into view}", kind:"answer"},
+        {label:"Reusable method", text:"λ = 1.226/√V nm (check γ first). Microscopy's floor is λ; electrons buy 10³–10⁴ over light.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"The uncertainty principle sets the size of atoms and nuclei",
+  problem:"(a) An electron confined to Δx ≈ 0.100 nm: estimate the minimum momentum spread and kinetic energy. (b) A proton in Δx ≈ 5.0×10⁻¹⁵ m: repeat.",
+  goal:"Turn Heisenberg into an energy estimator and derive two scales of nature.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Confinement costs energy","(a) The atom's eV","(b) The nucleus's MeV","Audit: electrons evicted from nuclei"],
+  setup(ctx, w){
+    circleAt(ctx, 2.8, 3.5, 1.9, {stroke:BLUE, w:2});
+    label(ctx, 2.8, 5.9, 'atom, 10⁻¹⁰ m', {fs:10, color:BLUE});
+    circleAt(ctx, 7.8, 3.5, 0.55, {stroke:GOLD, w:2.5});
+    label(ctx, 7.8, 2.4, 'nucleus, 10⁻¹⁵ m', {fs:10, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"To confine is to energize", pose:"talk",
+      think:"Δx small forces Δp large — and a momentum spread implies what minimum K?",
+      say:"Heisenberg's principle is usually quoted as a limit on knowledge; used well, it is an engine of estimates. Confine a particle to a region delta x and its momentum must spread by at least h-bar over two delta x — and a particle whose momentum rattles by delta p carries kinetic energy at least of order delta p squared over two m. Squeezing costs energy. Let us price the two great confinements of nature.",
+      board:[
+        {label:"The estimator", tex:"\\Delta p \\geq \\frac{\\hbar}{2\\Delta x},\\qquad K \\sim \\frac{(\\Delta p)^2}{2m}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) An electron in an atom", pose:"write",
+      think:"ħ/2(10⁻¹⁰) then square over 2m_e — expect the chemistry scale.",
+      say:"Electron in a tenth of a nanometre: delta p is five point three times ten to the minus twenty-five; the confinement energy, about one point five times ten to the minus nineteen joules — one electron-volt. The atomic energy scale, derived from nothing but a size and two constants! And here is why atoms do not collapse: squeeze the electron closer to the nucleus and this confinement energy climbs as one over delta x squared, faster than the Coulomb attraction's one over delta x can pay. The atom's size is the truce line.",
+      board:[
+        {label:"(a) Atom", tex:"\\Delta p = 5.3\\times10^{-25}\\ \\text{kg·m/s} \\Rightarrow K \\sim 1\\ \\text{eV}", kind:"answer"},
+        {label:"Stability", tex:"K_{\\text{conf}} \\propto \\frac{1}{(\\Delta x)^2}\\ \\text{beats Coulomb } \\frac{1}{\\Delta x}", kind:"key"}
+      ]
+    },
+    { map:2, title:"(b) A proton in a nucleus", pose:"write",
+      think:"Δx shrinks 20 000× — K grows by what factor, tempered by the mass?",
+      say:"Proton in a nucleus, twenty thousand times smaller: delta p is ten to the minus twenty; the energy, a fifth of an M e V. Again the estimator lands on the measured scale — nuclear binding energies run to M e V. Two constants, one size, and the ladder of physics assembles itself: e V for atoms, M e V for nuclei, purely from how tightly each is packed.",
+      board:[
+        {label:"(b) Nucleus", tex:"\\Delta p = 1.05\\times10^{-20}\\ \\text{kg·m/s} \\Rightarrow K \\sim 0.2\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the electron that cannot live there", pose:"think",
+      think:"Run the nuclear estimate for an ELECTRON — remember its tiny mass and relativity.",
+      say:"The audit runs a historic eviction. Early nuclear theory supposed electrons lived inside nuclei — beta decay spits them out, after all. Confine an electron to five femtometres: its delta p matches the proton's, but its mass is eighteen hundred times smaller, and relativistically the energy comes to tens of M e V. No nuclear force on offer could chain so frantic a tenant: therefore nuclei contain no electrons — the beta electron is created at the moment of decay. A wrong theory, executed by an inequality. Reusable method: h-bar over two delta x, then delta p squared over two m — switching to p c when the energies go relativistic — and trust the estimate to reveal which particles can inhabit which prisons.",
+      board:[
+        {label:"Eviction", tex:"e^-\\ \\text{in nucleus} \\Rightarrow K \\sim \\text{tens of MeV — no force can hold it}", kind:"key"},
+        {label:"Reusable method", text:"Confinement energy from Δx alone sets every scale: eV (atoms), MeV (nuclei). Light particles pay dearest.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Wien's law: the Sun and the human body",
+  problem:"Find the thermal-spectrum peak for (a) the Sun (5800 K) and (b) a human body (310 K), with photon energies. Why do we see the Sun but not each other in the dark?",
+  goal:"Run Wien's law at two temperatures and locate the threshold of vision between them.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Wien's displacement","(a) Solar green","(b) Human infrared","Audit: eyes, evolution, thermal cameras"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.9, y0:1.0, xLab:'λ', yLab:'I'});
+    plotCurve(ctx, t => [t, 1.0 + 5.2*Math.pow(t-1.0,3)*Math.exp(-2.3*(t-1.0))], 1.05, 9.2, {color:GOLD, w:2.5, N:150});
+    plotCurve(ctx, t => [t, 1.0 + 1.4*Math.pow(t-3.6,3)*Math.exp(-1.35*(t-3.6))], 3.65, 9.2, {color:RED, w:2, N:150});
+    label(ctx, 2.6, 6.0, 'hot: peak left', {fs:10, color:GOLD});
+    label(ctx, 7.3, 3.1, 'cool: peak right', {fs:10, color:RED});
+  },
+  steps:[
+    { map:0, title:"Hotter glows bluer", pose:"talk",
+      think:"λ_max T = constant — what does doubling T do to the peak?",
+      say:"Everything warm broadcasts a thermal spectrum, and Wien's law pins its summit: lambda max times T is a constant, two point eight nine eight millikelvin-metres. Hotter bodies peak at shorter waves — the smith reads the forge by its colour, from sullen red toward white, by this law alone.",
+      board:[
+        {label:"Wien", tex:"\\lambda_{\\max}T = 2.898\\times10^{-3}\\ \\text{m·K}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The Sun peaks green", pose:"write",
+      think:"2.898×10⁻³/5800 — and price the photon.",
+      say:"The solar surface, fifty-eight hundred kelvin: peak at five hundred nanometres — green, dead centre of what we call the visible band. The photon there: two point four eight e V, the chemistry coin. That is no coincidence twice over — our eyes evolved under this lamp, and vision's photochemistry runs on exactly such coins.",
+      board:[
+        {label:"(a) Sun", tex:"\\lambda_{\\max} = \\frac{2.898\\times10^{-3}}{5800} = 500\\ \\text{nm},\\ E = 2.48\\ \\text{eV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The body glows far infrared", pose:"write",
+      think:"310 K — nineteen times cooler, so the peak sits where?",
+      say:"A human, three hundred ten kelvin: peak at nine point three five microns, deep infrared, with photons of an eighth of an electron-volt. You are glowing right now — about a hundred watts, as the radiation examples of Tutorial One computed — but in coins fourteen times too small for the eye's photochemistry to bank.",
+      board:[
+        {label:"(b) Body", tex:"\\lambda_{\\max} = \\frac{2.898\\times10^{-3}}{310} = 9.35\\ \\mu\\text{m},\\ E = 0.133\\ \\text{eV}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the darkness explained", pose:"think",
+      think:"Vision needs ~1.8 eV per photon — compare both peaks. And what do thermal cameras do differently?",
+      say:"The audit answers the title question with a threshold. Triggering a retinal photoreceptor costs about one point eight e V per photon — an all-or-nothing quantum transaction, as the photoelectric effect taught us. Sunlight's two and a half e V coins pay easily; body-glow's zero point one three e V coins cannot, in any quantity — a whole crowd of small coins still fails a quantum toll. So the night hides us from each other. Thermal cameras simply carry different detectors, tuned to the eight-to-fourteen-micron band, and see everyone glowing plainly. And note Wien's silent partner: while peaks shift as one over T, total output climbs as T to the fourth — the Sun is not just bluer than you but a hundred thousand times brighter per square metre. Reusable method: Wien for where the spectrum peaks, twelve forty for the coin at the peak, and compare that coin against the detector's threshold — eye or instrument alike.",
+      board:[
+        {label:"The threshold", tex:"0.133\\ \\text{eV} \\ll 1.8\\ \\text{eV}_{\\text{vision}}:\\ \\text{we are invisible to ourselves}", kind:"key"},
+        {label:"Reusable method", text:"λ_max = b/T, then E = 1240/λ_max vs detector threshold. Peaks ∝ 1/T; total power ∝ T⁴.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Davisson and Germer: electrons diffract",
+  problem:"54.0 eV electrons scatter from nickel (surface spacing 0.215 nm). Find the strong diffraction angle via d sin φ = λ, and compare with the observed 50°.",
+  goal:"Predict the historic peak from de Broglie's formula and savour the confirmation.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The accidental crystal","λ at 54 eV","Predict the angle","Audit: everything diffracts"],
+  setup(ctx, w){
+    circleAt(ctx, 2.5, 1.6, 0.16, {stroke:GOLD, w:2});
+    circleAt(ctx, 3.7, 1.6, 0.16, {stroke:GOLD, w:2});
+    circleAt(ctx, 4.9, 1.6, 0.16, {stroke:GOLD, w:2});
+    circleAt(ctx, 6.1, 1.6, 0.16, {stroke:GOLD, w:2});
+    circleAt(ctx, 7.3, 1.6, 0.16, {stroke:GOLD, w:2});
+    label(ctx, 4.9, 0.7, 'nickel surface, d = 0.215 nm', {fs:10, color:DIMC});
+    arrow(ctx, 4.9, 6.4, 4.9, 2.0, {color:BLUE, w:2.5, label:'54 eV e⁻', fs:10});
+  },
+  steps:[
+    { map:0, title:"An accident anneals a crystal", pose:"talk",
+      think:"Why did the experiment suddenly show sharp peaks after the vacuum flask burst?",
+      say:"Nineteen twenty-five, Bell Labs: Davisson and Germer are bouncing slow electrons off nickel when a burst flask oxidises their target. Baking it clean, they inadvertently anneal the powder into large single crystals — and the scattered electrons, formerly a smooth haze, suddenly spike at sharp angles. The accident had built a diffraction grating with atomic rulings, and the electrons were waving through it. Let us predict their peak.",
+      board:[
+        {label:"Grating condition", tex:"d\\sin\\phi = \\lambda", kind:"key"}
+      ]
+    },
+    { map:1, title:"The electron's wavelength", pose:"write",
+      think:"λ = 1.226/√54 nm — the packaged nonrelativistic form.",
+      say:"Fifty-four e V electrons: one point two two six over root fifty-four — zero point one six seven nanometres. Sized within twenty-five per cent of the atomic spacing itself: the perfect match of wave to ruling, exactly as the de Broglie example promised.",
+      board:[
+        {label:"Wavelength", tex:"\\lambda = \\frac{1.226}{\\sqrt{54.0}} = 0.167\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Predict the peak", pose:"write",
+      think:"sin φ = 0.167/0.215 — then face the data.",
+      say:"The grating condition: sine phi is zero point seven seven seven — fifty-one degrees. The measured peak: fifty. Agreement to a degree, the shortfall traceable to the electrons' slight change of wavelength on entering the metal's potential. Crank the voltage and the peak migrates precisely as lambda proportional to one over root V demands. De Broglie's audacious thesis, three years old, confirmed by a broken flask.",
+      board:[
+        {label:"Prediction", tex:"\\sin\\phi = \\frac{0.167}{0.215} = 0.777 \\Rightarrow \\phi = 51^\\circ\\ \\text{(observed: } 50^\\circ)", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 4.9, 2.0, 8.3, 5.0, {color:BLUE, w:2, label:'peak ~51°', fs:10});
+      }
+    },
+    { map:3, title:"Audit: the universality parade", pose:"think",
+      think:"If electrons diffract, what else must? Where has the experiment been pushed since?",
+      say:"The audit follows the precedent down a century. The same experiment has since been run with neutrons — now a standard crystallography probe — with whole atoms, and with molecules of thousands of atomic mass units, buckyballs and beyond: every one diffracts, at exactly h over p. Matter waves are not an electron's eccentricity but a property of existence; the quantum-classical border is set only by lambda shrinking beyond detection, never by any object being excused from the rule. Reusable method: lambda from one point two two six over root V, grating condition for the peaks, voltage-scaling as the signature test — and expect interference from anything, if only you can make its lambda resolvable.",
+      board:[
+        {label:"The parade", tex:"e^-, n, \\text{atoms, } 10^4\\text{-u molecules — all diffract at } \\lambda = \\frac{h}{p}", kind:"key"},
+        {label:"Reusable method", text:"Matter diffraction = grating optics with λ = h/p. The V^(−1/2) peak shift is the fingerprint of a matter wave.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Pair production: making matter from light",
+  problem:"(a) Minimum photon energy and maximum wavelength to create an electron–positron pair? (b) Show it cannot happen in empty space.",
+  goal:"Price matter creation, then let momentum conservation forbid it without a chaperone.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Light into matter","(a) The price tag","(b) The forbidden vacuum","Audit: the nucleus as chaperone"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [0.7 + 3.6*t, 3.5 + 0.3*Math.sin(14*t)], 0, 1, {color:PURPLE, w:2.5});
+    label(ctx, 2.2, 4.6, 'γ', {fs:13, color:PURPLE});
+    circleAt(ctx, 5.2, 3.5, 0.45, {stroke:GOLD, w:2});
+    label(ctx, 5.2, 2.4, 'nucleus', {fs:10, color:DIMC});
+    arrow(ctx, 5.6, 3.7, 8.6, 5.2, {color:BLUE, w:2, label:'e⁻', fs:11});
+    arrow(ctx, 5.6, 3.3, 8.6, 1.8, {color:RED, w:2, label:'e⁺', fs:11});
+  },
+  steps:[
+    { map:0, title:"The boldest transaction", pose:"talk",
+      think:"E = mc² read right to left — light buying matter. What is the minimum bill?",
+      say:"We have watched mass become energy; now the ledger runs backward — a photon of pure light materialises into an electron and its antimatter twin, the positron. E equals m c squared, read right to left. The minimum bill is the pair's combined rest energy; charge conservation demands the twins be born together.",
+      board:[
+        {label:"The reaction", tex:"\\gamma \\to e^- + e^+", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Price the pair", pose:"write",
+      think:"2 × 0.511 MeV — then 1240 over it for λ.",
+      say:"Two electron masses: one point zero two two M e V — and the corresponding maximum wavelength, twelve forty over a million and twenty-two thousand: one point two one times ten to the minus three nanometres. Gamma rays, a thousandth the wavelength of X-rays. Any surplus above threshold becomes the newborn pair's kinetic energy: the universe gives change.",
+      board:[
+        {label:"(a) Threshold", tex:"E_{\\min} = 2m_ec^2 = 1.022\\ \\text{MeV}", kind:"answer"},
+        {label:"Max wavelength", tex:"\\lambda_{\\max} = \\frac{1240}{1.022\\times10^{6}} = 1.21\\times10^{-3}\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The vacuum says no", pose:"write",
+      think:"View the process from the pair's centre-of-momentum frame — what must the photon's p be there?",
+      say:"Now the elegant prohibition. Try the reaction in empty space and view it from the pair's centre-of-momentum frame — the frame where the twins' momenta cancel to zero. Conservation demands the incoming photon also carry zero momentum there. But a photon's energy is p c: zero momentum means zero energy, and zero cannot pay one point zero two two M e V. Contradiction — in every frame at once, since the argument used only invariants. However energetic the photon, alone in vacuum it can never become matter: energy and momentum refuse to balance simultaneously, for light spends E equals p c while massive pairs bank E greater than p c.",
+      board:[
+        {label:"(b) Forbidden", tex:"\\text{CM frame: } p_\\gamma = 0 \\Rightarrow E_\\gamma = 0\\ \\text{✗ — no pair in vacuum}", kind:"answer", move:"frame argument"},
+        {label:"Root cause", tex:"\\gamma:\\ E = pc;\\quad \\text{pair}:\\ E > pc\\ \\text{— never both balanced}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the chaperone and the shielding", pose:"think",
+      think:"What third party fixes the books — and why does it take energy so cheaply?",
+      say:"The audit hires the chaperone. Near a nucleus the impasse dissolves: the heavy nucleus absorbs the surplus momentum while — being thousands of electron masses — pocketing negligible energy, its share going as p squared over two capital M. Books balanced, pair born. Hence pair production happens only in matter, more eagerly near heavier nuclei — the cross-section climbs as Z squared — and this is precisely how gamma rays above a few M e V die in lead shielding: not absorbed but transmuted into electron–positron pairs. Matter from light, daily routine in every radiotherapy vault. Reusable method: threshold from summed rest energies; then test conservation in the smartest frame — a process forbidden by kinematics needs a third body, and the heaviest bystander takes momentum cheapest.",
+      board:[
+        {label:"Chaperone", tex:"\\text{nucleus takes } p\\ \\text{at cost } \\frac{p^2}{2M} \\approx 0:\\ \\text{pair production in matter, } \\sigma \\propto Z^2", kind:"key"},
+        {label:"Reusable method", text:"Rest energies set thresholds; CM-frame checks legality; heavy spectators launder momentum nearly free.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

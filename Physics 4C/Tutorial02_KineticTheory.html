@@ -1366,6 +1366,532 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Counting molecules with the ideal-gas law",
+  problem:"(a) How many molecules are in 22.4 L of gas at 0°C and 1.00 atm? (b) What pressure does 2.00 mol exert in 10.0 L at 300 K?",
+  goal:"Run pV = nRT both directions and meet the molar volume at STP.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One law, two currencies","(a) Count the moles","(b) Predict the pressure","Audit: why any gas?"],
+  setup(ctx, w){
+    boxAt(ctx, 2.6, 1.5, 3.0, 3.6, {fill:'none', stroke:CHALKC});
+    label(ctx, 2.6, 0.8, '22.4 L, 0°C, 1 atm', {fs:11, color:DIMC});
+    circleAt(ctx, 1.9, 3.0, 0.09, {stroke:BLUE, w:2});
+    circleAt(ctx, 2.9, 4.1, 0.09, {stroke:BLUE, w:2});
+    circleAt(ctx, 3.4, 2.4, 0.09, {stroke:BLUE, w:2});
+    circleAt(ctx, 2.3, 4.6, 0.09, {stroke:BLUE, w:2});
+    circleAt(ctx, 3.1, 3.3, 0.09, {stroke:BLUE, w:2});
+  },
+  steps:[
+    { map:0, title:"Moles or molecules", pose:"talk",
+      think:"nR and Nk_B describe the same gas — what links n to N?",
+      say:"The ideal-gas law comes in two currencies: moles with R, or molecules with Boltzmann's constant. Avogadro's number is the exchange rate. Today we use both directions of the law — count particles from p, V, T, then predict pressure from a known amount.",
+      board:[
+        {label:"The law", tex:"pV = nRT = Nk_BT", kind:"key"},
+        {label:"Exchange rate", tex:"N = nN_A,\\quad N_A = 6.02\\times10^{23}\\ \\text{mol}^{-1}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The molar volume", pose:"write",
+      think:"Watch the units: litres → m³, °C → K.",
+      say:"Convert first — twenty-two point four litres is zero point zero two two four cubic metres, and zero Celsius is two seventy-three kelvin. Solve for n: exactly one mole. So twenty-two point four litres at STP holds Avogadro's number of molecules — the famous molar volume, a bucketful containing six hundred thousand billion billion particles.",
+      board:[
+        {label:"Moles", tex:"n = \\frac{pV}{RT} = \\frac{(1.013\\times10^{5})(0.0224)}{(8.314)(273)} = 1.00\\ \\text{mol}", kind:"answer"},
+        {label:"Molecules", tex:"N = nN_A = 6.02\\times10^{23}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Now run it forwards", pose:"write",
+      think:"Same law, solved for p this time — estimate before computing.",
+      say:"Part b runs the law the other way. Two moles crammed into ten litres at three hundred kelvin: five hundred kilopascals, call it five atmospheres. Sensible — double the molecules of part a in less than half the volume, slightly warmer.",
+      board:[
+        {label:"Pressure", tex:"p = \\frac{nRT}{V} = \\frac{(2.00)(8.314)(300)}{0.0100} = 4.99\\times10^{5}\\ \\text{Pa} \\approx 4.9\\ \\text{atm}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 7.3, 1.5, 2.0, 2.4, {fill:'none', stroke:GOLD});
+        label(c, 7.3, 0.8, '10.0 L, 2 mol, 300 K', {fs:10, color:DIMC});
+        arrow(c, 7.3, 4.1, 7.3, 5.1, {color:GOLD, w:2, label:'≈ 5 atm', fs:11});
+      }
+    },
+    { map:3, title:"Audit: which gas? It never asked", pose:"think",
+      think:"Neither answer mentioned helium or nitrogen — why not?",
+      say:"Notice what the law never asked: which gas. At ordinary densities, molecules are so far apart that their sizes and mutual attractions barely matter — every gas plays by the same rule. That indifference is a physical statement, and we shall see it fail at high density in the van der Waals example. Reusable method: convert to SI, pick the currency — moles or molecules — and solve p V equals n R T for whichever symbol is missing.",
+      board:[
+        {label:"Universality", tex:"\\text{ideal gas: identity of the molecules irrelevant}", kind:"note"},
+        {label:"Reusable method", text:"SI units first (m³, K, Pa). One equation, four quantities — the problem always gives three.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Kinetic energy per molecule",
+  problem:"Find the average translational kinetic energy of a gas molecule at 300 K, in joules and electron-volts. Does it depend on the gas?",
+  goal:"Evaluate (3/2)k_BT and lodge the 1/25 eV benchmark in memory.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Temperature IS energy","Evaluate at 300 K","The eV benchmark"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.2, 7.6, 4.4, {fill:'none', stroke:CHALKC});
+    circleAt(ctx, 2.6, 3.2, 0.14, {stroke:BLUE, w:2});
+    arrow(ctx, 2.75, 3.35, 3.6, 4.1, {color:BLUE, w:1.5});
+    circleAt(ctx, 5.2, 4.3, 0.14, {stroke:GREEN, w:2});
+    arrow(ctx, 5.05, 4.15, 4.3, 3.5, {color:GREEN, w:1.5});
+    circleAt(ctx, 7.2, 2.2, 0.14, {stroke:GOLD, w:2});
+    arrow(ctx, 7.35, 2.3, 8.2, 2.8, {color:GOLD, w:1.5});
+    label(ctx, 5.0, 0.5, 'any gas at 300 K', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"What temperature really measures", pose:"talk",
+      think:"Strip away the thermometer — what microscopic quantity is T tracking?",
+      say:"Here is the deepest sentence in this chapter: temperature is a measure of the average translational kinetic energy of molecules. Not a fluid, not a substance — just three halves k B T per molecule, one half for each direction of space.",
+      board:[
+        {label:"Equipartition (translation)", tex:"\\overline{K} = \\tfrac{3}{2}k_BT", kind:"key"}
+      ]
+    },
+    { map:1, title:"Evaluate at room temperature", pose:"write",
+      think:"k_B is tiny — expect a very small number of joules.",
+      say:"Three halves times Boltzmann's constant times three hundred: six point two times ten to the minus twenty-one joules. In the chemist's unit, about four hundredths of an electron-volt. And the gas never entered the calculation — helium, nitrogen, mercury vapour at the same temperature all carry exactly this energy per molecule. Heavier ones simply move more slowly.",
+      board:[
+        {label:"In joules", tex:"\\overline{K} = \\tfrac{3}{2}(1.381\\times10^{-23})(300) = 6.21\\times10^{-21}\\ \\text{J}", kind:"answer"},
+        {label:"In eV", tex:"\\overline{K} = 0.0388\\ \\text{eV} \\approx \\tfrac{1}{25}\\ \\text{eV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: why the world holds together", pose:"think",
+      think:"Chemical bonds cost ~1 eV. What does 1/25 eV per collision imply?",
+      say:"Now the audit that makes the number worth memorising. Chemical bonds are electron-volt sized; room-temperature collisions carry a fortieth of that. So thermal jostling rattles molecules without tearing them apart — which is why your DNA survives being hit ten billion times a nanosecond. Warm things to thousands of kelvin and the ratio closes: chemistry ignites. Reusable method: three halves k B T is the universal thermal energy scale — compare any process's energy cost against it first.",
+      board:[
+        {label:"The comparison", tex:"k_BT \\sim \\tfrac{1}{40}\\ \\text{eV} \\ll E_{\\text{bond}} \\sim \\text{eV}", kind:"key"},
+        {label:"Reusable method", text:"Benchmark: k_BT ≈ 1/40 eV at 300 K. Any activation energy ≫ k_BT is thermally safe; comparable means reactions run.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"rms speeds of light and heavy gases",
+  problem:"Compare the rms speeds of nitrogen (M = 28.0 g/mol) and helium (M = 4.00 g/mol) at 300 K.",
+  goal:"Use v_rms = √(3RT/M), watch the 1/√M scaling, and connect to the speed of sound.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Same energy, different speed","Compute both","Audit: sound can't outrun molecules"],
+  setup(ctx, w){
+    circleAt(ctx, 2.6, 4.6, 0.30, {stroke:BLUE, w:2.5});
+    label(ctx, 2.6, 5.5, 'N₂, M = 28', {fs:11, color:BLUE});
+    circleAt(ctx, 2.6, 1.9, 0.16, {stroke:GOLD, w:2.5});
+    label(ctx, 2.6, 1.0, 'He, M = 4', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Equal energies, unequal speeds", pose:"talk",
+      think:"If ½mv² is the same for both gases, which one moves faster?",
+      say:"At the same temperature every molecule carries the same average kinetic energy — that was the last example. But one half m v squared fixed means light molecules must make up in speed what they lack in mass. Solve for v and the molar mass lands under a square root, downstairs.",
+      board:[
+        {label:"rms speed", tex:"v_{\\text{rms}} = \\sqrt{\\frac{3RT}{M}}", kind:"key"},
+        {label:"Scaling", tex:"v_{\\text{rms}} \\propto \\frac{1}{\\sqrt{M}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Nitrogen and helium at 300 K", pose:"write",
+      think:"Units: M must be kg/mol to sit with R in J/(mol·K).",
+      say:"Mind the units — molar mass in kilograms per mole, so nitrogen is zero point zero two eight. Nitrogen: five hundred seventeen metres per second. Helium, seven times lighter: root seven faster, thirteen hundred seventy. Both are supersonic bullets, and this is the air sitting calmly in front of you.",
+      board:[
+        {label:"Nitrogen", tex:"v_{\\text{rms}} = \\sqrt{\\frac{3(8.314)(300)}{0.0280}} = 517\\ \\text{m/s}", kind:"answer"},
+        {label:"Helium", tex:"v_{\\text{rms}} = \\sqrt{\\frac{3(8.314)(300)}{0.00400}} = 1370\\ \\text{m/s}", kind:"answer", move:"√7 ≈ 2.65× faster"}
+      ],
+      action(c){
+        arrow(c, 3.0, 4.6, 5.4, 4.6, {color:BLUE, w:2.5, label:'517 m/s', fs:11});
+        arrow(c, 2.9, 1.9, 9.2, 1.9, {color:GOLD, w:2.5, label:'1370 m/s', fs:11});
+      }
+    },
+    { map:2, title:"Audit: the speed of sound ceiling", pose:"think",
+      think:"Sound is carried by molecular collisions — can it travel faster than the molecules?",
+      say:"Audit with a familiar number: sound in air travels three hundred forty-three metres per second — about two thirds of nitrogen's rms speed. That is no coincidence. Sound is a rumour passed molecule to molecule; it cannot outrun its messengers. And helium's faster molecules carry sound almost three times faster — the squeaky-voice trick is this very formula at work in your vocal tract. Reusable method: v rms equals root three R T over M, with M in kilograms per mole, and one over root M does the comparing.",
+      board:[
+        {label:"Benchmark", tex:"v_{\\text{sound}} = 343\\ \\text{m/s} < v_{\\text{rms,N}_2} = 517\\ \\text{m/s}", kind:"note"},
+        {label:"Reusable method", text:"Compare gases at fixed T by 1/√M alone; compute one speed and scale. Sound speed ~ molecular speed is the sanity check.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Two steps on a fixed sample",
+  problem:"A sealed cylinder holds gas at 1.00 atm, 300 K, 2.00 L. (a) Isothermal compression to 0.500 L: find p. (b) Piston locked, heated to 450 K: find the final pressure.",
+  goal:"Use the ratio form pV/T = const pairwise, then verify straight from the endpoints.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The ratio form","(a) Squeeze at fixed T","(b) Heat at fixed V","Audit: endpoints and kelvin"],
+  setup(ctx, w){
+    boxAt(ctx, 2.2, 1.6, 2.6, 3.8, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 0.9, 4.3, 3.5, 4.3, {color:DIMC});
+    label(ctx, 2.2, 0.9, 'state 1: 1 atm, 300 K, 2.00 L', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Sealed means ratios", pose:"talk",
+      think:"What stays constant in a sealed cylinder, whatever we do to it?",
+      say:"The cylinder is sealed — n never changes — so p V over T is the same number in every state. No need to know n or even compute it: compare states in ratios, and whole constants cancel. This ratio form is the workhorse for any before-and-after gas problem.",
+      board:[
+        {label:"Fixed sample", tex:"\\frac{p_1V_1}{T_1} = \\frac{p_2V_2}{T_2} = \\frac{p_3V_3}{T_3}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Isothermal squeeze", pose:"write",
+      think:"T is fixed, V drops fourfold — what must p do?",
+      say:"Step one holds temperature fixed, so p V is constant — Boyle's law. Squeeze the volume by four and the pressure quadruples: four atmospheres. Microscopically, the same molecules now hit four times less wall area-time — four times the bombardment rate.",
+      board:[
+        {label:"(a) Boyle", tex:"p_2 = p_1\\frac{V_1}{V_2} = 1.00\\times\\frac{2.00}{0.500} = 4.00\\ \\text{atm}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 6.0, 1.6, 2.6, 3.8, {fill:'none', stroke:CHALKC});
+        dashLine(c, 4.7, 2.55, 7.3, 2.55, {color:GOLD});
+        arrow(c, 6.0, 4.6, 6.0, 2.8, {color:GOLD, w:2});
+        label(c, 6.0, 0.9, 'state 2: 4 atm, 300 K, 0.50 L', {fs:10, color:GOLD});
+      }
+    },
+    { map:2, title:"(b) Locked piston, heated", pose:"write",
+      think:"Now V is fixed and T rises 300 → 450 — which ratio applies?",
+      say:"Step two locks the piston: volume frozen, so pressure tracks absolute temperature — Gay-Lussac. Four fifty over three hundred is one and a half, so four atmospheres becomes six. The molecules hit no more often per unit density, but each impact is harder and they come faster.",
+      board:[
+        {label:"(b) Fixed V", tex:"p_3 = p_2\\frac{T_3}{T_2} = 4.00\\times\\frac{450}{300} = 6.00\\ \\text{atm}", kind:"answer"}
+      ],
+      action(c){
+        label(c, 6.0, 5.9, 'heat → 450 K, 6 atm', {fs:11, color:RED});
+        plotCurve(c, t => [4.9 + 0.15*Math.sin(8*t), 5.0 + 0.5*t], 0, 0.7, {color:RED, w:2});
+      }
+    },
+    { map:3, title:"Audit: one jump, and the kelvin trap", pose:"think",
+      think:"Skip the middle state entirely — do the endpoints agree?",
+      say:"Audit one: leap straight from state one to state three. Volume ratio four, temperature ratio one point five — product six. Same answer, path irrelevant, exactly as a state function demands. Audit two, the trap: had we used twenty-seven and one seventy-seven Celsius, the ratio would be a nonsense six point six. Ratios of temperatures only mean anything in kelvin, where zero really is zero. Reusable method: for sealed samples write p V over T equals constant, cancel whatever is held fixed, and keep every T absolute.",
+      board:[
+        {label:"Endpoint check", tex:"p_3 = p_1\\frac{V_1}{V_3}\\frac{T_3}{T_1} = 1.00(4)(1.5) = 6.00\\ \\text{atm}\\ \\checkmark", kind:"key"},
+        {label:"Kelvin only", tex:"\\frac{450}{300} = 1.5\\ \\text{but}\\ \\frac{177}{27} = 6.6\\ \\text{✗ nonsense}", kind:"warn"},
+        {label:"Reusable method", text:"pV/T pairwise between states; verify via the direct endpoint ratio. Celsius in a ratio is always wrong.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Internal energy and equipartition",
+  problem:"Find the internal energy of 2.00 mol of gas at 300 K for (a) helium and (b) nitrogen (rigid diatomic). What are their molar heat capacities C_V?",
+  goal:"Count quadratic degrees of freedom: ½RT per mole each, and see why shape matters.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Count the freedoms","(a) Helium: 3","(b) Nitrogen: 5","Audit: same T, more storage"],
+  setup(ctx, w){
+    circleAt(ctx, 2.6, 4.9, 0.30, {stroke:GOLD, w:2.5});
+    label(ctx, 2.6, 5.8, 'He: point particle', {fs:11, color:GOLD});
+    circleAt(ctx, 2.2, 1.9, 0.24, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 3.1, 1.9, 0.24, {stroke:BLUE, w:2.5});
+    label(ctx, 2.65, 1.0, 'N₂: dumbbell', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"Every quadratic term gets its share", pose:"talk",
+      think:"Equipartition pays ½k_BT to each — each what, exactly?",
+      say:"Equipartition is thermodynamics' fair-share rule: every quadratic way a molecule can hold energy receives one half k B T on average — one half R T per mole. So internal energy is a counting exercise. The only question is: how many ways can this molecule jiggle?",
+      board:[
+        {label:"Equipartition", tex:"\\overline{E} = \\tfrac{1}{2}k_BT\\ \\text{per quadratic degree of freedom}", kind:"key"},
+        {label:"Consequence", tex:"U = \\tfrac{f}{2}nRT,\\qquad C_V = \\tfrac{f}{2}R", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Helium: pure translation", pose:"write",
+      think:"A structureless ball can move in how many independent directions?",
+      say:"Helium is a featureless ball: it can translate along x, y, z, and that is all — a point has no axis worth spinning. Three freedoms. Internal energy: seven and a half kilojoules for our two moles; C V is three halves R.",
+      board:[
+        {label:"(a) Monatomic, f = 3", tex:"U = \\tfrac{3}{2}nRT = \\tfrac{3}{2}(2.00)(8.314)(300) = 7.48\\ \\text{kJ}", kind:"answer"},
+        {label:"Heat capacity", tex:"C_V = \\tfrac{3}{2}R = 12.5\\ \\text{J/mol·K}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.6, 4.9, 3.9, 4.9, {color:GOLD, w:1.5});
+        arrow(c, 2.6, 4.9, 2.6, 3.9, {color:GOLD, w:1.5});
+        arrow(c, 2.6, 4.9, 1.7, 4.2, {color:GOLD, w:1.5});
+      }
+    },
+    { map:2, title:"(b) Nitrogen: add two rotations", pose:"write",
+      think:"A dumbbell can tumble — about how many useful axes?",
+      say:"Nitrogen is a dumbbell: three translations plus two tumbling rotations, end over end about either transverse axis. Spinning about the bond line itself stores nothing measurable. Five freedoms: twelve and a half kilojoules, C V five halves R — sixty-seven per cent more storage at the same temperature.",
+      board:[
+        {label:"(b) Diatomic, f = 5", tex:"U = \\tfrac{5}{2}nRT = 12.5\\ \\text{kJ}", kind:"answer"},
+        {label:"Heat capacity", tex:"C_V = \\tfrac{5}{2}R = 20.8\\ \\text{J/mol·K}", kind:"answer"}
+      ],
+      action(c){
+        arc(c, 2.65, 1.9, 0.85, -50, 200, {color:GREEN, w:1.5});
+        label(c, 4.4, 2.6, 'rotation ×2', {fs:11, color:GREEN});
+      }
+    },
+    { map:3, title:"Audit: where the extra energy hides", pose:"think",
+      think:"Do nitrogen's molecules translate any faster than helium's at 300 K?",
+      say:"The audit untangles a subtlety. Nitrogen holds two thirds more energy, yet its translational share — the part that is temperature — is identical to helium's: three halves k B T each. The surplus lives entirely in rotation, invisible to a thermometer. And notice what I quietly assumed: 'rigid'. Nitrogen can also vibrate, but at three hundred kelvin that mode is frozen out by quantum mechanics — the punchline of a later example. Reusable method: count quadratic freedoms, take f halves R T per mole, and let the molecule's shape do the talking.",
+      board:[
+        {label:"Same translation", tex:"\\overline{K}_{\\text{trans}} = \\tfrac{3}{2}k_BT\\ \\text{for both}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"f = 3 (monatomic), 5 (rigid diatomic), 6 (nonlinear polyatomic); U = (f/2)nRT. Watch for frozen modes.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Mean free path in a vacuum chamber",
+  problem:"Nitrogen molecules have diameter 3.7×10⁻¹⁰ m. Find the mean free path at 300 K for (a) 1.00 atm and (b) 1.00 Pa. Compare with a 10 cm chamber.",
+  goal:"Evaluate λ = k_BT/(√2πd²p), scale with 1/p, and meet molecular flow.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["What λ measures","(a) One atmosphere","(b) Lab vacuum: scale by 1/p","Audit: when the walls take over"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.2, 8.0, 4.6, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 0.5, 'chamber, L = 10 cm', {fs:11, color:DIMC});
+    circleAt(ctx, 2.4, 3.4, 0.12, {stroke:BLUE, w:2});
+    plotCurve(ctx, t => [2.4 + 1.1*t, 3.4 + 0.5*Math.sin(6*t)], 0, 1.4, {color:BLUE, w:1.5, dash:'4 4'});
+    circleAt(ctx, 4.0, 3.55, 0.12, {stroke:BLUE, w:2});
+  },
+  steps:[
+    { map:0, title:"The distance between bumps", pose:"talk",
+      think:"What should make λ shorter: bigger molecules, or more of them?",
+      say:"The mean free path is how far a molecule flies, on average, between collisions. Fatter molecules and denser crowds both shorten it — hence d squared and pressure downstairs. The root two upstairs accounts for the targets moving too. This one number decides whether a gas behaves as a fluid or as a hail of independent bullets.",
+      board:[
+        {label:"Mean free path", tex:"\\lambda = \\frac{k_BT}{\\sqrt{2}\\,\\pi d^2 p}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) At one atmosphere", pose:"write",
+      think:"Guess the order of magnitude before computing: mm? μm? nm?",
+      say:"At atmospheric pressure: sixty-seven nanometres. Two hundred molecular diameters — the molecule does fly free for a while — yet ten thousand times shorter than a millimetre. Air at one atmosphere is a dense mosh pit: a molecule suffers several billion collisions every second.",
+      board:[
+        {label:"(a) 1 atm", tex:"\\lambda = \\frac{(1.381\\times10^{-23})(300)}{\\sqrt{2}\\,\\pi(3.7\\times10^{-10})^2(1.013\\times10^{5})} = 6.7\\times10^{-8}\\ \\text{m} = 67\\ \\text{nm}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Pump down: λ scales as 1/p", pose:"write",
+      think:"Pressure falls by 10⁵ — no need to recompute from scratch.",
+      say:"Drop to one pascal and do not recompute — scale. Everything upstairs is unchanged; pressure fell by ten to the five, so lambda grows by ten to the five: six point eight millimetres. Now visible on a ruler, but still smaller than our ten-centimetre chamber.",
+      board:[
+        {label:"(b) 1 Pa", tex:"\\lambda \\propto \\frac{1}{p}:\\ \\lambda = (6.7\\times10^{-8})(1.013\\times10^{5}) = 6.8\\ \\text{mm}", kind:"answer", move:"scale by 1/p"}
+      ],
+      action(c){
+        circleAt(c, 6.2, 2.6, 0.12, {stroke:GOLD, w:2});
+        plotCurve(c, t => [6.2 + 1.9*t, 2.6 + 0.3*t], 0, 1, {color:GOLD, w:1.5, dash:'4 4'});
+        circleAt(c, 8.2, 2.95, 0.12, {stroke:GOLD, w:2});
+        label(c, 7.0, 1.8, 'λ = 6.8 mm at 1 Pa', {fs:10, color:GOLD});
+      }
+    },
+    { map:3, title:"Audit: molecular flow", pose:"think",
+      think:"Keep pumping — at what pressure does λ reach the chamber size?",
+      say:"The audit asks where the formula's story changes. Push below about a hundredth of a pascal and lambda exceeds ten centimetres: molecules stop meeting each other and simply fly wall to wall. That is molecular flow — no viscosity, no convection, no gas-phase heat conduction. Vacuum pumps, thermos flasks, and thin-film coating machines are all engineered around this crossover. Reusable method: compute lambda once at a known pressure, scale by one over p, and compare with the apparatus size — the ratio, the Knudsen number, picks the physics.",
+      board:[
+        {label:"Crossover", tex:"\\lambda \\gtrsim L\\ \\text{when } p \\lesssim 0.01\\ \\text{Pa: molecular flow}", kind:"key"},
+        {label:"Reusable method", text:"λ ∝ T/(d²p). Compare λ with the container: λ ≪ L fluid behavior, λ ≳ L ballistic molecules.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Which gases can a planet keep?",
+  problem:"Earth's escape speed is 11.2 km/s. At 300 K compare v_rms for H₂ (2 g/mol), He (4), O₂ (32) with v_esc. Rule: a gas is lost if v_esc < 6 v_rms. Which does Earth retain?",
+  goal:"Pit the Maxwell tail against gravity and explain planetary atmospheres.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The contest","Three speeds","Apply the factor-6 rule","Audit: why 6? The tail"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 2.2, 1.4, {stroke:BLUE, w:2.5});
+    label(ctx, 5.0, 2.1, 'Earth', {fs:12, color:BLUE});
+    arrow(ctx, 5.9, 3.3, 7.6, 5.4, {color:GOLD, w:2});
+    label(ctx, 8.4, 5.8, 'v > v_esc?', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Gravity versus thermal agitation", pose:"talk",
+      think:"What lets a molecule leave a planet forever?",
+      say:"An atmosphere is a permanent tug-of-war: gravity holds molecules down, thermal motion flings them about, and any molecule in the high atmosphere moving faster than escape speed, outward, is gone for good. Earth's gate is eleven point two kilometres per second. Let us see which gases rattle that gate.",
+      board:[
+        {label:"The gate", tex:"v_{\\text{esc}} = 11.2\\ \\text{km/s}", kind:"key"},
+        {label:"The rattle", tex:"v_{\\text{rms}} = \\sqrt{\\frac{3RT}{M}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Three gases, three speeds", pose:"write",
+      think:"All at 300 K — only 1/√M distinguishes them.",
+      say:"At three hundred kelvin: hydrogen, nineteen hundred thirty metres per second; helium, thirteen seventy; oxygen, a sluggish four eighty-four. All far below eleven thousand two hundred — so naively, nothing escapes and every planet keeps everything. Naively.",
+      board:[
+        {label:"Speeds", tex:"v_{\\text{rms}}:\\ \\text{H}_2\\ 1930,\\quad \\text{He}\\ 1370,\\quad \\text{O}_2\\ 484\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The factor-six rule", pose:"write",
+      think:"Form v_esc/v_rms for each gas and compare with 6.",
+      say:"The working rule says trouble begins when escape speed is less than six times v rms. Form the ratios: hydrogen five point eight — below six, it leaks away. Helium eight point two — marginal, and indeed Earth's helium, born of radioactive decay underground, seeps to space over megayears; we mine it from natural gas because the sky loses it. Oxygen twenty-three — locked in tight.",
+      board:[
+        {label:"Ratios", tex:"\\frac{v_{\\text{esc}}}{v_{\\text{rms}}}:\\ \\text{H}_2\\ 5.8,\\quad \\text{He}\\ 8.2,\\quad \\text{O}_2\\ 23", kind:"answer"},
+        {label:"Verdict", tex:"\\text{H}_2\\ \\text{lost},\\ \\text{He marginal},\\ \\text{O}_2,\\text{N}_2\\ \\text{retained}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the tail tells the tale", pose:"think",
+      think:"If v_rms is 6× below escape, why does the gas still leak?",
+      say:"Why six, when the average molecule falls hopelessly short? Because averages do not escape — outliers do. The Maxwell distribution has an exponential high-speed tail: some tiny fraction always exceeds escape speed, the atmosphere constantly refills the tail, and a small leak run for a billion years empties the tank. The same rule maps the solar system: the Moon, at two point four kilometres per second, keeps nothing; Jupiter, at sixty, keeps even hydrogen — which is why it is made of it. Reusable method: compare v esc with six v rms per gas; the factor six is the tail's long reach over geological time.",
+      board:[
+        {label:"The mechanism", tex:"\\text{Maxwell tail: fraction with } v > v_{\\text{esc}}\\ \\text{never zero}", kind:"key"},
+        {label:"Solar system", tex:"\\text{Moon } 2.4 \\Rightarrow \\text{airless};\\quad \\text{Jupiter } 60 \\Rightarrow \\text{keeps H}_2", kind:"note"},
+        {label:"Reusable method", text:"v_rms ∝ √(T/M) per gas; retention needs v_esc ≳ 6v_rms. Averages don't escape — tails do.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Van der Waals: when the ideal gas fails",
+  problem:"One mole of CO₂ in 1.00 L at 300 K. Find p from the ideal-gas law and from van der Waals (a = 0.364 Pa·m⁶/mol², b = 4.27×10⁻⁵ m³/mol), and interpret both corrections.",
+  goal:"Compute both pressures and read the physics inside a and b.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The ideal answer","Two confessions","Van der Waals number","Audit: when ideality returns"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.2, 6.0, 4.4, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 0.5, '1 mol CO₂ in 1.00 L — crowded', {fs:11, color:DIMC});
+    circleAt(ctx, 3.2, 3.2, 0.22, {stroke:GREEN, w:2});
+    circleAt(ctx, 4.1, 4.3, 0.22, {stroke:GREEN, w:2});
+    circleAt(ctx, 5.2, 2.4, 0.22, {stroke:GREEN, w:2});
+    circleAt(ctx, 6.1, 3.8, 0.22, {stroke:GREEN, w:2});
+    circleAt(ctx, 6.9, 2.8, 0.22, {stroke:GREEN, w:2});
+    circleAt(ctx, 4.6, 3.1, 0.22, {stroke:GREEN, w:2});
+  },
+  steps:[
+    { map:0, title:"First, the ideal claim", pose:"write",
+      think:"One mole in one litre — is that dilute? Compare with 22.4 L at STP.",
+      say:"Start with the ideal gas, which believes molecules are sizeless points that ignore one another. One mole squeezed into a single litre — twenty-two times denser than STP — at three hundred kelvin: two point four nine megapascals, about twenty-five atmospheres. Now let us ask whether the molecules agree.",
+      board:[
+        {label:"Ideal", tex:"p = \\frac{RT}{V} = \\frac{(8.314)(300)}{10^{-3}} = 2.49\\times10^{6}\\ \\text{Pa}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Two confessions of a real gas", pose:"talk",
+      think:"Molecules have size, and they attract — which correction does each force?",
+      say:"Van der Waals makes the gas confess twice. Confession one: molecules occupy volume, so the free room is V minus b — less room means more pressure. Confession two: molecules attract, and one approaching the wall is tugged backwards by the crowd behind — softer impacts, less pressure, by a over V squared. The two corrections fight each other.",
+      board:[
+        {label:"Van der Waals", tex:"p = \\frac{RT}{V - b} - \\frac{a}{V^2}", kind:"key"},
+        {label:"Meaning", tex:"b:\\ \\text{excluded volume}\\ (+);\\qquad a:\\ \\text{attraction}\\ (-)", kind:"note"}
+      ]
+    },
+    { map:2, title:"Put in the numbers", pose:"write",
+      think:"Which correction wins for CO₂ at this density?",
+      say:"Numbers. The b term lifts the ideal answer four per cent, to two point six one megapascals. The a term then subtracts three hundred sixty-four kilopascals — a fifteen per cent bite. Net: two point two four megapascals, ten per cent below ideal. For carbon dioxide, attraction wins — no surprise for a molecule so eager to condense that it makes dry ice.",
+      board:[
+        {label:"Compute", tex:"p = \\frac{2494}{10^{-3} - 4.27\\times10^{-5}} - \\frac{0.364}{(10^{-3})^2}", kind:"key"},
+        {label:"Result", tex:"p = 2.61\\times10^{6} - 3.64\\times10^{5} = 2.24\\times10^{6}\\ \\text{Pa}\\ (-10\\%)", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: ideality is a limit, not a law", pose:"think",
+      think:"Redo the comparison at 1 atm — how big would the corrections be?",
+      say:"Audit by changing the density. At this crowding — still only a twenty-fifth of liquid density — the corrections total ten per cent. Dilute the same gas to one atmosphere and both corrections shrink below one per cent: the ideal gas returns, excellent as ever. The lesson is precise: the ideal-gas law is not a law of nature but the low-density limit of one. Reusable method: compute ideal first, then let b tighten the volume and a soften the wall, and judge both against the density scale V over b.",
+      board:[
+        {label:"Perspective", tex:"\\text{at } 1\\ \\text{atm: corrections} < 1\\%", kind:"key"},
+        {label:"Reusable method", text:"Ideal answer first; corrections scale with density (b/V and a/V²). Big a: condensable gas; big b: bulky molecule.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Heat capacity of hydrogen and the freezing of vibrations",
+  problem:"Raise 1.00 mol of H₂ from 300 K to 400 K (a) at constant volume, (b) at constant pressure (rigid diatomic). (c) Vibration 'switches on' near 3000 K: what would C_V become, and why can't classical physics explain the switch?",
+  goal:"Use C_V and C_p, locate the R ΔT gap, and climb the quantum staircase of C_V(T).",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two ways to heat","(a) and (b): the R gap","(c) Vibration joins","Audit: the staircase that broke classical physics"],
+  setup(ctx, w){
+    circleAt(ctx, 2.3, 5.3, 0.2, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 3.1, 5.3, 0.2, {stroke:BLUE, w:2.5});
+    plotCurve(ctx, t => [2.5 + 0.4*t, 5.3 + 0.1*Math.sin(14*t)], 0, 1, {color:DIMC, w:1.5});
+    label(ctx, 2.7, 4.4, 'H₂', {fs:12, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"Constant volume versus constant pressure", pose:"talk",
+      think:"Heating at constant p, the gas expands — who pays for that work?",
+      say:"Heating a gas at constant volume, every joule lands in internal energy. At constant pressure, the gas must also expand and shove the atmosphere out of the way — so you, the heater, pay extra. That surplus is exactly R per mole per kelvin: C p equals C V plus R, one of thermodynamics' cleanest results.",
+      board:[
+        {label:"Rigid diatomic", tex:"C_V = \\tfrac{5}{2}R,\\qquad C_p = C_V + R = \\tfrac{7}{2}R", kind:"key"}
+      ]
+    },
+    { map:1, title:"Price both routes", pose:"write",
+      think:"Same ΔT = 100 K — the difference should be exactly RΔT.",
+      say:"Constant volume: five halves R times one hundred — two point zero eight kilojoules. Constant pressure: seven halves R — two point nine one. The gap, zero point eight three kilojoules, is precisely R delta T: the work of pushing back the sky. Nothing is lost; it is just spent outside the gas.",
+      board:[
+        {label:"(a) Fixed V", tex:"Q = nC_V\\Delta T = (1.00)\\tfrac{5}{2}(8.314)(100) = 2.08\\ \\text{kJ}", kind:"answer"},
+        {label:"(b) Fixed p", tex:"Q = nC_p\\Delta T = 2.91\\ \\text{kJ}", kind:"answer"},
+        {label:"The gap", tex:"\\Delta Q = R\\,\\Delta T = 0.83\\ \\text{kJ} = W_{\\text{expansion}}", kind:"key"}
+      ]
+    },
+    { map:2, title:"(c) When vibration wakes", pose:"write",
+      think:"A vibrating bond stores energy in how many quadratic terms?",
+      say:"Part c looks toward three thousand kelvin, where the bond itself begins to oscillate. Vibration brings two quadratic terms — kinetic energy of the oscillation and potential energy of the stretched bond — so f jumps from five to seven and C V climbs to seven halves R. But here is the scandal: classical equipartition says this should hold at every temperature. It plainly does not.",
+      board:[
+        {label:"(c) Vibrating", tex:"f = 7:\\ C_V = \\tfrac{7}{2}R = 29.1\\ \\text{J/mol·K}", kind:"answer"},
+        {label:"Classical scandal", tex:"\\text{equipartition predicts } \\tfrac{7}{2}R\\ \\text{at ALL } T\\ \\text{✗}", kind:"warn"}
+      ]
+    },
+    { map:3, title:"Audit: the measured staircase", pose:"excited",
+      think:"What does the experimental C_V(T) curve for H₂ actually look like?",
+      say:"Measure hydrogen's C V across temperature and you find a staircase: three halves R below a hundred kelvin — even rotation is asleep — five halves R at room temperature, climbing toward seven halves R only near three thousand. Each mode contributes only once k B T rivals its quantum energy spacing; below that, the mode simply cannot accept a partial quantum and sits frozen. This staircase, inexplicable classically, was among the first clear signatures that a new mechanics was needed. Reusable method: C p minus C V equals R always; for C V itself, count only the modes that k B T can afford to wake.",
+      board:[
+        {label:"The staircase", tex:"C_V:\\ \\tfrac{3}{2}R \\xrightarrow{\\sim100\\ \\text{K}} \\tfrac{5}{2}R \\xrightarrow{\\sim3000\\ \\text{K}} \\tfrac{7}{2}R", kind:"key"},
+        {label:"Criterion", tex:"\\text{mode active when } k_BT \\gtrsim \\Delta E_{\\text{quantum}}", kind:"key"},
+        {label:"Reusable method", text:"Q = nCΔT with C matched to the process; C_p = C_V + R. Check T against each mode's quantum gap before counting it.", kind:"answer"}
+      ],
+      action(c){
+        axes2D(c, {x0:0, x1:10, y0:0, y1:7}, {x0:5.2, y0:1.0, xLab:'T', yLab:'C_V'});
+        plotCurve(c, t => [t, 2.0], 5.4, 6.4, {color:GOLD, w:2.5});
+        plotCurve(c, t => [t, 2.0 + (t-6.4)*2.0], 6.4, 6.9, {color:GOLD, w:2.5});
+        plotCurve(c, t => [t, 3.0], 6.9, 8.0, {color:GOLD, w:2.5});
+        plotCurve(c, t => [t, 3.0 + (t-8.0)*1.6], 8.0, 8.6, {color:GOLD, w:2.5});
+        plotCurve(c, t => [t, 3.96], 8.6, 9.5, {color:GOLD, w:2.5});
+        label(c, 6.0, 2.5, '3/2 R', {fs:10, color:GOLD});
+        label(c, 7.5, 3.5, '5/2 R', {fs:10, color:GOLD});
+        label(c, 9.0, 4.5, '7/2 R', {fs:10, color:GOLD});
+      }
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Molecular bombardment of a wall",
+  problem:"For N₂ at 1.00 atm and 300 K, find (a) the number density, (b) the flux striking 1 m² of wall per second (Φ = ¼n v̄), and (c) verify p = ⅓nm v̄² reproduces the pressure.",
+  goal:"Count the bombardment, then close the loop: pressure really is momentum flux.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["(a) How crowded?","(b) The hail on the wall","(c) Pressure from momentum","Audit: the loop closes"],
+  setup(ctx, w){
+    boxAt(ctx, 8.7, 0.8, 0.5, 5.4, {fill:'none', stroke:CHALKC});
+    label(ctx, 8.7, 6.6, 'wall', {fs:11, color:DIMC});
+    circleAt(ctx, 3.0, 4.8, 0.11, {stroke:BLUE, w:2});
+    arrow(ctx, 3.15, 4.75, 4.4, 4.4, {color:BLUE, w:1.5});
+    circleAt(ctx, 2.4, 2.4, 0.11, {stroke:BLUE, w:2});
+    arrow(ctx, 2.55, 2.45, 3.8, 2.7, {color:BLUE, w:1.5});
+    circleAt(ctx, 5.4, 3.6, 0.11, {stroke:BLUE, w:2});
+    arrow(ctx, 5.55, 3.6, 6.9, 3.6, {color:BLUE, w:1.5});
+    circleAt(ctx, 5.0, 1.6, 0.11, {stroke:BLUE, w:2});
+    arrow(ctx, 5.15, 1.65, 6.4, 2.0, {color:BLUE, w:1.5});
+  },
+  steps:[
+    { map:0, title:"(a) The crowd density", pose:"write",
+      think:"pV = Nk_BT rearranges directly to n = N/V — no gas identity needed.",
+      say:"First, how crowded is air? From p V equals N k B T, the number density is p over k B T: two point four five times ten to the twenty-five molecules in every cubic metre. Twenty-five million billion billion — and between them, mostly empty space.",
+      board:[
+        {label:"(a) Number density", tex:"n = \\frac{p}{k_BT} = \\frac{1.013\\times10^{5}}{(1.381\\times10^{-23})(300)} = 2.45\\times10^{25}\\ \\text{m}^{-3}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"(b) The hail on one square metre", pose:"write",
+      think:"Why ¼ n v̄ and not n v̄ — what does the geometry average do?",
+      say:"For the wall flux we need the mean speed — four hundred seventy-six metres per second, slightly below rms since the average of v weights the slow ones more kindly. The quarter is geometry: only half the molecules head toward the wall at all, and their approach angles average the perpendicular speed down by another half. Multiply out: three times ten to the twenty-seven impacts per square metre per second. Every square centimetre of your skin takes ten to the twenty-three hits a second — you are being sandblasted into equilibrium, permanently.",
+      board:[
+        {label:"Mean speed", tex:"\\bar{v} = \\sqrt{\\frac{8RT}{\\pi M}} = \\sqrt{\\frac{8(8.314)(300)}{\\pi(0.0280)}} = 476\\ \\text{m/s}", kind:"key"},
+        {label:"(b) Flux", tex:"\\Phi = \\tfrac{1}{4}n\\bar{v} = \\tfrac{1}{4}(2.45\\times10^{25})(476) = 2.9\\times10^{27}\\ \\text{m}^{-2}\\text{s}^{-1}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(c) Pressure from pure mechanics", pose:"write",
+      think:"Each impact delivers momentum; a rate of momentum per area is a pressure.",
+      say:"Now the main event. Kinetic theory claims pressure is nothing but momentum delivered by these impacts: one third n m v-bar-squared. The mass of one nitrogen molecule is its molar mass over Avogadro — four point six five times ten to the minus twenty-six kilograms. With v rms of five hundred seventeen: one point zero one times ten to the five pascals.",
+      board:[
+        {label:"Molecular mass", tex:"m = \\frac{0.0280}{6.022\\times10^{23}} = 4.65\\times10^{-26}\\ \\text{kg}", kind:"note"},
+        {label:"(c) Pressure", tex:"p = \\tfrac{1}{3}nm\\overline{v^2} = \\tfrac{1}{3}(2.45\\times10^{25})(4.65\\times10^{-26})(517)^2 = 1.01\\times10^{5}\\ \\text{Pa}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.4, 3.6, 8.4, 3.6, {color:RED, w:2.5});
+        arrow(c, 7.4, 2.6, 8.4, 2.8, {color:RED, w:2});
+        arrow(c, 7.4, 4.6, 8.4, 4.4, {color:RED, w:2});
+        label(c, 6.7, 5.4, 'momentum flux = p', {fs:11, color:RED});
+      }
+    },
+    { map:3, title:"Audit: the circle is complete", pose:"excited",
+      think:"We started from 1 atm — what did we just get back, and why does it matter?",
+      say:"Look at what happened: we began with one atmosphere, dissolved it into molecular counts, masses and speeds, reassembled those pieces with pure Newtonian mechanics — and recovered one point zero one times ten to the five pascals. The one atmosphere we started with, to a third of a per cent. Pressure is not a separate substance called 'air pushing'; it is the drumming of ten to the twenty-seven tiny impacts, resolved into smoothness by their sheer number. Reusable method: n from p over k B T, flux as a quarter n v-bar, pressure as one third n m v-squared — and whenever a theory offers you a loop, close it as the ultimate check.",
+      board:[
+        {label:"Closure", tex:"1.01\\times10^{5}\\ \\text{Pa} \\approx 1.013\\times10^{5}\\ \\text{Pa}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"n = p/k_BT, Φ = ¼nv̄, p = ⅓nm v̄². A consistency loop that returns its input validates the whole microscopic picture.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

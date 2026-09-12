@@ -1355,6 +1355,537 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Getting the signs right",
+  problem:"(a) A gas absorbs 500 J of heat while doing 200 J of work on its surroundings. (b) Another gas is compressed by 150 J of work done ON it while losing 100 J of heat. Find ΔE_int in each case.",
+  goal:"Fix the sign convention once, then let the arithmetic run itself.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Write the convention first","(a) Straightforward","(b) The tricky signs","Audit: warmed while losing heat?"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 2.2, 3.2, 2.6, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 1.5, 'gas', {fs:12, color:DIMC});
+    arrow(ctx, 1.6, 3.5, 3.3, 3.5, {color:RED, w:2.5, label:'Q in (+)', fs:11});
+    arrow(ctx, 6.7, 3.5, 8.4, 3.5, {color:GOLD, w:2.5, label:'W by gas (+)', fs:11});
+  },
+  steps:[
+    { map:0, title:"The convention is half the battle", pose:"talk",
+      think:"Before any numbers: which direction of Q and W counts as positive?",
+      say:"Half of all first-law errors are sign errors, so we defeat them by ritual: before every problem, write the convention. Q is heat into the gas, positive. W is work done by the gas, positive. Then delta E internal equals Q minus W — energy in through the heat door, minus energy out through the work door.",
+      board:[
+        {label:"First law", tex:"\\Delta E_{\\text{int}} = Q - W", kind:"key"},
+        {label:"Convention", tex:"Q > 0:\\ \\text{heat in};\\qquad W > 0:\\ \\text{work done BY gas}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Both doors labelled for us", pose:"write",
+      think:"Absorbs heat: Q sign? Does work on surroundings: W sign?",
+      say:"Case a is a gift: absorbs five hundred joules — Q is plus five hundred. Does two hundred joules of work on the surroundings — W is plus two hundred. Subtract: the internal energy rises by three hundred joules. In came five hundred, out went two hundred as work; the difference stayed home.",
+      board:[
+        {label:"(a)", tex:"\\Delta E_{\\text{int}} = 500 - 200 = +300\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Translate the words into signs", pose:"write",
+      think:"'Work done ON the gas' and 'loses heat' — what are W and Q now?",
+      say:"Case b is where the ritual pays. Work done on the gas means the gas does negative work: W is minus one fifty. Loses heat: Q is minus one hundred. Now the machine runs itself: minus one hundred, minus minus one fifty — plus fifty joules.",
+      board:[
+        {label:"Translate", tex:"W = -150\\ \\text{J},\\qquad Q = -100\\ \\text{J}", kind:"key", move:"words → signs"},
+        {label:"(b)", tex:"\\Delta E_{\\text{int}} = -100 - (-150) = +50\\ \\text{J}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 8.4, 2.6, 6.7, 2.6, {color:PURPLE, w:2.5, label:'W on gas', fs:11, side:1});
+        arrow(c, 3.3, 2.6, 1.6, 2.6, {color:BLUE, w:2, label:'Q out', fs:11, side:1});
+      }
+    },
+    { map:3, title:"Audit: warmer despite losing heat", pose:"think",
+      think:"The gas lost heat yet its internal energy rose — is that paradoxical?",
+      say:"Sit with the result: the gas lost heat yet warmed up. No paradox — the compression pushed in one hundred fifty joules while only one hundred leaked out as heat. A bicycle pump does exactly this to your palm. The first law is bookkeeping, not intuition: trust the ledger. Reusable method: write the convention, translate every phrase into a signed number before computing, and read 'on the gas' as negative W.",
+      board:[
+        {label:"Ledger", tex:"\\text{in: } 150\\ \\text{J (work)};\\ \\text{out: } 100\\ \\text{J (heat)} \\Rightarrow +50\\ \\text{J stays}", kind:"key"},
+        {label:"Reusable method", text:"State the convention first. 'Absorbs/on it/loses' are sign instructions, not decoration. Then ΔE = Q − W is pure arithmetic.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Work at constant pressure",
+  problem:"Two moles of ideal gas at 1.00 atm expand from 20.0 L to 30.0 L at constant pressure. Find the work done by the gas and its temperature change.",
+  goal:"Read W = pΔV as a rectangle on the pV diagram, then chain to ΔT via the gas law.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The rectangle","Compute W","ΔT from the gas law","Audit: who paid?"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.0, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 4.2], 3.0, 7.6, {color:GOLD, w:2.5});
+    arrow(ctx, 5.0, 4.2, 5.9, 4.2, {color:GOLD, w:2});
+    label(ctx, 3.0, 0.5, '20 L', {fs:10, color:DIMC});
+    label(ctx, 7.6, 0.5, '30 L', {fs:10, color:DIMC});
+    label(ctx, 0.5, 4.2, '1 atm', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Work is area under the path", pose:"point",
+      think:"On a pV diagram, what shape sits under a constant-pressure process?",
+      say:"On the p V diagram a constant-pressure expansion is a horizontal line, and the work done by the gas is the area beneath it — a clean rectangle, pressure times width. No integral needed when the integrand is constant.",
+      board:[
+        {label:"Constant p", tex:"W = p\\,\\Delta V", kind:"key"}
+      ],
+      action(c){
+        dashLine(c, 3.0, 1.0, 3.0, 4.2, {color:DIMC});
+        dashLine(c, 7.6, 1.0, 7.6, 4.2, {color:DIMC});
+        label(c, 5.3, 2.5, 'W = area', {fs:12, color:GOLD});
+      }
+    },
+    { map:1, title:"Mind the litre–atmosphere trap", pose:"write",
+      think:"Ten litres is how many cubic metres?",
+      say:"Convert before multiplying: ten litres is ten to the minus two cubic metres. One atmosphere times that: one thousand and thirteen joules. Keep the conversion handy — one litre-atmosphere is one hundred one point three joules, a number that catches the unwary every year.",
+      board:[
+        {label:"Work", tex:"W = (1.013\\times10^{5})(0.0100) = 1.01\\times10^{3}\\ \\text{J}", kind:"answer"},
+        {label:"Unit trap", tex:"1\\ \\text{L·atm} = 101.3\\ \\text{J}", kind:"warn"}
+      ]
+    },
+    { map:2, title:"Temperature change for free", pose:"write",
+      think:"At fixed p, the gas law links pΔV directly to what?",
+      say:"Here is an elegant shortcut: at fixed pressure, the gas law says p delta V equals n R delta T. We already have the left side — it is the work! Divide by n R: sixty-one kelvin of warming. The expansion and the temperature rise are the same fact, seen twice.",
+      board:[
+        {label:"Link", tex:"p\\,\\Delta V = nR\\,\\Delta T", kind:"key", move:"gas law at fixed p"},
+        {label:"Warming", tex:"\\Delta T = \\frac{1013}{(2.00)(8.314)} = 60.9\\ \\text{K}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: expansion is not free", pose:"think",
+      think:"The gas did 1013 J of work AND warmed by 61 K — where did it all come from?",
+      say:"Audit the books. The gas delivered a thousand joules of work and its internal energy rose as well — both funded by heat. The heater paid n C p delta T, well above the work alone. A gas expanding at constant pressure is a machine that must be fed: some heat becomes work, the rest warms the gas. That, in one sentence, is why C p exceeds C V. Reusable method: constant p means W is the rectangle p delta V, and p delta V equals n R delta T converts between the mechanical and thermal views.",
+      board:[
+        {label:"Energy source", tex:"Q = nC_p\\Delta T > W:\\ \\text{heat funds work AND warming}", kind:"key"},
+        {label:"Reusable method", text:"Work = area under the pV path. At fixed p: rectangle, and ΔT = pΔV/nR comes free. Convert L·atm to joules.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Heating at constant volume",
+  problem:"1.50 mol of monatomic ideal gas in a rigid container is heated from 300 K to 400 K. Find the heat added, the work done, and ΔE_int.",
+  goal:"See why W = 0 makes this the cheapest possible warming.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Rigid means W = 0","All heat stays","Audit: the cheapest warming"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.0, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [4.6, t], 2.2, 5.0, {color:RED, w:2.5});
+    arrow(ctx, 4.6, 3.8, 4.6, 4.6, {color:RED, w:2});
+    label(ctx, 5.8, 2.2, '300 K', {fs:10, color:DIMC});
+    label(ctx, 5.8, 5.0, '400 K', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A vertical line does no work", pose:"point",
+      think:"Work is area under the path — what is the area under a vertical line?",
+      say:"Rigid container: the volume cannot budge, so on the p V diagram the process climbs a vertical line. The area beneath a vertical line is zero — no volume swept, no work done. The first law collapses to its simplest form: Q equals delta E internal.",
+      board:[
+        {label:"Rigid", tex:"\\Delta V = 0 \\Rightarrow W = 0 \\Rightarrow Q = \\Delta E_{\\text{int}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Every joule stays home", pose:"write",
+      think:"Monatomic: C_V = (3/2)R. Price the 100 K climb.",
+      say:"Monatomic gas, C V is three halves R. One and a half moles, one hundred kelvin: one point eight seven kilojoules. Every joule of it lands in molecular kinetic energy — nothing leaks out as work, because there is no way for the gas to push anything.",
+      board:[
+        {label:"Heat = energy", tex:"Q = \\Delta E_{\\text{int}} = nC_V\\Delta T = (1.50)\\left(\\tfrac{3}{2}\\cdot8.314\\right)(100) = 1.87\\times10^{3}\\ \\text{J}", kind:"answer"},
+        {label:"Work", tex:"W = 0", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: why this is the minimum", pose:"think",
+      think:"Could any process raise this gas 100 K with less heat?",
+      say:"The audit is a small theorem. Internal energy of an ideal gas depends only on temperature, so any route from three hundred to four hundred kelvin must deposit exactly this one point eight seven kilojoules into the gas. A route that also lets the gas expand loses additional heat out the work door — so it costs more. Constant volume is the cheapest warming there is, and the gap to any other route is precisely why C p is greater than C V. Reusable method: spot delta V equals zero, set W to zero, and Q equals n C V delta T ends the problem.",
+      board:[
+        {label:"Minimum", tex:"Q_{\\text{any path}} = \\Delta E_{\\text{int}} + W \\geq \\Delta E_{\\text{int}} = Q_{\\text{rigid}}", kind:"key"},
+        {label:"Reusable method", text:"Rigid container ⇒ W = 0, Q = nC_VΔT. Expanding paths cost more heat; that surplus IS C_p − C_V.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Adiabatic expansion of a monatomic gas",
+  problem:"One mole of helium at 400 K expands adiabatically and reversibly to twice its volume. Find the final temperature, the pressure ratio, and the work done.",
+  goal:"Drive TV^(γ−1) = const, then fund the work entirely from internal energy.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["No heat allowed","Final temperature","Pressure ratio","Work from the energy bank","Audit: adiabat vs isotherm"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.0, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 1.0 + 10.5/Math.pow(t,1.6667)], 2.0, 9.0, {color:PURPLE, w:2.5});
+    label(ctx, 3.1, 5.9, 'adiabat', {fs:11, color:PURPLE});
+  },
+  steps:[
+    { map:0, title:"Insulated: the gas pays its own way", pose:"talk",
+      think:"With Q = 0, what must fund the work of expansion?",
+      say:"Adiabatic means perfectly insulated — Q is zero by decree. But the expanding gas still does work on the piston, and with the heat door welded shut, the only account it can draw on is its own internal energy. The gas must cool. The quantitative rule for a slow, reversible adiabat is T V to the gamma minus one, constant — with gamma five thirds for helium.",
+      board:[
+        {label:"Adiabat rule", tex:"TV^{\\gamma-1} = \\text{const},\\qquad \\gamma_{\\text{He}} = \\tfrac{5}{3}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Final temperature", pose:"write",
+      think:"V doubles, so T picks up a factor (1/2)^(2/3).",
+      say:"Double the volume: T two equals four hundred times one half to the two thirds — two hundred fifty-two kelvin. The gas dropped one hundred forty-eight degrees just by expanding, with no refrigerator in sight. This is how a spray can chills your hand and how rising air makes clouds.",
+      board:[
+        {label:"Cooling", tex:"T_2 = T_1\\left(\\frac{V_1}{V_2}\\right)^{\\gamma-1} = 400\\,(0.5)^{2/3} = 252\\ \\text{K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Pressure ratio", pose:"write",
+      think:"p ∝ T/V — both effects push p the same way.",
+      say:"Pressure suffers doubly: the volume doubled and the temperature fell. The compact rule is p V to the gamma constant, so the ratio is one half to the five thirds — zero point three one five. The pressure fell to less than a third.",
+      board:[
+        {label:"Pressure", tex:"\\frac{p_2}{p_1} = \\left(\\frac{V_1}{V_2}\\right)^{\\gamma} = (0.5)^{5/3} = 0.315", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Work from the energy bank", pose:"write",
+      think:"Q = 0 turns the first law into W = −ΔE_int.",
+      say:"With Q zero, the first law reads W equals minus delta E internal: the work is exactly the internal energy given up. n C V times the temperature drop: one point eight five kilojoules delivered to the piston, every joule of it withdrawn from molecular motion.",
+      board:[
+        {label:"Work", tex:"W = -\\Delta E_{\\text{int}} = nC_V(T_1 - T_2) = (1.00)(12.47)(148) = 1.85\\times10^{3}\\ \\text{J}", kind:"answer", move:"Q = 0 in first law"}
+      ]
+    },
+    { map:4, title:"Audit: steeper than the isotherm", pose:"think",
+      think:"An isothermal doubling gives p₂/p₁ = 0.5 — why did we get less?",
+      say:"Compare with the isothermal benchmark: doubling the volume at fixed temperature would halve the pressure. We got zero point three one five — a steeper fall — because our gas also cooled. On the p V diagram, through any point, the adiabat always dives more steeply than the isotherm; that extra steepness is precisely what a later tutorial exploits to close engine cycles. Reusable method: adiabatic means Q zero; use T V to the gamma minus one for states and W equals n C V times the temperature drop for the energy.",
+      board:[
+        {label:"Benchmark", tex:"\\text{isothermal: } 0.5;\\quad \\text{adiabatic: } 0.315\\ \\text{(steeper)}", kind:"key"},
+        {label:"Reusable method", text:"Reversible adiabat: TV^(γ−1) and pV^γ constant; work = −ΔE_int = nC_V|ΔT|. Adiabats are steeper than isotherms.", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 1.0 + 6.0/t], 1.7, 9.0, {color:DIMC, w:2, dash:'6 5'});
+        label(c, 7.8, 2.4, 'isotherm', {fs:11, color:DIMC});
+      }
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Net work around a triangular cycle",
+  problem:"Cycle A→B→C→A: A = (1.00×10⁵ Pa, 1.00 L), B = (3.00×10⁵ Pa, 3.00 L) via a straight line, C = (1.00×10⁵ Pa, 3.00 L). Find the work per leg, the net work, and the net heat.",
+  goal:"Compute leg-by-leg areas, then verify net work = enclosed area and Q_net = W.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Draw the triangle","Leg A→B: trapezoid","Legs B→C and C→A","Net = enclosed area","Audit: cycle bookkeeping"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'V', yLab:'p'});
+    label(ctx, 2.8, 1.8, 'A', {fs:13, color:GOLD});
+    label(ctx, 7.8, 5.8, 'B', {fs:13, color:GOLD});
+    label(ctx, 7.8, 1.8, 'C', {fs:13, color:GOLD});
+    circleAt(ctx, 3.0, 2.2, 0.09, {stroke:GOLD, w:2});
+    circleAt(ctx, 7.5, 5.4, 0.09, {stroke:GOLD, w:2});
+    circleAt(ctx, 7.5, 2.2, 0.09, {stroke:GOLD, w:2});
+  },
+  steps:[
+    { map:0, title:"Draw it before touching numbers", pose:"point",
+      think:"Which way does the cycle circulate — and what does that promise?",
+      say:"Always draw the cycle first. A sits low-left, B high-right, C low-right; the loop runs A up to B, drops to C, slides home to A — clockwise. Clockwise on a p V diagram promises net positive work: this is an engine. Now we verify by honest accounting.",
+      board:[
+        {label:"States", tex:"A(1.00\\times10^{5}, 1\\text{L}),\\ B(3.00\\times10^{5}, 3\\text{L}),\\ C(1.00\\times10^{5}, 3\\text{L})", kind:"key"}
+      ],
+      action(c){
+        arrow(c, 3.0, 2.2, 7.3, 5.25, {color:BLUE, w:2});
+        arrow(c, 7.5, 5.25, 7.5, 2.4, {color:GREEN, w:2});
+        arrow(c, 7.3, 2.2, 3.2, 2.2, {color:RED, w:2});
+      }
+    },
+    { map:1, title:"A→B: area under the ramp", pose:"write",
+      think:"Under a straight line, the area is average pressure times ΔV.",
+      say:"Leg one climbs the sloping line. Under a straight ramp, the area is just the average pressure — two hundred kilopascals — times the volume gain of two litres: four hundred joules, done by the expanding gas.",
+      board:[
+        {label:"A→B", tex:"W_{AB} = \\bar{p}\\,\\Delta V = (2.00\\times10^{5})(2.00\\times10^{-3}) = 400\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The two easy legs", pose:"write",
+      think:"B→C is vertical; C→A is a rectangle travelled leftwards.",
+      say:"Leg two drops straight down: no volume change, no work. Leg three slides left along the floor — a compression, so the area counts against us: minus two hundred joules. The surroundings pushed the gas back.",
+      board:[
+        {label:"B→C", tex:"W_{BC} = 0\\ (\\Delta V = 0)", kind:"answer"},
+        {label:"C→A", tex:"W_{CA} = -(1.00\\times10^{5})(2.00\\times10^{-3}) = -200\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Net work = enclosed area", pose:"write",
+      think:"Sum the legs — then check against the triangle's geometry.",
+      say:"Sum: four hundred plus zero minus two hundred — two hundred joules net. Now the beautiful check: the triangle's own area, half base times height, is half of two millicubic-metres times two hundred kilopascals — two hundred joules. The net work of any cycle is the area it encloses; the legs merely tell you how it was collected.",
+      board:[
+        {label:"Net work", tex:"W_{\\text{net}} = 400 + 0 - 200 = 200\\ \\text{J}", kind:"answer"},
+        {label:"Geometry check", tex:"\\tfrac{1}{2}(2.00\\times10^{-3})(2.00\\times10^{5}) = 200\\ \\text{J}\\ \\checkmark", kind:"key"}
+      ],
+      action(c){
+        label(c, 6.2, 3.2, 'area = 200 J', {fs:12, color:PURPLE});
+      }
+    },
+    { map:4, title:"Audit: where the heat went", pose:"think",
+      think:"Around a full cycle, what is ΔE_int — and what does that force Q_net to be?",
+      say:"Final audit. Internal energy is a state function: after a full lap the gas is exactly where it began, so delta E internal is zero and the first law forces Q net to equal W net — two hundred joules. The gas drank more heat on the way up than it exhaled on the way home, and the difference left as work on the piston. Every engine in the next tutorial is this sentence with better plumbing. Reusable method: work leg by leg as areas with signs, check the net against the enclosed area, and let delta E equals zero close the heat books.",
+      board:[
+        {label:"Cycle closure", tex:"\\oint dE_{\\text{int}} = 0 \\Rightarrow Q_{\\text{net}} = W_{\\text{net}} = 200\\ \\text{J}", kind:"key"},
+        {label:"Reusable method", text:"Clockwise loop = engine. W per leg = signed area under leg; W_net = enclosed area; Q_net = W_net over any full cycle.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Isothermal compression: where does the work go?",
+  problem:"0.500 mol of ideal gas at 350 K is compressed slowly and isothermally from 5.00 L to 1.00 L. Find W, Q, and ΔE_int.",
+  goal:"Integrate nRT/V, then let ΔE_int = 0 route every joule of work out as heat.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Fixed T needs an integral","Compute the log","ΔE = 0 routes the energy","Audit: the hot pump"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.0, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 1.0 + 7.2/t], 1.8, 9.2, {color:BLUE, w:2.5});
+    arrow(ctx, 7.0, 2.03, 3.4, 3.1, {color:GOLD, w:2});
+    label(ctx, 5.6, 4.0, 'compress at 350 K', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Pressure changes, so integrate", pose:"talk",
+      think:"Along an isotherm p = nRT/V varies — what replaces pΔV?",
+      say:"On an isotherm the pressure climbs as we squeeze, so no rectangle will do — we must integrate p d V with p equal to n R T over V. Temperature rides outside the integral, and the integral of d V over V is the logarithm. Compressions live and breathe logarithms.",
+      board:[
+        {label:"Isothermal work", tex:"W = \\int_{V_1}^{V_2}\\frac{nRT}{V}\\,dV = nRT\\ln\\frac{V_2}{V_1}", kind:"key", move:"T outside the integral"}
+      ]
+    },
+    { map:1, title:"Evaluate the logarithm", pose:"write",
+      think:"V₂/V₁ = 1/5 — the log of a number below 1 is negative. Meaning?",
+      say:"One litre over five litres — the log of one fifth is minus one point six one. Times n R T: minus two point three four kilojoules. The sign speaks: negative work by the gas means two point three four kilojoules of work done on it. Someone leaned on that piston.",
+      board:[
+        {label:"Work", tex:"W = (0.500)(8.314)(350)\\ln\\tfrac{1}{5} = -2.34\\times10^{3}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"ΔE = 0 routes everything", pose:"write",
+      think:"Ideal gas at constant T: what is ΔE_int, and what does that force Q to be?",
+      say:"Now the punchline. For an ideal gas, internal energy depends only on temperature — and the temperature never moved. Delta E internal is zero, so Q equals W: minus two point three four kilojoules. Every joule of work pushed in was immediately exhaled as heat. The gas is a perfect middleman — it keeps nothing.",
+      board:[
+        {label:"Ideal gas, fixed T", tex:"\\Delta E_{\\text{int}} = 0 \\Rightarrow Q = W = -2.34\\ \\text{kJ}", kind:"answer", move:"E_int(T) only"}
+      ]
+    },
+    { map:3, title:"Audit: why pumps get hot", pose:"think",
+      think:"'Slowly' was essential — what changes if you compress fast?",
+      say:"The audit touches your bicycle pump. Our compression was slow, giving the gas time to leak its heat away and hold three hundred fifty kelvin. Pump fast and the heat cannot escape — the process turns adiabatic, the work stays inside, and the barrel scorches your palm. Same work, different destination, chosen entirely by timing. Reusable method: isothermal work is n R T log V two over V one; then delta E equals zero hands Q the same value, and the sign tells you which way the energy flowed.",
+      board:[
+        {label:"Fast vs slow", tex:"\\text{slow: } Q\\ \\text{out, } T\\ \\text{fixed};\\quad \\text{fast: adiabatic, } T\\ \\text{rises}", kind:"note"},
+        {label:"Reusable method", text:"Isotherm: W = nRT ln(V₂/V₁), ΔE_int = 0, Q = W. Compression ⇒ both negative: work in, heat out.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Heat capacities of a gas mixture",
+  problem:"A container holds 1.00 mol helium and 1.00 mol nitrogen (rigid diatomic). Find the mixture's molar C_V, C_p, and γ, and explain why C_p − C_V = R still holds.",
+  goal:"Add internal energies, average capacities by moles — and learn that γ's do not average.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Energies add","Mixture C_V","C_p and γ","Audit: what averages, what doesn't"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.2, 7.2, 4.6, {fill:'none', stroke:CHALKC});
+    circleAt(ctx, 2.8, 3.6, 0.16, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 4.0, 4.6, 0.16, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 3.3, 2.2, 0.16, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 6.0, 3.0, 0.17, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 6.45, 3.0, 0.17, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 7.3, 4.5, 0.17, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 7.75, 4.5, 0.17, {stroke:BLUE, w:2.5});
+    label(ctx, 3.3, 5.6, 'He (f=3)', {fs:11, color:GOLD});
+    label(ctx, 7.0, 5.6, 'N₂ (f=5)', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"Internal energy is additive", pose:"talk",
+      think:"Each species stores energy independently — so what is the total U?",
+      say:"The two gases share the container and the temperature, but each stores energy according to its own anatomy: helium three halves R T per mole, nitrogen five halves. Energies simply add — molecules do not consult each other about their bank accounts. Total: four R T for the two moles.",
+      board:[
+        {label:"Add energies", tex:"E_{\\text{int}} = \\tfrac{3}{2}RT + \\tfrac{5}{2}RT = 4RT\\ \\text{(for 2 mol)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Mixture C_V: a mole-weighted mean", pose:"write",
+      think:"4RT across 2 mol — how much per mole per kelvin?",
+      say:"Per mole, that is two R T, so the mixture's C V is two R — sixteen point six joules per mole-kelvin. Notice it is exactly the mole-weighted average of three halves and five halves. Heat capacities average; keep that in mind for what comes next.",
+      board:[
+        {label:"Mixture", tex:"C_V = \\frac{n_1C_{V1} + n_2C_{V2}}{n_1+n_2} = \\tfrac{\\frac{3}{2}R+\\frac{5}{2}R}{2} = 2R = 16.6\\ \\text{J/mol·K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"C_p, and gamma", pose:"write",
+      think:"Why should C_p − C_V = R survive the mixing?",
+      say:"At constant pressure the mixture expands obeying p V equals n total R T — indistinguishable from a single ideal gas. The expansion work per mole per kelvin is therefore still R, so C p is C V plus R: three R. And gamma is their ratio: one point five zero, sitting between helium's one point six seven and nitrogen's one point four.",
+      board:[
+        {label:"Still true", tex:"C_p = C_V + R = 3R = 24.9\\ \\text{J/mol·K}", kind:"answer"},
+        {label:"Gamma", tex:"\\gamma = \\frac{C_p}{C_V} = \\frac{3R}{2R} = 1.50", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: ratios refuse to average", pose:"think",
+      think:"Average helium's 1.67 and nitrogen's 1.40 directly — do you get 1.50?",
+      say:"Now the trap this example was built for. Average the two gammas directly: half of one point six seven plus one point four gives one point five three — wrong. The correct one point five zero came from averaging C p and C V separately and dividing afterwards. Extensive quantities — energies, capacities — average over moles; ratios of averages are not averages of ratios. Reusable method: for mixtures, always average the capacities, never the gammas, and C p minus C V equals R survives because the mixture still obeys the ideal-gas law.",
+      board:[
+        {label:"The trap", tex:"\\bar{\\gamma} \\neq \\tfrac{1.67+1.40}{2} = 1.53\\ \\text{✗};\\quad \\gamma_{\\text{mix}} = 1.50\\ \\checkmark", kind:"warn"},
+        {label:"Reusable method", text:"Mole-weight C_V and C_p separately; divide last. C_p − C_V = R holds for any ideal-gas mixture.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Free expansion versus reversible adiabatic expansion",
+  problem:"One mole of N₂ at 300 K doubles its volume (a) bursting into a vacuum (free expansion), (b) pushing a piston slowly and adiabatically. Find W, Q, ΔE_int, and T_final for each.",
+  goal:"Same Q = 0, same volumes — different final states, because paths matter.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two ways to double","(a) Free: nothing to push","(b) Piston: the gas pays","Audit: the lost opportunity"],
+  setup(ctx, w){
+    boxAt(ctx, 2.7, 3.6, 3.4, 2.6, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 2.7, 3.6, 2.7, 6.2, {color:DIMC});
+    label(ctx, 1.85, 4.7, 'gas', {fs:11, color:BLUE});
+    label(ctx, 3.55, 4.7, 'vacuum', {fs:11, color:DIMC});
+    label(ctx, 2.7, 2.9, '(a) membrane bursts', {fs:10, color:DIMC});
+    boxAt(ctx, 7.5, 3.6, 3.2, 2.6, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [8.35, 3.6 + 2.6*t], 0, 1, {color:GOLD, w:2.5});
+    arrow(ctx, 8.5, 4.9, 9.4, 4.9, {color:GOLD, w:2});
+    label(ctx, 7.5, 2.9, '(b) slow piston', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Same start, same Q, same volumes", pose:"talk",
+      think:"Everything named in the problem matches — can the outcomes still differ?",
+      say:"Here is a deliberately unsettling pair. Both start identically, both are insulated — Q is zero — and both end at double the volume. A careless application of formulas would give them the same fate. But one expands into vacuum, the other against a piston. Watch the first law split them apart.",
+      board:[
+        {label:"Both", tex:"Q = 0,\\quad V_2 = 2V_1,\\quad T_1 = 300\\ \\text{K}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Free expansion: no one to push", pose:"write",
+      think:"Work requires a force moving something — what does the gas push against?",
+      say:"The membrane bursts and gas floods the vacuum. But work means pushing against something, and vacuum offers nothing — W is zero. Q is zero. So delta E internal is zero, and for an ideal gas that means the temperature is untouched: still three hundred kelvin. This is Joule's classic experiment — real gases cool a whisker, and that whisker measures their intermolecular attraction.",
+      board:[
+        {label:"(a) Free", tex:"W = 0,\\ Q = 0 \\Rightarrow \\Delta E_{\\text{int}} = 0,\\ T_2 = 300\\ \\text{K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Against the piston: the gas pays", pose:"write",
+      think:"Now every step of expansion does work — funded by what?",
+      say:"Route b earns its living: the gas shoves the piston through every millimetre, and with no heat allowed, the wages come from internal energy. T V to the gamma minus one, gamma one point four for nitrogen: two hundred twenty-seven kelvin — a fall of seventy-three degrees — and one point five one kilojoules delivered to the piston.",
+      board:[
+        {label:"(b) Adiabatic", tex:"T_2 = 300\\,(0.5)^{0.40} = 227\\ \\text{K}", kind:"answer"},
+        {label:"Work delivered", tex:"W = nC_V(T_1-T_2) = (20.79)(73) = 1.51\\times10^{3}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the opportunity that never returns", pose:"think",
+      think:"Route (a) ended warmer — did it come out ahead?",
+      say:"Same volumes, same Q — different final temperatures. The moral is that Q and W are path creatures, not state functions. And look closer at route a: the gas could have earned one and a half kilojoules of work during its expansion and simply... did not. That squandered opportunity is gone forever — no process can retrieve it. The next tutorial gives the loss a name, entropy, and a number. Reusable method: never assume adiabatic means temperature drops — first ask whether the gas actually pushed on anything.",
+      board:[
+        {label:"Contrast", tex:"\\text{(a) } T = 300\\ \\text{K, irreversible};\\quad \\text{(b) } T = 227\\ \\text{K, reversible}", kind:"key"},
+        {label:"Reusable method", text:"Q = 0 alone fixes nothing. Free expansion: W = 0, T unchanged (ideal). Resisted expansion: W > 0, gas cools. Path matters.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Work along a straight line through the origin",
+  problem:"A diatomic gas (0.0401 mol; 1.00×10⁵ Pa, 1.00 L, 300 K) expands with p ∝ V until V = 3.00 L. Find W, ΔT, ΔE_int, and Q.",
+  goal:"Integrate along an unusual path and discover that heat capacity itself depends on the path.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["An odd path","Integrate for W","T scales as V²","Close the books","Audit: heat capacity is path property"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 1.0 + 0.55*(t-1.2)], 1.2, 9.0, {color:GOLD, w:2.5});
+    circleAt(ctx, 3.4, 2.21, 0.09, {stroke:CHALKC, w:2});
+    circleAt(ctx, 8.6, 5.07, 0.09, {stroke:CHALKC, w:2});
+    label(ctx, 3.4, 1.4, '1 L', {fs:10, color:DIMC});
+    label(ctx, 8.6, 4.2, '3 L', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A line through the origin", pose:"point",
+      think:"p grows with V — is this isothermal? isobaric? Neither?",
+      say:"This path is neither of our old friends: pressure grows in proportion to volume, a straight line aimed at the origin. As the gas expands it also pressurises — so it must be getting hot, fast. Nothing for it but the honest integral.",
+      board:[
+        {label:"The path", tex:"p = cV,\\qquad c = \\frac{p_1}{V_1} = 1.00\\times10^{8}\\ \\text{Pa/m}^3", kind:"key"}
+      ]
+    },
+    { map:1, title:"Integrate for the work", pose:"write",
+      think:"∫cV dV gives what function of V?",
+      say:"Integrate c V d V: half c times the difference of squared volumes. Nine minus one millilitres-squared, in SI: four hundred joules. Geometrically, that is the trapezoid under the ramp — average of the two pressures times the width. Two views, one number.",
+      board:[
+        {label:"Work", tex:"W = \\int_{V_1}^{V_2} cV\\,dV = \\frac{c}{2}\\left(V_2^2 - V_1^2\\right) = 400\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Temperature rockets as V²", pose:"write",
+      think:"T ∝ pV, and p ∝ V — so T scales how?",
+      say:"Temperature tracks p V, and with p proportional to V, that is V squared. Triple the volume, nine times the temperature: twenty-seven hundred kelvin. This innocent-looking ramp is a furnace — the gas ends white-hot.",
+      board:[
+        {label:"Scaling", tex:"T \\propto pV \\propto V^2 \\Rightarrow T_2 = 9T_1 = 2700\\ \\text{K}", kind:"answer", move:"p ∝ V into pV"}
+      ]
+    },
+    { map:3, title:"Close the energy books", pose:"write",
+      think:"ΔE_int from nC_VΔT; then Q from the first law.",
+      say:"Internal energy: n C V times twenty-four hundred kelvin — two point zero kilojoules. Add the work and the first law prices the heat at two point four kilojoules. Note the split: of every six joules of heat, five stayed to warm the gas and only one emerged as work.",
+      board:[
+        {label:"Internal energy", tex:"\\Delta E_{\\text{int}} = nC_V\\Delta T = (0.0401)(20.79)(2400) = 2.00\\times10^{3}\\ \\text{J}", kind:"answer"},
+        {label:"Heat", tex:"Q = \\Delta E_{\\text{int}} + W = 2.40\\times10^{3}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: a heat capacity that belongs to the path", pose:"think",
+      think:"Compute Q/(nΔT) for this path — is it C_V? C_p? Something else?",
+      say:"Now the deep audit. Divide the heat by n delta T: twenty-four point nine joules per mole-kelvin — exactly three R. Not C V, five halves R; not C p, seven halves R; something in between, belonging to this particular ramp. Heat capacity is not a property of a gas alone — it is a property of a gas and a path. C V and C p are merely the two paths common enough to deserve names. Reusable method: for any exotic path, integrate p d V for the work, use the state variables for delta E, and let the first law produce Q — never reach for a canned C.",
+      board:[
+        {label:"Path capacity", tex:"\\frac{Q}{n\\,\\Delta T} = 24.9\\ \\text{J/mol·K} = 3R \\neq C_V, C_p", kind:"key"},
+        {label:"Reusable method", text:"Exotic path: W by integration, ΔE_int = nC_VΔT always (state function!), Q = ΔE + W. C depends on the route.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Lifting a weighted piston with heat",
+  problem:"A vertical cylinder (A = 0.0100 m²) is closed by a 20.0 kg frictionless piston under 1.00×10⁵ Pa atmosphere, holding 0.100 mol of N₂. Add 500 J slowly. Find p, ΔT, the rise h, W, and the split of W between lifting the piston and pushing the atmosphere.",
+  goal:"A complete energy audit: from 500 J of heat to 23 J of useful lift.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Pressure set by the load","Heating at constant p","How far it rises","Split the work","Audit: the 5% payoff"],
+  setup(ctx, w){
+    boxAt(ctx, 3.0, 0.8, 2.6, 4.8, {fill:'none', stroke:CHALKC});
+    boxAt(ctx, 3.0, 3.6, 2.54, 0.5, {fill:'none', stroke:GOLD});
+    label(ctx, 5.6, 3.9, 'piston 20 kg', {fs:11, color:GOLD});
+    label(ctx, 3.0, 2.0, 'N₂, 0.100 mol', {fs:11, color:BLUE});
+    label(ctx, 3.0, 5.1, 'atmosphere', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [1.0 + 0.15*Math.sin(9*t), 0.8 + 0.9*t], 0, 1, {color:RED, w:2});
+    label(ctx, 1.0, 0.3, 'heater', {fs:10, color:RED});
+  },
+  steps:[
+    { map:0, title:"The load sets the pressure", pose:"talk",
+      think:"The piston floats freely — what force balance fixes the gas pressure?",
+      say:"A frictionless piston floats where forces balance: gas pressure from below equals atmosphere plus the piston's weight per area from above. That balance holds before, during, and after the heating — the load dictates the pressure, and heating cannot change it, only lift the load.",
+      board:[
+        {label:"Force balance", tex:"p = p_{\\text{atm}} + \\frac{mg}{A} = 1.00\\times10^{5} + \\frac{(20.0)(9.80)}{0.0100} = 1.196\\times10^{5}\\ \\text{Pa}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Constant-pressure heating", pose:"write",
+      think:"Fixed p means which heat capacity?",
+      say:"Constant pressure means C p — seven halves R for our diatomic nitrogen, twenty-nine point one per mole. Five hundred joules across a tenth of a mole: the gas warms one hundred seventy-two kelvin.",
+      board:[
+        {label:"Warming", tex:"\\Delta T = \\frac{Q}{nC_p} = \\frac{500}{(0.100)(29.10)} = 172\\ \\text{K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The piston's journey", pose:"write",
+      think:"ΔV from the gas law at fixed p; then h = ΔV/A.",
+      say:"The gas law at fixed pressure turns the warming into swelling: about one point two litres of new volume. Spread over the piston's hundred square centimetres, that is a rise of twelve centimetres — visible, satisfying, real.",
+      board:[
+        {label:"Expansion", tex:"\\Delta V = \\frac{nR\\,\\Delta T}{p} = \\frac{(0.100)(8.314)(172)}{1.196\\times10^{5}} = 1.19\\times10^{-3}\\ \\text{m}^3", kind:"answer"},
+        {label:"Rise", tex:"h = \\frac{\\Delta V}{A} = 0.119\\ \\text{m}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 3.0, 4.4, 2.54, 0.5, {fill:'none', stroke:GREEN});
+        arrow(c, 4.6, 3.9, 4.6, 4.6, {color:GREEN, w:2, label:'h = 12 cm', fs:11});
+      }
+    },
+    { map:3, title:"Split the gas's work", pose:"write",
+      think:"The gas pushes piston AND atmosphere — price each separately.",
+      say:"The gas's total work is p delta V — one hundred forty-three joules. Split it honestly: lifting the piston costs m g h, twenty-three point four joules. Shoving the atmosphere upward and aside costs p atm delta V — one hundred nineteen. The atmosphere, invisible and unpitied, took five times more than the visible payload.",
+      board:[
+        {label:"Total work", tex:"W = p\\,\\Delta V = 143\\ \\text{J}", kind:"answer"},
+        {label:"The split", tex:"mgh = 23.4\\ \\text{J (piston)};\\quad p_{\\text{atm}}\\Delta V = 119\\ \\text{J (atmosphere)}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the full ledger", pose:"think",
+      think:"500 in: does 143 + ΔE_int account for every joule? And what fraction lifted?",
+      say:"Now audit every joule of the five hundred. Work out: one forty-three. The remaining three hundred fifty-seven stayed as internal energy — and indeed n C V delta T, with C V now, gives exactly three fifty-seven. The books balance to the joule. The sobering summary: of five hundred joules of heat, five per cent lifted the weight; the rest warmed the gas or leaned on the sky. Real engines fight precisely this arithmetic. Reusable method: load fixes p, C p prices the warming, p delta V is the work — then split it into payload and atmosphere, and confirm the remainder equals n C V delta T.",
+      board:[
+        {label:"Balance", tex:"\\Delta E_{\\text{int}} = Q - W = 357\\ \\text{J} = nC_V\\Delta T\\ \\checkmark", kind:"key"},
+        {label:"Payoff", tex:"\\frac{mgh}{Q} = \\frac{23.4}{500} \\approx 5\\%\\ \\text{useful lift}", kind:"key"},
+        {label:"Reusable method", text:"Weighted piston: p from force balance; ΔT via C_p; W = pΔV splits into mgh + p_atmΔV; audit with nC_VΔT.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

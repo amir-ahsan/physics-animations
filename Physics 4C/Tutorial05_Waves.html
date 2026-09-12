@@ -1352,6 +1352,508 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Wavelength, frequency, speed",
+  problem:"(a) Sound travels at 340 m/s; find the wavelength of a 500 Hz tone. (b) A rope wave has λ = 2.00 m and f = 5.00 Hz; find its speed.",
+  goal:"Use v = λf both ways — and learn who sets which variable.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The bookkeeping relation","(a) λ from v and f","(b) v from λ and f","Audit: who fixes what"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 4.8 + 0.7*Math.sin(2.2*(t-0.5))], 0.5, 9.5, {color:BLUE, w:2.5});
+    arrow(ctx, 2.0, 6.1, 4.86, 6.1, {color:GOLD, w:2, label:'λ', fs:13});
+    arrow(ctx, 7.6, 4.8, 9.0, 4.8, {color:GREEN, w:2, label:'v', fs:13});
+  },
+  steps:[
+    { map:0, title:"f wavelengths pass per second", pose:"talk",
+      think:"If f wavelengths stream past you each second, how far did the wave travel?",
+      say:"The relation v equals lambda f is pure bookkeeping: each second, f complete wavelengths march past any fixed point, and each is lambda long — so the pattern has advanced a distance lambda times f. No physics has been assumed yet; the physics is in who controls each symbol, which we save for the audit.",
+      board:[
+        {label:"Bookkeeping", tex:"v = \\lambda f", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) A tone in air", pose:"write",
+      think:"340 m/s split into 500 pieces per second.",
+      say:"Five hundred crests leave the speaker every second and share three hundred forty metres of travel between them: sixty-eight centimetres per crest. Roughly the width of a doorway — which is why mid-range sound bends around doorframes so cheerfully.",
+      board:[
+        {label:"(a)", tex:"\\lambda = \\frac{v}{f} = \\frac{340}{500} = 0.680\\ \\text{m}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) A wave on a rope", pose:"write",
+      think:"Now λ and f are given — multiply.",
+      say:"The rope wave shows the formula run forwards: two metres per wavelength, five wavelengths per second — ten metres per second. Always sanity-check the units: metres per cycle times cycles per second is honestly metres per second.",
+      board:[
+        {label:"(b)", tex:"v = \\lambda f = (2.00)(5.00) = 10.0\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: source, medium, leftover", pose:"think",
+      think:"Move the same 500 Hz tone into water — which of the three symbols change?",
+      say:"Here is the division of powers, worth engraving: the source fixes the frequency — the speaker vibrates at five hundred hertz and the medium must keep up. The medium fixes the speed — stiffness over inertia, nothing else. Wavelength is the leftover, adjusting to satisfy the bookkeeping. Send our tone into water, where v is fourteen eighty: same f, new lambda of nearly three metres. Reusable method: identify which two symbols are dictated — f by the source, v by the medium — and let lambda equal v over f take the strain.",
+      board:[
+        {label:"Division of powers", tex:"f:\\ \\text{source};\\quad v:\\ \\text{medium};\\quad \\lambda = \\frac{v}{f}\\ \\text{adjusts}", kind:"key"},
+        {label:"In water", tex:"\\lambda = \\frac{1480}{500} = 2.96\\ \\text{m (same } f\\text{!)}", kind:"note"},
+        {label:"Reusable method", text:"Crossing media: f is invariant, v changes, λ follows. Never let a boundary change the frequency.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Speed of a wave on a string",
+  problem:"A string of linear density 5.00 g/m is under 80.0 N tension. Find the wave speed. How must the tension change to double the speed?",
+  goal:"Use v = √(F_T/μ) and recognise the universal √(stiffness/inertia) pattern.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Restoring vs inertia","Compute v","Double it: ×4 tension","Audit: the universal recipe"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 3.5 + 1.1*Math.exp(-Math.pow(t-3.4,2)/0.4)], 0.6, 9.4, {color:BLUE, w:2.5});
+    arrow(ctx, 0.7, 3.5, 0.15, 3.5, {color:GOLD, w:2});
+    arrow(ctx, 9.3, 3.5, 9.85, 3.5, {color:GOLD, w:2, label:'F_T', fs:12});
+    label(ctx, 5.2, 1.8, 'μ = 5.00 g/m', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"What makes a wave fast?", pose:"talk",
+      think:"Tension pulls a bumped segment back; μ resists acceleration — which speeds the wave?",
+      say:"A wave's speed is a negotiation between two properties of the medium. Tension is the restoring agent — it snatches any displaced segment back toward the line. Linear density is the inertia — it makes the segment sluggish about complying. Strong restoring over light inertia: fast waves. The formula is the square root of their ratio.",
+      board:[
+        {label:"String waves", tex:"v = \\sqrt{\\frac{F_T}{\\mu}}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Put in the numbers", pose:"write",
+      think:"Grams per metre must become kilograms per metre first.",
+      say:"Convert: five grams per metre is zero point zero zero five kilograms per metre. Eighty newtons over that, square root: one hundred twenty-six point five metres per second. A pulse crosses a concert-hall stage in a tenth of a second.",
+      board:[
+        {label:"Speed", tex:"v = \\sqrt{\\frac{80.0}{0.00500}} = 126.5\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The price of doubling", pose:"write",
+      think:"v ∝ √F_T — so doubling v costs what factor in F_T?",
+      say:"Want double the speed? The square root exacts its tax: speed doubles only when tension quadruples — three hundred twenty newtons. This is the string-tuner's arithmetic: a small pitch correction needs a modest turn, but climbing a full octave by tension alone risks snapping the string.",
+      board:[
+        {label:"Quadruple", tex:"v \\propto \\sqrt{F_T}:\\ 2v \\Rightarrow 4F_T = 320\\ \\text{N}", kind:"answer", move:"square both sides"}
+      ]
+    },
+    { map:3, title:"Audit: one recipe, every wave", pose:"think",
+      think:"Sound, light in matter, water ripples — do they follow the same pattern?",
+      say:"Step back for the audit and see the template. Every wave speed in this course is the square root of a stiffness over an inertia, in some costume: for sound it is the bulk modulus over the density; for shallow water, g times depth; even light in glass follows the pattern with electromagnetic stiffness. When you meet an unfamiliar wave, ask first: what restores, and what resists? Reusable method: v equals root F T over mu, convert mu to SI, and expect square-root scalings whenever you bargain with the tension.",
+      board:[
+        {label:"The template", tex:"v = \\sqrt{\\frac{\\text{restoring stiffness}}{\\text{inertia}}}\\ \\text{— universal}", kind:"key"},
+        {label:"Reusable method", text:"Identify stiffness and inertia for any medium; speed is their square-rooted ratio. Doubling v always costs 4× stiffness.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Decoding a wave function",
+  problem:"A wave is y(x,t) = 0.0200 sin(4.00x − 200t) in SI units. Find its amplitude, wavelength, frequency, speed, and direction of travel.",
+  goal:"Read A, k, ω off the formula, convert, and decode the direction from the sign.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Match the template","Convert k and ω","Speed two ways","Direction from the sign"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.6, y0:3.5, xLab:'x', yLab:'y'});
+    plotCurve(ctx, t => [t, 3.5 + 1.4*Math.sin(4.0*(t-0.6))], 0.6, 9.4, {color:BLUE, w:2.5});
+  },
+  steps:[
+    { map:0, title:"Lay the template alongside", pose:"point",
+      think:"The standard form is A sin(kx − ωt) — match symbol to number.",
+      say:"Decoding a wave function is pattern matching. Lay the standard form A sine of k x minus omega t against ours: the amplitude is two centimetres, k is four radians per metre, omega is two hundred radians per second. Three numbers harvested; now we translate them into laboratory language.",
+      board:[
+        {label:"Match", tex:"A = 0.0200\\ \\text{m},\\quad k = 4.00\\ \\text{rad/m},\\quad \\omega = 200\\ \\text{rad/s}", kind:"key"}
+      ]
+    },
+    { map:1, title:"From radians to metres and hertz", pose:"write",
+      think:"k counts radians per metre; a full wavelength is 2π radians.",
+      say:"k tells how much phase accumulates per metre; a whole wavelength is two pi of phase, so lambda is two pi over k — one point five seven metres. Likewise f is omega over two pi: thirty-one point eight hertz, a low musical hum.",
+      board:[
+        {label:"Wavelength", tex:"\\lambda = \\frac{2\\pi}{k} = \\frac{2\\pi}{4.00} = 1.57\\ \\text{m}", kind:"answer"},
+        {label:"Frequency", tex:"f = \\frac{\\omega}{2\\pi} = \\frac{200}{2\\pi} = 31.8\\ \\text{Hz}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Speed, with a built-in check", pose:"write",
+      think:"ω/k and λf should agree — do they?",
+      say:"Speed is omega over k: fifty metres per second. And the check comes free: lambda times f, one point five seven times thirty-one point eight, is also fifty. Two independent routes, one number — the sort of redundancy you should engineer into every solution.",
+      board:[
+        {label:"Speed", tex:"v = \\frac{\\omega}{k} = \\frac{200}{4.00} = 50.0\\ \\text{m/s}", kind:"answer"},
+        {label:"Check", tex:"\\lambda f = (1.57)(31.8) = 50.0\\ \\checkmark", kind:"key"}
+      ]
+    },
+    { map:3, title:"The sign carries the direction", pose:"think",
+      think:"To ride a crest, k x − ωt must stay constant — so how must x move?",
+      say:"Finally the minus sign, which novices ignore and waves obey. To ride a crest you must hold the phase k x minus omega t constant; as t grows, x must grow to compensate — the wave slides toward plus x. Flip to a plus sign and the logic reverses: motion toward minus x. Reusable method: match against the template, divide by two pi for lab units, take omega over k for speed, and interrogate the sign — minus t means plus x.",
+      board:[
+        {label:"Direction", tex:"kx - \\omega t = \\text{const} \\Rightarrow x\\uparrow\\ \\text{as}\\ t\\uparrow:\\ +x\\ \\text{travel}", kind:"answer"},
+        {label:"Reusable method", text:"Harvest A, k, ω; λ = 2π/k, f = ω/2π, v = ω/k; verify v = λf; the sign between x and t terms sets the direction.", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 4.0, 5.6, 6.2, 5.6, {color:GOLD, w:2.5, label:'v = 50 m/s', fs:12});
+      }
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Harmonics of a fixed string",
+  problem:"The string of Example 8 (v = 126 m/s) is fixed at both ends, 1.20 m apart. Find the fundamental, and the frequency and node spacing of the third harmonic.",
+  goal:"Fit half-wavelengths between fixed ends and map the third harmonic's nodes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Fixed ends quantise","The fundamental","Third harmonic anatomy","Audit: the guitarist's touch"],
+  setup(ctx, w){
+    ground(ctx, 0.8, 1.4, 1.0);
+    ground(ctx, 8.6, 9.2, 1.0);
+    plotCurve(ctx, t => [t, 3.5], 1.1, 8.9, {color:DIMC, w:1.5, dash:'5 5'});
+    label(ctx, 5.0, 0.9, 'L = 1.20 m', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [1.1, 1.0 + 0.5*t], 0, 5, {color:CHALKC, w:2});
+    plotCurve(ctx, t => [8.9, 1.0 + 0.5*t], 0, 5, {color:CHALKC, w:2});
+  },
+  steps:[
+    { map:0, title:"The ends have veto power", pose:"talk",
+      think:"A clamped point cannot move — what does that force on the wave pattern?",
+      say:"Clamp both ends and each clamp issues a decree: zero displacement here, forever. Only wave patterns with nodes at both walls survive — an integer number of half-wavelengths must fit exactly into L. The string can no longer vibrate at any frequency; it owns a discrete menu.",
+      board:[
+        {label:"Quantisation", tex:"L = n\\frac{\\lambda_n}{2} \\Rightarrow f_n = \\frac{nv}{2L},\\ n = 1, 2, 3, \\ldots", kind:"key"}
+      ]
+    },
+    { map:1, title:"The fundamental", pose:"write",
+      think:"n = 1: one half-wavelength spans the whole string.",
+      say:"The gravest note fits a single half-wavelength — one broad loop. v over two L: fifty-two point seven hertz, near the bottom of a bass guitar. Everything else the string can sing is an integer multiple of this.",
+      board:[
+        {label:"Fundamental", tex:"f_1 = \\frac{v}{2L} = \\frac{126.5}{2(1.20)} = 52.7\\ \\text{Hz}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 3.5 + 1.3*Math.sin(Math.PI*(t-1.1)/7.8)], 1.1, 8.9, {color:BLUE, w:2});
+        plotCurve(c, t => [t, 3.5 - 1.3*Math.sin(Math.PI*(t-1.1)/7.8)], 1.1, 8.9, {color:BLUE, w:1.5, dash:'5 5'});
+      }
+    },
+    { map:2, title:"Anatomy of the third harmonic", pose:"write", fresh:true,
+      think:"n = 3: three loops — where do the nodes fall?",
+      say:"Third harmonic: three times the fundamental, one hundred fifty-eight hertz, with wavelength two L over three — eighty centimetres. Adjacent nodes always sit half a wavelength apart, forty centimetres: nodes at zero, forty, eighty, one twenty, with three swinging loops between them.",
+      board:[
+        {label:"Third harmonic", tex:"f_3 = 3f_1 = 158\\ \\text{Hz},\\quad \\lambda_3 = \\frac{2L}{3} = 0.800\\ \\text{m}", kind:"answer"},
+        {label:"Nodes", tex:"\\text{at } 0,\\ 0.40,\\ 0.80,\\ 1.20\\ \\text{m — spacing } \\tfrac{\\lambda}{2}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 3.5 + 1.0*Math.sin(3*Math.PI*(t-1.1)/7.8)], 1.1, 8.9, {color:GOLD, w:2.5});
+        circleAt(c, 3.7, 3.5, 0.1, {stroke:RED, w:2});
+        circleAt(c, 6.3, 3.5, 0.1, {stroke:RED, w:2});
+        label(c, 5.0, 5.4, 'nodes 0.40 m apart', {fs:11, color:RED});
+      }
+    },
+    { map:3, title:"Audit: selecting harmonics by touch", pose:"think",
+      think:"Touch the string lightly at 0.40 m — which modes survive?",
+      say:"The audit is a trick every guitarist knows. Touch the string feather-lightly at forty centimetres — a third of its length. Your finger forbids motion there, so every mode without a node at that spot dies instantly; harmonics three, six, nine survive. Pluck, and a pure, bell-like octave-and-fifth rings out. You have performed mode selection — quantum mechanics will do exactly this with boundary conditions instead of fingers. Reusable method: fixed ends demand n half-wavelengths in L; f n is n v over two L; nodes every half-wavelength — and a light touch is a portable node.",
+      board:[
+        {label:"Selection", tex:"\\text{touch at } \\tfrac{L}{3}:\\ \\text{only } n = 3, 6, 9, \\ldots\\ \\text{survive}", kind:"key"},
+        {label:"Reusable method", text:"Count loops = n. λ_n = 2L/n, f_n = nf_1, nodes λ/2 apart. Imposed nodes filter the harmonic menu.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Power carried by a wave on the string",
+  problem:"A wave of amplitude 2.00 cm and ω = 200 rad/s travels on the string of Example 8 (μ = 5.00 g/m, v = 126 m/s). Find the average power delivered.",
+  goal:"Evaluate P = ½μω²A²v and read the physics of each factor.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Energy rides the wave","Compute the power","Audit: the ω²A² signature"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 3.5 + 1.0*Math.sin(2.6*(t-0.5))], 0.5, 9.5, {color:BLUE, w:2.5});
+    arrow(ctx, 4.2, 5.6, 6.4, 5.6, {color:GOLD, w:2.5, label:'energy flow', fs:11});
+    arrow(ctx, 2.35, 4.5, 2.35, 5.5, {color:GREEN, w:2, label:'v_y', fs:11});
+  },
+  steps:[
+    { map:0, title:"Each segment is an oscillator", pose:"talk",
+      think:"What energy does a string segment carry, and what carries it forward?",
+      say:"Watch one bead of the string: it bobs up and down in simple harmonic motion with maximum speed omega A, so it holds oscillator energy proportional to omega squared A squared. The travelling wave hands this energy down the line at speed v. Power is oscillator energy per length, mu omega squared A squared over two, times the delivery speed.",
+      board:[
+        {label:"Average power", tex:"P_{\\text{avg}} = \\tfrac{1}{2}\\mu\\omega^2A^2v", kind:"key"}
+      ]
+    },
+    { map:1, title:"Evaluate", pose:"write",
+      think:"First find ωA, the peak transverse speed — a useful intermediate.",
+      say:"The peak transverse speed omega A is two hundred times two centimetres: four metres per second — the beads move thirty times slower than the pattern. Assemble the power: five watts. A hand shaking a rope at this amplitude genuinely works at the rate of a small torch.",
+      board:[
+        {label:"Peak transverse speed", tex:"\\omega A = (200)(0.0200) = 4.00\\ \\text{m/s}", kind:"note"},
+        {label:"Power", tex:"P = \\tfrac{1}{2}(0.00500)(200)^2(0.0200)^2(126.5) = 5.06\\ \\text{W}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: the scalings that matter", pose:"think",
+      think:"Double A at fixed ω, or double ω at fixed A — what happens to P?",
+      say:"Audit the exponents, because they run all of wave physics. Double the amplitude: four times the power. Double the frequency at the same amplitude: also four times — omega and A enter as a team, through the squared maximum speed omega A. This omega squared A squared signature will follow us into sound, where it becomes intensity, and into light. Reusable method: power equals half mu omega squared A squared v — energy density of an oscillator, shipped at the wave speed; check any wave-power formula reduces to this pattern.",
+      board:[
+        {label:"Scalings", tex:"P \\propto \\omega^2 A^2:\\ \\text{doubling either quadruples } P", kind:"key"},
+        {label:"Reusable method", text:"Wave power = (energy per length) × v = ½μ(ωA)²v. The square of the peak oscillator speed is the universal currency.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"A pulse meets a heavier string",
+  problem:"A string with μ₁ = 5.00 g/m joins one with μ₂ = 20.0 g/m, both at 80.0 N. A pulse of amplitude A arrives from the light side. Find the reflected and transmitted amplitudes and orientations.",
+  goal:"Use the boundary formulas built from the two wave speeds, and read the signs.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two speeds","The boundary formulas","Reflected: inverted third","Audit: reverse the trip"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 3.5], 0.5, 5.0, {color:BLUE, w:2});
+    plotCurve(ctx, t => [t, 3.5], 5.0, 9.5, {color:GOLD, w:3.5});
+    circleAt(ctx, 5.0, 3.5, 0.12, {stroke:CHALKC, w:2});
+    plotCurve(ctx, t => [t, 3.5 + 1.1*Math.exp(-Math.pow(t-2.2,2)/0.25)], 0.8, 3.8, {color:BLUE, w:2.5});
+    arrow(ctx, 2.9, 5.0, 3.9, 5.0, {color:BLUE, w:2});
+    label(ctx, 2.2, 1.9, 'light μ₁', {fs:11, color:BLUE});
+    label(ctx, 7.4, 1.9, 'heavy μ₂', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Same tension, different speeds", pose:"write",
+      think:"The knot transmits tension unchanged — so what differs between the sides?",
+      say:"The knot passes tension faithfully — eighty newtons on both sides — but the linear densities differ by four, so the speeds differ by two: one hundred twenty-six on the light side, sixty-three on the heavy. The pulse is about to cross from a fast medium into a slow one, and the junction must negotiate the difference.",
+      board:[
+        {label:"Speeds", tex:"v_1 = \\sqrt{\\tfrac{80.0}{0.00500}} = 126\\ \\text{m/s},\\quad v_2 = \\sqrt{\\tfrac{80.0}{0.0200}} = 63.2\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"What the junction must honour", pose:"talk",
+      think:"The string cannot tear or kink at the knot — what two continuities follow?",
+      say:"The junction obeys two commandments: the string stays connected — displacement continuous — and it must not kink — slope continuous. Impose both on incoming, reflected, and transmitted waves and out fall two ratios, built purely from the speeds.",
+      board:[
+        {label:"Boundary formulas", tex:"\\frac{A_r}{A} = \\frac{v_2 - v_1}{v_1 + v_2},\\qquad \\frac{A_t}{A} = \\frac{2v_2}{v_1 + v_2}", kind:"key"}
+      ]
+    },
+    { map:2, title:"Evaluate: an inverted third, an upright two-thirds", pose:"write",
+      think:"v₂ < v₁ makes the reflection coefficient negative — meaning?",
+      say:"Numbers: reflected ratio, sixty-three minus one twenty-six over the sum — minus one third. The minus sign is the physics: the pulse bounces back upside-down, because the heavier string ahead behaves partway like a brick wall. Transmitted: plus two thirds, upright — and travelling at half the speed, so the transmitted pulse is also spatially squashed.",
+      board:[
+        {label:"Reflected", tex:"\\frac{A_r}{A} = \\frac{63.2 - 126}{190} = -0.333\\ \\text{(inverted)}", kind:"answer"},
+        {label:"Transmitted", tex:"\\frac{A_t}{A} = \\frac{2(63.2)}{190} = 0.667\\ \\text{(upright, shorter)}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 3.5 - 0.37*Math.exp(-Math.pow(t-2.8,2)/0.25)], 1.4, 4.4, {color:RED, w:2});
+        arrow(c, 2.6, 2.6, 1.7, 2.6, {color:RED, w:2});
+        plotCurve(c, t => [t, 3.5 + 0.73*Math.exp(-Math.pow(t-6.8,2)/0.12)], 5.9, 7.7, {color:GREEN, w:2});
+        arrow(c, 7.3, 5.0, 8.2, 5.0, {color:GREEN, w:2});
+      }
+    },
+    { map:3, title:"Audit: run the film backwards", pose:"think",
+      think:"Send the pulse from the heavy side — what flips, and what does A_t = 1.33A mean?",
+      say:"Audit by reversing the journey. From heavy to light, the roles of the speeds swap: the reflection becomes plus one third — upright, the light string ahead acting like a free end — and the transmitted ratio becomes one and a third. The transmitted pulse is taller than the one that arrived! No scandal: amplitude is not energy, and a later example will show the energy books balance exactly. Reusable method: compute both speeds, feed them to the boundary formulas, and read inversion from the sign — slower medium ahead flips the reflection; faster medium ahead does not.",
+      board:[
+        {label:"Reversed", tex:"\\frac{A_r}{A} = +0.333,\\quad \\frac{A_t}{A} = 1.333\\ \\text{(taller!)}", kind:"key"},
+        {label:"Reusable method", text:"Boundary ratios use speeds only. Into slower medium: inverted reflection. Into faster: upright, and A_t may exceed A — energy, not amplitude, is conserved.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Two waves with a phase difference",
+  problem:"Two waves of equal amplitude 3.00 cm, equal frequency, same direction, superpose with phase difference φ. Find the resultant for φ = 60°, 120°, 180°, and derive the general formula.",
+  goal:"Derive A_R = 2A cos(φ/2) and preview every interference pattern in optics.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Add the sines","The half-angle law","Three snapshots","Audit: the road to optics"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 5.3 + 0.55*Math.sin(2.4*(t-0.5))], 0.5, 9.5, {color:BLUE, w:2});
+    plotCurve(ctx, t => [t, 5.3 + 0.55*Math.sin(2.4*(t-0.5) + 1.047)], 0.5, 9.5, {color:GOLD, w:2, dash:'5 5'});
+    label(ctx, 8.3, 6.6, 'φ apart', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Superpose and simplify", pose:"write",
+      think:"The sum-to-product identity turns sin a + sin b into what?",
+      say:"Superposition says simply add. Two identical sines, one shifted by phi — reach for the sum-to-product identity: sine a plus sine b is twice sine of the average times cosine of half the difference. The average is a wave like the originals, nudged by phi over two; the cosine factor is a constant that scales the amplitude.",
+      board:[
+        {label:"Identity", tex:"\\sin a + \\sin b = 2\\sin\\tfrac{a+b}{2}\\cos\\tfrac{a-b}{2}", kind:"key"},
+        {label:"Result", tex:"y = \\left[2A\\cos\\tfrac{\\phi}{2}\\right]\\sin\\left(kx - \\omega t + \\tfrac{\\phi}{2}\\right)", kind:"key", move:"sum → product"}
+      ]
+    },
+    { map:1, title:"Read the law", pose:"talk",
+      think:"The resultant is still a single wave — with what amplitude?",
+      say:"Behold the law: the sum of two equal waves is one wave of the same k and omega, with amplitude two A cosine phi over two, sitting at the mean phase. All the drama of interference lives in that half-angle cosine — from double amplitude at phi zero, smoothly down to nothing at phi one-eighty.",
+      board:[
+        {label:"Amplitude law", tex:"A_R = 2A\\cos\\frac{\\phi}{2}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Three snapshots", pose:"write",
+      think:"Evaluate at 60°, 120°, 180° — one is oddly familiar.",
+      say:"Snapshots. Sixty degrees: cosine of thirty, five point two centimetres — nearly full reinforcement. One hundred twenty: cosine of sixty is one half, giving exactly three centimetres — two waves conspiring to be no louder than one. One eighty: zero. Two perfectly healthy waves, each carrying energy, sum to silence — complete destructive interference.",
+      board:[
+        {label:"φ = 60°", tex:"A_R = 2(3.00)\\cos 30^\\circ = 5.20\\ \\text{cm}", kind:"answer"},
+        {label:"φ = 120°", tex:"A_R = 2(3.00)\\cos 60^\\circ = 3.00\\ \\text{cm (= one wave!)}", kind:"answer"},
+        {label:"φ = 180°", tex:"A_R = 0\\ \\text{(complete cancellation)}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 2.2 + 1.15*Math.sin(2.4*(t-0.5) + 0.524)], 0.5, 9.5, {color:GREEN, w:2.5});
+        label(c, 8.0, 3.8, 'sum: 2A cos(φ/2)', {fs:11, color:GREEN});
+      }
+    },
+    { map:3, title:"Audit: where φ comes from in real life", pose:"think",
+      think:"Two speakers, one listener at different distances — what sets φ?",
+      say:"The audit looks ahead. In practice nobody dials phi by hand — it arises from a path difference: one wave travels delta L farther, accumulating phase two pi delta L over lambda. Feed that into our half-angle law and you have predicted the fringes of the double slit, the colours of soap films, the dead spots in a badly placed stereo — every interference pattern in optics, from one trigonometric identity. Reusable method: equal waves add to two A cosine phi over two; when paths differ, phi is two pi delta L over lambda — path difference is phase difference.",
+      board:[
+        {label:"Path to phase", tex:"\\phi = \\frac{2\\pi\\,\\Delta L}{\\lambda}", kind:"key"},
+        {label:"Reusable method", text:"A_R = 2A cos(φ/2) with φ from path difference — the master key to Tutorials 9 and 10.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A Gaussian pulse and the wave equation",
+  problem:"Show y(x,t) = A e^(−(x−vt)²/σ²) satisfies ∂²y/∂x² = (1/v²)∂²y/∂t², and find the string's transverse velocity at the pulse's steepest points.",
+  goal:"Prove any rigid shape f(x − vt) solves the wave equation, then differentiate for v_y.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The moving-argument trick","Chain rule twice","Any shape rides","Transverse velocity","Audit: the steepest points"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.6, y0:1.6, xLab:'x', yLab:'y'});
+    plotCurve(ctx, t => [t, 1.6 + 2.6*Math.exp(-Math.pow(t-3.2,2)/0.8)], 0.8, 9.4, {color:BLUE, w:2.5});
+    arrow(ctx, 4.4, 3.6, 5.6, 3.6, {color:GOLD, w:2, label:'v', fs:12});
+  },
+  steps:[
+    { map:0, title:"One variable where two appear", pose:"talk",
+      think:"x and t enter only in the combination x − vt — why is that the whole story?",
+      say:"The Gaussian looks like a function of two variables, but x and t conspire: they appear only through u equals x minus v t. That single fact encodes rigid motion — as t advances, the whole shape slides right at speed v without distorting. Let us make the wave equation confirm it.",
+      board:[
+        {label:"Substitution", tex:"u = x - vt,\\qquad y = g(u) = Ae^{-u^2/\\sigma^2}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Chain rule, twice each way", pose:"write",
+      think:"∂u/∂x = 1 but ∂u/∂t = −v — track the factors.",
+      say:"Differentiate with the chain rule. In x: each derivative multiplies by du by dx, which is one — two derivatives give g double prime. In t: each derivative pulls out minus v — two of them give v squared times g double prime. The time side is exactly v squared times the space side.",
+      board:[
+        {label:"Space", tex:"\\frac{\\partial^2 y}{\\partial x^2} = g''(u)", kind:"note"},
+        {label:"Time", tex:"\\frac{\\partial^2 y}{\\partial t^2} = (-v)^2g''(u) = v^2g''(u)", kind:"note"}
+      ]
+    },
+    { map:2, title:"Any rigid shape is a wave", pose:"excited",
+      think:"Where did the Gaussian's specific form enter the proof?",
+      say:"Substitute and the wave equation is satisfied identically — and notice we never used the Gaussian's formula, only that g was some twice-differentiable shape. The wave equation is a broad church: every rigid profile moving at speed v is welcome — pulses, kinks, wave packets — not merely sinusoids. Sinusoids are just the members easiest to analyse.",
+      board:[
+        {label:"General theorem", tex:"\\text{any } y = g(x - vt)\\ \\text{solves}\\ \\frac{\\partial^2y}{\\partial x^2} = \\frac{1}{v^2}\\frac{\\partial^2y}{\\partial t^2}", kind:"key"}
+      ]
+    },
+    { map:3, title:"How fast does the string itself move?", pose:"write",
+      think:"v_y = ∂y/∂t — and there's a shortcut through the slope.",
+      say:"Now the string's own motion — not the pattern's. The time derivative is minus v times the slope: a compact, general fact — the string moves fastest where the pulse is steepest. Differentiating the Gaussian: v y is proportional to u times the Gaussian itself.",
+      board:[
+        {label:"Transverse velocity", tex:"v_y = \\frac{\\partial y}{\\partial t} = -v\\frac{\\partial y}{\\partial x} = \\frac{2Av(x - vt)}{\\sigma^2}e^{-(x-vt)^2/\\sigma^2}", kind:"answer", move:"chain rule"}
+      ]
+    },
+    { map:4, title:"Audit: locate the extremes", pose:"think",
+      think:"Maximise |v_y|: differentiate and set to zero — where, and how big?",
+      say:"Maximise: the extremes sit at u equals plus or minus sigma over root two — the inflection points, the steepest flanks. There the speed is root two over e times A v over sigma — about zero point eight six A v over sigma. Read the aspect ratio A over sigma: a tall, narrow pulse whips the string violently; a long, low swell barely stirs it, at the same travel speed. And the string rises ahead of the crest, falls behind it — each bead rehearsing the pulse shape as it passes. Reusable method: substitute u equals x minus v t, chain-rule everything, and remember v y equals minus v times slope — pattern speed and particle speed are different animals.",
+      board:[
+        {label:"Steepest points", tex:"x - vt = \\pm\\frac{\\sigma}{\\sqrt{2}}:\\ |v_y|_{\\max} = \\sqrt{\\tfrac{2}{e}}\\,\\frac{Av}{\\sigma} = 0.858\\,\\frac{Av}{\\sigma}", kind:"answer"},
+        {label:"Reusable method", text:"f(x − vt) always solves the wave equation. v_y = −v·slope: string speed scales with pulse steepness, not just v.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Energy bookkeeping at the junction",
+  problem:"For the Example 12 junction, show reflected plus transmitted power equals incident power — even when the transmitted amplitude exceeds the incident one.",
+  goal:"Build R and T from P ∝ μvω²A², prove R + T = 1, and dethrone amplitude.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Power at a boundary","The fractions R and T","The sum is one","Audit: the taller pulse acquitted"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [t, 3.5], 0.5, 5.0, {color:GOLD, w:3.5});
+    plotCurve(ctx, t => [t, 3.5], 5.0, 9.5, {color:BLUE, w:2});
+    circleAt(ctx, 5.0, 3.5, 0.12, {stroke:CHALKC, w:2});
+    label(ctx, 2.2, 2.2, 'heavy, slow', {fs:11, color:GOLD});
+    label(ctx, 7.5, 2.2, 'light, fast', {fs:11, color:BLUE});
+    arrow(ctx, 2.4, 5.2, 3.6, 5.2, {color:CHALKC, w:2, label:'incident', fs:10});
+  },
+  steps:[
+    { map:0, title:"Power, not amplitude, is the currency", pose:"talk",
+      think:"P = ½μω²A²v — which factors change across the knot?",
+      say:"The junction's true ledger is power: half mu omega squared A squared v. Frequency crosses the knot untouched — the knot bobs at one rate and both sides must follow. But mu and v differ between the strings, so comparing amplitudes alone is comparing prices in different currencies. We must convert everything to watts.",
+      board:[
+        {label:"The currency", tex:"P \\propto \\mu v\\,\\omega^2A^2,\\qquad \\omega\\ \\text{common to both sides}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Build the two fractions", pose:"write",
+      think:"R is a same-string comparison; T needs the μv conversion factor.",
+      say:"The reflected wave rides the same string as the incident one — same mu v — so R is simply the amplitude ratio squared. The transmitted wave lives on the other string, so T carries the conversion factor mu two v two over mu one v one. With equal tensions, mu v equals F T over v, and everything becomes speeds.",
+      board:[
+        {label:"Reflected fraction", tex:"R = \\left(\\frac{v_2 - v_1}{v_1 + v_2}\\right)^2", kind:"key"},
+        {label:"Transmitted fraction", tex:"T = \\frac{\\mu_2v_2}{\\mu_1v_1}\\left(\\frac{2v_2}{v_1+v_2}\\right)^2 = \\frac{4v_1v_2}{(v_1+v_2)^2}", kind:"key", move:"μv = F_T/v"}
+      ]
+    },
+    { map:2, title:"The sum telescopes to one", pose:"write",
+      think:"(v₂−v₁)² + 4v₁v₂ expands to what?",
+      say:"Add them: the numerator is v two minus v one squared plus four v one v two. Expand — the cross terms mend themselves into v one plus v two squared, exactly the denominator. R plus T equals one, identically, for any pair of speeds. The junction neither creates nor destroys; it only splits.",
+      board:[
+        {label:"Conservation", tex:"R + T = \\frac{(v_2-v_1)^2 + 4v_1v_2}{(v_1+v_2)^2} = 1\\ \\checkmark", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the taller pulse stands trial", pose:"think",
+      think:"Heavy → light gave A_t = 1.33A. Where is the missing energy compensation?",
+      say:"Now the trial of the suspicious case. Heavy to light: transmitted amplitude one and a third times the incident — yet T computes to zero point eight nine, same as the reverse trip, and R at zero point one one makes up the balance. The acquittal: the transmitted pulse is taller, but it rides a lighter string at higher speed — and in the product mu v A squared, the lightness more than pays for the height. Amplitude is not energy; it is one factor of three. Reusable method: convert every wave to power with mu v omega squared A squared before comparing; R plus T equals one is the audit that catches any bookkeeping slip.",
+      board:[
+        {label:"Both directions", tex:"R = 0.111,\\ T = 0.889\\ \\text{either way}", kind:"key"},
+        {label:"Reusable method", text:"Energy fractions use μvA², never A alone. A_t > A is legal on a lighter string. Always verify R + T = 1.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Waves on a spinning hoop",
+  problem:"A flexible hoop of radius 0.300 m and linear density μ spins at ω = 20.0 rad/s. Find its tension and transverse wave speed, and show a bump on the hoop can stand still in the lab.",
+  goal:"Extract tension from the spin, find v = ωR, and let a backward wave freeze in space.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Tension from a small arc","T = μω²R²","Wave speed = rim speed","The frozen bump","Audit: μ vanished"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 3.3, 2.3, {stroke:GOLD, w:3});
+    arc(ctx, 5.0, 3.3, 2.9, -35, 35, {color:DIMC, w:1.5});
+    arrow(ctx, 7.38, 4.96, 7.05, 5.45, {color:DIMC, w:1.5});
+    label(ctx, 8.6, 5.6, 'ω = 20 rad/s', {fs:11, color:DIMC});
+    label(ctx, 5.0, 3.2, 'R = 0.300 m', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Interrogate a small arc", pose:"point",
+      think:"What force holds a piece of the spinning hoop on its circle?",
+      say:"A spinning hoop is a rope that holds itself taut. Isolate a whisker of arc, angle d theta, mass mu R d theta. It travels a circle, so it needs a centripetal force — and the only hands available are the tensions at its two ends, whose directions differ slightly, yielding a net inward pull of T d theta.",
+      board:[
+        {label:"Small arc", tex:"\\text{net inward force} = 2T\\sin\\tfrac{d\\theta}{2} \\approx T\\,d\\theta", kind:"key"}
+      ],
+      action(c){
+        arc(c, 5.0, 3.3, 2.3, 55, 90, {color:RED, w:4});
+        arrow(c, 4.35, 5.5, 4.6, 4.5, {color:RED, w:2, label:'T dθ', fs:11});
+      }
+    },
+    { map:1, title:"Tension from the spin", pose:"write",
+      think:"Set T dθ equal to (μR dθ)ω²R — what cancels?",
+      say:"Set the inward pull equal to mass times centripetal acceleration: T d theta equals mu R d theta times omega squared R. The arbitrary d theta cancels — as it must — leaving a tension of mu omega squared R squared. The faster the spin, the tauter the hoop pulls itself.",
+      board:[
+        {label:"Tension", tex:"T = \\mu\\omega^2R^2", kind:"answer", move:"cancel dθ"}
+      ]
+    },
+    { map:2, title:"Wave speed equals rim speed", pose:"write",
+      think:"Feed T into v = √(T/μ) — a suspicious coincidence appears.",
+      say:"Feed this tension into the string formula: v equals root of T over mu — mu cancels — omega R. Pause on that: the speed of waves along the hoop, relative to the material, is exactly the speed at which the material itself circulates. Six metres per second, both of them. This coincidence is loaded.",
+      board:[
+        {label:"Wave speed", tex:"v = \\sqrt{\\frac{T}{\\mu}} = \\omega R = (20.0)(0.300) = 6.00\\ \\text{m/s}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The bump that hangs in space", pose:"excited",
+      think:"Send a wave backward against the rotation — what does the lab observer see?",
+      say:"Now launch a bump backward, against the spin. It runs at six metres per second relative to the rope — while the rope carries it forward at six. In the laboratory the two cancel: the bump stands absolutely still, hanging in space while the hoop material streams through it. Its forward-going twin races at twelve. A kink in a spinning lasso really does this — painted on air.",
+      board:[
+        {label:"Lab speeds", tex:"v_{\\text{lab}} = \\omega R \\pm v = 12.0\\ \\text{m/s or } 0", kind:"answer"}
+      ],
+      action(c){
+        circleAt(c, 2.7, 3.3, 0.32, {stroke:GREEN, w:2.5});
+        label(c, 1.15, 4.3, 'stationary bump', {fs:11, color:GREEN});
+      }
+    },
+    { map:4, title:"Audit: why μ had to vanish", pose:"think",
+      think:"The answer is independent of μ — is that an accident?",
+      say:"The audit savours the disappearance of mu. Tension grew from the hoop's own inertia — heavier rope pulls itself tauter in exact proportion — so stiffness over inertia is fixed by geometry and spin alone. Any hoop, thread or anchor chain, spinning at omega, carries waves at omega R. Self-generated restoring forces cancel their own inertia; you will meet the same conspiracy in self-gravitating systems. Reusable method: extract tension from a small element's circular motion, feed it to root T over mu, and always compose wave velocity with the medium's own motion before facing the lab.",
+      board:[
+        {label:"Independence", tex:"v = \\omega R\\ \\text{for any } \\mu\\ \\text{— geometry and spin only}", kind:"key"},
+        {label:"Reusable method", text:"Self-tensioned media: force balance on dθ gives T; v relative to medium ± medium's motion gives lab speeds.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

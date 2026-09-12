@@ -1487,6 +1487,524 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"The plane mirror",
+  problem:"You stand 2.00 m from a flat mirror. Where is your image, how large, and how tall must the mirror be to show your full height?",
+  goal:"Read the flat mirror as f = ∞, then let equal angles halve the mirror.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["f = ∞","The image: behind, equal, virtual","The half-height theorem","Audit: step back and check"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [5.0, 0.8 + 5.4*t], 0, 1, {color:CHALKC, w:3});
+    label(ctx, 5.0, 6.7, 'mirror', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [2.4, 1.2 + 3.4*t], 0, 1, {color:GOLD, w:2.5});
+    circleAt(ctx, 2.4, 5.0, 0.35, {stroke:GOLD, w:2.5});
+    label(ctx, 2.4, 0.5, 'you, 2.00 m away', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"A mirror with no bend in it", pose:"talk",
+      think:"A flat mirror neither converges nor diverges — what is its focal length?",
+      say:"A flat mirror is the limiting case of our curved family: radius infinite, focal length infinite, one over f equal to zero. The mirror equation then says one over d i equals minus one over d o — the image sits as far behind the glass as you stand before it. Every mirror formula we own applies; this is just its gentlest member.",
+      board:[
+        {label:"Plane mirror", tex:"f = \\infty \\Rightarrow d_i = -d_o", kind:"key"}
+      ]
+    },
+    { map:1, title:"Behind, upright, life-size", pose:"write",
+      think:"d_i = −2.00 m: what do the sign and the magnification say?",
+      say:"Two metres in front puts the image two metres behind — the minus sign declaring it virtual: no light actually gathers there; your brain extrapolates the diverging rays backward. Magnification: minus d i over d o is plus one — upright and exactly life-size. The familiar twin in the glass, formally certified.",
+      board:[
+        {label:"Image", tex:"d_i = -2.00\\ \\text{m (virtual, behind)}", kind:"answer"},
+        {label:"Size", tex:"m = -\\frac{d_i}{d_o} = +1\\ \\text{(upright, life-size)}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [7.6, 1.2 + 3.4*t], 0, 1, {color:DIMC, w:2, dash:'6 5'});
+        circleAt(c, 7.6, 5.0, 0.35, {stroke:DIMC, w:2});
+        label(c, 7.6, 0.5, 'image, 2.00 m behind', {fs:10, color:DIMC});
+      }
+    },
+    { map:2, title:"The half-height theorem", pose:"write",
+      think:"The ray from your feet to your eyes reflects where on the mirror?",
+      say:"How tall a mirror shows all of you? Trace the ray from your feet to your eyes: equal angles put its bounce exactly halfway up — at half your eye height. The ray from your scalp bounces halfway between scalp and eyes. Between those two bounce points lies everything needed: a mirror one half your height, top edge at eye level. The rest of the glass in your bathroom is decoration.",
+      board:[
+        {label:"Half height", tex:"h_{\\text{mirror}} = \\frac{h_{\\text{you}}}{2},\\ \\text{top at eye level}", kind:"answer", move:"equal angles bisect"}
+      ],
+      action(c){
+        plotCurve(c, t => [2.4 + 2.6*t, 1.2 + 1.85*t], 0, 1, {color:GREEN, w:1.5});
+        plotCurve(c, t => [5.0 - 2.6*t, 3.05 + 1.85*t], 0, 1, {color:GREEN, w:1.5});
+        circleAt(c, 5.0, 3.05, 0.1, {stroke:GREEN, w:2});
+      }
+    },
+    { map:3, title:"Audit: distance drops out", pose:"think",
+      think:"Step back to 4 m — does the required mirror grow or shrink?",
+      say:"The audit tests the theorem's strangest clause: the half-height answer never mentioned your distance. Step back to four metres and both bounce points stay exactly where they were — the geometry scales together, and no more of you appears. Try it tonight; almost everyone predicts wrongly. Reusable method: plane mirror means d i equals minus d o, m equals plus one; and for field-of-view questions, trace the extreme rays and let equal angles do the halving.",
+      board:[
+        {label:"Independence", tex:"\\text{required mirror height independent of } d_o", kind:"key"},
+        {label:"Reusable method", text:"Flat mirror = f → ∞ limit. Virtual twin at −d_o; extreme-ray tracing answers all 'how much can I see' questions.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Concave mirror with a distant object",
+  problem:"An object is 60.0 cm from a concave mirror, f = 20.0 cm. Locate and describe the image.",
+  goal:"Run the mirror equation, interpret both signs, and confirm with the C-and-F landmarks.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The equation","Solve and sign-read","Magnification","Audit: the landmark map"],
+  setup(ctx, w){
+    arc(ctx, 12.0, 3.5, 3.6, 155, 205, {color:CHALKC, w:3});
+    dashLine(ctx, 0.5, 3.5, 9.0, 3.5, {color:DIMC});
+    circleAt(ctx, 4.4, 3.5, 0.08, {stroke:DIMC, w:2});
+    label(ctx, 4.4, 2.9, 'C', {fs:11, color:DIMC});
+    circleAt(ctx, 6.45, 3.5, 0.08, {stroke:DIMC, w:2});
+    label(ctx, 6.45, 2.9, 'F', {fs:11, color:DIMC});
+    arrow(ctx, 2.3, 3.5, 2.3, 4.9, {color:GOLD, w:2.5, label:'object', fs:10});
+  },
+  steps:[
+    { map:0, title:"One equation, strict sign law", pose:"talk",
+      think:"For mirrors: which side is positive for d_i?",
+      say:"The mirror equation — one over d o plus one over d i equals one over f — is trivial arithmetic wrapped in a strict sign convention: for mirrors, real is in front. Positive d i, image in front of the glass, catchable on a card; negative, behind it, virtual. Concave mirrors have positive f. Let the signs speak and the description writes itself.",
+      board:[
+        {label:"Mirror equation", tex:"\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve", pose:"write",
+      think:"1/20 − 1/60 — common denominator 60.",
+      say:"One over twenty minus one over sixty: three sixtieths minus one sixtieth — two sixtieths. d i is thirty centimetres, positive: a real image, hanging in the air thirty centimetres before the mirror, where a card would catch it sharp.",
+      board:[
+        {label:"Image position", tex:"\\frac{1}{d_i} = \\frac{1}{20.0} - \\frac{1}{60.0} = \\frac{2}{60.0} \\Rightarrow d_i = +30.0\\ \\text{cm (real)}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Size and orientation", pose:"write",
+      think:"m = −d_i/d_o — sign and magnitude each carry news.",
+      say:"Magnification: minus thirty over sixty — minus one half. Two messages in one number: inverted, and half scale. Real images from single mirrors are always inverted; the minus sign is not a nuisance but a fact about the world.",
+      board:[
+        {label:"Magnification", tex:"m = -\\frac{d_i}{d_o} = -\\frac{30.0}{60.0} = -0.500\\ \\text{(inverted, half size)}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 7.4, 3.5, 7.4, 2.8, {color:GREEN, w:2.5, label:'image', fs:10, side:1});
+      }
+    },
+    { map:3, title:"Audit: check against the landmarks", pose:"think",
+      think:"Object beyond C — where must the image fall, by the ray-diagram map?",
+      say:"Audit with the concave mirror's landmark map, which you should carry in your head: the centre of curvature C at two f — forty centimetres — and the focus F at twenty. Our object stands beyond C; the map decrees the image must land between F and C, real, inverted, reduced. Thirty centimetres sits precisely in that interval. Equation and map agree — and when they disagree, it is always a sign error, caught in seconds. Reusable method: solve the equation, then verify against the object's zone relative to F and C; the qualitative map is your error detector.",
+      board:[
+        {label:"Landmarks", tex:"d_o > C = 2f \\Rightarrow F < d_i < C:\\ 20 < 30 < 40\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Equation for numbers, zone map for expectations. Beyond C: reduced; between C and F: enlarged; inside F: virtual.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Converging lens with the object beyond f",
+  problem:"An object is 15.0 cm from a converging lens, f = 10.0 cm. Find the image position and magnification.",
+  goal:"Run the thin-lens equation and recognise the projector configuration.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Thin-lens convention","Solve","Read the projector","Audit: the zone check"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [5.0, 1.0 + 5.0*t], 0, 1, {color:CHALKC, w:2.5});
+    arrow(ctx, 5.0, 6.0, 4.7, 5.6, {color:CHALKC, w:1.5});
+    arrow(ctx, 5.0, 1.0, 4.7, 1.4, {color:CHALKC, w:1.5});
+    dashLine(ctx, 0.5, 3.5, 9.5, 3.5, {color:DIMC});
+    circleAt(ctx, 6.9, 3.5, 0.07, {stroke:DIMC, w:2});
+    label(ctx, 6.9, 2.95, 'F', {fs:10, color:DIMC});
+    circleAt(ctx, 3.1, 3.5, 0.07, {stroke:DIMC, w:2});
+    label(ctx, 3.1, 2.95, 'F', {fs:10, color:DIMC});
+    arrow(ctx, 2.15, 3.5, 2.15, 4.6, {color:GOLD, w:2.5, label:'object', fs:10});
+  },
+  steps:[
+    { map:0, title:"The lens convention", pose:"talk",
+      think:"For lenses, where is the positive image side?",
+      say:"Lenses flip the mirror's geography: light passes through, so real images form on the far side — that is where positive d i lives. Converging lenses take positive f. Same equation as the mirror, new map. Our object sits between f and two f — remember that zone; it has a profession.",
+      board:[
+        {label:"Thin lens", tex:"\\frac{1}{d_o} + \\frac{1}{d_i} = \\frac{1}{f}\\quad (d_i > 0:\\ \\text{far side})", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve", pose:"write",
+      think:"1/10 − 1/15 — thirtieths this time.",
+      say:"One over ten minus one over fifteen: three thirtieths minus two — one thirtieth. Thirty centimetres beyond the lens, real. Magnification minus thirty over fifteen: minus two — inverted and doubled.",
+      board:[
+        {label:"Image", tex:"\\frac{1}{d_i} = \\frac{1}{10.0} - \\frac{1}{15.0} = \\frac{1}{30.0} \\Rightarrow d_i = 30.0\\ \\text{cm (real)}", kind:"answer"},
+        {label:"Magnification", tex:"m = -\\frac{30.0}{15.0} = -2.00\\ \\text{(inverted, doubled)}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 8.6, 3.5, 8.6, 1.3, {color:GREEN, w:2.5, label:'image ×2', fs:10, side:1});
+      }
+    },
+    { map:2, title:"You have built a projector", pose:"talk",
+      think:"Object just beyond f, image large, inverted, far away — what machine is this?",
+      say:"Recognise the configuration: object just beyond the focal point, image enlarged, inverted, thrown far to the other side. That is a projector — a slide close to the lens painting a big picture on a distant screen. And the minus two explains a piece of theatre lore: slides and film are loaded upside down, so the inversion sets them right.",
+      board:[
+        {label:"The profession", tex:"f < d_o < 2f:\\ \\text{projector — enlarged, inverted, far}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the conjugate symmetry", pose:"think",
+      think:"Swap object and image distances — does the equation still hold?",
+      say:"Audit with a symmetry worth knowing: the lens equation is symmetric in d o and d i — fifteen and thirty satisfy it in either order. Put the object at thirty and the image lands at fifteen, half-size: the camera configuration, the projector run backwards. Conjugate pairs, one geometry, two machines. Reusable method: solve the equation, name the zone — beyond two f is a camera, f to two f a projector, inside f a magnifier — and remember every object–image pair works in both directions.",
+      board:[
+        {label:"Conjugates", tex:"(d_o, d_i) = (15, 30)\\ \\text{or}\\ (30, 15):\\ \\text{projector} \\leftrightarrow \\text{camera}", kind:"key"},
+        {label:"Reusable method", text:"Zones tell the profession; conjugate symmetry doubles every answer you compute. Light paths are reversible.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Convex security mirror",
+  problem:"A convex mirror has R = 80.0 cm. A shopper stands 2.00 m away. Where is the image and how large?",
+  goal:"Handle negative f, then see why stores and cars choose the shrunken view.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Convex: f negative","Solve","The trapped image","Audit: closer than they appear"],
+  setup(ctx, w){
+    arc(ctx, -1.5, 3.5, 3.6, -28, 28, {color:CHALKC, w:3});
+    dashLine(ctx, 0.5, 3.5, 9.5, 3.5, {color:DIMC});
+    arrow(ctx, 8.2, 3.5, 8.2, 5.3, {color:GOLD, w:2.5, label:'shopper', fs:10});
+    label(ctx, 2.2, 6.3, 'convex mirror', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"The diverging mirror", pose:"talk",
+      think:"A convex mirror spreads rays apart — what sign must f take?",
+      say:"A convex mirror bulges toward you and scatters parallel rays outward, as if they fled from a focus hiding behind the glass. Diverging optics take negative focal lengths: f is minus R over two — minus forty centimetres. Everything else is the same equation with a sign along for the ride.",
+      board:[
+        {label:"Convex", tex:"f = -\\frac{R}{2} = -40.0\\ \\text{cm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve", pose:"write",
+      think:"−1/40 − 1/200 — both terms negative, so d_i must be negative.",
+      say:"Minus one fortieth minus one two-hundredth: minus six two-hundredths. d i is minus thirty-three point three centimetres — virtual, behind the mirror — and the magnification is plus one sixth: upright, small. A doll-sized shopper standing in the glass.",
+      board:[
+        {label:"Image", tex:"\\frac{1}{d_i} = -\\frac{1}{40.0} - \\frac{1}{200} = -\\frac{6}{200} \\Rightarrow d_i = -33.3\\ \\text{cm}", kind:"answer"},
+        {label:"Size", tex:"m = -\\frac{(-33.3)}{200} = +0.167\\ \\text{(upright, one sixth)}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"An image that cannot escape", pose:"write",
+      think:"Let d_o → ∞ in the equation — where does the image go at furthest?",
+      say:"Now a structural fact: send the shopper to infinity and d i crawls only to minus f — forty centimetres behind the glass. Bring them nose-close and it approaches zero. Every image of everything, everywhere in the store, lives compressed into that forty-centimetre closet behind the mirror — which is exactly the trick: the whole aisle fits in one small disc of glass.",
+      board:[
+        {label:"Trapped", tex:"-|f| < d_i < 0\\ \\text{for every } d_o:\\ \\text{whole world in 40 cm}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the legal warning decoded", pose:"think",
+      think:"Small upright image — what distance does the brain infer, and why the etched warning?",
+      say:"The audit reads the fine print on every passenger-side mirror: objects are closer than they appear. Your brain gauges distance partly by image size; the convex mirror hands it a sixth-scale car, and the brain, assuming life size, files it as far away. The optics are honest — the inference is fooled. The trade is field of view for scale, and for spotting a lorry in the next lane, width wins. Reusable method: convex means f negative, images always virtual, upright, reduced, and confined within one focal length behind the glass — wide-angle by construction.",
+      board:[
+        {label:"The illusion", tex:"m = \\tfrac{1}{6}\\ \\text{small image} \\Rightarrow \\text{brain infers extra distance}", kind:"warn"},
+        {label:"Reusable method", text:"Convex mirror: always virtual, upright, |m| < 1, image within |f|. Panorama bought with size.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Diverging lens",
+  problem:"An object is 30.0 cm from a diverging lens, f = −15.0 cm. Locate the image.",
+  goal:"Solve with negative f, prove the image can never be real, and find the lens's true jobs.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Negative f throughout","Solve","No real image, ever","Audit: what it's FOR"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [5.0 - 0.35*Math.sin(Math.PI*t), 1.0 + 5.0*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [5.0 + 0.35*Math.sin(Math.PI*t), 1.0 + 5.0*t], 0, 1, {color:CHALKC, w:2.5});
+    dashLine(ctx, 0.5, 3.5, 9.5, 3.5, {color:DIMC});
+    arrow(ctx, 1.6, 3.5, 1.6, 5.0, {color:GOLD, w:2.5, label:'object', fs:10});
+  },
+  steps:[
+    { map:0, title:"The lens that spreads", pose:"talk",
+      think:"Concave lens: parallel rays exit as if from where?",
+      say:"A diverging lens — thin in the middle — takes parallel light and fans it outward, as though it sprang from a virtual focus on the incoming side. Focal length negative: minus fifteen. The equation is unchanged; only our expectations must adjust, and we will let the algebra retrain them.",
+      board:[
+        {label:"Diverging", tex:"f = -15.0\\ \\text{cm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve", pose:"write",
+      think:"−1/15 − 1/30 — collect over 30.",
+      say:"Minus one fifteenth minus one thirtieth: minus three thirtieths. d i is minus ten centimetres — same side as the object, virtual — and m is plus one third: upright, reduced. You look through the lens and see a shrunken, right-way-up world floating just behind it.",
+      board:[
+        {label:"Image", tex:"\\frac{1}{d_i} = -\\frac{1}{15.0} - \\frac{1}{30.0} = -\\frac{3}{30.0} \\Rightarrow d_i = -10.0\\ \\text{cm}", kind:"answer"},
+        {label:"Size", tex:"m = +0.333\\ \\text{(upright, one third)}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 3.6, 3.5, 3.6, 4.0, {color:GREEN, w:2, label:'image', fs:10});
+      }
+    },
+    { map:2, title:"A theorem in one line", pose:"write",
+      think:"With f < 0 and d_o > 0, can 1/d_i ever be positive?",
+      say:"Now the general truth, provable at a glance: one over d i equals one over f minus one over d o — with f negative and d o positive, that is negative plus negative. Negative always. A diverging lens alone can never cast a real image; nothing you do with object placement will ever throw its light onto a screen. The image is confined between the lens and its focal point, upright and reduced, forever.",
+      board:[
+        {label:"Theorem", tex:"\\frac{1}{d_i} = \\underbrace{\\frac{1}{f}}_{<0} - \\underbrace{\\frac{1}{d_o}}_{>0} < 0\\ \\text{always: never real}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: so what is it FOR?", pose:"think",
+      think:"A lens that can't project — name its real employments.",
+      say:"The audit asks the fair question: why manufacture a lens that cannot project? Because its talent is correction, not creation. Nearsighted eyes focus distant objects short of the retina; a diverging spectacle lens pre-spreads the light, handing the eye a virtual image close enough to handle. In combination it shortens telescopes — Galileo's design — and tames aberrations in camera lenses. The supporting actor, never the lead. Reusable method: f negative in the same equation, expect virtual, upright, reduced without exception — and reach for a diverging element whenever light converges too eagerly.",
+      board:[
+        {label:"Employments", tex:"\\text{myopia spectacles, Galilean eyepiece, aberration control}", kind:"key"},
+        {label:"Reusable method", text:"Diverging lens output: virtual, upright, |m|<1, image inside |f|. Its job is modifying other optics' light.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"The magnifying glass",
+  problem:"A magnifier has f = 5.00 cm; the near point is 25.0 cm. Find the angular magnification with the image (a) at the near point, (b) at infinity, and the object position each time.",
+  goal:"Define angular magnification honestly, then price the two viewing modes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Why angular","(a) Image at near point","(b) Relaxed eye","Audit: the two-stage hint"],
+  setup(ctx, w){
+    circleAt(ctx, 3.6, 3.5, 1.5, {stroke:CHALKC, w:2.5});
+    plotCurve(ctx, t => [4.66 + 1.3*t, 2.44 - 1.3*t], 0, 1, {color:CHALKC, w:2.5});
+    arrow(ctx, 2.2, 3.5, 2.2, 4.3, {color:GOLD, w:2.5});
+    label(ctx, 2.2, 1.9, 'object', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"The eye's own limit first", pose:"talk",
+      think:"Why can't you just bring the stamp closer and closer to your eye?",
+      say:"Unaided, you enlarge a stamp by bringing it closer — until the near point, twenty-five centimetres for a standard eye, where focusing fails. So the honest benchmark is the angle the object subtends at that best unaided distance: h over twenty-five. A magnifier's worth is how many times it multiplies that angle — angular magnification, not linear.",
+      board:[
+        {label:"Benchmark", tex:"\\theta_0 = \\frac{h}{25.0\\ \\text{cm}},\\qquad M = \\frac{\\theta}{\\theta_0}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Image pulled to the near point", pose:"write",
+      think:"Set d_i = −25 cm; find d_o and the new angle.",
+      say:"Mode one strains for maximum: place the virtual image right at the near point, d i minus twenty-five. The lens equation puts the object at four point one seven centimetres, and the image angle is h over that. Magnification: twenty-five over four point one seven — six. The general formula: twenty-five over f, plus one.",
+      board:[
+        {label:"(a) Object", tex:"\\frac{1}{d_o} = \\frac{1}{5.00} + \\frac{1}{25.0} \\Rightarrow d_o = 4.17\\ \\text{cm}", kind:"answer"},
+        {label:"(a) Magnification", tex:"M = \\frac{25.0}{4.17} = 6.00 = \\frac{25}{f} + 1", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The relaxed eye", pose:"write",
+      think:"Object at the focus sends rays out parallel — the eye focuses at infinity, effortlessly.",
+      say:"Mode two relaxes: put the object exactly at the focal point and the rays leave parallel — the eye focuses at infinity, its least strenuous state. The angle is h over f, so M is twenty-five over f: five. One unit of magnification traded for hours of comfort — this is how magnifiers are actually used.",
+      board:[
+        {label:"(b) Setup", tex:"d_o = f = 5.00\\ \\text{cm} \\Rightarrow \\text{image at } \\infty", kind:"answer"},
+        {label:"(b) Magnification", tex:"M = \\frac{25}{f} = 5.00", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: why not f = 1 mm?", pose:"think",
+      think:"M = 25/f begs for tiny f — what stops us?",
+      say:"The audit chases the obvious temptation: if M is twenty-five over f, grind f down to a millimetre and claim two hundred fifty times! But short focal lengths mean violently curved surfaces, and below a centimetre or so, aberrations — spherical, chromatic — shred the image faster than it grows. A single lens tops out around twenty. The escape is division of labour: one lens forms an enlarged real image, a second magnifies that — the compound microscope, waiting two examples ahead. Reusable method: M equals twenty-five over f relaxed, plus one when straining; and read any single number's limit as an invitation to cascade stages.",
+      board:[
+        {label:"The ceiling", tex:"f \\lesssim 1\\ \\text{cm} \\Rightarrow \\text{aberrations dominate}:\\ M_{\\max} \\sim 20", kind:"warn"},
+        {label:"Reusable method", text:"M = 25/f (+1 at near point). Past the single-lens ceiling, cascade: objective × eyepiece.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Shaving mirror: object inside the focal length",
+  problem:"A concave mirror has f = 30.0 cm; a face is 20.0 cm away. Find the image, and describe what happens as the face moves back through the focal point.",
+  goal:"Meet the concave mirror's magnifier mode, then ride the image through infinity.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Inside f","Solve: virtual, ×3","The journey through infinity","Audit: two professions, one mirror"],
+  setup(ctx, w){
+    arc(ctx, 12.2, 3.5, 3.8, 152, 208, {color:CHALKC, w:3});
+    dashLine(ctx, 0.5, 3.5, 9.2, 3.5, {color:DIMC});
+    circleAt(ctx, 5.6, 3.5, 0.08, {stroke:DIMC, w:2});
+    label(ctx, 5.6, 2.9, 'F (30 cm)', {fs:10, color:DIMC});
+    arrow(ctx, 6.9, 3.5, 6.9, 4.7, {color:GOLD, w:2.5, label:'face, 20 cm', fs:10});
+  },
+  steps:[
+    { map:0, title:"Closer than the focus", pose:"talk",
+      think:"Inside f, the reflected rays diverge — what kind of image must form?",
+      say:"Every configuration so far kept the object beyond the focal point. Step inside it — face at twenty, focus at thirty — and the mirror cannot bend the steeply diverging rays into convergence; they leave still spreading, and the image goes virtual, behind the glass. But watch what the mirror does to its size.",
+      board:[
+        {label:"Setup", tex:"d_o = 20.0\\ \\text{cm} < f = 30.0\\ \\text{cm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Solve: the magnifier mode", pose:"write",
+      think:"1/30 − 1/20 is negative — and the magnification?",
+      say:"One over thirty minus one over twenty: minus one sixtieth. The image floats sixty centimetres behind the mirror, and m is plus three — upright, three times life size. That is the entire product: a face, enlarged and right way up, for inspection at close quarters. Every shaving and makeup mirror is a concave mirror used inside its focus.",
+      board:[
+        {label:"Image", tex:"\\frac{1}{d_i} = \\frac{1}{30.0} - \\frac{1}{20.0} = -\\frac{1}{60.0} \\Rightarrow d_i = -60.0\\ \\text{cm}", kind:"answer"},
+        {label:"Size", tex:"m = -\\frac{(-60.0)}{20.0} = +3.00\\ \\text{(upright, tripled)}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Ride the image through infinity", pose:"excited",
+      think:"Move the face from 20 cm out through 30 — track d_i continuously.",
+      say:"Now the cinematic part. Ease your face backward. At twenty-five centimetres, the image swells and recedes; approaching thirty, it races to infinity, enormous and dim. Cross the focal point — and the image reappears from the other side: in front of the glass, real, inverted, hanging in mid-air between you and the mirror. People flinch when this happens; the reflection has stepped out of the mirror. One focal length, two universes.",
+      board:[
+        {label:"The passage", tex:"d_o \\to f^-:\\ d_i \\to -\\infty;\\quad d_o \\to f^+:\\ d_i \\to +\\infty\\ \\text{(real, inverted)}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: one mirror, two professions", pose:"think",
+      think:"Inside f versus outside f — name each mode's occupation.",
+      say:"The audit files the biography: outside its focus, a concave mirror is a projector — real, inverted images, the astronomer's light-collector. Inside, it is a magnifying glass in reflective costume — virtual, upright, enlarged. The focal point is the hinge between careers, where the image transits infinity. This is the same passage a converging lens makes, and it is universal to all positive optics. Reusable method: locate the object relative to f before computing anything — the zone announces virtual or real, and the equation then merely supplies the coordinates.",
+      board:[
+        {label:"Biography", tex:"d_o > f:\\ \\text{projector};\\quad d_o < f:\\ \\text{magnifier}", kind:"key"},
+        {label:"Reusable method", text:"f is the hinge for every converging element. Crossing it sends the image through infinity and flips real ↔ virtual.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A compound microscope",
+  problem:"Objective f = 0.800 cm, eyepiece f = 2.50 cm, tube length 16.0 cm. Find the overall magnification for a relaxed eye.",
+  goal:"Cascade a projector into a magnifier and multiply their powers.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Division of labour","Objective: ×20","Eyepiece: ×10","Multiply","Audit: the diffraction wall"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.0, 2.3 + 2.4*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 2.0, 1.6, 'objective', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [8.2, 2.3 + 2.4*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 8.2, 1.6, 'eyepiece', {fs:10, color:DIMC});
+    dashLine(ctx, 0.5, 3.5, 9.5, 3.5, {color:DIMC});
+    arrow(ctx, 1.1, 3.5, 1.1, 3.9, {color:GOLD, w:2, label:'specimen', fs:9});
+    arrow(ctx, 6.4, 3.5, 6.4, 1.7, {color:GREEN, w:2, label:'intermediate', fs:9, side:1});
+  },
+  steps:[
+    { map:0, title:"Two lenses, two jobs", pose:"talk",
+      think:"The single magnifier maxed out near ×20 — how does cascading evade that?",
+      say:"The microscope is the single magnifier's ceiling, breached by teamwork. Lens one — the objective — works as a projector: it throws a genuinely enlarged real image up the tube. Lens two — the eyepiece — is an ordinary magnifier that inspects that enlarged image. Magnifications multiply. Let us price each worker.",
+      board:[
+        {label:"Architecture", tex:"M = m_o \\times M_e\\ \\text{(projector} \\times \\text{magnifier)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The objective's share", pose:"write",
+      think:"Intermediate image 16 cm beyond F_o: d_i ≈ 16.8 cm. Find d_o and m_o.",
+      say:"The tube is built so the intermediate image lands sixteen centimetres past the objective's focus — sixteen point eight from the lens. The lens equation then pins the specimen at eight point four millimetres, and the magnification is minus twenty. The compact form is worth keeping: m o is minus tube length over f objective.",
+      board:[
+        {label:"Objective", tex:"d_i = 16.8\\ \\text{cm},\\ d_o = 0.840\\ \\text{cm} \\Rightarrow m_o = -\\frac{d_i}{d_o} = -20.0", kind:"answer"},
+        {label:"Shortcut", tex:"m_o \\approx -\\frac{L}{f_o} = -\\frac{16.0}{0.800}", kind:"note"}
+      ]
+    },
+    { map:2, title:"The eyepiece's share", pose:"write",
+      think:"Relaxed viewing: intermediate image at the eyepiece's focus — M = 25/f_e.",
+      say:"The eyepiece receives the intermediate image at its own focal point — relaxed-eye mode, exactly last example's case b. Twenty-five over two point five: ten.",
+      board:[
+        {label:"Eyepiece", tex:"M_e = \\frac{25.0}{f_e} = \\frac{25.0}{2.50} = 10.0", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Multiply", pose:"write",
+      think:"−20 × 10 — and what does the sign mean at the bench?",
+      say:"Multiply: minus two hundred. Inverted and two hundred times — a paramecium filling the field of view. The inversion is why slides move left when you push them right; microscopists' hands learn the reflex within a week.",
+      board:[
+        {label:"Total", tex:"M = m_oM_e = (-20.0)(10.0) = -200", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: focus knives and the final wall", pose:"think",
+      think:"The specimen sits 0.4 mm past F_o — implications? And what stops M at ~1000?",
+      say:"Two audits. Mechanical: the specimen sits a mere zero point four millimetres beyond the objective's focus, and the image position is exquisitely sensitive to it — hence the fine-focus knob, geared like a watch. Fundamental: why not cascade to a million? Because the objective's image is drawn with light, and diffraction — next tutorial — blurs detail finer than roughly a wavelength. Beyond about a thousand times, magnification enlarges blur, not information: empty magnification. To see smaller, you need smaller waves — the electron microscope's entire reason for existence. Reusable method: cascade real-image stages and multiply magnifications, but always ask what the first stage's physics actually resolved.",
+      board:[
+        {label:"The wall", tex:"M \\gtrsim 1000:\\ \\text{diffraction-limited — empty magnification}", kind:"warn"},
+        {label:"Reusable method", text:"Microscope: m_o = −L/f_o, M_e = 25/f_e, multiply. Resolution, not magnification, is the true budget.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Lens and plane mirror: a virtual object",
+  problem:"Converging lens (f = 20.0 cm), object 30.0 cm before it; plane mirror 40.0 cm behind, facing it. Trace lens → mirror → lens and find the final image.",
+  goal:"Chain three stages, meeting the virtual object on the way.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Stage plan","Lens: an image intercepted","Mirror: virtual object","Lens again: parallel out","Audit: the mirror as tuner"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [3.4, 1.2 + 4.6*t], 0, 1, {color:CHALKC, w:2.5});
+    arrow(ctx, 3.4, 5.8, 3.15, 5.45, {color:CHALKC, w:1.5});
+    arrow(ctx, 3.4, 1.2, 3.15, 1.55, {color:CHALKC, w:1.5});
+    label(ctx, 3.4, 0.6, 'lens f=20', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [7.9, 1.2 + 4.6*t], 0, 1, {color:CHALKC, w:3});
+    label(ctx, 7.9, 0.6, 'mirror', {fs:10, color:DIMC});
+    dashLine(ctx, 0.4, 3.5, 9.4, 3.5, {color:DIMC});
+    arrow(ctx, 1.2, 3.5, 1.2, 4.6, {color:GOLD, w:2.5, label:'object', fs:10});
+  },
+  steps:[
+    { map:0, title:"Three stages, one rule", pose:"talk",
+      think:"Multi-element systems: each element's image becomes the next one's what?",
+      say:"Composite systems yield to one discipline: march element by element, letting each stage's image serve as the next stage's object. The only novelty today is a stage whose object hasn't been born yet — light intercepted while still converging. Hold on for that.",
+      board:[
+        {label:"The rule", tex:"\\text{image of stage } k = \\text{object of stage } k+1", kind:"key"}
+      ]
+    },
+    { map:1, title:"Stage one: the lens proposes", pose:"write",
+      think:"Standard lens step — but where would the image form, and does it get to?",
+      say:"The lens, taking the object at thirty, proposes an image sixty centimetres behind itself. But the mirror stands at forty: the light is seized mid-convergence, twenty centimetres shy of its rendezvous. The proposed image never forms — yet its location still governs the geometry of the cone the mirror receives.",
+      board:[
+        {label:"Stage 1", tex:"\\frac{1}{d_i} = \\frac{1}{20.0} - \\frac{1}{30.0} \\Rightarrow d_i = 60.0\\ \\text{cm — intercepted!}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Stage two: the virtual object", pose:"write",
+      think:"Converging toward a point 20 cm BEHIND the mirror: d_o = −20. What does a plane mirror return?",
+      say:"For the mirror, the light converges toward a point twenty centimetres behind its surface — an object on the wrong side, a virtual object, entered as d o minus twenty. The plane mirror's rule d i equals minus d o then gives plus twenty: a real image twenty centimetres in front of the mirror. The mirror has caught the would-be image and folded it back into the room — twenty centimetres behind the lens.",
+      board:[
+        {label:"Stage 2", tex:"d_o = -20.0\\ \\text{cm} \\Rightarrow d_i = +20.0\\ \\text{cm (real, refolded)}", kind:"answer", move:"virtual object"}
+      ]
+    },
+    { map:3, title:"Stage three: the lens disposes", pose:"write",
+      think:"That image sits 20 cm from the lens — precisely at... what?",
+      say:"The returning light presents the lens with an object twenty centimetres away — exactly at its focal point. An object at the focus exits as a parallel bundle: the final image retreats to infinity. An eye at the lens, relaxed, sees the original object sharp and inverted, floating at optical infinity.",
+      board:[
+        {label:"Stage 3", tex:"d_o = 20.0\\ \\text{cm} = f \\Rightarrow \\text{final image at } \\infty", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: slide the mirror, steer the image", pose:"think",
+      think:"Mirror at 45 cm instead — rerun the chain. What emerges?",
+      say:"The audit demonstrates control. Nudge the mirror back five centimetres: the virtual object becomes minus fifteen, the mirror returns plus fifteen — twenty-five from the lens, outside the focus — and the final image condenses out of infinity to sixty centimetres before the lens, real and catchable. Five centimetres of mirror travel swept the image in from infinity: the mirror is a focus knob. Autocollimators and laser cavities live on precisely this sensitivity. Reusable method: chain the stages; when light meets an element before converging, the destination it never reached enters as a negative object distance — the formalism absorbs even unborn images.",
+      board:[
+        {label:"Tuned", tex:"\\text{mirror at 45 cm} \\Rightarrow \\text{final image real, 60 cm before lens}", kind:"key"},
+        {label:"Reusable method", text:"Stage-by-stage, images → objects. Intercepted convergence = virtual object (d_o < 0). Mirror position tunes the system.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A fish in a spherical bowl",
+  problem:"A fish is 10.0 cm from the center of a thin-walled spherical bowl of radius 15.0 cm (water, n = 1.33), on the near side. Where does it appear, and how large?",
+  goal:"Use the single-surface refraction equation with its own magnification law.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One curved surface","Set up signs","Solve","Magnify","Audit: the centered fish"],
+  setup(ctx, w){
+    circleAt(ctx, 5.4, 3.5, 2.8, {stroke:BLUE, w:2.5});
+    label(ctx, 5.4, 6.9, 'water, n = 1.33', {fs:10, color:DIMC});
+    circleAt(ctx, 3.55, 3.5, 0.35, {stroke:GOLD, w:2.5});
+    label(ctx, 3.55, 2.6, 'fish', {fs:10, color:GOLD});
+    circleAt(ctx, 1.1, 3.5, 0.22, {stroke:CHALKC, w:2});
+    label(ctx, 1.1, 2.7, 'eye', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Beyond thin lenses", pose:"talk",
+      think:"No lens here — just one curved boundary between water and air. What equation governs it?",
+      say:"No thin lens in sight — just one spherical boundary with water behind it and air before it. The governing law is the single-surface refraction equation: n one over d o plus n two over d i equals n two minus n one over R. Every lens formula we have used is secretly two applications of this; today we use it raw.",
+      board:[
+        {label:"Single surface", tex:"\\frac{n_1}{d_o} + \\frac{n_2}{d_i} = \\frac{n_2 - n_1}{R}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Assemble the signs", pose:"write",
+      think:"Object side is water: n₁ = 1.33. Center of curvature is on the object's side: sign of R?",
+      say:"Bookkeeping first, physics second. Light leaves the fish in water: n one is one point three three; it emerges into air: n two is one. The fish swims five centimetres behind the near glass — fifteen minus ten. And the surface's centre of curvature lies on the fish's side of the glass, which by convention makes R negative: minus fifteen.",
+      board:[
+        {label:"Data", tex:"n_1 = 1.33,\\ n_2 = 1.00,\\ d_o = 5.00\\ \\text{cm},\\ R = -15.0\\ \\text{cm}", kind:"key"}
+      ]
+    },
+    { map:2, title:"Solve", pose:"write",
+      think:"RHS = 0.022; subtract 1.33/5 and invert.",
+      say:"The right side: minus point three three over minus fifteen — plus point zero two two. Subtract one point three three over five: minus point two four four. d i is minus four point one centimetres — virtual, inside the bowl. The fish appears nearer the glass than it truly swims.",
+      board:[
+        {label:"Image", tex:"\\frac{1.00}{d_i} = 0.0220 - 0.266 = -0.244 \\Rightarrow d_i = -4.10\\ \\text{cm}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The right magnification law", pose:"write",
+      think:"Single surfaces have their own m — with the indices in it.",
+      say:"Careful: the thin-lens magnification does not apply here. The single-surface law carries the indices: m equals minus n one d i over n two d o — plus one point zero nine. Upright, nine per cent enlarged. Goldfish in bowls genuinely are a little grander than in the net; the curved water is a weak magnifying lens with the fish inside it.",
+      board:[
+        {label:"Magnification", tex:"m = -\\frac{n_1d_i}{n_2d_o} = -\\frac{(1.33)(-4.10)}{(1.00)(5.00)} = +1.09", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: swim to the centre", pose:"think",
+      think:"Fish at the very centre: d_o = 15 cm — run it and interpret.",
+      say:"Audit with the elegant special case: the fish at dead centre, d o fifteen. The equation returns d i minus fifteen — the image at the centre too — and m of one point three three, exactly n. A fish at the heart of its bowl appears in place but a third larger: every ray from the centre strikes the glass head-on, unbent in direction, yet the angular scale is stretched by the index. Reusable method: for a lone curved interface use the n-laden equation and its n-laden magnification; set signs by where the centre of curvature lies; and test the centred case, where geometry goes transparent.",
+      board:[
+        {label:"Centered fish", tex:"d_o = 15 \\Rightarrow d_i = -15,\\ m = n = 1.33", kind:"key"},
+        {label:"Reusable method", text:"Single surface: n₁/d_o + n₂/d_i = (n₂−n₁)/R, m = −n₁d_i/n₂d_o. Thin-lens shortcuts do NOT apply.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

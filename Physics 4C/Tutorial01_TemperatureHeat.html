@@ -1369,6 +1369,536 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Temperature scales",
+  problem:"Normal body temperature is 98.6°F. Express it in Celsius and kelvin. At what temperature do the Fahrenheit and Celsius scales read the same?",
+  goal:"Convert between scales, then solve T_F = T_C, and flag the ΔT trap.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Three scales, one line","Fahrenheit → Celsius → kelvin","Where the scales cross","Audit: differences vs readings"],
+  setup(ctx, w){
+    arrow(ctx, 1.2, 0.8, 1.2, 6.4, {color:CHALKC, w:2});
+    label(ctx, 1.2, 6.9, '°C', {fs:12, color:BLUE});
+    arrow(ctx, 4.2, 0.8, 4.2, 6.4, {color:CHALKC, w:2});
+    label(ctx, 4.2, 6.9, '°F', {fs:12, color:RED});
+    arrow(ctx, 7.2, 0.8, 7.2, 6.4, {color:CHALKC, w:2});
+    label(ctx, 7.2, 6.9, 'K', {fs:12, color:GREEN});
+    dashLine(ctx, 1.2, 2.0, 7.2, 2.0, {color:DIMC});
+    label(ctx, 8.3, 2.0, 'water freezes', {fs:10, color:DIMC});
+    label(ctx, 0.55, 2.0, '0', {fs:11, color:BLUE});
+    label(ctx, 3.55, 2.0, '32', {fs:11, color:RED});
+    label(ctx, 6.35, 2.0, '273', {fs:11, color:GREEN});
+    dashLine(ctx, 1.2, 5.2, 7.2, 5.2, {color:DIMC});
+    label(ctx, 8.3, 5.2, 'water boils', {fs:10, color:DIMC});
+    label(ctx, 0.45, 5.2, '100', {fs:11, color:BLUE});
+    label(ctx, 3.5, 5.2, '212', {fs:11, color:RED});
+    label(ctx, 6.35, 5.2, '373', {fs:11, color:GREEN});
+  },
+  steps:[
+    { map:0, title:"Three rulers for one quantity", pose:"talk",
+      think:"All three scales measure the same physics — what differs between them?",
+      say:"Temperature is one physical quantity measured with three different rulers. Celsius and kelvin share the same step size but different zeros; Fahrenheit uses smaller degrees — one hundred eighty of them between freezing and boiling instead of one hundred. Every conversion follows from that picture.",
+      board:[
+        {label:"The conversions", tex:"T_C = \\tfrac{5}{9}(T_F - 32),\\qquad T_K = T_C + 273.15", kind:"key"}
+      ]
+    },
+    { map:1, title:"Body temperature, three ways", pose:"write",
+      think:"Subtract 32 first, then scale — why that order?",
+      say:"Take ninety-eight point six. Subtract thirty-two first — that aligns the zeros — then multiply by five ninths to fix the step size: thirty-seven degrees Celsius exactly. Kelvin just shifts by two hundred seventy-three: three hundred ten kelvin. Your body runs at three hundred ten kelvin — that is the number nature cares about.",
+      board:[
+        {label:"Celsius", tex:"T_C = \\tfrac{5}{9}(98.6 - 32) = \\tfrac{5}{9}(66.6) = 37.0^\\circ\\text{C}", kind:"answer"},
+        {label:"Kelvin", tex:"T_K = 37.0 + 273.15 = 310.2\\ \\text{K}", kind:"answer"}
+      ],
+      action(c){
+        dashLine(c, 1.2, 3.18, 7.2, 3.18, {color:GOLD});
+        label(c, 8.4, 3.18, 'body: 37°C', {fs:11, color:GOLD});
+      }
+    },
+    { map:2, title:"Where the scales agree", pose:"write",
+      think:"Set T_F = T_C = T in the conversion — one equation, one unknown.",
+      say:"Now a classic: at what reading do Fahrenheit and Celsius agree? Set both equal to T in the conversion formula and solve. Nine T equals five T minus one sixty, so T is minus forty. At minus forty degrees, the two thermometers show the same number — a fact Arctic weather reporters actually use.",
+      board:[
+        {label:"Set equal", tex:"T = \\tfrac{5}{9}(T - 32)", kind:"key"},
+        {label:"Solve", tex:"9T = 5T - 160 \\;\\Rightarrow\\; T = -40^\\circ", kind:"answer", move:"×9, gather T"}
+      ],
+      action(c){
+        dashLine(c, 1.2, 0.9, 7.2, 0.9, {color:PURPLE});
+        label(c, 8.4, 0.9, '−40° = −40°', {fs:11, color:PURPLE});
+      }
+    },
+    { map:3, title:"Audit: differences are not readings", pose:"think",
+      think:"A ΔT of 1 K equals how many °C? How many °F?",
+      say:"The audit here is the trap that costs the most marks all term. A temperature difference of one kelvin is exactly one Celsius degree — the shift of two seventy-three cancels in any subtraction — but it is one point eight Fahrenheit degrees. Every formula with a delta T, like thermal expansion, wants kelvin or Celsius, never Fahrenheit. Reusable method: align zeros, then scale; and keep readings and differences in separate mental boxes.",
+      board:[
+        {label:"Differences", tex:"\\Delta T:\\ 1\\ \\text{K} = 1^\\circ\\text{C} = 1.8^\\circ\\text{F}", kind:"warn"},
+        {label:"Reusable method", text:"Convert readings with the full formula; convert differences with only the 5/9 or 9/5 factor. ΔT in physics formulas: K or °C only.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Expansion gap in a railway",
+  problem:"A steel rail 30.0 m long is laid at 10°C. How much longer is it on a 50°C summer day? (α_steel = 1.2×10⁻⁵ K⁻¹.)",
+  goal:"Apply ΔL = αL₀ΔT and see why the answer forces engineering choices.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Picture the expansion","Compute ΔL","Why gaps exist"],
+  setup(ctx, w){
+    ground(ctx, 0.4, 9.6, 2.2);
+    boxAt(ctx, 4.6, 2.2, 8.4, 0.55, {fill:'none', stroke:CHALKC});
+    label(ctx, 4.6, 1.4, 'steel rail, L₀ = 30.0 m at 10°C', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Every solid is a thermometer", pose:"talk",
+      think:"Why should warming a rail change its length at all?",
+      say:"Warm a solid and its atoms jiggle harder, sitting slightly farther apart on average — the whole object grows. The growth is proportional to the length you start with and to the temperature rise; the material's personality enters through alpha. For steel, alpha is tiny — twelve parts per million per kelvin. Watch how a tiny alpha still bites.",
+      board:[
+        {label:"Linear expansion", tex:"\\Delta L = \\alpha L_0\\,\\Delta T", kind:"key"},
+        {label:"Data", tex:"L_0 = 30.0\\ \\text{m},\\ \\Delta T = 40\\ \\text{K},\\ \\alpha = 1.2\\times10^{-5}\\ \\text{K}^{-1}", kind:"note"}
+      ]
+    },
+    { map:1, title:"Fourteen millimetres", pose:"write",
+      think:"Multiply the three numbers — keep track of the powers of ten.",
+      say:"Multiply: twelve millionths, times thirty metres, times forty kelvin. Fourteen millimetres. On a thirty-metre rail that seems harmless — until you remember the rail has neighbours on both ends with nowhere to go.",
+      board:[
+        {label:"Expansion", tex:"\\Delta L = (1.2\\times10^{-5})(30.0)(40) = 1.44\\times10^{-2}\\ \\text{m} = 14\\ \\text{mm}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 4.75, 3.4, 8.7, 0.55, {fill:'none', stroke:GOLD});
+        arrow(c, 8.85, 3.7, 9.5, 3.7, {color:GOLD, w:2});
+        label(c, 8.5, 4.5, '+14 mm at 50°C', {fs:12, color:GOLD});
+      }
+    },
+    { map:2, title:"Check: the cost of saying no", pose:"think",
+      think:"What happens if the rail is clamped so it cannot expand?",
+      say:"Here is the engineering audit. Let the rail grow and fourteen millimetres is trivial — hence expansion gaps, and the old clickety-clack. Forbid it, and the rail must be compressed by that same fourteen millimetres, generating over a hundred megapascals of stress — enough to buckle track on a hot day. Modern continuous rail is pre-stressed and anchored to fight exactly this. Reusable method: delta L equals alpha L nought delta T, and always ask — is the expansion allowed, or resisted?",
+      board:[
+        {label:"The choice", tex:"\\text{free: } \\Delta L = 14\\ \\text{mm};\\quad \\text{clamped: stress } \\sigma = Y\\alpha\\,\\Delta T", kind:"warn"},
+        {label:"Reusable method", text:"Compute ΔL = αL₀ΔT first; if the object is constrained, that ΔL converts to strain and hence stress via Y.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Boiling water in a kettle",
+  problem:"How much heat raises 2.00 kg of water from 20.0°C to 100°C, and how long does a 1500 W kettle take, assuming no losses? (c = 4186 J/kg·K.)",
+  goal:"Chain Q = mcΔT with P = Q/t, and appreciate water's huge specific heat.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Heat needed","Time from power","Audit: why water is special"],
+  setup(ctx, w){
+    boxAt(ctx, 3.0, 1.5, 2.6, 2.8, {fill:'none', stroke:CHALKC});
+    label(ctx, 3.0, 0.8, '2.00 kg water, 20°C', {fs:11, color:DIMC});
+    plotCurve(ctx, t => [t, 4.5 + 0.18*Math.sin(4*t)], 2.0, 4.0, {color:BLUE, w:2});
+    label(ctx, 6.7, 2.0, '1500 W element', {fs:11, color:RED});
+    plotCurve(ctx, t => [2.6 + 0.5*Math.cos(6*t), 1.5 + 0.12*t*7], 0, 0.28, {color:RED, w:2});
+  },
+  steps:[
+    { map:0, title:"How much heat?", pose:"write",
+      think:"Q = mcΔT — which ΔT, and in which units?",
+      say:"First the energy bill. Two kilograms, water's specific heat of four thousand one hundred eighty-six joules per kilogram-kelvin, and a rise of eighty kelvin — remember, a Celsius difference is a kelvin difference. Six hundred seventy kilojoules. That is the energy of a small car at motorway speed, just to make tea.",
+      board:[
+        {label:"Heat required", tex:"Q = mc\\,\\Delta T = (2.00)(4186)(80.0) = 6.70\\times10^{5}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Time from power", pose:"write",
+      think:"Power is energy per second — so time is what ratio?",
+      say:"The kettle delivers fifteen hundred joules every second, so divide: four hundred forty-seven seconds, about seven and a half minutes. A real kettle takes slightly longer — some heat warms the element and leaks to the room — so 'no losses' makes our answer a clean lower bound.",
+      board:[
+        {label:"Time", tex:"t = \\frac{Q}{P} = \\frac{6.70\\times10^{5}}{1500} = 447\\ \\text{s} \\approx 7.4\\ \\text{min}", kind:"answer", move:"P = Q/t inverted"}
+      ],
+      action(c){
+        arrow(c, 6.2, 3.2, 4.4, 3.2, {color:RED, w:2, label:'1500 J/s', fs:11});
+      }
+    },
+    { map:2, title:"Audit: water the heat sponge", pose:"think",
+      think:"Per kilogram, how does water's c compare with iron's?",
+      say:"The audit is a comparison. Water's specific heat is about ten times iron's per kilogram — it soaks up enormous energy for each degree of warming. That is why water cools engines and reactors, and why coastal towns have mild winters: the sea is a heat reservoir of continental size. Reusable method: Q equals m c delta T for the energy, divided by power for the time — and treat the ideal answer as a lower bound.",
+      board:[
+        {label:"Perspective", tex:"c_{\\text{water}} \\approx 10\\,c_{\\text{iron}}\\ \\text{per kg}", kind:"note"},
+        {label:"Reusable method", text:"Energy first (Q = mcΔT), then time (t = Q/P). Losses only lengthen the time — ideal results are lower bounds.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Quenching hot iron in water",
+  problem:"A 0.500 kg iron block (c = 450 J/kg·K) at 300°C is dropped into 2.00 kg of water at 20.0°C in an insulated container. Find the final temperature.",
+  goal:"Set ΣQ = 0, solve for T_f as a capacity-weighted average, and audit for phase changes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The bookkeeping rule","One equation for T_f","Solve: weighted average","Audit: between? boiled?"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 1.2, 4.2, 3.2, {fill:'none', stroke:CHALKC});
+    label(ctx, 5.0, 0.5, 'insulated container, 2.00 kg water at 20°C', {fs:10, color:DIMC});
+    boxAt(ctx, 5.0, 5.4, 1.1, 0.9, {fill:'none', stroke:RED});
+    label(ctx, 6.9, 5.9, 'iron, 300°C', {fs:11, color:RED});
+    arrow(ctx, 5.0, 5.2, 5.0, 4.0, {color:DIMC, w:1.5, dash:'5 5'});
+  },
+  steps:[
+    { map:0, title:"Energy has nowhere to hide", pose:"talk",
+      think:"Insulated container: what is the total heat exchanged with the outside?",
+      say:"The container is insulated, so heat can only shuffle between the iron and the water — the total is zero. Write every Q as m c times T final minus T initial and add them up. Signs take care of themselves: the iron's Q comes out negative, the water's positive. One equation, one unknown.",
+      board:[
+        {label:"Calorimetry rule", tex:"\\sum Q = 0", kind:"key"}
+      ]
+    },
+    { map:1, title:"Write the single equation", pose:"write",
+      think:"Both terms use (T_f − T_initial) — no sign guessing needed.",
+      say:"Iron: half a kilogram times four fifty times T f minus three hundred. Water: two kilograms times four thousand one eighty-six times T f minus twenty. Sum to zero. Notice I never agonise over which loses and which gains — the algebra decides.",
+      board:[
+        {label:"The equation", tex:"(0.500)(450)(T_f - 300) + (2.00)(4186)(T_f - 20.0) = 0", kind:"key"}
+      ]
+    },
+    { map:2, title:"Solve: a weighted average", pose:"write",
+      think:"Rearrange — T_f is an average weighted by what quantity?",
+      say:"Gather terms and T f is revealed as an average of the starting temperatures, weighted by heat capacity m c. The iron carries two hundred twenty-five joules per kelvin; the water eight thousand three hundred seventy-two. The water outweighs the iron thirty-seven to one, so the answer huddles near twenty: twenty-seven point three degrees.",
+      board:[
+        {label:"Weighted average", tex:"T_f = \\frac{(225)(300) + (8372)(20.0)}{225 + 8372}", kind:"key", move:"gather T_f"},
+        {label:"Result", tex:"T_f = 27.3^\\circ\\text{C}", kind:"answer"}
+      ],
+      action(c){
+        boxAt(c, 5.0, 1.6, 1.1, 0.9, {fill:'none', stroke:PURPLE});
+        label(c, 5.0, 4.0, 'all at 27.3°C', {fs:12, color:PURPLE});
+      }
+    },
+    { map:3, title:"Audit: sensible? and no steam?", pose:"think",
+      think:"Two checks: is T_f between the extremes, and did any water boil?",
+      say:"Two audits. First, twenty-seven point three sits between twenty and three hundred — pass. Second, the hidden assumption: no water boiled. The iron delivers at most sixty-one kilojoules on its way down, but boiling even a tenth of a kilogram of water demands two hundred twenty-six kilojoules — impossible. Assumption verified. Reusable method: sum of m c T f minus T i equals zero, then check the answer lies between the extremes and no phase change sneaked in.",
+      board:[
+        {label:"Range check", tex:"20.0 < 27.3 < 300\\ \\checkmark", kind:"key"},
+        {label:"No boiling", tex:"Q_{\\text{iron}} \\approx 61\\ \\text{kJ} \\ll mL_v = 226\\ \\text{kJ for } 0.1\\ \\text{kg}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"ΣQ = 0 with every Q as mc(T_f − T_i); T_f is the capacity-weighted mean. Always audit for phase changes.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"From ice at −10°C to steam",
+  problem:"Find the heat to convert 100 g of ice at −10.0°C into steam at 100°C. (c_ice = 2090, c_water = 4186 J/kg·K; L_f = 3.34×10⁵, L_v = 2.256×10⁶ J/kg.)",
+  goal:"March through four stages — warm, melt, warm, boil — and see where the energy really goes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Map the journey","Warm the ice, melt it","Warm the water, boil it","Total and the moral"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.9, y0:0.9, xLab:'Q added', yLab:'T (°C)'});
+    label(ctx, 0.45, 1.6, '−10', {fs:10, color:DIMC});
+    label(ctx, 0.55, 2.4, '0', {fs:10, color:DIMC});
+    label(ctx, 0.45, 5.2, '100', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Four stages, two kinds of heat", pose:"talk",
+      think:"Between −10°C and steam, where does the temperature pause?",
+      say:"This journey has four legs, alternating two kinds of heating. Sensible heat — m c delta T — moves the thermometer. Latent heat — m L — changes the phase while the thermometer stands perfectly still. The graph of temperature against heat added will be a staircase: ramps and flats. Let us build it.",
+      board:[
+        {label:"Two currencies", tex:"Q_{\\text{sensible}} = mc\\,\\Delta T,\\qquad Q_{\\text{latent}} = mL", kind:"key"}
+      ]
+    },
+    { map:1, title:"Warm the ice, then melt it", pose:"write",
+      think:"Ice has its own c — and melting happens entirely at 0°C.",
+      say:"Leg one: warm the ice ten degrees using ice's own specific heat — about two kilojoules. Leg two: melt it. Thirty-three point four kilojoules at exactly zero degrees — sixteen times the cost of the first leg, with the thermometer frozen at zero the whole time.",
+      board:[
+        {label:"Warm ice", tex:"(0.100)(2090)(10.0) = 2.09\\ \\text{kJ}", kind:"answer"},
+        {label:"Melt", tex:"(0.100)(3.34\\times10^{5}) = 33.4\\ \\text{kJ}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 1.6 + (t-0.9)*(0.8/0.35)], 0.9, 1.25, {color:BLUE, w:2.5});
+        plotCurve(c, t => [t, 2.4], 1.25, 2.15, {color:GREEN, w:2.5});
+        label(c, 1.7, 2.9, 'melt', {fs:10, color:GREEN});
+      }
+    },
+    { map:2, title:"Warm the water, then boil it", pose:"write",
+      think:"Which leg do you expect to dominate the bill?",
+      say:"Leg three: carry the water from zero to one hundred — forty-two kilojoules. Leg four: vaporise it. Two hundred twenty-five point six kilojoules — by far the giant. Boiling costs more than five times the entire hundred-degree climb that preceded it.",
+      board:[
+        {label:"Warm water", tex:"(0.100)(4186)(100) = 41.9\\ \\text{kJ}", kind:"answer"},
+        {label:"Vaporize", tex:"(0.100)(2.256\\times10^{6}) = 225.6\\ \\text{kJ}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => [t, 2.4 + (t-2.15)*(2.8/1.1)], 2.15, 3.25, {color:BLUE, w:2.5});
+        plotCurve(c, t => [t, 5.2], 3.25, 9.2, {color:RED, w:2.5});
+        label(c, 6.2, 5.7, 'boil (¾ of everything)', {fs:10, color:RED});
+      }
+    },
+    { map:3, title:"Total, and why steam burns", pose:"think",
+      think:"What fraction of the total went into the single boiling step?",
+      say:"Add the legs: three hundred three kilojoules, and three quarters of it disappeared into the one step where the temperature never moved. Now run the film backwards: steam condensing on your skin releases those twenty-two hundred joules per gram before it even begins to cool — which is why a steam burn is so much worse than boiling water. Reusable method: list every leg, sensible or latent, price each one, and expect the phase changes to dominate.",
+      board:[
+        {label:"Total", tex:"Q = 2.09 + 33.4 + 41.9 + 225.6 = 303\\ \\text{kJ}", kind:"answer"},
+        {label:"The moral", tex:"\\tfrac{225.6}{303} \\approx 75\\%\\ \\text{spent at constant } T", kind:"key"},
+        {label:"Reusable method", text:"Stage the path: mcΔT for each temperature climb, mL at each phase change. Never let T cross a transition inside one mcΔT term.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Radiative heat loss from a person",
+  problem:"A person with skin area 1.50 m², emissivity 0.97, skin at 34°C (307 K) stands in a room at 20°C (293 K). Find the net rate of radiative heat loss.",
+  goal:"Use P = eσA(T⁴ − T⁴ₛ) — emission minus absorption — and respect the fourth power.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Radiate and absorb","Net power","Audit: the T⁴ trap"],
+  setup(ctx, w){
+    circleAt(ctx, 3.0, 5.0, 0.45, {stroke:CHALKC, w:2});
+    dashLine(ctx, 3.0, 4.55, 3.0, 2.2, {color:CHALKC});
+    dashLine(ctx, 3.0, 3.9, 2.2, 3.0, {color:CHALKC});
+    dashLine(ctx, 3.0, 3.9, 3.8, 3.0, {color:CHALKC});
+    label(ctx, 3.0, 1.5, 'skin 307 K', {fs:11, color:GOLD});
+    boxAt(ctx, 7.6, 1.2, 2.6, 4.6, {fill:'none', stroke:DIMC});
+    label(ctx, 7.6, 0.6, 'walls 293 K', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"A two-way exchange", pose:"talk",
+      think:"You radiate to the room — but what does the room do to you?",
+      say:"Everything warm radiates, and everything radiates at you. Your skin emits according to its own temperature to the fourth power; the walls send radiation back according to theirs. What you feel is the difference. That is why the same air temperature feels colder next to a cold window — the walls matter, not just the air.",
+      board:[
+        {label:"Net radiation", tex:"P_{\\text{net}} = e\\sigma A\\left(T^4 - T_s^4\\right)", kind:"key"},
+        {label:"Data", tex:"e = 0.97,\\ A = 1.50\\ \\text{m}^2,\\ T = 307\\ \\text{K},\\ T_s = 293\\ \\text{K}", kind:"note"}
+      ],
+      action(c){
+        arrow(c, 4.0, 4.6, 6.2, 4.6, {color:GOLD, w:2.5, label:'emit', fs:11});
+        arrow(c, 6.2, 3.4, 4.0, 3.4, {color:BLUE, w:2, label:'absorb', fs:11, side:1});
+      }
+    },
+    { map:1, title:"Put in the numbers", pose:"write",
+      think:"Kelvin, not Celsius, inside the fourth powers — why?",
+      say:"Temperatures go in as kelvin — the fourth power magnifies any error savagely. Three-oh-seven to the fourth minus two ninety-three to the fourth, times emissivity, Stefan's constant and the area: one hundred twenty-five watts. Your body is a  hundred-watt heater, radiating away roughly its entire resting metabolic output.",
+      board:[
+        {label:"Compute", tex:"P = (0.97)(5.67\\times10^{-8})(1.50)\\left[(307)^4 - (293)^4\\right]", kind:"key"},
+        {label:"Net loss", tex:"P_{\\text{net}} = 125\\ \\text{W}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: never subtract inside the power", pose:"think",
+      think:"Is (T − T_s)⁴ anywhere close to T⁴ − T⁴ₛ?",
+      say:"The audit is the classic blunder. A fourteen-kelvin difference looks small — under five per cent of the absolute temperature — yet it produces a seventeen per cent difference in the fourth powers. Subtracting first and then raising to the fourth would give a laughably wrong answer. The fourth power comes first, the subtraction second, always. Reusable method: net radiated power is e sigma A times the difference of fourth powers, in kelvin — and this is why clothing, and warm walls, matter so much.",
+      board:[
+        {label:"The trap", tex:"T^4 - T_s^4 \\neq (T - T_s)^4", kind:"warn"},
+        {label:"Magnification", tex:"14\\ \\text{K in } T \\Rightarrow 17\\%\\ \\text{in } T^4", kind:"note"},
+        {label:"Reusable method", text:"Convert to kelvin, take fourth powers of each temperature, then subtract. Emission and absorption are separate flows.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Overflowing gasoline",
+  problem:"A steel tank (β = 3.6×10⁻⁵ K⁻¹) filled to the brim with 60.0 L of gasoline (β = 9.5×10⁻⁴ K⁻¹) at 15°C warms to 35°C. How much spills?",
+  goal:"Expand both liquid and container; the spill is the difference.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Both expand","Two expansions","Spill = difference","Audit: why liquids win"],
+  setup(ctx, w){
+    boxAt(ctx, 4.6, 1.4, 3.2, 4.0, {fill:'none', stroke:CHALKC});
+    dashLine(ctx, 3.05, 5.4, 6.15, 5.4, {color:GOLD});
+    label(ctx, 4.6, 0.7, 'steel tank, 60.0 L, brim-full at 15°C', {fs:10, color:DIMC});
+    label(ctx, 7.9, 5.4, 'brim', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"The tank grows too", pose:"talk",
+      think:"If the tank expanded exactly as fast as the fuel, would anything spill?",
+      say:"The rookie mistake is to expand only the gasoline. The steel tank also warms, and its cavity grows exactly as a block of solid steel would — beta for a cavity equals beta for the material. Spillage is a race: fuel expansion against tank expansion. If they matched, not a drop would fall.",
+      board:[
+        {label:"Volume expansion", tex:"\\Delta V = \\beta V_0\\,\\Delta T\\ \\text{(for liquid AND cavity)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Expand each one", pose:"write",
+      think:"Same V₀ and ΔT — only β differs. By what factor?",
+      say:"Same starting volume, same twenty-kelvin rise — only the betas differ, and they differ by a factor of twenty-six. The gasoline swells by one point one four litres; the tank's capacity by a mere forty-three millilitres.",
+      board:[
+        {label:"Gasoline", tex:"\\Delta V_{\\text{gas}} = (9.5\\times10^{-4})(60.0)(20) = 1.14\\ \\text{L}", kind:"answer"},
+        {label:"Tank cavity", tex:"\\Delta V_{\\text{tank}} = (3.6\\times10^{-5})(60.0)(20) = 0.043\\ \\text{L}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The spill", pose:"write",
+      think:"Which volume change helps, which hurts?",
+      say:"The tank's growth buys a little headroom; the fuel's growth overwhelms it. Subtract: one point one litres on the forecourt — nearly two per cent of the fill, from a single warm afternoon.",
+      board:[
+        {label:"Overflow", tex:"\\Delta V_{\\text{spill}} = 1.14 - 0.043 = 1.10\\ \\text{L}", kind:"answer", move:"difference of expansions"}
+      ],
+      action(c){
+        plotCurve(c, t => [6.35 + 0.15*Math.sin(9*t), 5.4 - 2.5*t], 0, 1, {color:GOLD, w:2});
+        label(c, 7.6, 3.0, 'spill 1.10 L', {fs:11, color:GOLD});
+      }
+    },
+    { map:3, title:"Audit: molecules on looser leashes", pose:"think",
+      think:"Why do liquids generally out-expand the solids that contain them?",
+      say:"Why do liquids always win this race? Their molecules are not locked in a lattice; warming loosens their packing far more than it stretches a solid's bonds — typically ten to thirty times more. That is why fuel is sold by temperature-corrected volume, why tanks are never brim-filled, and why your car's coolant has an overflow reservoir. Reusable method: expand liquid and container separately with their own betas; the observable is the difference.",
+      board:[
+        {label:"Rule of thumb", tex:"\\beta_{\\text{liquid}} \\sim (10\\text{–}30)\\,\\beta_{\\text{solid}}", kind:"note"},
+        {label:"Reusable method", text:"Cavity expands like solid material. Spill/overflow = ΔV_liquid − ΔV_container, never ΔV_liquid alone.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"How fast does a lake freeze? (integration)",
+  problem:"Air stays at −10°C above a lake. Heat of freezing conducts up through the growing ice sheet (k = 2.2 W/m·K, ρ = 917 kg/m³, L_f = 3.34×10⁵ J/kg). Find the thickness after one day and one week.",
+  goal:"Balance conduction against latent heat, separate variables, and discover √t growth.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The physical picture","Balance: conduction = latent heat","Separate and integrate","Numbers: day and week","Audit: why √t"],
+  setup(ctx, w){
+    label(ctx, 5.0, 6.4, 'air at −10°C', {fs:12, color:BLUE});
+    dashLine(ctx, 0.6, 5.6, 9.4, 5.6, {color:CHALKC});
+    boxAt(ctx, 5.0, 4.1, 8.8, 1.5, {fill:'none', stroke:BLUE});
+    label(ctx, 5.0, 4.8, 'ice, growing thickness x', {fs:11, color:BLUE});
+    label(ctx, 5.0, 3.4, 'water at 0°C', {fs:12, color:DIMC});
+    arrow(ctx, 8.6, 4.25, 8.6, 5.5, {color:GOLD, w:2, label:'heat', fs:10});
+  },
+  steps:[
+    { map:0, title:"Freezing must export heat", pose:"talk",
+      think:"Where is new ice born, and where must its latent heat go?",
+      say:"New ice forms at the bottom of the sheet, where water touches ice at zero degrees. But freezing releases latent heat, and that heat must escape upward — conducted through the very ice already formed — to the cold air. The ice sheet is both the product and the obstacle. That feedback is the entire problem.",
+      board:[
+        {label:"Conduction rate", tex:"\\frac{Q}{t}\\Big/A = \\frac{k\\,\\Delta T}{x}\\quad\\text{(thicker ice, slower flow)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Balance the books in time dt", pose:"write",
+      think:"In time dt, a layer dx freezes — what heat does that release per area?",
+      say:"In a slice of time d t, a new layer d x freezes, releasing rho L f d x of heat per unit area. Conduction through thickness x removes k delta T over x, times d t. Set them equal — production equals export — and we have a differential equation for the thickness.",
+      board:[
+        {label:"Energy balance", tex:"\\rho L_f\\,dx = \\frac{k\\,\\Delta T}{x}\\,dt", kind:"key"}
+      ]
+    },
+    { map:2, title:"Separate and integrate", pose:"write",
+      think:"Get every x on the left, every t on the right — what integral appears?",
+      say:"Separate: x d x on the left, constants times d t on the right. Integrate from a bare lake, x equals zero, at t equals zero. The left gives x squared over two — and out comes the square-root law. Thickness grows not linearly but as the square root of time.",
+      board:[
+        {label:"Separate", tex:"\\int_0^x x'\\,dx' = \\frac{k\\,\\Delta T}{\\rho L_f}\\int_0^t dt'", kind:"key", move:"separate variables"},
+        {label:"Growth law", tex:"x = \\sqrt{\\frac{2k\\,\\Delta T\\,t}{\\rho L_f}}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"A day, then a week", pose:"write",
+      think:"A week is 7 days — how much thicker than one day's ice?",
+      say:"One day is eighty-six thousand four hundred seconds: eleven centimetres of ice. A week multiplies t by seven, so x grows by root seven — twenty-nine centimetres. Safe to walk on after a hard-frozen day or two; but notice how the returns diminish.",
+      board:[
+        {label:"After 1 day", tex:"x = \\sqrt{\\frac{2(2.2)(10)(8.64\\times10^{4})}{(917)(3.34\\times10^{5})}} = 0.11\\ \\text{m}", kind:"answer"},
+        {label:"After 1 week", tex:"x = \\sqrt{7}\\,(0.11) = 0.29\\ \\text{m}", kind:"answer"}
+      ],
+      action(c){
+        axes2D(c, {x0:0, x1:10, y0:0, y1:7}, {x0:1.0, y0:0.6, xLab:'t', yLab:'x'});
+        plotCurve(c, t => [t, 0.6 + 0.75*Math.sqrt(t-1.0)], 1.0, 8.8, {color:GREEN, w:2});
+        label(c, 8.2, 3.3, 'x ∝ √t', {fs:12, color:GREEN});
+      }
+    },
+    { map:4, title:"Audit: the self-insulating blanket", pose:"think",
+      think:"Physically, why must the growth slow down?",
+      say:"The audit is the physics. Every centimetre of new ice thickens the insulating blanket over the water, throttling the heat flow that makes the next centimetre. Growth strangles itself — hence root t, and hence why even an Arctic winter caps sea ice at a few metres. Reusable method: whenever the rate of a process is throttled by how much has already happened, expect separation of variables and a square-root law.",
+      board:[
+        {label:"Diminishing returns", tex:"\\frac{dx}{dt} \\propto \\frac{1}{x}\\ \\Rightarrow\\ x \\propto \\sqrt{t}", kind:"key"},
+        {label:"Reusable method", text:"Balance production against transport through the growing product; separate variables. Self-limiting growth ⇒ √t.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"The Earth's radiative equilibrium temperature",
+  problem:"The Sun delivers S = 1361 W/m² at Earth's orbit; Earth reflects 30% (albedo A = 0.30). As a blackbody emitter, find Earth's equilibrium temperature. Why is the real surface (288 K) warmer?",
+  goal:"Balance absorbed disc-light against emitted sphere-light, and meet the greenhouse effect.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Intercept vs emit","The balance equation","Solve: 255 K","The 33 K gap"],
+  setup(ctx, w){
+    circleAt(ctx, 5.6, 3.5, 1.5, {stroke:BLUE, w:2.5});
+    label(ctx, 5.6, 1.2, 'Earth', {fs:12, color:BLUE});
+    arrow(ctx, 0.7, 4.3, 3.6, 4.3, {color:GOLD, w:2});
+    arrow(ctx, 0.7, 3.5, 3.6, 3.5, {color:GOLD, w:2});
+    arrow(ctx, 0.7, 2.7, 3.6, 2.7, {color:GOLD, w:2});
+    label(ctx, 1.9, 5.1, 'S = 1361 W/m²', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"A disc absorbs, a sphere emits", pose:"point",
+      think:"Sunlight sees Earth as what shape? Earth radiates from what area?",
+      say:"Here is the beautiful asymmetry. The Sun's parallel rays see Earth as a flat disc of area pi R squared — that is all it can intercept. But the warm Earth radiates infrared from its entire spherical surface, four pi R squared. One factor of four, and it governs the climate of every planet.",
+      board:[
+        {label:"Absorb (disc)", tex:"P_{\\text{in}} = (1-A)\\,S\\,\\pi R^2", kind:"key"},
+        {label:"Emit (sphere)", tex:"P_{\\text{out}} = \\sigma T^4\\cdot 4\\pi R^2", kind:"key"}
+      ],
+      action(c){
+        arrow(c, 6.7, 4.6, 7.9, 5.6, {color:RED, w:2});
+        arrow(c, 6.9, 3.5, 8.4, 3.5, {color:RED, w:2});
+        arrow(c, 6.7, 2.4, 7.9, 1.4, {color:RED, w:2});
+        arrow(c, 4.5, 4.6, 3.5, 5.7, {color:RED, w:2});
+        label(c, 8.3, 4.9, 'IR out, all sides', {fs:10, color:RED});
+      }
+    },
+    { map:1, title:"Set the balance", pose:"write",
+      think:"In equilibrium, what must equal what — and what cancels?",
+      say:"Equilibrium means energy in equals energy out. Thirty per cent bounces away — the albedo — so seventy per cent of S times the disc equals sigma T fourth times the sphere. And watch: pi R squared cancels completely. The answer will not care how big the planet is.",
+      board:[
+        {label:"Balance", tex:"(1-A)S\\,\\pi R^2 = \\sigma T^4\\, 4\\pi R^2", kind:"key"},
+        {label:"Radius gone", tex:"T = \\left[\\frac{(1-A)S}{4\\sigma}\\right]^{1/4}", kind:"answer", move:"cancel πR²"}
+      ]
+    },
+    { map:2, title:"Solve", pose:"write",
+      think:"Estimate: (0.7×1361)/4 ≈ 238 W/m² must be radiated — what T does that need?",
+      say:"Put in the numbers: zero point seven times thirteen sixty-one, over four sigma, fourth root: two hundred fifty-five kelvin. Minus eighteen Celsius. By pure radiative bookkeeping, Earth should be frozen pole to pole, oceans and all.",
+      board:[
+        {label:"Equilibrium T", tex:"T = \\left[\\frac{(0.70)(1361)}{4(5.67\\times10^{-8})}\\right]^{1/4} = 255\\ \\text{K} = -18^\\circ\\text{C}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the missing 33 kelvin", pose:"think",
+      think:"The real mean surface is 288 K — what physics did our model leave out?",
+      say:"The audit opens a door. Reality is two hundred eighty-eight kelvin — thirty-three degrees warmer than our answer. The missing physics is the atmosphere: it lets sunlight in but absorbs the outgoing infrared and re-radiates part of it back down. That is the greenhouse effect, and without it Earth would be an ice ball. The same formula gives about two hundred ten kelvin for Mars, and two hundred thirty for cloud-bright Venus — whose actual surface, under a runaway greenhouse, is seven hundred thirty-five kelvin. Reusable method: disc in, sphere out, radius cancels — then interpret any gap between model and reality as new physics.",
+      board:[
+        {label:"The gap", tex:"288 - 255 = 33\\ \\text{K} = \\text{greenhouse effect}", kind:"key"},
+        {label:"Venus warning", tex:"T_{\\text{eq}} \\approx 230\\ \\text{K, actual } 735\\ \\text{K}", kind:"warn"},
+        {label:"Reusable method", text:"Planetary balance: (1−A)SπR² = 4πR²σT⁴. The model's failure is measured, not hidden — it quantifies the atmosphere.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A pendulum clock in summer",
+  problem:"A clock keeps perfect time at 20°C with a brass pendulum (α = 1.9×10⁻⁵ K⁻¹). How many seconds per day does it gain or lose at 30°C? Repeat for Invar (α = 1.2×10⁻⁶ K⁻¹).",
+  goal:"Chain expansion into T = 2π√(L/g) via fractional changes, and see why Invar earned a Nobel.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Two formulas meet","Fractional changes: the ½","Brass: 8.2 s/day","Invar and the fix"],
+  setup(ctx, w){
+    ground(ctx, 2.0, 5.4, 6.2);
+    dashLine(ctx, 3.7, 6.2, 3.7, 1.6, {color:DIMC});
+    plotCurve(ctx, t => [3.7 + 3.4*Math.sin(0.42), 6.2 - 3.4*Math.cos(0.42)], 0, 1, {color:CHALKC, w:1});
+    arrow(ctx, 3.7, 6.2, 5.05, 3.1, {color:CHALKC, w:2});
+    circleAt(ctx, 5.15, 2.85, 0.28, {stroke:GOLD, w:2.5});
+    arc(ctx, 3.7, 6.2, 1.3, -90, -67, {color:DIMC, w:1.5});
+    label(ctx, 4.35, 5.0, 'θ', {fs:11, color:DIMC});
+    label(ctx, 6.6, 3.0, 'brass rod, L', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Where expansion meets timekeeping", pose:"talk",
+      think:"Warmer rod → longer pendulum → what happens to the period?",
+      say:"A pendulum clock is a length standard masquerading as a time standard: its period is two pi root L over g. Summer warms the brass rod, the rod lengthens, each swing takes longer — the clock falls behind. The question is by how much, and the elegant route is fractional changes.",
+      board:[
+        {label:"Period", tex:"T = 2\\pi\\sqrt{\\frac{L}{g}}", kind:"key"},
+        {label:"Expansion", tex:"\\frac{\\Delta L}{L} = \\alpha\\,\\Delta\\theta", kind:"key"}
+      ]
+    },
+    { map:1, title:"The square root halves it", pose:"write",
+      think:"If L grows by a tiny fraction f, by what fraction does √L grow?",
+      say:"Here is the manoeuvre worth memorising: for small changes, the fractional change of a square root is half the fractional change of its argument. So the period's fractional shift is one half alpha delta theta. No differentiation tables needed — powers pull out as multipliers on fractional changes.",
+      board:[
+        {label:"Fractional change", tex:"\\frac{\\Delta T}{T} = \\tfrac{1}{2}\\frac{\\Delta L}{L} = \\tfrac{1}{2}\\alpha\\,\\Delta\\theta", kind:"key", move:"√ ⇒ factor ½"}
+      ]
+    },
+    { map:2, title:"Brass: losing 8 seconds a day", pose:"write",
+      think:"Scale the tiny fraction by the 86 400 s in a day.",
+      say:"Brass, ten degrees warmer: the fraction is nine and a half parts per hundred thousand. Meaningless per swing — but a day contains eighty-six thousand four hundred seconds, and the fraction taxes every one of them. The clock loses eight point two seconds per day. Loses, mind you: longer pendulum, slower tick.",
+      board:[
+        {label:"Brass", tex:"\\frac{\\Delta T}{T} = \\tfrac{1}{2}(1.9\\times10^{-5})(10) = 9.5\\times10^{-5}", kind:"answer"},
+        {label:"Per day", tex:"(9.5\\times10^{-5})(86\\,400) = 8.2\\ \\text{s/day lost}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Invar, and the compensation game", pose:"think",
+      think:"Same formula, α sixteen times smaller — and why 'Invar'?",
+      say:"Swap in Invar — the nickel-iron alloy whose thermal expansion is freakishly small — and the loss drops to half a second a day, sixteen times better. 'Invariable': its inventor, Guillaume, won the Nobel Prize for it, such was the value of clocks that kept time through the seasons. The perfectionists went further still — mercury-in-bob and gridiron pendulums whose second metal expands the other way and lifts the bob exactly as the rod drops it. Reusable method: propagate fractional changes — a power n multiplies delta x over x by n — then scale by the interval you care about.",
+      board:[
+        {label:"Invar", tex:"\\tfrac{1}{2}(1.2\\times10^{-6})(10)\\times86\\,400 = 0.5\\ \\text{s/day}", kind:"answer"},
+        {label:"Reusable method", text:"For y = xⁿ, Δy/y = n·Δx/x. Chain expansion into any formula through fractional changes, then multiply by the timespan.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

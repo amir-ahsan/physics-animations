@@ -1399,6 +1399,488 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Width of the central maximum",
+  problem:"600 nm light passes a slit 0.100 mm wide; screen 2.00 m away. Find the first-minimum angle and the width of the central bright band.",
+  goal:"Use a sin θ = λ, then measure the band that dwarfs its own slit.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The single-slit minimum","First minimum angle","Width of the band","Audit: narrower slit, wider band"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.4, 0.8 + 2.2*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [2.4, 4.0 + 2.2*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 2.4, 0.3, 'slit a', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [8.6, 0.7 + 5.6*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 8.6, 0.25, 'screen', {fs:10, color:DIMC});
+    arrow(ctx, 0.6, 3.5, 1.8, 3.5, {color:RED, w:2.5});
+    dashLine(ctx, 2.4, 3.5, 8.6, 3.5, {color:DIMC});
+  },
+  steps:[
+    { map:0, title:"One slit interferes with itself", pose:"talk",
+      think:"Why does a single opening produce dark fringes at all?",
+      say:"A single slit diffracts because every point across its width is a wavelet source, and the wavelets quarrel. The first darkness falls where the slit's halves cancel pairwise — top half against bottom half — which happens at sine theta equals lambda over a. Note the resemblance to the double-slit formula and the treacherous difference: here it marks a minimum.",
+      board:[
+        {label:"Single-slit minima", tex:"a\\sin\\theta_m = m\\lambda\\ \\text{(minima!)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"The first minimum", pose:"write",
+      think:"λ/a = 6×10⁻³ — small enough that θ ≈ sin θ.",
+      say:"Six hundred nanometres over a tenth of a millimetre: sine theta is six thousandths, theta about a third of a degree. Small — the small-angle machinery applies — but decisive.",
+      board:[
+        {label:"Angle", tex:"\\sin\\theta_1 = \\frac{\\lambda}{a} = 6.00\\times10^{-3} \\Rightarrow \\theta_1 = 0.344^\\circ", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The central band", pose:"write",
+      think:"The band spans minimum to minimum: 2Lλ/a.",
+      say:"The central maximum stretches between the two first minima: twice L lambda over a — twenty-four millimetres. Set that against the slit that made it: a tenth of a millimetre. The light emerged from its passage two hundred forty times wider than the opening. The geometric shadow — the naive 0.1-millimetre stripe — simply does not exist on this screen.",
+      board:[
+        {label:"Width", tex:"w = \\frac{2L\\lambda}{a} = 2(2.00)(6.00\\times10^{-3}) = 24.0\\ \\text{mm}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => {const u = (t-3.5)*2.2; const s = Math.abs(u)<0.01?1:Math.sin(u)/u; return [8.6 - 1.6*s*s, 0.7 + (t-0.7)*(5.6/5.6)];}, 0.8, 6.2, {color:GOLD, w:2, N:200});
+      }
+    },
+    { map:3, title:"Audit: squeeze it and it spreads", pose:"think",
+      think:"Halve a — what happens to w? Push a → λ — then what?",
+      say:"The audit inverts intuition permanently. Halve the slit and the band doubles: squeezing light makes it spread. Push the slit width down toward the wavelength itself and sine theta one reaches one — the light floods the entire half-space, the slit a point source. Confinement and spreading are locked in inverse embrace: the first whisper of the uncertainty principle, spoken by classical light. Reusable method: minima at a sine theta equals m lambda, central band two L lambda over a — and remember the formula's twin with d marks maxima, not minima.",
+      board:[
+        {label:"Inverse law", tex:"w \\propto \\frac{1}{a}:\\ \\text{narrower slit, wider light}", kind:"key"},
+        {label:"Reusable method", text:"a for single slits (minima), d for pairs (maxima). Central band = 2Lλ/a dominates the pattern.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"A grating's first-order angle and highest order",
+  problem:"A grating has 600 lines/mm. For 500 nm light find the first-order angle and the highest observable order.",
+  goal:"Convert line density to spacing, then let sin θ ≤ 1 count the orders.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Lines to spacing","First order","The order ceiling","Audit: the trade-off"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.6, 0.8 + 5.4*t], 0, 1, {color:CHALKC, w:2.5});
+    circleAt(ctx, 2.6, 1.7, 0.06, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.6, 2.6, 0.06, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.6, 3.5, 0.06, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.6, 4.4, 0.06, {stroke:GOLD, w:2});
+    circleAt(ctx, 2.6, 5.3, 0.06, {stroke:GOLD, w:2});
+    label(ctx, 2.6, 0.3, 'grating', {fs:10, color:DIMC});
+    arrow(ctx, 0.6, 3.5, 1.9, 3.5, {color:GREEN, w:2.5, label:'500 nm', fs:10});
+  },
+  steps:[
+    { map:0, title:"From density to spacing", pose:"write",
+      think:"600 lines per mm — how far apart are neighbours?",
+      say:"A grating is the double slit multiplied into an army: here six hundred rulings per millimetre, so neighbours sit one six-hundredth of a millimetre apart — one point six seven microns. Only three wavelengths of five-hundred-nanometre light. Expect big angles.",
+      board:[
+        {label:"Spacing", tex:"d = \\frac{1}{600}\\ \\text{mm} = 1.67\\ \\mu\\text{m}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"First order", pose:"write",
+      think:"sin θ = λ/d = 0.3 — no small-angle shortcut here.",
+      say:"The grating equation: d sine theta equals m lambda. First order: sine theta is zero point three — seventeen and a half degrees. Far too large for small-angle approximations; gratings live in honest trigonometry.",
+      board:[
+        {label:"m = 1", tex:"\\sin\\theta = \\frac{\\lambda}{d} = 0.300 \\Rightarrow \\theta = 17.5^\\circ", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.6, 3.5, 8.8, 3.5, {color:GREEN, w:2});
+        arrow(c, 2.6, 3.5, 8.4, 5.4, {color:GREEN, w:2, label:'m=1', fs:10});
+        arrow(c, 2.6, 3.5, 8.4, 1.6, {color:GREEN, w:2});
+      }
+    },
+    { map:2, title:"How high can m go?", pose:"write",
+      think:"sin θ ≤ 1 caps m at d/λ — count down.",
+      say:"Each higher order needs a bigger sine, and sines refuse to exceed one. The cap is d over lambda: three point three three — so the third order, at sixty-four degrees, is the last. A fourth would need sine theta of one point two: no such direction exists in this universe. Orders are finite; the geometry rations them.",
+      board:[
+        {label:"Ceiling", tex:"m_{\\max} \\leq \\frac{d}{\\lambda} = 3.33 \\Rightarrow m = 3\\ (\\theta = 64.2^\\circ)", kind:"answer"},
+        {label:"Forbidden", tex:"m = 4:\\ \\sin\\theta = 1.2\\ \\text{✗}", kind:"warn"}
+      ]
+    },
+    { map:3, title:"Audit: the spectroscopist's dial", pose:"think",
+      think:"A finer grating: wider angles but fewer orders — why might you want either?",
+      say:"The audit reads the trade-off on every spectrometer. Rule the grating finer — smaller d — and each order fans wider, spreading colours farther apart: more dispersion, better separation. But the same shrinking d lowers the ceiling d over lambda: fewer orders to work with. Coarse gratings offer many orders and cramped spectra; fine ones, sprawling spectra and few. The spectroscopist chooses d for the job, like gear ratios. Reusable method: d is one over the line density; d sine theta equals m lambda locates orders; and sine's ceiling of one is a hard census of how many exist.",
+      board:[
+        {label:"Trade-off", tex:"d\\downarrow:\\ \\text{dispersion}\\uparrow,\\ m_{\\max}\\downarrow", kind:"key"},
+        {label:"Reusable method", text:"Convert lines/mm → d first. Count orders by ⌊d/λ⌋. Gratings use exact sines — never approximate.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Resolving two headlights",
+  problem:"A dark-adapted pupil is 3.0 mm across. At what distance can the eye just resolve headlights 1.5 m apart (λ = 550 nm)?",
+  goal:"Apply Rayleigh's criterion to your own eye and find its range.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Rayleigh's criterion","The eye's limit","Range the headlights","Audit: evolution's match"],
+  setup(ctx, w){
+    circleAt(ctx, 8.6, 3.5, 0.45, {stroke:CHALKC, w:2.5});
+    label(ctx, 8.6, 2.5, 'pupil, 3 mm', {fs:10, color:DIMC});
+    circleAt(ctx, 0.9, 4.3, 0.16, {stroke:GOLD, w:2.5});
+    circleAt(ctx, 0.9, 2.7, 0.16, {stroke:GOLD, w:2.5});
+    label(ctx, 0.9, 5.1, 'headlights, 1.5 m apart', {fs:9, color:DIMC});
+    dashLine(ctx, 1.1, 4.3, 8.2, 3.6, {color:DIMC});
+    dashLine(ctx, 1.1, 2.7, 8.2, 3.4, {color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Every aperture blurs", pose:"talk",
+      think:"A point source through a circular pupil lands on the retina as what?",
+      say:"Your pupil is a circular aperture, so every distant point of light lands on your retina not as a point but as an Airy disc — a diffraction blob. Two sources are 'just resolved', said Rayleigh, when one's peak sits on the other's first dark ring: an angular separation of one point two two lambda over D. Below that, two lights are one light. This is not an imperfection of your eye; it is the physics of any aperture.",
+      board:[
+        {label:"Rayleigh", tex:"\\theta_{\\min} = \\frac{1.22\\lambda}{D}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Your eye's number", pose:"write",
+      think:"1.22 × 550 nm / 3 mm — expect ~10⁻⁴ rad.",
+      say:"For the night-time pupil: one point two two times five fifty nanometres over three millimetres — two point two times ten to the minus four radians. Roughly a fiftieth of a degree: the eye's fundamental pixel.",
+      board:[
+        {label:"Eye limit", tex:"\\theta_{\\min} = \\frac{1.22(550\\times10^{-9})}{3.0\\times10^{-3}} = 2.2\\times10^{-4}\\ \\text{rad}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Range the car", pose:"write",
+      think:"Resolved while s/L exceeds θ_min — solve for L.",
+      say:"Headlights one and a half metres apart subtend s over L. Set that equal to the limit: L max is six point seven kilometres. Nearer, you see a car; beyond seven kilometres, an approaching car is one indivisible glow — a motorcycle, for all your optics can say.",
+      board:[
+        {label:"Range", tex:"L_{\\max} = \\frac{s}{\\theta_{\\min}} = \\frac{1.5}{2.2\\times10^{-4}} = 6.7\\ \\text{km}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the retina agrees", pose:"think",
+      think:"Receptor spacing gives ~3×10⁻⁴ rad — coincidence?",
+      say:"The audit finds an elegant conspiracy. The retina's cone spacing samples about three times ten to the minus four radians — almost exactly the diffraction limit we computed. Evolution matched the detector to the optics: finer receptors would sample blur and win nothing; coarser would squander the lens. Engineers call it matching sensor to point-spread function; your eye did it first. And the scaling is open-ended: a ten-centimetre telescope, thirty-three times the aperture, resolves thirty-three times finer. Reusable method: one point two two lambda over D for the angle, s over theta for the range — and compare any detector's sampling against its optics' limit.",
+      board:[
+        {label:"Matched", tex:"\\text{retina sampling} \\approx \\text{diffraction limit — no waste either way}", kind:"key"},
+        {label:"Reusable method", text:"θ_min = 1.22λ/D; resolved iff s/L > θ_min. Aperture buys resolution linearly.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Measuring a slit width from the pattern",
+  problem:"633 nm laser light makes its second dark fringe 1.20 cm from centre on a screen 1.50 m away. Find the slit width.",
+  goal:"Invert the minimum condition — and meet Babinet's hair-measuring trick.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Read the angle","Invert for a","Audit: why the second, and Babinet"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.2, 0.8 + 5.4*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 2.2, 0.3, 'slit a = ?', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [8.4, 0.7 + 5.6*t], 0, 1, {color:CHALKC, w:2.5});
+    dashLine(ctx, 2.2, 3.5, 8.4, 3.5, {color:DIMC});
+    circleAt(ctx, 8.4, 2.1, 0.1, {stroke:RED, w:2});
+    label(ctx, 9.2, 2.1, 'm=2', {fs:10, color:RED});
+    arrow(ctx, 0.6, 3.5, 1.6, 3.5, {color:RED, w:2.5});
+  },
+  steps:[
+    { map:0, title:"From centimetres to an angle", pose:"write",
+      think:"tan θ = 1.20/150 — small enough to equal sin θ.",
+      say:"The measurement hands us position; physics wants angle. One point two centimetres over one and a half metres: eight thousandths of a radian — comfortably small, so tangent and sine agree to five digits. The second dark fringe means m equals two in the minimum condition.",
+      board:[
+        {label:"Angle", tex:"\\sin\\theta_2 \\approx \\tan\\theta_2 = \\frac{1.20}{150} = 8.00\\times10^{-3}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Invert for the width", pose:"write",
+      think:"a sin θ₂ = 2λ — solve for a.",
+      say:"Invert a sine theta equals two lambda: twice six thirty-three nanometres over eight thousandths — zero point one five eight millimetres. A laser pointer and a metre stick have just gauged a slit finer than a hair's breadth, from across the room.",
+      board:[
+        {label:"Slit width", tex:"a = \\frac{2\\lambda}{\\sin\\theta_2} = \\frac{2(633\\times10^{-9})}{8.00\\times10^{-3}} = 0.158\\ \\text{mm}", kind:"answer", move:"invert a sinθ = mλ"}
+      ]
+    },
+    { map:2, title:"Audit: the second fringe, and the hair trick", pose:"think",
+      think:"Why prefer m = 2 over m = 1? And what does Babinet let you measure?",
+      say:"Two audit gems. First, strategy: using the second minimum doubles the measured distance while the ruler's error stays fixed — relative error halved for free; the tenth minimum would be better still. Second, a delicious theorem — Babinet's principle: a hair blocks light exactly where a slit of equal width would pass it, and away from the axis their diffraction patterns are identical. Stretch a hair in the laser beam, measure its fringe spacing, and this same formula returns the hair's diameter to a few per cent. Physics homework as a party trick. Reusable method: convert position to angle, invert the m-th minimum for a, choose large m for accuracy — and remember obstacles diffract like their complementary openings.",
+      board:[
+        {label:"Babinet", tex:"\\text{hair of width } a \\equiv \\text{slit of width } a\\ \\text{(same pattern)}", kind:"key"},
+        {label:"Reusable method", text:"a = mλ/sinθ_m; higher m halves the error per doubling. A laser + ruler measures anything slit-like — or hair-like.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Angular separation of the sodium doublet",
+  problem:"A 5000 lines/cm grating in second order views the sodium D lines, 589.0 and 589.6 nm. Find the 589.0 nm angle and the pair's angular separation.",
+  goal:"Differentiate the grating equation into a dispersion formula and apply it.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Locate the line","Differentiate for dispersion","The doublet's split","Audit: dispersion is not resolution"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [2.2, 0.8 + 5.4*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 2.2, 0.3, 'grating', {fs:10, color:DIMC});
+    arrow(ctx, 2.2, 3.5, 8.2, 1.1, {color:GOLD, w:2});
+    arrow(ctx, 2.2, 3.5, 8.5, 1.5, {color:GOLD, w:2});
+    label(ctx, 9.0, 1.0, 'D lines', {fs:10, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Second order, honest sine", pose:"write",
+      think:"d = 2 μm; sin θ = 2λ/d ≈ 0.589.",
+      say:"Five thousand lines per centimetre: d is two microns. Second order of five eighty-nine: sine theta is zero point five eight nine — thirty-six point one degrees. Note how the sine nearly equals the wavelength in units of d over m; gratings put the geometry right on the surface.",
+      board:[
+        {label:"Position", tex:"\\sin\\theta = \\frac{2(589.0\\times10^{-9})}{2.00\\times10^{-6}} = 0.589 \\Rightarrow \\theta = 36.1^\\circ", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Differentiate the grating equation", pose:"write",
+      think:"d cos θ dθ = m dλ — solve for dθ/dλ.",
+      say:"How fast does angle track wavelength? Differentiate d sine theta equals m lambda: d cosine theta, d theta, equals m d lambda. The dispersion is m over d cosine theta — growing with order, and amplified by that cosine as the angles steepen. Calculus converts a positioning formula into a sensitivity formula: a move worth savouring.",
+      board:[
+        {label:"Dispersion", tex:"\\frac{d\\theta}{d\\lambda} = \\frac{m}{d\\cos\\theta}", kind:"key", move:"differentiate"}
+      ]
+    },
+    { map:2, title:"Split the doublet", pose:"write",
+      think:"Δλ = 0.6 nm through the dispersion — then project to a screen.",
+      say:"Sodium's famous pair differ by six tenths of a nanometre. Through the dispersion: two times that, over two microns times cosine thirty-six — seven point four times ten to the minus four radians. Project a metre: seven tenths of a millimetre between the lines — cleanly visible in any student spectrometer. The doublet splits.",
+      board:[
+        {label:"Separation", tex:"\\Delta\\theta = \\frac{m\\,\\Delta\\lambda}{d\\cos\\theta} = \\frac{2(0.6\\times10^{-9})}{(2.00\\times10^{-6})(0.808)} = 7.4\\times10^{-4}\\ \\text{rad}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: separated is not resolved", pose:"think",
+      think:"Dispersion spreads the lines apart — but what determines if each line is narrow enough to tell apart?",
+      say:"The audit draws a professional distinction. Dispersion tells how far apart the grating throws two wavelengths; whether you can actually tell them apart depends on how narrow each line is — and that is set by the number of rulings illuminated: resolving power m N. Illuminate only fifty lines in second order and the sodium doublet, though separated, blurs into one; five thousand lines split it with ease. Dispersion is the lever; resolution is the blade. Reusable method: differentiate the grating equation for dispersion, multiply by delta lambda, project by L for screen distance — then check m N exceeds lambda over delta lambda before declaring victory.",
+      board:[
+        {label:"The blade", tex:"\\text{resolving power: } \\frac{\\lambda}{\\Delta\\lambda} = mN", kind:"key"},
+        {label:"Reusable method", text:"dθ/dλ = m/(d cosθ) spreads; mN resolves. Both must suffice — a spread pair of fat lines is still one blur.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Double slit with a single-slit envelope",
+  problem:"Two slits, each 0.0500 mm wide, centres 0.250 mm apart. Which interference orders are missing, and how many bright fringes fill the central diffraction maximum?",
+  goal:"Superpose the two-slit comb on the one-slit envelope and count the survivors.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Comb times envelope","The missing orders","Count the survivors","Audit: turn the two knobs"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.7, y0:1.0, xLab:'θ', yLab:'I'});
+    plotCurve(ctx, t => {const u = (t-5.0)*1.05; const s = Math.abs(u)<0.01?1:Math.sin(u)/u; return [t, 1.0 + 4.6*s*s];}, 0.8, 9.3, {color:DIMC, w:2, dash:'5 4', N:200});
+    label(ctx, 7.7, 4.6, 'envelope', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Two patterns share one screen", pose:"talk",
+      think:"Each slit has width a AND the pair has spacing d — which pattern does what?",
+      say:"Real double slits carry two length scales, and each rules its own pattern. The spacing d builds the fine interference comb — cosine squared teeth. The width a of each slit wraps everything in the broad single-slit envelope. The screen shows their product: a comb whose teeth rise and fall under a diffraction canopy.",
+      board:[
+        {label:"Product", tex:"I = I_0\\cos^2\\!\\left(\\frac{\\pi d\\sin\\theta}{\\lambda}\\right)\\left[\\frac{\\sin\\beta}{\\beta}\\right]^2", kind:"key"}
+      ]
+    },
+    { map:1, title:"Where teeth meet zeros", pose:"write",
+      think:"A comb maximum at d sinθ = mλ dies if a sinθ = m′λ at the same angle — ratio?",
+      say:"A comb tooth is erased wherever it lands exactly on an envelope zero. Divide the two conditions: m over m prime equals d over a — five. So the fifth-order tooth coincides with the envelope's first zero and vanishes; likewise the tenth, fifteenth. The missing orders are the multiples of five — the geometry's fingerprint, visible at a glance.",
+      board:[
+        {label:"Missing orders", tex:"\\frac{d}{a} = \\frac{0.250}{0.0500} = 5:\\ m = \\pm5, \\pm10, \\ldots\\ \\text{extinguished}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Census under the canopy", pose:"write",
+      think:"Central envelope ends at m′ = ±1, i.e. at m = ±5 — count the interior.",
+      say:"The central canopy stretches to the first envelope zeros — exactly where the fifth orders would sit, and don't. Inside live orders minus four through plus four: nine bright fringes, flanked by the ghosts of the two fifths standing extinguished at the boundary.",
+      board:[
+        {label:"Count", tex:"m = -4, \\ldots, +4:\\ \\text{nine fringes in the central maximum}", kind:"answer"}
+      ],
+      action(c){
+        plotCurve(c, t => {const u = (t-5.0)*1.05; const s = Math.abs(u)<0.01?1:Math.sin(u)/u; const comb = Math.pow(Math.cos((t-5.0)*5.25),2); return [t, 1.0 + 4.6*s*s*comb];}, 0.8, 9.3, {color:GOLD, w:2, N:400});
+      }
+    },
+    { map:3, title:"Audit: two independent knobs", pose:"think",
+      think:"Narrow a (fixed d) does what? Widen d (fixed a) does what?",
+      say:"The audit hands you the control panel. Narrow each slit — a down, d fixed: the envelope balloons, admitting more teeth; the comb itself never moves. Spread the slits — d up, a fixed: teeth crowd closer under an unmoved canopy; again more fringes inside. The count under the centre is always two d over a minus one, an integer census you can read off any photograph of the pattern to deduce the slit geometry — diffraction as reverse engineering. Reusable method: factor every multi-slit pattern into comb times envelope; missing orders at multiples of d over a; and treat a and d as independent dials.",
+      board:[
+        {label:"The census", tex:"N_{\\text{central}} = 2\\frac{d}{a} - 1 = 9\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"d runs the comb, a runs the canopy. Missing orders reveal d/a; the pattern is the apparatus's confession.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Resolution of a radio telescope, and the interferometer cure",
+  problem:"A 100 m dish observes the 21 cm hydrogen line. Find its resolution, compare with the eye, and explain how radio astronomy beats optical telescopes anyway.",
+  goal:"Feel the wavelength penalty, then let baselines replace apertures.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Rayleigh at 21 cm","Worse than your eye","The baseline cure","Audit: the planet-sized aperture"],
+  setup(ctx, w){
+    arc(ctx, 2.6, 0.6, 1.9, 220, 320, {color:CHALKC, w:2.5});
+    label(ctx, 2.6, 0.25, '100 m dish', {fs:10, color:DIMC});
+    arc(ctx, 7.8, 0.6, 1.9, 220, 320, {color:CHALKC, w:2.5});
+    label(ctx, 7.8, 0.25, 'dish 2', {fs:10, color:DIMC});
+    dashLine(ctx, 2.6, 2.5, 7.8, 2.5, {color:GOLD});
+    label(ctx, 5.2, 3.1, 'baseline B', {fs:11, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"Rayleigh, radio edition", pose:"write",
+      think:"Same 1.22λ/D — but λ is now 21 cm, not 550 nm.",
+      say:"Rayleigh's criterion is wavelength-blind in form and wavelength-ruled in outcome. Twenty-one centimetres — hydrogen's hyperfine whisper — through a hundred-metre dish: two point six milliradians. A colossal instrument, a modest angle.",
+      board:[
+        {label:"Dish limit", tex:"\\theta_{\\min} = \\frac{1.22(0.21)}{100} = 2.6\\times10^{-3}\\ \\text{rad} = 0.15^\\circ", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Humbled by an eyeball", pose:"write",
+      think:"Compare with the eye's 2.2×10⁻⁴ rad — which wins, and why?",
+      say:"Set it beside your own pupil: the hundred-metre steel giant resolves ten times worse than a three-millimetre eyeball. No scandal — the radio wavelength is four hundred thousand times longer than green light, and aperture only clawed back a factor of thirty thousand. In the ratio lambda over D, wavelength was winning.",
+      board:[
+        {label:"Comparison", tex:"2.6\\times10^{-3}\\ \\text{rad} \\approx 10\\times\\ \\text{worse than the eye}", kind:"key"}
+      ]
+    },
+    { map:2, title:"The interferometer's leap", pose:"excited",
+      think:"Two dishes far apart interfere like Young's slits — what plays the role of D?",
+      say:"Now the escape, and it is pure Young. Two dishes, linked electronically, interfere like a pair of slits — and the fringe spacing on the sky is set by their separation, the baseline, not by either dish's size. In the resolution formula, D becomes B. Dishes on opposite coasts: a five-thousand-kilometre aperture that no engineer could ever cast in steel. The dish sizes only set sensitivity; the baseline sets sharpness.",
+      board:[
+        {label:"The cure", tex:"\\theta_{\\min} = \\frac{1.22\\lambda}{B}:\\ \\text{baseline replaces aperture}", kind:"key"}
+      ]
+    },
+    { map:3, title:"Audit: the Earth as a telescope", pose:"think",
+      think:"B = 5000 km at λ = 21 cm — and what did the EHT do at 1.3 mm?",
+      say:"Audit at the planetary limit. Earth-spanning baselines at twenty-one centimetres: five times ten to the minus eight radians — five times sharper than Hubble, using centimetre waves. Push the wavelength down to one point three millimetres, keep the planet as your instrument, and you reach twenty micro-arcseconds: the Event Horizon Telescope, which photographed the silhouette of a black hole with an aperture called Earth. Interference did not merely rescue radio astronomy; it crowned it. Reusable method: for any wave, resolution is one point two two lambda over the largest separation you can coherently combine — collecting area and resolving baseline are separate budgets, spent separately.",
+      board:[
+        {label:"Planet aperture", tex:"\\theta = \\frac{1.22(0.21)}{5\\times10^{6}} = 5\\times10^{-8}\\ \\text{rad — beats Hubble}", kind:"answer"},
+        {label:"Reusable method", text:"Interferometry: θ = 1.22λ/B. Sharpness from separation, sensitivity from area. The EHT's aperture is the Earth.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"How bright are the side lobes?",
+  problem:"With I = I₀[sin(β/2)/(β/2)]², find the first secondary maximum relative to centre, (a) assuming it lies midway between minima, (b) at its true position β/2 = 1.43π.",
+  goal:"Evaluate the sinc pattern twice and learn why the midpoint lies.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The sinc anatomy","(a) The midpoint estimate","(b) The true summit","Audit: why the peak leans"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:0.7, y0:1.0, xLab:'β/2', yLab:'I/I₀'});
+    plotCurve(ctx, t => {const u = (t-2.0)*1.45; const s = Math.abs(u)<0.01?1:Math.sin(u)/u; return [t, 1.0 + 4.8*s*s];}, 0.85, 9.3, {color:GOLD, w:2.5, N:300});
+  },
+  steps:[
+    { map:0, title:"Anatomy of the sinc", pose:"talk",
+      think:"Zeros at β/2 = π, 2π, … — where should the humps between them peak?",
+      say:"The single-slit intensity is the squared sinc: a towering central peak, then zeros at every multiple of pi in beta over two, with modest humps between. Today's question is quantitative: how tall is the first hump? We shall answer twice — once by lazy symmetry, once by honest calculus — and the discrepancy itself will teach the finer lesson.",
+      board:[
+        {label:"Pattern", tex:"I = I_0\\left[\\frac{\\sin(\\beta/2)}{\\beta/2}\\right]^2,\\quad \\beta = \\frac{2\\pi a\\sin\\theta}{\\lambda}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The midpoint guess", pose:"write",
+      think:"Midway between π and 2π is 3π/2 — evaluate there.",
+      say:"Lazy first: the hump between the zeros at pi and two pi should peak near their midpoint, three pi over two. Sine there is minus one — squared, one — over three pi over two squared: one over four point seven one squared, four and a half per cent of the centre.",
+      board:[
+        {label:"(a) Midpoint", tex:"\\frac{I}{I_0} = \\left[\\frac{\\sin(3\\pi/2)}{3\\pi/2}\\right]^2 = \\left(\\frac{1}{4.71}\\right)^2 = 0.0450", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The honest summit", pose:"write",
+      think:"dI/dβ = 0 gives tan(β/2) = β/2 — a transcendental equation.",
+      say:"Honest second: set the derivative to zero and out comes a lovely transcendental condition — tangent of beta over two equals beta over two, the curve hunting its own argument. The first nonzero root sits at one point four three pi, not one point five: four point four nine three. Evaluate: four point seven two per cent. The guess was five per cent shy.",
+      board:[
+        {label:"Condition", tex:"\\tan\\frac{\\beta}{2} = \\frac{\\beta}{2} \\Rightarrow \\frac{\\beta}{2} = 1.4303\\pi = 4.493", kind:"key", move:"dI/dβ = 0"},
+        {label:"(b) True", tex:"\\frac{I}{I_0} = \\left[\\frac{\\sin 4.493}{4.493}\\right]^2 = (0.2172)^2 = 0.0472", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the leaning peak and the faint ripples", pose:"think",
+      think:"Why does the summit sit at 1.43π instead of 1.5π? And how fast do the lobes fade?",
+      say:"Two audit lessons. Why does the summit lean inward from the midpoint? Because the hump is sine squared divided by a steadily falling one over beta squared: the envelope tilts the whole ridge toward the centre, dragging the peak from one point five down to one point four three pi. Symmetry arguments fail wherever an envelope leans on the symmetry. And survey the lobes: under five per cent, then one point six, fading as one over beta squared — a single slit is essentially one blaze of light with whispering ripples, which is why the central-maximum formulas capture nearly all the energy. Reusable method: extrema of ratio functions come from the transcendental condition, midpoints are first guesses only, and always ask what fraction of the light your approximation actually accounts for.",
+      board:[
+        {label:"Fading lobes", tex:"0.047,\\ 0.016,\\ \\ldots \\propto \\frac{1}{\\beta^2}", kind:"key"},
+        {label:"Reusable method", text:"tan x = x locates sinc peaks; envelopes drag summits off midpoints. Side lobes: < 5% — the centre is the story.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Diffraction-limited camera lens",
+  problem:"A lens at f/2.8 forms an Airy disk for 550 nm light. Find its diameter, compare with 4.0 μm pixels, and repeat at f/16.",
+  goal:"Derive spot size = 2.44λN, match it to pixels, and explain the photographer's rule.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Airy at the focal plane","f/2.8: one pixel","f/16: five pixels","Audit: D cancelled"],
+  setup(ctx, w){
+    plotCurve(ctx, t => [3.0, 1.6 + 3.8*t], 0, 1, {color:CHALKC, w:2.5});
+    label(ctx, 3.0, 0.9, 'lens, aperture D', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [7.8, 1.6 + 3.8*t], 0, 1, {color:CHALKC, w:2});
+    label(ctx, 7.8, 0.9, 'sensor', {fs:10, color:DIMC});
+    plotCurve(ctx, t => [3.0 + 4.8*t, 5.4 - 1.85*t], 0, 1, {color:GOLD, w:1.5});
+    plotCurve(ctx, t => [3.0 + 4.8*t, 1.6 + 1.85*t], 0, 1, {color:GOLD, w:1.5});
+    circleAt(ctx, 7.8, 3.5, 0.18, {stroke:GOLD, w:2.5});
+  },
+  steps:[
+    { map:0, title:"The focus is never a point", pose:"talk",
+      think:"Angular radius 1.22λ/D lands at the focal plane as a physical radius of what?",
+      say:"Even a flawless lens cannot focus to a point: its aperture diffracts, and every star or pixel-perfect detail lands as an Airy disc. The angular radius one point two two lambda over D becomes a physical radius by multiplying by the focal length — one point two two lambda times f over D. And f over D is the photographer's f-number N. Spot diameter: two point four four lambda N. Three constants and a dial on the lens barrel.",
+      board:[
+        {label:"Airy spot", tex:"\\text{diameter} = 2.44\\,\\lambda N,\\qquad N = \\frac{f}{D}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Wide open at f/2.8", pose:"write",
+      think:"2.44 × 550 nm × 2.8 — compare with 4 μm.",
+      say:"At f two point eight: two point four four times five fifty nanometres times two point eight — three point eight microns. Just under one four-micron pixel: the blur circle tucks inside a single photosite. Lens and sensor are matched; every pixel carries honest information.",
+      board:[
+        {label:"f/2.8", tex:"2.44(550\\times10^{-9})(2.8) = 3.8\\ \\mu\\text{m} < 4.0\\ \\mu\\text{m pixel}\\ \\checkmark", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Stopped down to f/16", pose:"write",
+      think:"Same formula, N = 16 — how many pixels wide now?",
+      say:"Stop down to f sixteen — a tiny aperture, beloved for depth of field — and the disc balloons to twenty-one microns: five pixels wide. Every point in the scene smears across a five-by-five patch, and no lens quality, no megapixel count, no software can recover what diffraction removed before the sensor ever saw it.",
+      board:[
+        {label:"f/16", tex:"2.44(550\\times10^{-9})(16) = 21\\ \\mu\\text{m} \\approx 5\\ \\text{pixels — blurred}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the disappearing D", pose:"think",
+      think:"The aperture D vanished from the formula — what startling equivalence follows?",
+      say:"The audit notices what vanished: D itself. Only the f-number survives — so a phone camera at f two and an observatory telescope at f two lay down identical spot sizes in microns. Aperture buys light and angular resolution on the sky, but at the focal plane, geometry is democratic. Hence the photographer's folklore, now derived: sharpness peaks near f eight — wider, lens aberrations intrude; narrower, diffraction eats the pixels. Reusable method: spot equals two point four four lambda N; match it to your pixel pitch; and distrust any promise of sharpness that ignores the f-number.",
+      board:[
+        {label:"Democracy", tex:"\\text{spot} = 2.44\\lambda N:\\ \\text{independent of } D\\ \\text{— phone = telescope at equal } N", kind:"key"},
+        {label:"Reusable method", text:"Focal-plane blur is set by N alone. Sweet spot: aberrations fall, diffraction rises — crossing near f/8.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Hearing around a door but not seeing around it",
+  problem:"A doorway is 0.80 m wide. Compare diffraction of 1.0 kHz sound (λ = 0.34 m) and 500 nm light through it, and explain the everyday observation.",
+  goal:"Run the same slit formula twelve orders of magnitude apart and watch rays emerge.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["One doorway, two waves","Sound: floods the room","Light: razor shadow","Audit: rays as a limit"],
+  setup(ctx, w){
+    boxAt(ctx, 4.6, 0.8, 0.5, 5.4, {fill:'none', stroke:CHALKC});
+    boxAt(ctx, 4.6, 0.8, 0.5, 5.4, {fill:'none', stroke:CHALKC});
+    plotCurve(ctx, t => [4.85, 2.6 + 1.8*t], 0, 1, {color:CHALKC, w:4});
+    label(ctx, 4.6, 0.3, 'doorway, 0.80 m', {fs:10, color:DIMC});
+    arrow(ctx, 1.0, 3.5, 3.6, 3.5, {color:BLUE, w:2.5, label:'sound + light', fs:10});
+  },
+  steps:[
+    { map:0, title:"The referee is λ/a", pose:"talk",
+      think:"Same doorway, same formula — what single ratio decides the outcome?",
+      say:"A doorway is a single slit for anything wavelike that passes it. The verdict on spreading is delivered by one dimensionless ratio: lambda over a. Sound at one kilohertz carries a thirty-four-centimetre wavelength — nearly half the door. Green light carries half a micron — a million times smaller. Same door, same law; watch the ratio rule.",
+      board:[
+        {label:"The referee", tex:"\\sin\\theta_1 = \\frac{\\lambda}{a}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Sound pours around the corner", pose:"write",
+      think:"0.34/0.80 = 0.425 — and the beyond-the-minimum leakage matters too.",
+      say:"Sound: sine theta is zero point four two five — the central lobe alone fans twenty-five degrees either side, and with lambda over a this large, the side lobes slosh sound into essentially the whole room. A conversation beyond the doorway reaches you bent around the corner: diffraction, working at furniture scale.",
+      board:[
+        {label:"Sound", tex:"\\sin\\theta_1 = \\frac{0.34}{0.80} = 0.425 \\Rightarrow \\theta_1 = 25^\\circ\\ \\text{(and beyond)}", kind:"answer"}
+      ],
+      action(c){
+        arc(c, 4.85, 3.5, 1.6, -70, 70, {color:BLUE, w:1.5});
+        arc(c, 4.85, 3.5, 2.6, -85, 85, {color:BLUE, w:1.5});
+        arc(c, 4.85, 3.5, 3.6, -95, 95, {color:BLUE, w:1.5});
+      }
+    },
+    { map:2, title:"Light draws a razor's edge", pose:"write",
+      think:"5×10⁻⁷ over 0.8 — the spreading at even 1 km is how much?",
+      say:"Light through the same door: sine theta is six times ten to the minus seven — six tenths of a microradian. Carry the beam a full kilometre and it has spread by half a millimetre. For every human purpose the light travels in ruler-straight rays and the doorway casts a shadow with edges sharp as intent. You cannot see around the corner you can easily hear around.",
+      board:[
+        {label:"Light", tex:"\\sin\\theta_1 = \\frac{5.0\\times10^{-7}}{0.80} = 6.3\\times10^{-7}\\ \\text{rad}:\\ 0.6\\ \\text{mm at 1 km}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 4.85, 3.5, 9.4, 3.5, {color:GOLD, w:2.5});
+      }
+    },
+    { map:3, title:"Audit: muffled voices and the birth of rays", pose:"think",
+      think:"Bass λ ~ 3 m vs treble λ ~ 3 cm through the same door — and what IS a ray, finally?",
+      say:"Two closing audits. Listen carefully at that doorway: the voice around the corner sounds muffled — because bass wavelengths of metres wrap generously while sibilant treble, at centimetres, beams past straight; the door is a diffraction low-pass filter, and your ear knows this physics already. And the grand moral of the whole tutorial: a 'ray' of light is nothing but a wave whose lambda over a is negligibly small — geometric optics is the lambda-to-zero limit of everything we have studied, valid exactly as long as apertures dwarf wavelengths. Reusable method: compute lambda over a before anything else; near one, think waves and lobes; near zero, draw rays with a clear conscience.",
+      board:[
+        {label:"The filter", tex:"\\text{bass wraps } (\\lambda \\sim a);\\ \\text{treble beams } (\\lambda \\ll a)\\ \\text{— hence muffled}", kind:"key"},
+        {label:"Reusable method", text:"λ/a is the whole story: ~1 → diffraction rules; ≪1 → rays and sharp shadows. Rays are the λ→0 limit of waves.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

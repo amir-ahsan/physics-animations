@@ -1426,6 +1426,480 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Nuclear radii from A^(1/3)",
+  problem:"Estimate the radii of ⁴He and ²⁰⁸Pb. Why do they differ by so much less than the factor of 52 in mass?",
+  goal:"Use R = R₀A^(1/3) and read constant density in the cube-root law.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The cube-root law","Two radii","Audit: liquid-drop packing"],
+  setup(ctx, w){
+    circleAt(ctx, 2.8, 3.5, 0.5, {stroke:GOLD, w:2.5});
+    label(ctx, 2.8, 2.4, 'He-4', {fs:11, color:GOLD});
+    circleAt(ctx, 7.0, 3.5, 1.85, {stroke:BLUE, w:2.5});
+    label(ctx, 7.0, 1.0, 'Pb-208', {fs:11, color:BLUE});
+  },
+  steps:[
+    { map:0, title:"Radius grows as the cube root", pose:"talk",
+      think:"If nucleons pack at fixed density, volume ∝ A — so radius ∝ ?",
+      say:"Scattering experiments hand us a marvellously simple law: every nuclear radius is one point two femtometres times the cube root of the mass number. A cube root, note — the whisper of a deeper fact we shall extract in the audit. First, the numbers.",
+      board:[
+        {label:"The law", tex:"R = R_0A^{1/3},\\qquad R_0 = 1.2\\ \\text{fm}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Helium and lead", pose:"write",
+      think:"4^(1/3) ≈ 1.6; 208^(1/3) ≈ 5.9.",
+      say:"Helium-four: one point two times the cube root of four — one point nine femtometres. Lead-two-oh-eight: one point two times five point nine — seven point one. Fifty-two times the nucleons, yet the radius grew by only the cube root of fifty-two: a factor of three point seven.",
+      board:[
+        {label:"Helium", tex:"R = 1.2(4)^{1/3} = 1.9\\ \\text{fm}", kind:"answer"},
+        {label:"Lead", tex:"R = 1.2(208)^{1/3} = 7.1\\ \\text{fm} = 3.7\\times R_{\\text{He}}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: every nucleus, one density", pose:"think",
+      think:"R³ ∝ A means volume per nucleon is constant — what picture does that force?",
+      say:"The audit decodes the cube root. If R cubed tracks A, then volume per nucleon is a universal constant — every nucleus, hydrogen to uranium, packs to the same staggering density, some ten to the seventeen kilograms per cubic metre. Nucleons behave like droplets of an incompressible liquid, stacking without squeezing — the liquid-drop picture that will run through fission. Contrast atoms, where a hundredfold change in Z barely moves the size: electrons rearrange, nucleons stack. Reusable method: R equals one point two A to the third femtometres; cube-root scaling in any system is the fingerprint of constant density.",
+      board:[
+        {label:"Constant density", tex:"\\rho_{\\text{nuc}} \\approx 2\\times10^{17}\\ \\text{kg/m}^3\\ \\text{for ALL nuclei}", kind:"key"},
+        {label:"Reusable method", text:"A^(1/3) growth ⟺ incompressible packing. Atoms size by shells; nuclei size by stacking.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Binding energy of the alpha particle",
+  problem:"With m(¹H) = 1.007825 u, m_n = 1.008665 u, m(⁴He) = 4.002602 u, find ⁴He's total binding energy and per-nucleon value.",
+  goal:"Weigh parts against whole, convert by 931.5, and meet the alpha's special stability.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The mass defect","Weigh and convert","Per nucleon","Audit: why alphas are units"],
+  setup(ctx, w){
+    circleAt(ctx, 2.0, 5.2, 0.3, {stroke:RED, w:2.5});
+    circleAt(ctx, 3.0, 5.2, 0.3, {stroke:RED, w:2.5});
+    circleAt(ctx, 2.0, 4.2, 0.3, {stroke:BLUE, w:2.5});
+    circleAt(ctx, 3.0, 4.2, 0.3, {stroke:BLUE, w:2.5});
+    label(ctx, 2.5, 3.3, '2p + 2n, apart', {fs:10, color:DIMC});
+    arrow(ctx, 4.2, 4.7, 5.8, 4.7, {color:DIMC, w:2});
+    circleAt(ctx, 7.3, 4.7, 0.62, {stroke:GOLD, w:2.5});
+    label(ctx, 7.3, 3.6, 'He-4: lighter!', {fs:10, color:GOLD});
+  },
+  steps:[
+    { map:0, title:"The whole weighs less than its parts", pose:"talk",
+      think:"Binding energy left the system when it assembled — so the mass did what?",
+      say:"Here is nuclear physics' founding scandal: weigh two protons and two neutrons separately, then weigh the helium nucleus they form — the assembled nucleus is lighter. The missing mass departed as binding energy when the pieces fell together, at Einstein's exchange rate. One bookkeeping mercy: using atomic masses, the electrons balance on both sides and cancel themselves.",
+      board:[
+        {label:"Mass defect", tex:"\\Delta m = 2m(^1\\text{H}) + 2m_n - m(^4\\text{He})", kind:"key"}
+      ]
+    },
+    { map:1, title:"Weigh, then convert", pose:"write",
+      think:"The defect in u, times 931.5 MeV per u.",
+      say:"The arithmetic: two of each, minus the helium mass — zero point zero three zero three seven eight atomic mass units. Convert at nine thirty-one point five M e V per u: twenty-eight point three M e V of binding. Three per cent of a nucleon's mass, surrendered to glue.",
+      board:[
+        {label:"Defect", tex:"\\Delta m = 2(1.007825) + 2(1.008665) - 4.002602 = 0.030378\\ \\text{u}", kind:"answer"},
+        {label:"Binding", tex:"E_B = (0.030378)(931.5) = 28.3\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Per nucleon: the honest metric", pose:"write",
+      think:"Divide by 4 — and compare with the neighbours ³He and ⁶Li.",
+      say:"Divide by four nucleons: seven point zero seven — seven point one M e V each. Now the context that makes it remarkable: helium-three manages two point six per nucleon, lithium-six only five point three. The alpha towers over its whole neighbourhood — a little fortress of stability among the light nuclei.",
+      board:[
+        {label:"Per nucleon", tex:"\\frac{E_B}{A} = \\frac{28.3}{4} = 7.07\\ \\text{MeV — neighbours: 2.6, 5.3}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the alpha's two careers", pose:"think",
+      think:"Exceptional stability explains which two grand phenomena?",
+      say:"The audit hires the fortress twice. Career one: radioactive decay — when a heavy nucleus must shed bulk, it ejects nucleons in the pre-assembled, tightly bound quartet, because emitting the alpha as a unit is energetically cheapest; that is why alpha particles, and not stray protons, stream from uranium. Career two: stellar ash — hydrogen burning in stars terminates at helium because the alpha's binding cliff makes it the natural resting point; the Sun is busily converting itself into these fortresses. Reusable method: defect from atomic masses — electrons cancel — times nine thirty-one point five; and judge stability by binding per nucleon, never by the total.",
+      board:[
+        {label:"Two careers", tex:"\\alpha\\text{-decay unit; stellar ash of H-burning}", kind:"key"},
+        {label:"Reusable method", text:"E_B = Δm × 931.5 MeV; per-nucleon is the comparable currency. Peaks in E_B/A rule decay AND astrophysics.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"Decay constant of carbon-14",
+  problem:"¹⁴C has T₁/₂ = 5730 yr. Find λ (per year and per second) and the fraction left after 1000 years.",
+  goal:"Convert half-life to decay constant and run the exponential honestly.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["λ from T₁/₂","After 1000 years","Audit: exponential vs linear, and the mean life"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.0, y0:1.0, xLab:'t (kyr)', yLab:'N/N₀'});
+    plotCurve(ctx, t => [t, 1.0 + 5.0*Math.exp(-0.29*(t-1.0))], 1.05, 9.2, {color:GOLD, w:2.5});
+    dashLine(ctx, 1.0, 3.5, 9.2, 3.5, {color:DIMC});
+    label(ctx, 8.5, 3.95, '½', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Two names for one rate", pose:"write",
+      think:"Half-life and decay constant both describe the same exponential — the bridge is ln 2.",
+      say:"Radioactive decay speaks two dialects: the half-life — intuitive, quotable — and the decay constant lambda — the per-nucleus probability of decaying per unit time, which the equations prefer. The bridge is the logarithm of two. For carbon-fourteen: one point two one times ten to the minus four per year, or three point eight three times ten to the minus twelve per second.",
+      board:[
+        {label:"Bridge", tex:"\\lambda = \\frac{\\ln 2}{T_{1/2}} = \\frac{0.693}{5730} = 1.21\\times10^{-4}\\ \\text{yr}^{-1} = 3.83\\times10^{-12}\\ \\text{s}^{-1}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"A millennium's toll", pose:"write",
+      think:"e^(−λt) with λt = 0.121.",
+      say:"After one thousand years: e to the minus zero point one two one — eighty-eight point six per cent remains. Eleven per cent of the carbon-fourteen has quietly become nitrogen in the bone before a fifth of a half-life has passed.",
+      board:[
+        {label:"Fraction", tex:"\\frac{N}{N_0} = e^{-\\lambda t} = e^{-0.121} = 0.886", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Audit: two traps disarmed", pose:"think",
+      think:"Why isn't the loss (1000/5730)×50%? And which is longer, mean life or half-life?",
+      say:"The audit disarms two standing confusions. First, linearity: the naive estimate — a fifth of the way to the half-life, so a fifth of fifty per cent, about nine — undercounts, because the exponential decays fastest at the start, when the most nuclei remain to gamble. Eleven, not nine. Second, the mean lifetime: one over lambda, eight thousand two hundred seventy years — forty-four per cent longer than the half-life, since the long-surviving stragglers drag the average out past the median. Half of the sample is gone at the half-life; the average nucleus lives longer. Reusable method: lambda equals log two over the half-life; always exponentiate, never interpolate; and keep median and mean lifetimes in separate pockets.",
+      board:[
+        {label:"Traps", tex:"\\text{linear estimate low};\\quad \\tau = \\frac{1}{\\lambda} = 8270\\ \\text{yr} = 1.44\\,T_{1/2}", kind:"warn"},
+        {label:"Reusable method", text:"N = N₀e^(−λt) always. T₁/₂ = median, 1/λ = mean; the exponential front-loads the losses.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Radiocarbon dating",
+  problem:"One bone shows 25.0% of living ¹⁴C activity; another 10.0%. Find both ages.",
+  goal:"Invert the exponential for time — by half-life counting when possible, by logarithm when not.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The clock's principle","25%: count halvings","10%: take the log","Audit: the clock's limits"],
+  setup(ctx, w){
+    boxAt(ctx, 2.6, 2.6, 2.6, 1.4, {fill:'none', stroke:CHALKC});
+    label(ctx, 2.6, 2.0, 'bone A: 25%', {fs:10, color:DIMC});
+    boxAt(ctx, 7.2, 2.6, 2.6, 1.4, {fill:'none', stroke:CHALKC});
+    label(ctx, 7.2, 2.0, 'bone B: 10%', {fs:10, color:DIMC});
+    label(ctx, 5.0, 5.8, '¹⁴C stops refreshing at death', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Death starts the stopwatch", pose:"talk",
+      think:"Living tissue holds steady ¹⁴C; dead tissue only loses it. What equation gives t?",
+      say:"While an organism lives, it swaps carbon with the atmosphere and holds a steady dose of carbon-fourteen. Death seals the account, and the isotope drains at its immutable rate — the corpse becomes a clock. Read the remaining fraction, invert the exponential, and the time of death emerges.",
+      board:[
+        {label:"The clock", tex:"t = \\frac{T_{1/2}}{\\ln 2}\\ln\\frac{A_0}{A}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Bone A: pure halvings", pose:"write",
+      think:"25% = (½)² — no logarithm required.",
+      say:"Twenty-five per cent is one half squared — exactly two half-lives, no logarithm needed: eleven thousand four hundred sixty years. Always scan for powers of one half before reaching for the log button; nature occasionally hands you clean arithmetic.",
+      board:[
+        {label:"Bone A", tex:"25\\% = \\left(\\tfrac{1}{2}\\right)^2:\\ t = 2T_{1/2} = 11\\,460\\ \\text{yr}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Bone B: the honest logarithm", pose:"write",
+      think:"10% is no power of ½ — apply the formula.",
+      say:"Ten per cent obliges no such shortcut. The formula: fifty-seven thirty over log two, times log ten — nineteen thousand years. This bone predates agriculture; its owner watched ice-age megafauna.",
+      board:[
+        {label:"Bone B", tex:"t = \\frac{5730}{0.693}\\ln 10 = 19\\,000\\ \\text{yr}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: what the clock assumes, where it dies", pose:"think",
+      think:"What if atmospheric ¹⁴C wasn't constant? And why ~50 000 yr maximum?",
+      say:"The audit reads the instrument's fine print. Assumption: the atmosphere's carbon-fourteen level was constant — in truth it wandered with solar activity and Earth's magnetic field, so raw dates are corrected against tree-ring chronologies, rings counted year by year deep into the past. Expiry: past ten half-lives, under a tenth of a per cent survives, and the faintest modern contamination shouts over the signal — fifty thousand years is the practical horizon. Older questions demand slower clocks: potassium-forty at a billion and a quarter years, uranium-two-thirty-eight at four and a half billion, the very clock that dated the Earth. Reusable method: count clean halvings first, log otherwise — and match the isotope's half-life to the age you are asking about.",
+      board:[
+        {label:"Fine print", tex:"\\text{tree-ring calibration; horizon} \\sim 10\\,T_{1/2} \\approx 50\\ \\text{kyr}", kind:"key"},
+        {label:"Reusable method", text:"t = (T½/ln2)ln(A₀/A). Pick the clock whose T½ ~ the age sought: ¹⁴C bones, ⁴⁰K rocks, ²³⁸U planets.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Activity of a milligram of radium",
+  problem:"²²⁶Ra has T₁/₂ = 1600 yr. Find the activity of 1.00 mg in becquerels and curies.",
+  goal:"Chain N from moles with λ from the half-life, and meet history's unit.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["A = λN","Count the nuclei","The activity","Audit: the warm and dangerous speck"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 3.6, 0.5, {stroke:GOLD, w:2.5});
+    label(ctx, 5.0, 2.5, '1.00 mg Ra-226', {fs:11, color:DIMC});
+    arrow(ctx, 5.4, 4.0, 6.8, 5.2, {color:RED, w:1.5});
+    arrow(ctx, 4.6, 4.0, 3.2, 5.2, {color:RED, w:1.5});
+    arrow(ctx, 5.5, 3.2, 6.9, 2.2, {color:RED, w:1.5});
+  },
+  steps:[
+    { map:0, title:"Activity is a product", pose:"talk",
+      think:"Decays per second = (chance per nucleus per second) × (number of nuclei).",
+      say:"A sample's activity — its decays per second — is the cleanest product in the subject: lambda, each nucleus's per-second gamble, times N, the number of gamblers. One factor comes from the half-life, the other from the scales via Avogadro. Assemble both.",
+      board:[
+        {label:"Activity", tex:"A = \\lambda N", kind:"key"}
+      ]
+    },
+    { map:1, title:"Count the gamblers", pose:"write",
+      think:"A milligram over 226 g/mol, times Avogadro.",
+      say:"One milligram of radium-two-twenty-six: ten to the minus three grams over two hundred twenty-six grams per mole, times six point zero two times ten to the twenty-three — two point six six times ten to the eighteen nuclei. And lambda: log two over sixteen hundred years in seconds — one point three seven times ten to the minus eleven per second. A minuscule chance, an astronomical crowd.",
+      board:[
+        {label:"Nuclei", tex:"N = \\frac{10^{-3}}{226}(6.022\\times10^{23}) = 2.66\\times10^{18}", kind:"answer"},
+        {label:"Constant", tex:"\\lambda = \\frac{0.693}{(1600)(3.156\\times10^{7})} = 1.37\\times10^{-11}\\ \\text{s}^{-1}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Multiply: the milligram's roar", pose:"write",
+      think:"λN — and the historical unit appears.",
+      say:"Multiply: thirty-seven million becquerels — thirty-seven million disintegrations every second, from a speck barely visible. In the older currency, zero point nine nine millicuries — and no accident: the curie was defined as the activity of one full gram of radium, three point seven times ten to the ten becquerels, in homage to Marie Curie's ur-sample.",
+      board:[
+        {label:"Activity", tex:"A = \\lambda N = 3.66\\times10^{7}\\ \\text{Bq} = 0.99\\ \\text{mCi}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: feel the number", pose:"think",
+      think:"37 million α's of 4.8 MeV per second — watts? dose?",
+      say:"The audit converts the roar to consequences. Each decay hurls a four point eight M e V alpha: the milligram dissipates about twenty-eight microwatts — enough that a gram of radium keeps itself perceptibly warm forever, the mystery heat that first announced nuclear energy to the Curies. And unshielded, those tens of millions of alphas per second deliver a dangerous dose within hours — the radium-dial painters of the nineteen-twenties learned it tragically. Reusable method: N from mass over molar mass times Avogadro, lambda from the half-life in seconds, activity their product — and always translate becquerels into watts and dose before judging a source 'small'.",
+      board:[
+        {label:"Consequences", tex:"P \\approx 28\\ \\mu\\text{W warm to the touch; hours to a harmful dose}", kind:"key"},
+        {label:"Reusable method", text:"A = λN; 1 Ci ≡ 3.7×10¹⁰ Bq (1 g of Ra). Activity × energy per decay = power — the safety number.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Alpha decay of polonium-210",
+  problem:"²¹⁰Po (209.982874 u) → ²⁰⁶Pb (205.974465 u) + ⁴He (4.002602 u). Find Q and the alpha's kinetic energy.",
+  goal:"Weigh the reaction for Q, then let momentum conservation split the prize.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Q from the masses","Recoil splits the prize","The alpha's share","Audit: sharp lines identify"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 3.5, 0.8, {stroke:GOLD, w:2.5});
+    label(ctx, 5.0, 2.2, 'Po-210 at rest', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Weigh before and after", pose:"write",
+      think:"Q = (m_parent − m_daughter − m_α) × 931.5.",
+      say:"The energy released is bought by lost mass: parent minus daughter minus alpha — zero point zero zero five eight zero seven u — times nine thirty-one point five: five point four one M e V. Positive Q, so the decay proceeds spontaneously; polonium-two-ten is a loaded spring.",
+      board:[
+        {label:"Q value", tex:"Q = (0.005807)(931.5) = 5.41\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Momentum divides the estate", pose:"talk",
+      think:"Parent at rest: alpha and lead leave with equal, opposite p — so K splits how?",
+      say:"The polonium sat at rest, so the fragments must depart with equal and opposite momenta. Equal p but unequal masses means unequal kinetic energies — K is p squared over two m, so the energies divide inversely with mass: the featherweight alpha sprints away with the lion's share while the massive lead barely flinches.",
+      board:[
+        {label:"The split", tex:"K_\\alpha = Q\\,\\frac{m_{\\text{Pb}}}{m_{\\text{Pb}} + m_\\alpha}", kind:"key", move:"equal p, K ∝ 1/m"}
+      ]
+    },
+    { map:2, title:"Evaluate the shares", pose:"write",
+      think:"206/210 of Q for the alpha.",
+      say:"The alpha's fraction: two hundred six over two hundred ten — five point three one M e V, ninety-eight per cent of the estate. The lead daughter keeps a tenth of an M e V. Small — yet a tenth of an M e V slams the recoiling atom several crystal layers deep, the microscopic origin of radiation damage in solids and of daughters recoiling clean off surfaces.",
+      board:[
+        {label:"Alpha", tex:"K_\\alpha = 5.41\\times\\frac{206}{210} = 5.31\\ \\text{MeV}", kind:"answer"},
+        {label:"Lead recoil", tex:"K_{\\text{Pb}} = 0.10\\ \\text{MeV — buries itself layers deep}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 5.6, 3.5, 9.0, 3.5, {color:RED, w:2.5, label:'α: 5.31 MeV', fs:10});
+        arrow(c, 4.35, 3.5, 3.3, 3.5, {color:BLUE, w:2, label:'Pb', fs:10, side:1});
+      }
+    },
+    { map:3, title:"Audit: why alpha spectra are fingerprints", pose:"think",
+      think:"Two-body decay: is K_α a spread or a spike? Contrast beta decay.",
+      say:"The audit extracts the diagnostic principle. With exactly two fragments, conservation of energy and momentum admits one solution: every polonium-two-ten decay launches its alpha at exactly five point three one M e V — a razor-sharp spectral spike, the isotope's fingerprint. Detect that line in a sample and the identification is made; this is how the twenty-ten poisoning of Litvinenko was traced to this very nuclide. Hold the contrast for the next example: three-body decays smear their spectra into continua — and that smear once threatened physics itself. Reusable method: Q from the mass ledger; two-body splits give the light fragment Q times the heavy mass fraction; sharp lines mean two bodies.",
+      board:[
+        {label:"Fingerprint", tex:"\\text{2 bodies} \\Rightarrow \\text{unique } K_\\alpha:\\ \\text{sharp line IDs the nuclide}", kind:"key"},
+        {label:"Reusable method", text:"K_light = Q·M_heavy/(M_heavy+m_light) ≈ 98% for α-decay. Line spectra ⟺ two-body kinematics.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Beta decay of carbon-14",
+  problem:"¹⁴C (14.003242 u) → ¹⁴N (14.003074 u) + e⁻ + ν̄. Find Q. Why do the electrons show a continuous spectrum up to 0.156 MeV?",
+  goal:"Handle the electron bookkeeping, then let the smeared spectrum summon the neutrino.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Atomic masses balance electrons","Tiny Q","The smeared spectrum","Audit: Pauli's desperate remedy"],
+  setup(ctx, w){
+    circleAt(ctx, 2.6, 3.5, 0.7, {stroke:GOLD, w:2.5});
+    label(ctx, 2.6, 2.3, 'C-14', {fs:11, color:DIMC});
+    arrow(ctx, 3.5, 3.5, 5.1, 3.5, {color:DIMC, w:2});
+    circleAt(ctx, 6.1, 3.5, 0.7, {stroke:GREEN, w:2.5});
+    label(ctx, 6.1, 2.3, 'N-14', {fs:11, color:DIMC});
+    arrow(ctx, 6.9, 3.9, 8.6, 5.0, {color:BLUE, w:2, label:'e⁻', fs:10});
+    arrow(ctx, 6.9, 3.1, 8.6, 2.0, {color:PURPLE, w:1.5, dash:'5 4', label:'ν̄', fs:10});
+  },
+  steps:[
+    { map:0, title:"The electron bookkeeping trick", pose:"talk",
+      think:"Atomic masses carry their electrons — count them through β⁻ decay.",
+      say:"Beta-minus decay turns a neutron into a proton, spitting out an electron and an antineutrino. The mass bookkeeping hides a pleasant conspiracy: atomic masses include the orbiting electrons — six for carbon, seven for nitrogen — and the freshly emitted beta is precisely the seventh. The electron ledger balances itself: subtract the two atomic masses and the Q value emerges with no further correction.",
+      board:[
+        {label:"Clean ledger", tex:"Q = \\left[m(^{14}\\text{C}) - m(^{14}\\text{N})\\right]c^2\\ \\text{(atomic masses)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"A tiny prize", pose:"write",
+      think:"Δm = 0.000168 u — compare with alpha decays' MeV.",
+      say:"The difference: zero point zero zero zero one six eight u — zero point one five six M e V. Thirty times leaner than polonium's alpha prize. File that leanness: beta rates rise steeply with Q, and this starveling Q is a large part of why carbon-fourteen lingers for millennia — the very patience that makes it a dating clock.",
+      board:[
+        {label:"Q value", tex:"Q = (0.000168)(931.5) = 0.156\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The spectrum that shouldn't be", pose:"write",
+      think:"If only e⁻ and N-14 shared Q, the electron energy would be fixed — is it?",
+      say:"Now history's crisis. Were this a two-body decay, every electron would carry a fixed energy, a sharp line like the alpha's. The measurement instead: a continuous smear from zero up to zero point one five six M e V, with most electrons well short of the maximum. Energy seemed to vanish — and vanish differently in every decay. Bohr himself contemplated abandoning conservation of energy.",
+      board:[
+        {label:"Observed", tex:"K_e:\\ \\text{continuum } 0 \\to 0.156\\ \\text{MeV — where's the rest?}", kind:"warn"}
+      ],
+      action(c){
+        axes2D(c, {x0:0, x1:10, y0:0, y1:7}, {x0:1.0, y0:0.6, xLab:'K_e', yLab:'count'});
+        plotCurve(c, t => [t, 0.6 + 1.15*(t-1.0)*Math.pow(Math.max(4.4-(t-1.0),0),1.4)*0.12], 1.05, 5.4, {color:BLUE, w:2, N:120});
+        label(c, 5.4, 0.25, 'Q', {fs:10, color:DIMC});
+      }
+    },
+    { map:3, title:"Audit: the particle invented to save a law", pose:"think",
+      think:"A third, invisible sharer of Q — what properties must it have?",
+      say:"The audit celebrates physics' boldest accounting fix. Pauli, nineteen thirty, proposed a 'desperate remedy': a third decay product — neutral, nearly massless, ghostly beyond detection — sharing the prize invisibly. Three bodies split Q in a continuum of ways: the smeared spectrum is explained, with the endpoint at Q reached only when the ghost takes nothing. Fermi named it the neutrino; twenty-six years later, reactor experiments caught it. A conservation law, trusted against the evidence, predicted a particle. Reusable method: atomic masses balance the electrons in beta-minus decay; a continuous spectrum always confesses three or more bodies; and when energy seems to vanish, hunt the invisible sharer before doubting the ledger.",
+      board:[
+        {label:"The remedy", tex:"\\bar{\\nu}:\\ \\text{neutral, } \\sim\\text{massless — endpoint} = Q\\ \\checkmark\\ \\text{(detected 1956)}", kind:"key"},
+        {label:"Reusable method", text:"Continuum ⟺ 3-body; endpoint = Q. Conservation laws are prediction engines — trust them into the dark.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Energy per kilogram: fission versus chemistry",
+  problem:"Each ²³⁵U fission releases ~200 MeV. Find the energy from 1.00 kg fully fissioned, and compare with 1.00 kg of gasoline (4.6×10⁷ J).",
+  goal:"Scale MeV-per-nucleus to joules-per-kilogram and confront the million-fold gulf.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Count the nuclei","Total the energy","The 1.8-million ratio","Audit: tonnes vs megatonnes"],
+  setup(ctx, w){
+    boxAt(ctx, 2.6, 2.6, 2.0, 2.0, {fill:'none', stroke:GOLD});
+    label(ctx, 2.6, 1.9, '1 kg U-235', {fs:10, color:GOLD});
+    boxAt(ctx, 7.4, 2.6, 2.0, 2.0, {fill:'none', stroke:RED});
+    label(ctx, 7.4, 1.9, '1 kg gasoline', {fs:10, color:RED});
+    label(ctx, 5.0, 5.8, 'same mass — how much energy?', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"From one nucleus to a kilogram", pose:"write",
+      think:"1000 g over 235 g/mol times Avogadro.",
+      say:"The scaling bridge is Avogadro: a kilogram of uranium-two-thirty-five holds a thousand over two thirty-five moles — two point five six times ten to the twenty-four nuclei. Each is a cocked spring worth two hundred M e V. Multiply and behold.",
+      board:[
+        {label:"Count", tex:"N = \\frac{1000}{235}(6.022\\times10^{23}) = 2.56\\times10^{24}", kind:"answer"}
+      ]
+    },
+    { map:1, title:"Total the release", pose:"write",
+      think:"N × 200 MeV × 1.602×10⁻¹⁹ J/eV.",
+      say:"Two point five six times ten to the twenty-four, times two hundred million electron-volts, times the joule conversion: eight point two times ten to the thirteen joules. Eighty-two terajoules from a kilogram — the same figure our relativity tutorial reached as 'a tenth of a per cent of m c squared', now built nucleus by nucleus.",
+      board:[
+        {label:"Energy", tex:"E = (2.56\\times10^{24})(200\\times10^{6})(1.602\\times10^{-19}) = 8.2\\times10^{13}\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Divide by the gasoline", pose:"write",
+      think:"8.2×10¹³ over 4.6×10⁷ — and trace the ratio to its origin.",
+      say:"Against gasoline's forty-six megajoules: a factor of one point eight million. And the origin of the gulf is no mystery — it is the ratio of the binding ladders: nuclear rearrangements trade in M e V, chemical ones in e V. Six orders of magnitude in the currency, a few remaining factors in the details.",
+      board:[
+        {label:"Ratio", tex:"\\frac{8.2\\times10^{13}}{4.6\\times10^{7}} = 1.8\\times10^{6}:\\ \\text{MeV vs eV, embodied}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the logistics of a million", pose:"think",
+      think:"A 1 GW plant for a year: how much uranium? How much coal?",
+      say:"The audit makes the million-fold ratio walk around in the world. A gigawatt power station running a year needs about one tonne of uranium-two-thirty-five — a truckload, delivered once. Its coal-fired twin devours three million tonnes — a hundred-car train arriving every single day, all year. Same electricity, six orders of magnitude apart in freight, ash, and carbon. Whatever one's politics of the atom, the physics of the ratio is not negotiable. Reusable method: per-kilogram energy is Avogadro over molar mass, times the per-event release — and the eV-to-MeV ladder means nuclear logistics are always a million-fold lighter than chemical.",
+      board:[
+        {label:"Logistics", tex:"1\\ \\text{GW·yr}:\\ \\sim1\\ \\text{t U-235 vs } 3\\times10^{6}\\ \\text{t coal}", kind:"key"},
+        {label:"Reusable method", text:"E/kg = (N_A/M)(E per event). The binding-energy ladder (eV → MeV) is the whole story of nuclear power.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Deuterium–tritium fusion: who gets the energy?",
+  problem:"²H + ³H → ⁴He + n (masses 2.014102, 3.016049, 4.002602, 1.008665 u). Find Q and the kinetic energies of neutron and alpha.",
+  goal:"Compute fusion's flagship Q, split it by momentum, and read reactor design in the split.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The flagship reaction","Q = 17.6 MeV","Momentum splits 80/20","Audit: the split designs the reactor"],
+  setup(ctx, w){
+    circleAt(ctx, 2.2, 4.4, 0.35, {stroke:BLUE, w:2.5});
+    label(ctx, 2.2, 5.3, 'D', {fs:11, color:BLUE});
+    circleAt(ctx, 2.2, 2.6, 0.4, {stroke:GREEN, w:2.5});
+    label(ctx, 2.2, 1.6, 'T', {fs:11, color:GREEN});
+    arrow(ctx, 3.0, 3.5, 4.4, 3.5, {color:DIMC, w:2});
+    circleAt(ctx, 5.4, 3.5, 0.45, {stroke:GOLD, w:2.5});
+    label(ctx, 5.4, 2.5, 'He-4', {fs:10, color:GOLD});
+    arrow(ctx, 6.0, 3.7, 9.0, 4.6, {color:RED, w:2, label:'n', fs:11});
+  },
+  steps:[
+    { map:0, title:"The easiest fire to light", pose:"talk",
+      think:"Why D–T among all fusion reactions — and what does the mass ledger promise?",
+      say:"Of all fusion reactions, deuterium–tritium ignites at the lowest temperature — a mere hundred fifty million kelvin — which is why every fusion machine from tokamaks to ignition lasers burns this fuel first. Weigh the ledger: reactants minus products leave zero point zero one eight eight eight four u on the table.",
+      board:[
+        {label:"Reaction", tex:"^2\\text{H} + {}^3\\text{H} \\to {}^4\\text{He} + n", kind:"key"}
+      ]
+    },
+    { map:1, title:"The prize", pose:"write",
+      think:"0.018884 × 931.5 — fusion's famous number.",
+      say:"Convert: seventeen point six M e V per fusion — the most quoted number in fusion energy. Per kilogram of fuel it comes to three point four times ten to the fourteen joules, four times even fission's yield, from the two heavy isotopes of ordinary hydrogen.",
+      board:[
+        {label:"Q value", tex:"Q = (0.018884)(931.5) = 17.6\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"Momentum divides: light takes most", pose:"write",
+      think:"Equal and opposite p — the 1-u neutron vs the 4-u alpha.",
+      say:"The products recoil with equal and opposite momenta, so energies divide inversely with mass — the polonium logic, rerun. The neutron, four times lighter than the alpha, seizes four fifths: fourteen point one M e V. The alpha keeps three point five. Remember both numbers; the entire architecture of fusion power hangs on them.",
+      board:[
+        {label:"Neutron", tex:"K_n = 17.6\\times\\frac{4.00}{5.01} = 14.1\\ \\text{MeV}", kind:"answer"},
+        {label:"Alpha", tex:"K_\\alpha = 17.6\\times\\frac{1.01}{5.01} = 3.5\\ \\text{MeV}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: kinematics writes the blueprint", pose:"think",
+      think:"Neutral 14-MeV particle vs charged 3.5-MeV particle in a magnetic bottle — who stays, who leaves, and what jobs do they do?",
+      say:"The audit shows two-body kinematics designing a power station. The neutron is neutral: no magnetic bottle can hold it, so it sails through the field with its fourteen M e V and must be caught in a thick blanket — where its capture heats the working fluid and, striking lithium, breeds fresh tritium to close the fuel cycle. The alpha is charged: the field imprisons it, and its three and a half M e V thermalise into the plasma — the self-heating that a 'burning' plasma needs to sustain its own temperature, the milestone recent ignition experiments chased. One momentum split, two engineering destinies. Reusable method: Q from the mass ledger; split by inverse masses; then ask of each product — charged or neutral? — for that single bit decides where its energy can be collected.",
+      board:[
+        {label:"Blueprint", tex:"n\\ \\text{(neutral)} \\to \\text{blanket: heat + breed T};\\quad \\alpha\\ \\text{(charged)} \\to \\text{self-heat plasma}", kind:"key"},
+        {label:"Reusable method", text:"K ∝ 1/m for two bodies; charge decides confinement. D–T: 80% to the escaping neutron — the blanket IS the power plant.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"A lethal dose is a tiny amount of energy",
+  problem:"Take 2 Gy to a 70 kg person as serious injury. (a) How much energy? (b) How many 1 MeV gammas? (c) The temperature rise if it were heat — and why radiation harms so disproportionately.",
+  goal:"Put numbers on dose and discover that the danger lies in the delivery, not the joules.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The gray","(a) A sip of coffee","(b) Count the photons","(c) Milli-kelvin","Audit: tracks, not heat"],
+  setup(ctx, w){
+    circleAt(ctx, 5.0, 4.9, 0.5, {stroke:CHALKC, w:2.5});
+    plotCurve(ctx, t => [5.0, 2.2 + 2.2*t], 0, 1, {color:CHALKC, w:2.5});
+    plotCurve(ctx, t => [5.0 - 0.9*t, 3.7 - 0.9*t], 0, 1, {color:CHALKC, w:2});
+    plotCurve(ctx, t => [5.0 + 0.9*t, 3.7 - 0.9*t], 0, 1, {color:CHALKC, w:2});
+    plotCurve(ctx, t => [5.0 - 0.7*t, 2.2 - 1.3*t], 0, 1, {color:CHALKC, w:2});
+    plotCurve(ctx, t => [5.0 + 0.7*t, 2.2 - 1.3*t], 0, 1, {color:CHALKC, w:2});
+    arrow(ctx, 1.2, 5.6, 4.3, 4.9, {color:PURPLE, w:1.5, dash:'5 4'});
+    arrow(ctx, 1.2, 4.2, 4.4, 4.0, {color:PURPLE, w:1.5, dash:'5 4'});
+  },
+  steps:[
+    { map:0, title:"Dose is joules per kilogram", pose:"talk",
+      think:"1 Gy ≡ 1 J/kg — the unit is thermodynamically humble.",
+      say:"Radiation dose has a disarmingly plain unit: the gray is one joule deposited per kilogram of tissue. Two gray across a seventy-kilogram person is a grave injury; four is lethal to half of those exposed. Let us weigh those joules — and prepare for the number to seem absurd.",
+      board:[
+        {label:"The unit", tex:"1\\ \\text{Gy} = 1\\ \\text{J/kg}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The energy of a sip", pose:"write",
+      think:"2 × 70 — that's all.",
+      say:"Two joules per kilogram, seventy kilograms: one hundred forty joules. The energy in a sip of warm coffee, or a tennis ball's flight. This trifle, delivered the wrong way, hospitalises an adult. Something other than quantity must be at work.",
+      board:[
+        {label:"(a) Energy", tex:"E = (2)(70) = 140\\ \\text{J — a sip of coffee}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Count the messengers", pose:"write",
+      think:"140 J over 1 MeV in joules.",
+      say:"As one-M e V gamma rays: one hundred forty over one point six times ten to the minus thirteen — nearly ten to the fifteen photons, some ten to the thirteen per kilogram of flesh. The dose arrives not as warmth but as a quadrillion microscopic bullets.",
+      board:[
+        {label:"(b) Photons", tex:"N = \\frac{140}{1.602\\times10^{-13}} = 8.7\\times10^{14}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"(c) The thermometer shrugs", pose:"write",
+      think:"ΔT = E/mc with c ≈ 3500 J/kg·K.",
+      say:"And as heat? One forty joules over seventy kilograms of tissue: six ten-thousandths of a kelvin. No thermometer, no nerve, no sensation. Thermally, the lethal dose does not exist.",
+      board:[
+        {label:"(c) Temperature", tex:"\\Delta T = \\frac{140}{(70)(3500)} = 0.0006\\ \\text{K — imperceptible}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the harm is in the handwriting", pose:"think",
+      think:"Each MeV photon ionizes ~30 000 times along a track — what does 10¹³ tracks/kg do that heat cannot?",
+      say:"The audit resolves the paradox and closes our course. Heat spreads its joules democratically over every molecule — a nudge apiece, harmless. Each M e V gamma instead spends its energy along a narrow track of tens of thousands of ionisations, snapping bonds — including DNA strands — at every step. Ten to the thirteen such tracks per kilogram vandalise a fraction of every cell's genome; the fast-dividing tissues, marrow and gut, fail within weeks. Hence the sievert: dose weighted by track density — an alpha, packing the same joules into far denser tracks, is scored twenty times a gamma's harm. The lesson is worthy of the whole course: energy's quantity matters less than its concentration — per photon, per track, per bond. Reusable method: dose times mass gives joules; joules over quantum gives the bullet count; and judge biological harm by ionisation density, never by temperature.",
+      board:[
+        {label:"The resolution", tex:"\\text{harm} \\propto \\text{ionisation density, not joules: hence Gy} \\to \\text{Sv weighting}", kind:"key"},
+        {label:"Reusable method", text:"140 J as heat: 0.6 mK. As tracks: 10¹³ genome-cutting events/kg. Concentration, not quantity, is the physics of damage.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================

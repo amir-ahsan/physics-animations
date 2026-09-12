@@ -1454,6 +1454,520 @@ diff:"Challenging",
         },
       ]
     },
+
+{
+  diff:"Basic",
+  title:"Efficiency from the heats",
+  problem:"Each cycle an engine absorbs 800 J from the hot reservoir and rejects 560 J to the cold one. Find the work per cycle, the efficiency, and the power at 50 cycles/s.",
+  goal:"Track energy through the engine schematic: W = Q_H − Q_C, e = W/Q_H.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The energy ledger","Work and efficiency","Power","Audit: why reject at all?"],
+  setup(ctx, w){
+    boxAt(ctx, 2.2, 5.0, 3.4, 1.1, {fill:'none', stroke:RED});
+    label(ctx, 2.2, 5.5, 'hot reservoir', {fs:11, color:RED});
+    circleAt(ctx, 2.2, 3.0, 0.75, {stroke:CHALKC, w:2.5});
+    label(ctx, 2.2, 2.9, 'engine', {fs:11, color:CHALKC});
+    boxAt(ctx, 2.2, 0.4, 3.4, 1.1, {fill:'none', stroke:BLUE});
+    label(ctx, 2.2, 0.9, 'cold reservoir', {fs:11, color:BLUE});
+    arrow(ctx, 2.2, 4.9, 2.2, 3.85, {color:RED, w:3, label:'Q_H = 800 J', fs:11});
+    arrow(ctx, 2.2, 2.25, 2.2, 1.55, {color:BLUE, w:2.5, label:'Q_C = 560 J', fs:11});
+  },
+  steps:[
+    { map:0, title:"Follow the joules", pose:"point",
+      think:"Per cycle, the engine returns to its start — so where can energy hide?",
+      say:"Draw the schematic before any formula: heat flows in from the hot reservoir, some leaves as work out the side, the rest is dumped below. After a full cycle the engine itself is unchanged — a state function argument — so the three flows must balance exactly.",
+      board:[
+        {label:"Cycle balance", tex:"Q_H = W + Q_C", kind:"key"}
+      ]
+    },
+    { map:1, title:"Work and efficiency", pose:"write",
+      think:"Efficiency compares what you got with what you paid — which is which?",
+      say:"Work per cycle: eight hundred minus five sixty — two hundred forty joules. Efficiency is what you got over what you paid for: two forty over eight hundred, thirty per cent. Equivalently one minus Q C over Q H — same number, and often the handier form.",
+      board:[
+        {label:"Work", tex:"W = Q_H - Q_C = 800 - 560 = 240\\ \\text{J}", kind:"answer"},
+        {label:"Efficiency", tex:"e = \\frac{W}{Q_H} = \\frac{240}{800} = 0.300 = 1 - \\frac{Q_C}{Q_H}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.95, 3.0, 5.4, 3.0, {color:GOLD, w:3, label:'W = 240 J', fs:12});
+      }
+    },
+    { map:2, title:"From cycles to power", pose:"write",
+      think:"Fifty cycles a second, 240 J each — power is just the product.",
+      say:"Power is work per time: two hundred forty joules, fifty times a second — twelve kilowatts. A small car engine's worth, from bookkeeping alone.",
+      board:[
+        {label:"Power", tex:"P = (240)(50) = 12.0\\ \\text{kW}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the mandatory waste", pose:"think",
+      think:"Is the 70% rejection a design flaw — or a law?",
+      say:"The audit is philosophical. Seventy per cent of the fuel's energy went overboard as waste heat — but this is not shoddy engineering. The second law demands that some heat be rejected; an engine with Q C equal to zero is forbidden outright. The only negotiable question is how much rejection is truly necessary — and that is the Carnot question, next example. Reusable method: draw the three-flow schematic, apply Q H equals W plus Q C, and take efficiency as W over Q H.",
+      board:[
+        {label:"Second law", tex:"Q_C > 0\\ \\text{always: some rejection is mandatory}", kind:"warn"},
+        {label:"Reusable method", text:"Schematic first. W = Q_H − Q_C per cycle; e = W/Q_H = 1 − Q_C/Q_H; multiply by cycle rate for power.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"The Carnot ceiling",
+  problem:"An engine runs between 500 K and 300 K. (a) Maximum efficiency? (b) Improvement if T_H rises to 600 K? (c) Could Example 7's engine (30%) operate between these reservoirs?",
+  goal:"Use e_C = 1 − T_C/T_H as the law-imposed ceiling and judge claims against it.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The ceiling formula","(a) 40%","(b) Push T_H up","(c) Judge the claim"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'T_H (K)', yLab:'e_C'});
+    plotCurve(ctx, t => [t, 1.0 + 4.8*(1 - 300/(150 + 62*(t-1.2)*10))], 3.2, 9.2, {color:GOLD, w:2.5});
+    dashLine(ctx, 1.2, 5.8, 9.2, 5.8, {color:DIMC});
+    label(ctx, 8.3, 6.3, 'e = 1', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"The law writes the ceiling", pose:"talk",
+      think:"What sets the best possible efficiency — cleverness, or the reservoirs?",
+      say:"Carnot's great theorem: no engine between two reservoirs can beat one minus T C over T H, and every reversible engine achieves exactly it. The ceiling depends only on the two temperatures — not the gas, not the mechanism, not the century of the engineer. And both temperatures must be absolute: Celsius in this formula is meaningless.",
+      board:[
+        {label:"Carnot ceiling", tex:"e_C = 1 - \\frac{T_C}{T_H}\\quad\\text{(kelvin only!)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) Between 500 and 300", pose:"write",
+      think:"300/500 = 0.6 — so the best possible e is?",
+      say:"Five hundred and three hundred kelvin: one minus zero point six — forty per cent. Even a perfect, frictionless, infinitely careful engine must discard sixty per cent of its heat between these reservoirs. That is the law's price, not the engineer's failure.",
+      board:[
+        {label:"(a)", tex:"e_C = 1 - \\frac{300}{500} = 0.400", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Raise the hot side", pose:"write",
+      think:"T_H 500 → 600 with T_C fixed — how much does the ceiling lift?",
+      say:"Push the hot reservoir to six hundred kelvin and the ceiling rises to fifty per cent — a hundred kelvin buys ten percentage points. This is why power stations chase ever-hotter steam and gas turbines flirt with the melting points of their own blades: temperature at the top is worth money.",
+      board:[
+        {label:"(b)", tex:"e_C = 1 - \\frac{300}{600} = 0.500\\ \\text{(+10 points)}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"(c) Sit in judgment", pose:"think",
+      think:"30% claimed, 40% ceiling — legal? What about a 45% claim?",
+      say:"Part c makes us the referee. Thirty per cent claimed, forty allowed: perfectly legal, merely imperfect — real engines always sit below the ceiling. But an engine claiming forty-five per cent between these same reservoirs would violate the second law, and you may reject it without examining a single gear. That is the ceiling's power: it convicts on temperatures alone. Reusable method: compute one minus T C over T H in kelvin; real efficiencies live strictly below it, and any claim above it is not optimistic — it is impossible.",
+      board:[
+        {label:"(c) Verdict", tex:"30\\% < 40\\%\\ \\checkmark\\ \\text{allowed};\\qquad 45\\% > 40\\%\\ \\text{✗ forbidden}", kind:"answer"},
+        {label:"Reusable method", text:"e_C = 1 − T_C/T_H is a law, not a target. Judge any engine claim against it before any other analysis. Absolute temperatures only.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Basic",
+  title:"A refrigerator's coefficient of performance",
+  problem:"A refrigerator removes 300 J from its interior per cycle using 100 J of electrical work. Find its COP and the heat dumped into the kitchen.",
+  goal:"Run the engine schematic backwards and see why COP > 1 breaks no laws.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Engine in reverse","COP","Heat to the kitchen","Audit: the open door"],
+  setup(ctx, w){
+    boxAt(ctx, 2.2, 5.0, 3.4, 1.1, {fill:'none', stroke:RED});
+    label(ctx, 2.2, 5.5, 'kitchen (hot)', {fs:11, color:RED});
+    circleAt(ctx, 2.2, 3.0, 0.75, {stroke:CHALKC, w:2.5});
+    label(ctx, 2.2, 2.9, 'fridge', {fs:11, color:CHALKC});
+    boxAt(ctx, 2.2, 0.4, 3.4, 1.1, {fill:'none', stroke:BLUE});
+    label(ctx, 2.2, 0.9, 'interior (cold)', {fs:11, color:BLUE});
+    arrow(ctx, 2.2, 1.55, 2.2, 2.25, {color:BLUE, w:2.5, label:'Q_C = 300 J', fs:11});
+    arrow(ctx, 5.4, 3.0, 2.95, 3.0, {color:GOLD, w:2.5, label:'W = 100 J', fs:11, side:1});
+  },
+  steps:[
+    { map:0, title:"The arrows reverse", pose:"point",
+      think:"A fridge moves heat from cold to hot — what does that cost?",
+      say:"A refrigerator is an engine run backwards: heat is hauled uphill, from cold interior to warm kitchen, and the second law charges a toll — electrical work — for the privilege. The figure of merit flips too: we now want maximum heat moved per joule of work paid.",
+      board:[
+        {label:"Refrigerator", tex:"\\text{COP} = \\frac{Q_C}{W}\\quad\\text{(what you want / what you pay)}", kind:"key"}
+      ]
+    },
+    { map:1, title:"COP of three", pose:"write",
+      think:"300 J moved for 100 J paid — the ratio is?",
+      say:"Three hundred joules extracted for one hundred paid: COP equals three. Every joule of electricity escorts three joules of heat out of the cold box. Greater than one — and no law is troubled, because the machine moves heat rather than creating it.",
+      board:[
+        {label:"COP", tex:"\\text{COP} = \\frac{300}{100} = 3.00", kind:"answer"}
+      ]
+    },
+    { map:2, title:"What the kitchen receives", pose:"write",
+      think:"Where do the 300 J AND the 100 J both end up?",
+      say:"Energy conservation closes the loop: the kitchen receives the extracted heat plus the work itself — four hundred joules. The coils behind the fridge exhale more heat than the interior ever surrendered.",
+      board:[
+        {label:"To the kitchen", tex:"Q_H = Q_C + W = 300 + 100 = 400\\ \\text{J}", kind:"answer"}
+      ],
+      action(c){
+        arrow(c, 2.2, 3.85, 2.2, 4.9, {color:RED, w:3, label:'Q_H = 400 J', fs:11});
+      }
+    },
+    { map:3, title:"Audit: the open-door experiment", pose:"think",
+      think:"Leave the fridge door open in a sealed kitchen — warmer or cooler?",
+      say:"The audit is the classic party question. Leave the door open in a sealed kitchen: the fridge dutifully pumps heat out of the air in front of it and delivers that heat, plus the work, out the back — into the same room. Net effect: the kitchen warms, by exactly the electrical power consumed. A refrigerator is a heat relocator, and with the door open it relocates in a circle while its motor pays the tab. Reusable method: COP is Q C over W, Q H equals Q C plus W, and any 'paradox' dissolves the moment you draw the arrows.",
+      board:[
+        {label:"Open door", tex:"\\text{net heating of room} = W_{\\text{electrical}}", kind:"key"},
+        {label:"Reusable method", text:"Fridge = reversed engine. COP = Q_C/W may exceed 1 freely; the kitchen always gets Q_C + W. Draw the arrows.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Heat pump versus electric heater",
+  problem:"A house needs 10.0 kW of heat at 0°C outside, 20°C inside. (a) Carnot COP of a heat pump? (b) Electrical power for a real pump with COP 3.5? (c) Compare with a resistance heater.",
+  goal:"See why moving heat beats making it, and where the advantage erodes.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Heating flips the merit","(a) The Carnot COP","(b) The real bill","(c) Versus resistance","Audit: when winter bites"],
+  setup(ctx, w){
+    boxAt(ctx, 7.2, 1.5, 3.6, 3.4, {fill:'none', stroke:RED});
+    label(ctx, 7.2, 3.3, 'house 293 K', {fs:11, color:RED});
+    label(ctx, 7.2, 0.8, 'needs 10.0 kW', {fs:10, color:DIMC});
+    label(ctx, 1.9, 3.9, 'outdoors 273 K', {fs:11, color:BLUE});
+    circleAt(ctx, 4.6, 3.0, 0.6, {stroke:CHALKC, w:2.5});
+    label(ctx, 4.6, 1.9, 'pump', {fs:10, color:CHALKC});
+    arrow(ctx, 2.9, 3.0, 3.95, 3.0, {color:BLUE, w:2.5});
+    arrow(ctx, 5.25, 3.0, 6.3, 3.0, {color:RED, w:3});
+  },
+  steps:[
+    { map:0, title:"For heating, count Q_H", pose:"talk",
+      think:"A heat pump's product is delivered warmth — so which flow sits in the numerator?",
+      say:"A heat pump is the refrigerator's optimistic twin: same machine, but now the product is the heat delivered indoors, Q H. So the coefficient of performance puts Q H over W — and its Carnot bound is T H over T H minus T C. Small temperature gaps promise spectacular returns.",
+      board:[
+        {label:"Heat pump", tex:"\\text{COP}_{\\text{hp}} = \\frac{Q_H}{W} \\leq \\frac{T_H}{T_H - T_C}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The ideal: fifteen for one", pose:"write",
+      think:"293 K over a 20 K gap — a big number is coming.",
+      say:"Two ninety-three over twenty: a Carnot COP of fourteen point seven. In the ideal world, one joule of electricity would usher nearly fifteen joules of warmth into the house — because most of that warmth is not made, merely moved from the winter air outside.",
+      board:[
+        {label:"(a) Ideal", tex:"\\text{COP}_C = \\frac{293}{20} = 14.7", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) The real machine's bill", pose:"write",
+      think:"COP 3.5 delivering 10 kW — what power is drawn from the grid?",
+      say:"A real pump manages three point five — far below Carnot, as real machines are, yet still handsome. To deliver ten kilowatts of heat it draws ten over three point five: two point eight six kilowatts from the grid. The remaining seven point one kilowatts are quietly extracted from the cold outdoor air — yes, zero-Celsius air is a rich energy mine.",
+      board:[
+        {label:"(b) Electrical", tex:"P = \\frac{10.0}{3.5} = 2.86\\ \\text{kW}", kind:"answer"},
+        {label:"From outdoors", tex:"10.0 - 2.86 = 7.1\\ \\text{kW pumped in free}", kind:"note"}
+      ]
+    },
+    { map:3, title:"(c) The resistance heater's shame", pose:"write",
+      think:"A resistance heater's COP is exactly what — and why?",
+      say:"A resistance heater converts electricity to heat one for one — COP of exactly one, the honest maximum for creating heat. It must draw the full ten kilowatts. The heat pump does the same job on three and a half times less electricity, simply because moving heat is cheaper than manufacturing it.",
+      board:[
+        {label:"(c) Resistance", tex:"\\text{COP} = 1:\\ P = 10.0\\ \\text{kW} = 3.5\\times\\ \\text{the pump's draw}", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the eroding advantage", pose:"think",
+      think:"As T_C falls, what happens to T_H/(T_H − T_C)?",
+      say:"The audit looks at the formula's weather forecast. The gap T H minus T C sits in the denominator: as winter deepens, the COP slides — precisely when you need heat most. Hence ground-source pumps, which sip from ten-degree soil that never feels the cold snap, holding their small gap all year. Reusable method: heating merit is Q H over W bounded by T H over the gap; small gaps are treasure, and the resistance heater's COP of one is the floor you should refuse to accept.",
+      board:[
+        {label:"Winter penalty", tex:"\\text{COP} \\propto \\frac{1}{T_H - T_C}:\\ \\text{colder} \\Rightarrow \\text{weaker}", kind:"warn"},
+        {label:"Reusable method", text:"Pump: COP = T_H/ΔT ideal. Compare any heater to COP = 1 baseline. Shrink ΔT (ground source) to protect performance.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Entropy of melting, and of the universe",
+  problem:"0.500 kg of ice at 0°C melts by absorbing heat from a room at 20°C. Find ΔS of the ice, of the room, and of the universe.",
+  goal:"Apply ΔS = Q/T at each fixed temperature and watch the universe come out ahead.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Q/T at fixed T","The ice gains","The room loses","Universe: the sum","Audit: the reversible limit"],
+  setup(ctx, w){
+    boxAt(ctx, 5.0, 0.8, 8.4, 5.4, {fill:'none', stroke:RED});
+    label(ctx, 5.0, 5.6, 'room, 293 K', {fs:11, color:RED});
+    boxAt(ctx, 4.0, 2.2, 1.8, 1.4, {fill:'none', stroke:BLUE});
+    label(ctx, 4.0, 1.5, 'ice, 273 K', {fs:11, color:BLUE});
+    arrow(ctx, 6.6, 2.9, 5.0, 2.9, {color:GOLD, w:2.5, label:'Q', fs:12, side:1});
+  },
+  steps:[
+    { map:0, title:"Constant temperature: the easy case", pose:"talk",
+      think:"ΔS = ∫dQ/T — when does the integral collapse to Q/T?",
+      say:"Entropy change is the integral of d Q over T, and it collapses to plain Q over T whenever the temperature holds still. Both our actors qualify: the ice melts pinned at two seventy-three, the room is vast enough to lose heat without cooling. Two divisions, then a sum.",
+      board:[
+        {label:"Fixed T", tex:"\\Delta S = \\frac{Q}{T}", kind:"key"},
+        {label:"The heat", tex:"Q = mL_f = (0.500)(3.34\\times10^{5}) = 1.67\\times10^{5}\\ \\text{J}", kind:"note"}
+      ]
+    },
+    { map:1, title:"The ice's gain", pose:"write",
+      think:"167 kJ absorbed at 273 K — positive or negative ΔS?",
+      say:"The ice absorbs one hundred sixty-seven kilojoules at two hundred seventy-three kelvin: plus six hundred eleven joules per kelvin. Physically sensible — melting turns a rigid crystal into a liquid free-for-all; disorder, and entropy, jump.",
+      board:[
+        {label:"Ice", tex:"\\Delta S_{\\text{ice}} = \\frac{1.67\\times10^{5}}{273.15} = +611\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"The room's loss", pose:"write",
+      think:"Same Q leaves the room — but divided by which temperature?",
+      say:"The room surrenders the identical heat, but at its own temperature, two ninety-three: minus five hundred seventy joules per kelvin. Same joules, smaller entropy — because a kelvin-warmer reservoir counts each departing joule more cheaply. That asymmetry is where the story hides.",
+      board:[
+        {label:"Room", tex:"\\Delta S_{\\text{room}} = \\frac{-1.67\\times10^{5}}{293.15} = -570\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"The universe's verdict", pose:"write",
+      think:"Sum the two — sign and size?",
+      say:"Add: plus forty-two joules per kelvin. Positive, as the second law insists for any irreversible process — and heat sauntering across a twenty-kelvin gap is irreversible through and through. The books of the universe never balance downward.",
+      board:[
+        {label:"Universe", tex:"\\Delta S_{\\text{univ}} = 611 - 570 = +42\\ \\text{J/K} > 0\\ \\checkmark", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: the reversible limit", pose:"think",
+      think:"Let the room be at 0.001°C — what happens to ΔS_univ, and to the melting time?",
+      say:"The audit probes the limit. Cool the room toward two seventy-three and the two terms edge toward perfect cancellation: delta S universe goes to zero — the reversible ideal. But with no temperature gap, the heat has no incentive to flow, and the melting takes forever. There is the second law's standing bargain: perfection or speed, never both. Every real, finite-time process pays an entropy toll. Reusable method: Q over T for each body at its own fixed temperature, sum for the universe, and read the positive total as the signature — and the price — of irreversibility.",
+      board:[
+        {label:"The bargain", tex:"T_{\\text{room}} \\to T_{\\text{ice}}:\\ \\Delta S_{\\text{univ}} \\to 0\\ \\text{but}\\ t \\to \\infty", kind:"key"},
+        {label:"Reusable method", text:"ΔS = Q/T per reservoir (own T, signed Q); universe = sum > 0 for real processes. Gap drives speed AND makes entropy.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Intermediate",
+  title:"Heat leaking between reservoirs: the work that was lost",
+  problem:"1000 J conducts directly from a 500 K reservoir to a 300 K one. Find the total ΔS. How much work could a Carnot engine have extracted, and how does it relate to the entropy generated?",
+  goal:"Compute the entropy of a leak, then discover W_lost = T_C ΔS.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The leak","Entropy generated","The Carnot alternative","Audit: lost work = T_C ΔS"],
+  setup(ctx, w){
+    boxAt(ctx, 2.0, 4.6, 3.0, 1.2, {fill:'none', stroke:RED});
+    label(ctx, 2.0, 5.2, '500 K', {fs:12, color:RED});
+    boxAt(ctx, 2.0, 0.8, 3.0, 1.2, {fill:'none', stroke:BLUE});
+    label(ctx, 2.0, 1.4, '300 K', {fs:12, color:BLUE});
+    arrow(ctx, 2.0, 4.5, 2.0, 2.15, {color:GOLD, w:3, label:'1000 J', fs:12});
+  },
+  steps:[
+    { map:0, title:"An unattended leak", pose:"talk",
+      think:"Heat crossing a 200 K gap with no engine in the way — what was wasted?",
+      say:"Here heat simply falls from five hundred kelvin to three hundred — no piston, no turbine, nothing collects a toll. Nature permits this freely, but she keeps records. Our job is to read the ledger: how much entropy did the leak create, and what did the universe forfeit?",
+      board:[
+        {label:"The process", tex:"1000\\ \\text{J}:\\ 500\\ \\text{K} \\to 300\\ \\text{K, unresisted}", kind:"key"}
+      ]
+    },
+    { map:1, title:"Entropy of the leak", pose:"write",
+      think:"Two reservoirs, two Q/T terms — which dominates?",
+      say:"The hot reservoir loses a thousand joules at five hundred kelvin: minus two joules per kelvin. The cold one gains the same thousand at three hundred: plus three and a third. Net: plus one point three three joules per kelvin. The gain wins because the receiving temperature is lower — every downhill flow of heat manufactures entropy.",
+      board:[
+        {label:"Total", tex:"\\Delta S = -\\frac{1000}{500} + \\frac{1000}{300} = +1.33\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"What Carnot would have earned", pose:"write",
+      think:"Same 1000 J through an ideal engine — how much work comes out?",
+      say:"Now the counterfactual. Route the same thousand joules through a Carnot engine between these reservoirs: efficiency forty per cent, so four hundred joules of work, with six hundred delivered below. The leak produced the same final warming of the cold reservoir's neighbourhood — minus the four hundred joules of work, which simply never came to exist.",
+      board:[
+        {label:"Carnot", tex:"W = e_C Q_H = \\left(1 - \\tfrac{300}{500}\\right)(1000) = 400\\ \\text{J}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the exchange rate of waste", pose:"excited",
+      think:"Compare 400 J with T_C × ΔS = 300 × 1.33 — coincidence?",
+      say:"Now put the two numbers side by side: four hundred joules lost; entropy created, one point three three joules per kelvin; cold temperature, three hundred kelvin. Three hundred times one point three three is four hundred. Exactly. This is no accident but a general theorem: lost work equals T C times the entropy generated. Entropy is not an abstraction — it is the accountant of squandered opportunity, denominated in joules per kelvin, converted to joules at the cold reservoir's rate. Reusable method: sum Q over T for the leak, and multiply by T C to price, in work, what the irreversibility destroyed.",
+      board:[
+        {label:"The theorem", tex:"W_{\\text{lost}} = T_C\\,\\Delta S_{\\text{gen}} = (300)(1.33) = 400\\ \\text{J}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"Every J/K of entropy generated destroys T_C joules of extractable work — universal price tag on irreversibility.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Entropy of an ideal gas: two paths, two answers",
+  problem:"Two moles of N₂ are heated 300 K → 600 K (a) at constant pressure, (b) at constant volume. Find ΔS each way — and explain the difference despite identical ΔT.",
+  goal:"Integrate dQ/T along both paths and reconcile via the state-function formula.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Integrate dQ/T","(a) Constant pressure","(b) Constant volume","Audit: the missing 11.5 J/K"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 3.4], 2.6, 6.8, {color:GOLD, w:2.5});
+    label(ctx, 7.8, 3.4, '(a) fixed p', {fs:10, color:GOLD});
+    plotCurve(ctx, t => [2.6, t], 3.4, 6.0, {color:RED, w:2.5});
+    label(ctx, 3.9, 6.0, '(b) fixed V', {fs:10, color:RED});
+    circleAt(ctx, 2.6, 3.4, 0.1, {stroke:CHALKC, w:2});
+    label(ctx, 1.9, 2.8, '300 K', {fs:10, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Entropy needs an integral now", pose:"talk",
+      think:"T changes during the heating — why won't Q/T do?",
+      say:"Unlike melting, here the temperature moves while the heat flows, so we must integrate: d S equals d Q over T, with d Q equal to n C d T for whichever C the path prescribes. The integral of d T over T is a logarithm — entropy changes of heating are always logarithmic.",
+      board:[
+        {label:"General", tex:"\\Delta S = \\int\\frac{dQ}{T} = nC\\int_{T_1}^{T_2}\\frac{dT}{T} = nC\\ln\\frac{T_2}{T_1}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) At constant pressure", pose:"write",
+      think:"Which C? And ln 2 ≈ 0.693 does the rest.",
+      say:"Constant pressure takes C p — seven halves R for nitrogen. Two moles, log of two: forty point three joules per kelvin.",
+      board:[
+        {label:"(a)", tex:"\\Delta S_p = nC_p\\ln\\frac{600}{300} = (2.00)\\left(\\tfrac{7}{2}\\cdot8.314\\right)\\ln 2 = 40.3\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) At constant volume", pose:"write",
+      think:"Same ΔT, smaller C — so ΔS must be…?",
+      say:"Constant volume takes C V, five halves R: twenty-eight point eight joules per kelvin. Same temperatures, same gas, same doubling — yet a smaller entropy change. If entropy is a state function, how dare the answers differ?",
+      board:[
+        {label:"(b)", tex:"\\Delta S_V = nC_V\\ln\\frac{600}{300} = (2.00)\\left(\\tfrac{5}{2}\\cdot8.314\\right)\\ln 2 = 28.8\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: different destinations", pose:"think",
+      think:"Do the two processes actually end in the same state?",
+      say:"Resolution: the two processes do not end in the same state. Both reach six hundred kelvin, but the constant-pressure gas also doubled its volume; the rigid one did not. Their difference — eleven point five joules per kelvin — is precisely n R log two, the entropy of an isothermal doubling. The general state-function formula carries both a temperature term and a volume term, and it reproduces each answer exactly. Entropy is a state function; it is the states that differed. Reusable method: n C log T-ratio plus n R log V-ratio covers every ideal-gas path — check which state variables actually changed before comparing entropies.",
+      board:[
+        {label:"The gap", tex:"\\Delta S_p - \\Delta S_V = nR\\ln 2 = 11.5\\ \\text{J/K (the expansion)}", kind:"key"},
+        {label:"Master formula", tex:"\\Delta S = nC_V\\ln\\frac{T_2}{T_1} + nR\\ln\\frac{V_2}{V_1}", kind:"key"},
+        {label:"Reusable method", text:"ΔS differs only if final states differ. Use the two-term formula; the C_p shortcut silently bundles the volume term.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"The minimum power to run a freezer",
+  problem:"A freezer holds −18°C in a 22°C kitchen while 50.0 W leaks in through the walls. Find (a) the minimum electrical power, (b) the power at COP 2.0, (c) both effects of the kitchen warming to 32°C.",
+  goal:"Balance a steady-state leak with Carnot's best refrigeration.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["Steady state: remove the leak","(a) Carnot minimum","(b) The real unit","Audit: hot kitchens punish twice"],
+  setup(ctx, w){
+    boxAt(ctx, 3.2, 1.4, 3.4, 3.8, {fill:'none', stroke:BLUE});
+    label(ctx, 3.2, 3.4, '−18°C', {fs:12, color:BLUE});
+    label(ctx, 3.2, 0.7, 'freezer', {fs:11, color:DIMC});
+    label(ctx, 7.8, 5.9, 'kitchen 22°C', {fs:11, color:RED});
+    arrow(ctx, 6.6, 4.2, 5.0, 4.2, {color:RED, w:2, label:'leak 50 W', fs:10, side:1});
+    arrow(ctx, 6.6, 2.4, 5.0, 2.4, {color:RED, w:2});
+  },
+  steps:[
+    { map:0, title:"Steady state sets the task", pose:"talk",
+      think:"The interior temperature holds — so what must the machine remove per second?",
+      say:"The freezer's walls are imperfect: fifty watts of kitchen heat seep in continuously. For the interior to hold minus eighteen, the machine must pump heat out at exactly the rate it leaks in — fifty joules every second, forever. The leak defines the job; thermodynamics prices it.",
+      board:[
+        {label:"Steady state", tex:"\\dot{Q}_C = \\dot{Q}_{\\text{leak}} = 50.0\\ \\text{W}", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) The Carnot floor", pose:"write",
+      think:"Best COP = T_C/ΔT with T_C = 255 K, gap 40 K.",
+      say:"The best conceivable COP is T C over the gap: two fifty-five over forty — six point four. Dividing the fifty-watt task by it: seven point eight watts minimum. A nightlight's worth of power is all the second law strictly demands for this freezer.",
+      board:[
+        {label:"(a) Ideal", tex:"\\text{COP}_C = \\frac{255}{295-255} = 6.38 \\Rightarrow P_{\\min} = \\frac{50.0}{6.38} = 7.8\\ \\text{W}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) Reality at COP 2", pose:"write",
+      think:"Same 50 W task, COP 2.0 — the bill triples.",
+      say:"A real unit achieves a COP of two: twenty-five watts, roughly three times the ideal floor. The gap between seven point eight and twenty-five is the engineering margin — compressor friction, finite heat exchangers, imperfect gases — every bit of it lawful, none of it mandatory.",
+      board:[
+        {label:"(b) Real", tex:"P = \\frac{50.0}{2.0} = 25\\ \\text{W}", kind:"answer"}
+      ]
+    },
+    { map:3, title:"Audit: the double penalty", pose:"think",
+      think:"A warmer kitchen changes TWO things — which two?",
+      say:"Now warm the kitchen to thirty-two and watch the second law double-charge. First, the gap widens to fifty kelvin, dragging the ideal COP down to five point one. Second, the leak itself grows with the gap — roughly to sixty-two watts. Bigger task, weaker tool: the minimum climbs to twelve watts, the real unit to about thirty-one. That is why the coils belong in cool, ventilated air, and why a freezer in a hot garage costs more than its twin in a cellar. Reusable method: steady state means pump rate equals leak rate; divide by COP for power; and remember a hotter environment inflates both the numerator and the denominator's misery.",
+      board:[
+        {label:"(c) At 32°C", tex:"\\text{COP}_C = \\frac{255}{50} = 5.1;\\ \\dot{Q} \\approx 62\\ \\text{W} \\Rightarrow P_{\\min} = 12\\ \\text{W}", kind:"answer"},
+        {label:"Reusable method", text:"Freezer power = leak/COP. Ambient warming raises the leak AND lowers the COP — always recompute both.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"Entropy as counting: coins and molecules",
+  problem:"(a) 100 coins are tossed: compare the entropy of 'all heads' with '50 heads'. (b) Show the free expansion of 1.00 mol to twice its volume gives the same ΔS from k_B ln W as from thermodynamics.",
+  goal:"Cross Boltzmann's bridge: S = k_B ln W reproduces nR ln 2 exactly.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["S = k_B ln W","(a) Coins","(b) Each molecule doubles its options","The bridge holds"],
+  setup(ctx, w){
+    label(ctx, 5.0, 6.3, 'S = k_B ln W', {fs:16, color:GOLD});
+    circleAt(ctx, 2.0, 4.5, 0.3, {stroke:CHALKC, w:2});
+    circleAt(ctx, 2.9, 4.5, 0.3, {stroke:CHALKC, w:2});
+    circleAt(ctx, 3.8, 4.5, 0.3, {stroke:CHALKC, w:2});
+    label(ctx, 2.0, 4.4, 'H', {fs:11, color:CHALKC});
+    label(ctx, 2.9, 4.4, 'H', {fs:11, color:CHALKC});
+    label(ctx, 3.8, 4.4, 'T', {fs:11, color:CHALKC});
+    label(ctx, 5.6, 4.5, '…×100', {fs:11, color:DIMC});
+  },
+  steps:[
+    { map:0, title:"Entropy counts arrangements", pose:"talk",
+      think:"W is the number of microstates — of what, compatible with what?",
+      say:"Boltzmann's tombstone carries this equation: entropy is k B times the log of W, the number of microscopic arrangements consistent with what you observe macroscopically. Disorder is not vagueness — it is a count. Let us count something small, then something enormous.",
+      board:[
+        {label:"Boltzmann", tex:"S = k_B\\ln W", kind:"key"}
+      ]
+    },
+    { map:1, title:"(a) One hundred coins", pose:"write",
+      think:"How many ways to be all heads? To be 50–50?",
+      say:"All heads: exactly one arrangement — W is one, log is zero, entropy zero. Perfect order. Fifty heads: one hundred choose fifty — ten to the twenty-nine arrangements. The entropy, in joules per kelvin, is laughably small. But the ratio of the two W's is ten to the twenty-nine: toss the coins and the fifty-fifty macrostate outvotes all-heads by twenty-nine orders of magnitude. The second law is the law of large numbers wearing a uniform.",
+      board:[
+        {label:"All heads", tex:"W = 1 \\Rightarrow S = 0", kind:"answer"},
+        {label:"Fifty heads", tex:"W = \\binom{100}{50} = 1.01\\times10^{29} \\Rightarrow S = 9.2\\times10^{-22}\\ \\text{J/K}", kind:"answer"}
+      ]
+    },
+    { map:2, title:"(b) A mole of molecules doubles its room", pose:"write",
+      think:"Each molecule now has twice the places to be — and there are N_A of them.",
+      say:"Now the gas. Double the volume and each molecule has twice as many places to be — a factor of two in W, per molecule. For a mole of them, the factors multiply: two to the Avogadro power. Take the log: N A times k B times log two — and N A k B is exactly R. Five point seven six joules per kelvin.",
+      board:[
+        {label:"Counting", tex:"\\frac{W_2}{W_1} = 2^{N_A}", kind:"key"},
+        {label:"Entropy", tex:"\\Delta S = k_B\\ln 2^{N_A} = N_Ak_B\\ln 2 = R\\ln 2 = 5.76\\ \\text{J/K}", kind:"answer", move:"N_A k_B = R"}
+      ]
+    },
+    { map:3, title:"The bridge holds", pose:"excited",
+      think:"Compare with the thermodynamic nR ln(V₂/V₁) — do the two definitions agree?",
+      say:"Now stand back. Thermodynamics, knowing nothing of molecules — only heat and temperature — assigns the free doubling n R log two: five point seven six joules per kelvin. Boltzmann, counting arrangements and never once mentioning heat, delivers the identical number. Two definitions from different centuries, one answer. The factor that makes molecular counting macroscopic is N A itself — one modest factor of two per molecule, compounded a mole of times. Reusable method: for expansion problems, W scales as V to the N, so S gains N k B log of the volume ratio — and always check the microscopic count against the thermodynamic formula.",
+      board:[
+        {label:"Agreement", tex:"k_B\\ln W\\ \\text{route} = nR\\ln\\frac{V_2}{V_1}\\ \\text{route}\\ \\checkmark", kind:"key"},
+        {label:"Reusable method", text:"S = k_B ln W: count options per particle, raise to the N. N_A turns per-molecule factors into lab-scale entropy.", kind:"answer"}
+      ]
+    }
+  ]
+},
+{
+  diff:"Challenging",
+  title:"The Brayton cycle: efficiency of a jet engine",
+  problem:"An ideal Brayton cycle: adiabatic compression p₁→p₂, isobaric heating at p₂, adiabatic expansion to p₁, isobaric cooling. Show e = 1 − (p₁/p₂)^((γ−1)/γ) and evaluate for r_p = 10, γ = 1.40.",
+  goal:"Derive a real machine's efficiency from two adiabats and two isobars.",
+  world:{x0:0, x1:10, y0:0, y1:7},
+  pathway:["The cycle on pV","Heat only on the isobars","Adiabats link the temperatures","The efficiency collapses","Audit: Brayton vs Carnot"],
+  setup(ctx, w){
+    axes2D(ctx, w, {x0:1.2, y0:1.0, xLab:'V', yLab:'p'});
+    plotCurve(ctx, t => [t, 5.2], 2.4, 5.4, {color:RED, w:2.5});
+    plotCurve(ctx, t => [t, 1.8], 3.6, 8.8, {color:BLUE, w:2.5});
+    plotCurve(ctx, t => [t, 1.8 + 3.4*Math.pow((3.6-1.2)/(t-1.2), 1.9)], 2.4, 3.6, {color:PURPLE, w:2});
+    plotCurve(ctx, t => [t, 1.8 + 3.4*Math.pow((8.8-1.2)/(t-1.2), 1.9) * Math.pow((5.4-1.2)/(8.8-1.2),1.9)], 5.4, 8.8, {color:PURPLE, w:2});
+    label(ctx, 2.0, 2.0, '1', {fs:12, color:CHALKC});
+    label(ctx, 2.1, 5.4, '2', {fs:12, color:CHALKC});
+    label(ctx, 5.6, 5.7, '3', {fs:12, color:CHALKC});
+    label(ctx, 9.2, 2.2, '4', {fs:12, color:CHALKC});
+  },
+  steps:[
+    { map:0, title:"Four strokes of a turbine", pose:"point",
+      think:"Compressor, burner, turbine, exhaust — map each to a curve.",
+      say:"This is the jet engine, idealised: one, squeeze the air adiabatically in the compressor; two to three, burn fuel at constant high pressure; three to four, let the hot gas expand adiabatically through the turbine; four back to one, exhaust at constant low pressure. Two adiabats, two isobars — the Brayton cycle.",
+      board:[
+        {label:"The legs", tex:"1\\!\\to\\!2\\ \\text{adiabat};\\ 2\\!\\to\\!3\\ \\text{isobar } p_2;\\ 3\\!\\to\\!4\\ \\text{adiabat};\\ 4\\!\\to\\!1\\ \\text{isobar } p_1", kind:"key"}
+      ]
+    },
+    { map:1, title:"Heat crosses only the isobars", pose:"write",
+      think:"Adiabats admit no heat — so Q_H and Q_C live where?",
+      say:"The adiabats are sealed by definition, so all heat business happens on the isobars: in during the burn, n C p times T three minus T two; out with the exhaust, n C p times T four minus T one. The efficiency is one minus their ratio, and the C p's cancel on sight.",
+      board:[
+        {label:"Heats", tex:"Q_H = nC_p(T_3 - T_2),\\qquad Q_C = nC_p(T_4 - T_1)", kind:"key"},
+        {label:"Efficiency", tex:"e = 1 - \\frac{T_4 - T_1}{T_3 - T_2}", kind:"key", move:"cancel nC_p"}
+      ]
+    },
+    { map:2, title:"The adiabats speak in ratios", pose:"write",
+      think:"Both adiabats span the same pressure ratio — what do they do to T?",
+      say:"On an adiabat, T times p to the one minus gamma over gamma is constant. Both our adiabats span the same pressure ratio r p, so each multiplies temperature by the same factor: T two is T one times r p to the gamma-minus-one over gamma, and T three is T four times the identical factor. The hot pair is the cold pair, uniformly magnified.",
+      board:[
+        {label:"Same factor", tex:"T_2 = T_1\\,r_p^{(\\gamma-1)/\\gamma},\\qquad T_3 = T_4\\,r_p^{(\\gamma-1)/\\gamma}", kind:"key"}
+      ]
+    },
+    { map:3, title:"The efficiency collapses", pose:"write",
+      think:"Factor the numerator's twin out of the denominator.",
+      say:"Then T three minus T two is the whole cold difference times that factor — and in the ratio, the temperature differences cancel completely, leaving pure pressure ratio. For r p of ten and gamma one point four: one minus ten to the minus zero point two eight six — forty-eight per cent. Note what vanished: the fuel burn, the absolute temperatures, everything but the compression.",
+      board:[
+        {label:"Result", tex:"e = 1 - r_p^{-(\\gamma-1)/\\gamma}", kind:"answer", move:"differences cancel"},
+        {label:"At r_p = 10", tex:"e = 1 - 10^{-0.286} = 0.482", kind:"answer"}
+      ]
+    },
+    { map:4, title:"Audit: below Carnot, and why", pose:"think",
+      think:"Compare with 1 − T₁/T₃ — why must Brayton fall short?",
+      say:"Audit against the ceiling. Carnot between the cycle's extreme temperatures would beat forty-eight per cent — because Carnot takes all its heat at the very top temperature, while Brayton feeds heat in along the whole climb from T two to T three, much of it at temperatures below the peak. Heat added below the top is heat used at a discount. Still, half is superb for a machine you can bolt to a wing — real jets manage thirty-five to forty per cent, and power stations that harvest the exhaust in a steam cycle push past sixty. Reusable method: for any cycle, locate where heat actually crosses, write the two Q's, and let the adiabats' shared ratio collapse the algebra.",
+      board:[
+        {label:"Vs Carnot", tex:"e_{\\text{Brayton}} < 1 - \\frac{T_1}{T_3}:\\ \\text{heat enters below the peak}", kind:"key"},
+        {label:"Reusable method", text:"Heat flows only on non-adiabatic legs. Adiabats spanning equal ratios scale T identically — expect telescoping cancellations.", kind:"answer"}
+      ]
+    }
+  ]
+}
     ];
 
     /* ============================================================
