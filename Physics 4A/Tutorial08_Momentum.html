@@ -833,6 +833,11 @@
       return el('circle',{cx:c.M.X(x),cy:c.M.Y(y),r:r||8,fill:color||RED,stroke:'rgba(0,0,0,.25)','stroke-width':1.5},c.svg);
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1362,6 +1367,598 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Momentum and the force of a catch",
+      problem:"A 0.145 kg baseball arrives at 40.0 m/s and is stopped by a catcher's mitt in 5.00 ms. Find the ball's momentum and the average force the mitt exerts.",
+      goal:"Goal → p and F_avg",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Momentum","Impulse","Force","The give"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+  },
+      steps:[
+        { map:0, title:"The ball's momentum",
+          think:"p = mv: small mass, big speed — estimate before you compute.",
+          model:"p = (0.145)(40.0) = 5.80 kg·m/s.",
+          pose:"talk",
+          say:"A fastball: one hundred forty five grams at forty metres per second. Momentum: m v — five point eight kilogram metres per second, aimed at the catcher's palm. Not a large number; the drama is in how QUICKLY it must become zero.",
+          board:[
+            {tex:"p = mv = (0.145)(40.0) = 5.80\\ \\mathrm{kg\\cdot m/s}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 1,3, 0.4, {stroke:RED, w:3});
+       tween(u=>{ b.setAttribute('cx', c.M.X(1+9*u)); }, 900, c.instant);
+       boxAt(c, 11.4,1.6, 1.4,3, {fill:'#8a5a24', stroke:'#5a3a14'});
+     }
+        },
+        { map:1, title:"The impulse is non-negotiable",
+          think:"To stop the ball, what impulse must the mitt deliver — regardless of technique?",
+          model:"J = Δp = −5.80 kg·m/s, fixed by the physics.",
+          pose:"write",
+          say:"To stop the ball, the mitt must deliver an impulse equal and opposite to its momentum: minus five point eight, full stop. That figure is fixed the moment the ball leaves the pitcher's hand. What remains negotiable is only HOW the bill is paid — hard and fast, or soft and slow.",
+          board:[
+            {label:"Impulse–momentum", tex:"J = \\Delta p = 0 - 5.80 = -5.80\\ \\mathrm{kg\\cdot m/s}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Average force over 5 ms",
+          think:"F = Δp/Δt with Δt = 0.005 s: how many times the ball's weight?",
+          model:"F = 5.80/0.00500 = 1.16×10³ N — about 800 ball-weights.",
+          pose:"write",
+          say:"Divide by the five milliseconds of the catch: eleven hundred sixty newtons — roughly eight hundred times the ball's own weight, concentrated briefly on a leather-clad hand. Short times manufacture large forces; that is the entire economics of impact.",
+          board:[
+            {tex:"F_{\\rm avg} = \\frac{|\\Delta p|}{\\Delta t} = \\frac{5.80}{5.00\\times10^{-3}} = 1.16\\times10^{3}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why catchers 'give'",
+          think:"Double the stopping time by riding the ball backward: what happens to F?",
+          model:"Same J, doubled Δt → halved F. Mitts, airbags, and bent knees all buy time.",
+          pose:"excited",
+          say:"Every catcher learns to ride the ball backward — and now you know the theorem behind the technique. The impulse cannot be haggled down, but stretching the stop to ten milliseconds halves the force. Padded mitts, airbags, crumple zones, bent-knee landings: civilisation's entire impact-safety industry is one idea — buy time, and the force pays the discount.",
+          board:[
+            {label:"The principle", text:"J is fixed; F_avg = J/Δt. Lengthen the stop, soften the blow.", kind:"key"},
+            {label:"Reusable method", text:"p = mv → required J = Δp → F_avg = Δp/Δt → engineer Δt, never Δp", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Impulse in a collision with a wall",
+      problem:"A 1500 kg car traveling at 20.0 m/s hits a rigid barrier and stops in 0.150 s. Find the impulse on the car and the average force. Why do crumple zones matter?",
+      goal:"Goal → J, F, and the lesson",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Impulse","Force","Crumple","Design"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    el('rect',{x:ctx.M.X(11),y:ctx.M.Y(7),width:8,height:ctx.M.Y(0)-ctx.M.Y(7),fill:'#5a6b5e',opacity:.7},ctx.svg);
+    label(ctx, 11.3,7.6, 'barrier', {fs:11});
+  },
+      steps:[
+        { map:0, title:"The impulse",
+          think:"Δp for 1500 kg from 20 m/s to rest: magnitude and direction?",
+          model:"J = −3.00×10⁴ kg·m/s, opposing the motion.",
+          pose:"talk",
+          say:"Fifteen hundred kilograms at twenty metres per second meets an immovable wall. The impulse required: thirty thousand kilogram metres per second, directed backward. As with the baseball, this figure is beyond appeal — only its delivery schedule is up for discussion.",
+          board:[
+            {tex:"J = \\Delta p = 0 - (1500)(20.0) = -3.00\\times10^{4}\\ \\mathrm{kg\\cdot m/s}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 2,0.05, 3,2, {fill:'#2E6DA4', stroke:'#1D4568'});
+       tween(u=>{ b.setAttribute('x', c.M.X(2+7.5*u-1.5)); }, 1000, c.instant);
+     }
+        },
+        { map:1, title:"The force of a rigid stop",
+          think:"0.150 s: what average force does 3×10⁴ kg·m/s in that window imply?",
+          model:"F = 3.00×10⁴/0.150 = 2.00×10⁵ N.",
+          pose:"write",
+          say:"Stopped in fifteen hundredths of a second: two hundred thousand newtons average — the weight of about thirteen such cars, applied horizontally through the structure and the passengers. Rigid barriers make punishing accountants.",
+          board:[
+            {tex:"F = \\frac{|J|}{\\Delta t} = \\frac{3.00\\times10^{4}}{0.150} = 2.00\\times10^{5}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Crumple: double the time, halve the force",
+          think:"A crumple zone stretches the stop to 0.300 s. Recompute F.",
+          model:"F = 3.00×10⁴/0.300 = 1.00×10⁵ N — half.",
+          pose:"write",
+          say:"Now let the front of the car crumple by design, stretching the stop to three tenths of a second: the force halves, to one hundred thousand newtons. The car is sacrificed; the sacrifice IS the safety. A vehicle that survives the crash intact has, by definition, delivered the harshest possible impulse schedule to its occupants.",
+          board:[
+            {tex:"\\Delta t \\to 0.300\\ \\mathrm{s}: \\quad F \\to 1.00\\times10^{5}\\ \\mathrm{N}\\ \\text{(halved)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Impulse thinking as design",
+          think:"List three technologies that are 'the same J over a longer Δt' in disguise.",
+          model:"Crumple zones, airbags, helmets, nets, bent knees: all Δt-stretchers.",
+          pose:"excited",
+          say:"Once seen, the pattern is everywhere: the airbag stretches the head's stop; the helmet's foam stretches the skull's; the stunt net stretches the whole body's; the gymnast bends her knees. None of them reduce the momentum change by a gram-metre-per-second — they merely refuse to let it happen quickly. Impulse is destiny; the timetable is engineering.",
+          board:[
+            {label:"The design principle", text:"Safety hardware never reduces Δp — it stretches Δt. Force is the only casualty.", kind:"key"},
+            {label:"Reusable method", text:"J from Δp → F = J/Δt → evaluate design changes purely through their effect on Δt", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Center of mass of three particles",
+      problem:"Particles of mass 2.00, 3.00, and 5.00 kg sit at (0,0), (4.00,0), and (0,2.00) m respectively. Locate the center of mass.",
+      goal:"Goal → (x_cm, y_cm)",
+      world:{"x0":-1,"x1":5,"y0":-0.6,"y1":2.9},
+      pathway:["Definition","x","y","Meaning"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    circleAt(ctx, 0,0, 0.13, {stroke:GREEN, w:3});
+    circleAt(ctx, 4,0, 0.16, {stroke:BLUE, w:3});
+    circleAt(ctx, 0,2, 0.2, {stroke:RED, w:3});
+    label(ctx, 0.15,0.35, '2 kg', {fs:11, color:GREEN});
+    label(ctx, 4.1,0.35, '3 kg', {fs:11, color:BLUE});
+    label(ctx, 0.25,2.2, '5 kg', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"A mass-weighted average",
+          think:"Why 'weighted'? What would the plain average of positions miss?",
+          model:"x_cm = Σmᵢxᵢ/M: heavy particles get proportionally louder votes.",
+          pose:"talk",
+          say:"The centre of mass is an average of positions in which each particle votes with its mass — a democracy of kilograms rather than of heads. The plain average of the three positions would treat the five kilogram voter as the equal of the two; the weighted average knows better.",
+          board:[
+            {label:"Definition", tex:"x_{\\rm cm} = \\frac{\\sum m_ix_i}{M}, \\qquad y_{\\rm cm} = \\frac{\\sum m_iy_i}{M}, \\qquad M = 10.0\\ \\mathrm{kg}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The x coordinate",
+          think:"Only one particle has nonzero x. Compute the weighted average.",
+          model:"x_cm = (3.00·4.00)/10.0 = 1.20 m.",
+          pose:"write",
+          say:"Along x, only the three kilogram particle stands away from the axis: three times four, over the total ten — one point two metres. Two thirds of the mass at x equals zero drags the average firmly leftward.",
+          board:[
+            {tex:"x_{\\rm cm} = \\frac{(2)(0) + (3)(4.00) + (5)(0)}{10.0} = 1.20\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The y coordinate",
+          think:"Same routine on y — which particle dominates now?",
+          model:"y_cm = (5.00·2.00)/10.0 = 1.00 m.",
+          pose:"write",
+          say:"Along y the five kilogram heavyweight holds the only elevation: five times two over ten — one metre. The centre of mass: one point two, one point zero — inside the triangle, leaning toward the heaviest corner, as weighted averages must.",
+          board:[
+            {tex:"y_{\\rm cm} = \\frac{(2)(0) + (3)(0) + (5)(2.00)}{10.0} = 1.00\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 1.2,1.0, 0.1, {stroke:GOLD, w:4});
+       label(c, 1.4,1.15, 'cm (1.20, 1.00)', {fs:12, color:GOLD});
+       dashLine(c, 0,0, 4,0, {}); dashLine(c, 4,0, 0,2, {}); dashLine(c, 0,2, 0,0, {});
+     }
+        },
+        { map:3, title:"An empty point that obeys Newton",
+          think:"No matter sits at (1.2, 1.0). Why does physics care about it anyway?",
+          model:"F_ext = M a_cm exactly: the system's translation lives at this bookkeeping point.",
+          pose:"excited",
+          say:"Note the delicious fact: NOTHING is located at one point two, one point zero — it is vacuum with a title. Yet Newton's second law for the whole system applies to that empty point EXACTLY: the net external force equals total mass times the acceleration of the centre of mass. Hurl this triangle of particles through the air and the empty point sails on a perfect parabola while the corners tumble about it. Physics often does its clearest thinking at places where nothing is.",
+          board:[
+            {label:"Why it matters", tex:"\\vec F_{\\rm ext} = M\\vec a_{\\rm cm}\\ \\text{— the system's translation obeys Newton at the cm}", kind:"key"},
+            {label:"Reusable method", text:"weighted average per coordinate → expect the cm near the heavy masses → treat it as the system's Newtonian representative", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Perfectly inelastic collision and the energy it destroys",
+      problem:"A 1200 kg car moving at 20.0 m/s rear-ends a stationary 1800 kg truck and the two lock together. Find their common velocity and the fraction of kinetic energy lost.",
+      goal:"Goal → V and % lost",
+      world:{"x0":-2,"x1":16,"y0":-2,"y1":9},
+      pathway:["Why p survives","Common V","Energy audit","The fraction"],
+      setup(ctx,w){
+    ground(ctx, -1, 15, 0);
+  },
+      steps:[
+        { map:0, title:"Which law survives the crash?",
+          think:"Energy is clearly lost in the crunch. Why does momentum sail through untouched?",
+          model:"Collision forces are internal and huge; external impulses are negligible in the brief Δt.",
+          pose:"talk",
+          say:"In the violence of a collision, energy is openly destroyed — bent metal, heat, noise. Momentum, though, survives untouchable: the enormous forces of the crash are INTERNAL, third-law pairs cancelling to the newton, while friction's external nibble during a tenth of a second is beneath notice. Conservation of momentum is not gentleness; it is bookkeeping symmetry.",
+          board:[
+            {label:"The license", text:"Internal forces cancel in pairs; external impulse ≈ 0 over the brief crash ⇒ p conserved (K is not).", kind:"key"}
+          ]
+        },
+        { map:1, title:"The common velocity",
+          think:"One momentum, one combined mass: solve for V.",
+          model:"V = 24000/3000 = 8.00 m/s.",
+          pose:"write",
+          say:"Before: twelve hundred times twenty — twenty four thousand units of momentum. After: the same twenty four thousand, now dragging three thousand kilograms. V equals eight metres per second — the locked pair grinding forward together.",
+          board:[
+            {tex:"(1200)(20.0) = (3000)V \\;\\Rightarrow\\; V = 8.00\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       const a=boxAt(c, 2,0.05, 2.6,1.8, {fill:'#2E6DA4', stroke:'#1D4568'});
+       const b=boxAt(c, 8,0.05, 3.4,2.4, {fill:'#8a4444', stroke:'#5a2424'});
+       tween(u=>{ if(u<0.5){ a.setAttribute('x', c.M.X(2+8*u-1.3)); } else { a.setAttribute('x', c.M.X(6+3*(u-0.5)-1.3)); b.setAttribute('x', c.M.X(8+3*(u-0.5)-1.7)); } }, 2000, c.instant);
+     }
+        },
+        { map:2, title:"Audit the kinetic energy",
+          think:"K before vs after: compute both sides of the ledger.",
+          model:"K₁ = 2.40×10⁵ J; K₂ = 9.60×10⁴ J; lost 1.44×10⁵ J.",
+          pose:"write",
+          say:"The energy books: before, half of twelve hundred times four hundred — two hundred forty thousand joules. After, half of three thousand times sixty four — ninety six thousand. The difference — one hundred forty four thousand joules — bought the dents, the heat, and the noise. Sixty percent of the estate, liquidated in a tenth of a second.",
+          board:[
+            {tex:"K_1 = 2.40\\times10^{5}\\ \\mathrm{J}; \\quad K_2 = 9.60\\times10^{4}\\ \\mathrm{J}; \\quad \\Delta K = -1.44\\times10^{5}\\ \\mathrm{J}\\ (60\\%)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The fraction was inevitable",
+          think:"Show the lost fraction equals m₂/(m₁+m₂) for any inelastic hit on a stationary target.",
+          model:"Fraction lost = m₂/(m₁+m₂) = 1800/3000 = 60% — structure, not accident.",
+          pose:"excited",
+          say:"And the sixty percent is no accident of these numbers: for any perfectly inelastic strike on a stationary target, the lost fraction is exactly the target's share of the total mass — eighteen hundred over three thousand. Hit something heavy and lose nearly everything; hit something light and keep nearly all. A raindrop striking a mountain donates its entire kinetic career.",
+          board:[
+            {label:"General result", tex:"\\frac{\\Delta K}{K_1} = \\frac{m_2}{m_1+m_2} = \\frac{1800}{3000} = 60\\%", kind:"key"},
+            {label:"Reusable method", text:"conserve p across the crash → common V → audit K separately → check the m₂/(m₁+m₂) fraction", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Elastic collision with a lighter target",
+      problem:"A 3.00 kg glider moving at 4.00 m/s strikes a stationary 1.00 kg glider head-on on a frictionless track. The collision is elastic. Find both final velocities.",
+      goal:"Goal → v1f and v2f",
+      world:{"x0":-2,"x1":16,"y0":-2,"y1":9},
+      pathway:["Elastic rules","Formulas","Three checks","Intuition"],
+      setup(ctx,w){
+    ground(ctx, -1, 15, 0);
+  },
+      steps:[
+        { map:0, title:"Elastic: both ledgers close",
+          think:"What TWO conservation laws define an elastic collision?",
+          model:"p and K both conserved — the special, reversible case.",
+          pose:"talk",
+          say:"An elastic collision keeps BOTH books: momentum, as always, and kinetic energy too — nothing lost to dents or heat. Air-track gliders with magnetic bumpers come close; billiard balls, closer than they deserve. Two conservation laws, two unknowns: the finals are fully determined.",
+          board:[
+            {label:"Elastic", text:"p conserved AND K conserved. Two equations, two unknown final velocities.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The stationary-target formulas",
+          think:"With m₁ = 3, m₂ = 1: predict signs before substituting.",
+          model:"v1f = (m₁−m₂)/(m₁+m₂)·v = 2.00 m/s; v2f = 2m₁/(m₁+m₂)·v = 6.00 m/s.",
+          pose:"write",
+          say:"For a stationary target the algebra has been done once for all: v one final is m one minus m two over the sum, times the incoming speed — half of four, two metres per second. v two final is twice m one over the sum — six metres per second. The heavy glider ploughs on; the light one is flung ahead FASTER than the projectile ever moved.",
+          board:[
+            {tex:"v_{1f} = \\frac{m_1-m_2}{m_1+m_2}v_{1i} = \\frac{2.00}{4.00}(4.00) = 2.00\\ \\mathrm{m/s}", kind:"answer"},
+            {tex:"v_{2f} = \\frac{2m_1}{m_1+m_2}v_{1i} = \\frac{6.00}{4.00}(4.00) = 6.00\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 3,0.05, 2.8,2, {fill:'#2E6DA4', stroke:'#1D4568'});
+       boxAt(c, 7,0.05, 1.6,1.4, {fill:'#8a4444', stroke:'#5a2424'});
+       arrow(c, 4.6,3.1, 6.2,3.1, {color:BLUE, w:2.5, label:'2.00', fs:11, side:-1});
+       arrow(c, 8,2.6, 11,2.6, {color:RED, w:3, label:'6.00', fs:11});
+     }
+        },
+        { map:2, title:"Three independent audits",
+          think:"Verify p, K, and the relative-velocity reversal — all three.",
+          model:"p: 12 = 6+6 ✓. K: 24 = 6+18 ✓. Relative velocity: −4 → +4 ✓.",
+          pose:"write",
+          say:"Audit thrice. Momentum: twelve before; six plus six after. Energy: twenty four before; six plus eighteen after. And the elegant third check — in ANY elastic head-on collision the relative velocity simply reverses: they approached at four, they separate at four. Three locks on one answer.",
+          board:[
+            {tex:"p: 12.0 = 6.00+6.00\\;\\checkmark \\quad K: 24.0 = 6.00+18.0\\;\\checkmark", kind:"key"},
+            {tex:"v_{2f}-v_{1f} = +4.00 = -(v_{2i}-v_{1i})\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"Heavy hitters never bounce back",
+          think:"For m₁ > m₂, can v1f ever be negative? And what happens as m₁ = m₂ or m₁ ≫ m₂?",
+          model:"m₁ > m₂: both forward. Equal masses: full transfer. m₁ ≫ m₂: target flung at nearly 2v.",
+          pose:"excited",
+          say:"Read the formula as a story. Heavier projectile: the numerator m one minus m two stays positive — it NEVER rebounds, merely slows. Equal masses: the projectile stops dead and the target inherits everything — the billiards special. And a freight train striking a ping-pong ball sends it off at very nearly TWICE the train's speed — the two m one over m one plus m two approaching two. One formula, three regimes, all of them tested daily on pool tables.",
+          board:[
+            {label:"The regimes", text:"m₁>m₂: both forward. m₁=m₂: total handoff. m₁≫m₂: target at ≈2v₁. Never a rebound for the heavy hitter.", kind:"key"},
+            {label:"Reusable method", text:"stationary-target formulas → verify p, K, and relative-velocity reversal → read the mass-ratio regimes", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"An explosion into three pieces",
+      problem:"A 6.00 kg object at rest explodes into three fragments. A 1.00 kg piece flies north at 12.0 m/s and a 2.00 kg piece flies east at 9.00 m/s. Find the velocity of the third piece.",
+      goal:"Goal → v₃",
+      world:{"x0":-8.5,"x1":4.5,"y0":-6.5,"y1":5},
+      pathway:["Zero stays zero","Balance","Solve","Energy's source"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'east', ylab:'north'});
+  },
+      steps:[
+        { map:0, title:"Zero momentum, forever",
+          think:"The object was at rest. What is the vector sum of the three fragments' momenta?",
+          model:"Σp = 0 before ⇒ Σp = 0 after: the third fragment must cancel the other two.",
+          pose:"talk",
+          say:"An explosion is a collision run in reverse — internal forces flinging pieces apart — and momentum's verdict is the same: the total was zero at rest, so it is zero forever after. Whatever the first two fragments carry, the third must carry the exact opposite. It has no choice in the matter.",
+          board:[
+            {label:"Conservation", tex:"\\vec p_1 + \\vec p_2 + \\vec p_3 = 0 \\;\\Rightarrow\\; \\vec p_3 = -(\\vec p_1 + \\vec p_2)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Tally the first two momenta",
+          think:"North piece: p = ? East piece: p = ? Write them as vectors.",
+          model:"p₁ = 12.0 j; p₂ = 18.0 i (kg·m/s).",
+          pose:"write",
+          say:"The one kilogram piece north: twelve units of momentum along j. The two kilogram piece east: eighteen along i. Their sum — eighteen east, twelve north — is the debt the third fragment must repay in full, with a minus sign.",
+          board:[
+            {tex:"\\vec p_1 = 12.0\\,\\jhat, \\quad \\vec p_2 = 18.0\\,\\ihat\\ \\ \\mathrm{kg\\cdot m/s}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, 0,3.4, {color:GREEN, w:3, label:'1 kg: 12 N-units', fs:10, side:-1});
+       arrow(c, 0,0, 3.6,0, {color:BLUE, w:3, label:'2 kg: 18 E-units', fs:10});
+     }
+        },
+        { map:2, title:"The third fragment",
+          think:"p₃ = −(18 i + 12 j) on 3.00 kg: velocity, speed, bearing?",
+          model:"v₃ = −6.00 i − 4.00 j m/s: 7.21 m/s at 33.7° south of west.",
+          pose:"write",
+          say:"So p three is minus eighteen i minus twelve j; divide by its three kilograms: minus six east, minus four north — six west and four south, if we speak plainly. Speed: root of fifty two — seven point two one metres per second, at thirty three point seven degrees south of west. The three arrows now close like a well-behaved triangle.",
+          board:[
+            {tex:"\\vec v_3 = \\frac{-18.0\\,\\ihat - 12.0\\,\\jhat}{3.00} = -6.00\\,\\ihat - 4.00\\,\\jhat\\ \\mathrm{m/s}", kind:"answer"},
+            {tex:"|\\vec v_3| = 7.21\\ \\mathrm{m/s}, \\quad 33.7^{\\circ}\\ \\text{S of W}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, -6,-4, {color:GOLD, w:3.5, label:'3 kg piece', fs:11, at:'mid', side:-1});
+     }
+        },
+        { map:3, title:"Where the energy came from",
+          think:"Total K after = 231 J, from zero. Does that violate anything?",
+          model:"K came from chemical energy; momentum stayed exactly zero throughout. Different laws, different books.",
+          pose:"excited",
+          say:"Tot up the kinetic energies: seventy two plus eighty one plus seventy eight — two hundred thirty one joules, conjured from an object at rest. Scandal? None: the energy was CHEMICAL, waiting in the explosive, and energy conservation happily notes the conversion. Momentum, meanwhile, remained precisely zero from first to last. Two ledgers, two clerks, and neither audits the other — keep the books separate and both always balance.",
+          board:[
+            {label:"Two ledgers", text:"K created: 72 + 81 + 78 = 231 J (from chemical energy). Σp: exactly 0 before and after.", kind:"key"},
+            {label:"Reusable method", text:"explosions conserve p about zero → third fragment = −(sum of others) → energy questions are a separate, solvable ledger", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Impulse from a time-varying force",
+      problem:"A 50.0 g golf ball at rest is struck by a club exerting F(t) = F₀sin(πt/τ) for 0 ≤ t ≤ τ, with F₀ = 200 N and τ = 20.0 ms. Find the impulse and the launch speed.",
+      goal:"Goal → J and v",
+      world:{"x0":-1.5,"x1":23,"y0":-20,"y1":230},
+      pathway:["The pulse","Integrate","Launch","Peak vs average"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (ms)', ylab:'F (N)'});
+    plotCurve(ctx, t=>200*Math.sin(Math.PI*t/20), 0, 20, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"A force with a shape",
+          think:"The force is zero, peaks at 200 N, and returns to zero. What is impulse, graphically?",
+          model:"J = ∫F dt: the area under the F–t pulse.",
+          pose:"talk",
+          say:"A golf strike is not a constant shove but a PULSE: nothing, a swelling to two hundred newtons at mid-contact, and gone — all within twenty milliseconds. Impulse generalises gracefully: it is the integral of F d t, the area under the pulse. Calculus, again, where constancy fails.",
+          board:[
+            {label:"The definition", tex:"J = \\int_0^{\\tau}F(t)\\,dt\\ \\text{— the area under the force–time curve}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Integrate the half-sine",
+          think:"∫₀^τ sin(πt/τ)dt: what clean multiple of F₀τ appears?",
+          model:"J = 2F₀τ/π = 2(200)(0.0200)/π = 2.55 N·s.",
+          pose:"write",
+          say:"The half sine integrates to two over pi times the rectangle F nought tau: two times two hundred times point zero two, over pi — two point five five newton seconds. The area of a sine arch is always two pi-ths of its bounding box; a fact worth pocketing.",
+          board:[
+            {tex:"J = F_0\\frac{\\tau}{\\pi}\\left[-\\cos\\frac{\\pi t}{\\tau}\\right]_0^{\\tau} = \\frac{2F_0\\tau}{\\pi} = 2.55\\ \\mathrm{N\\cdot s}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[2,60],[4,117],[6,161],[8,190],[10,200],[12,190],[14,161],[16,117],[18,60],[20,0]], {color:'rgba(232,172,86,.3)'});
+       label(c, 7.2,80, 'J = area = 2.55 N·s', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"From impulse to launch speed",
+          think:"J = Δp on 50 g from rest: the launch speed is?",
+          model:"v = J/m = 2.55/0.0500 = 50.9 m/s.",
+          pose:"write",
+          say:"Impulse equals the change of momentum: divide by fifty grams — fifty point nine metres per second off the tee, courtesy of one graceful sine arch. About one hundred eighty kilometres per hour, for the club-minded.",
+          board:[
+            {tex:"v = \\frac{J}{m} = \\frac{2.55}{0.0500} = 50.9\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Never quote the peak",
+          think:"Average force = J/τ = 127 N. Why does the 200 N peak overstate the strike?",
+          model:"F_avg = 2F₀/π ≈ 0.64 F₀. A pulse's effect is its area, not its summit.",
+          pose:"excited",
+          say:"A last accounting subtlety: the average force over contact is J over tau — one hundred twenty seven newtons — just two pi-ths of the two hundred newton peak. The summit of a pulse flatters it; the AREA is its honest résumé. Sensors report peaks, physics bills averages — remember which one launches the ball.",
+          board:[
+            {label:"Peak vs average", tex:"F_{\\rm avg} = \\frac{J}{\\tau} = 127\\ \\mathrm{N} = \\frac{2}{\\pi}F_0", kind:"key"},
+            {label:"Reusable method", text:"impulse = area under F(t) → v = J/m → quote averages, not peaks, for a pulse's effect", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Bullet, block, and spring",
+      problem:"A 20.0 g bullet at 300 m/s embeds itself in a 2.00 kg block on a frictionless table, attached to a spring with k = 400 N/m. Find the maximum compression of the spring.",
+      goal:"Goal → x_max",
+      world:{"x0":-2,"x1":16,"y0":-2,"y1":9},
+      pathway:["Two stages","Stage 1: p","Stage 2: E","The forbidden shortcut"],
+      setup(ctx,w){
+    ground(ctx, -1, 15, 0);
+    el('path',{d:`M ${ctx.M.X(13.5)} ${ctx.M.Y(1.1)} q -6 -10 -12 0 q -6 -10 -12 0`,fill:'none',stroke:CHALKC,'stroke-width':2,transform:'translate(0,0)'},ctx.svg);
+    boxAt(ctx, 8,0.05, 2.8,2, {fill:'#8a4444', stroke:'#5a2424'});
+    el('rect',{x:ctx.M.X(14.2),y:ctx.M.Y(4),width:6,height:ctx.M.Y(0)-ctx.M.Y(4),fill:'#5a6b5e',opacity:.6},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Two stages, two different laws",
+          think:"Why can't one conservation law carry this problem end to end?",
+          model:"Stage 1 (embedding): p conserved, K destroyed. Stage 2 (compression): E conserved.",
+          pose:"talk",
+          say:"A bullet slams into a block; the pair then squeezes a spring. Resist the urge to write one grand equation: this is TWO problems wearing one costume. The embedding is violent and inelastic — momentum's jurisdiction, energy's graveyard. The compression is smooth and frictionless — energy's jurisdiction entirely. Match each stage to its law.",
+          board:[
+            {label:"The strategy", text:"Stage 1 (impact): conserve p only. Stage 2 (spring): conserve E only. Never mix.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Stage 1: momentum across the impact",
+          think:"0.0200 kg at 300 m/s into 2.02 kg total: the common V?",
+          model:"V = 6.00/2.02 = 2.97 m/s.",
+          pose:"write",
+          say:"Momentum in: point zero two times three hundred — six units. Momentum out: the same six, spread over two point zero two kilograms. V equals two point nine seven metres per second — the block barely flinches, as blocks facing bullets do.",
+          board:[
+            {tex:"(0.0200)(300) = (2.02)V \\;\\Rightarrow\\; V = 2.97\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 1,1, 0.25, {stroke:GOLD, w:3});
+       tween(u=>{ b.setAttribute('cx', c.M.X(1+5.5*u)); }, 700, c.instant);
+       arrow(c, 9.6,1, 11.2,1, {color:RED, w:2.5, label:'V = 2.97', fs:11});
+     }
+        },
+        { map:2, title:"Stage 2: energy into the spring",
+          think:"From V to full stop: ½MV² = ½kx². Solve for x.",
+          model:"x = V√(M/k) = 2.97√(2.02/400) = 0.211 m.",
+          pose:"write",
+          say:"Now the clean half: the pair's kinetic energy — half of two point zero two times two point nine seven squared, about eight point nine joules — pours entirely into the spring. x equals V root M over k: twenty one point one centimetres of maximum compression.",
+          board:[
+            {tex:"\\tfrac12MV^2 = \\tfrac12kx^2 \\;\\Rightarrow\\; x = V\\sqrt{\\frac{M}{k}} = 2.97\\sqrt{\\frac{2.02}{400}} = 0.211\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The forbidden shortcut, quantified",
+          think:"The bullet carried 900 J. How much reached the spring — and where did the rest go?",
+          model:"Only 8.9 J (1%) survived the embedding; 99% became heat and deformation. Energy across the impact would be wildly wrong.",
+          pose:"excited",
+          say:"Now the autopsy of the tempting shortcut. The bullet arrived with nine hundred joules; the block-and-bullet departed the impact with eight point nine. NINETY NINE PERCENT of the energy died in the embedding — splintered wood, torn metal, heat. Had we conserved energy across the collision, our compression would have erred by a factor of ten. Momentum crosses collisions; energy, only the peaceful stretches between them.",
+          board:[
+            {label:"The audit", tex:"K_{\\rm bullet} = 900\\ \\mathrm{J} \\to K_{\\rm pair} = 8.9\\ \\mathrm{J}: \\ 99\\%\\ \\text{lost in the embedding}", kind:"warn"},
+            {label:"Reusable method", text:"segment the story → p across the violent joins → E across the smooth stretches → audit what the collision destroyed", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"An elastic collision seen from the center of mass",
+      problem:"A 4.00 kg ball at 5.00 m/s strikes a 6.00 kg ball at rest, head-on and elastically. Solve via the center-of-mass frame, then verify with the standard formulas.",
+      goal:"Goal → v1f, v2f by the cm trick",
+      world:{"x0":-2,"x1":16,"y0":-2,"y1":9},
+      pathway:["Ride the cm","Transform in","Flip","Transform out","Verify"],
+      setup(ctx,w){
+    ground(ctx, -1, 15, 0);
+  },
+      steps:[
+        { map:0, title:"Board the center-of-mass train",
+          think:"v_cm = total p / total m: compute it. What is special about momentum in that frame?",
+          model:"v_cm = 20.0/10.0 = 2.00 m/s; in that frame total p = 0.",
+          pose:"talk",
+          say:"There exists a moving observatory from which every collision looks symmetric: the centre of mass frame. It glides at total momentum over total mass — twenty over ten, two metres per second — and aboard it the total momentum is exactly ZERO. Collisions viewed from this train shed their algebra like a coat.",
+          board:[
+            {tex:"v_{\\rm cm} = \\frac{(4.00)(5.00)}{10.0} = 2.00\\ \\mathrm{m/s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Transform into the frame",
+          think:"Subtract v_cm from each velocity. Check the momenta now cancel.",
+          model:"u₁ = +3.00, u₂ = −2.00 m/s; p: 12 − 12 = 0 ✓.",
+          pose:"write",
+          say:"Subtract two from everything: the projectile now approaches at plus three, the target drifts back at minus two. Audit: four times three is twelve forward; six times two is twelve backward. Zero, as promised — the frame has done its first job.",
+          board:[
+            {tex:"u_1 = 5.00-2.00 = +3.00, \\quad u_2 = 0-2.00 = -2.00\\ \\mathrm{m/s} \\quad (\\Sigma p = 0\\checkmark)", kind:"key"}
+          ],
+          action(c){
+       circleAt(c, 4,1.5, 0.9, {stroke:BLUE, w:3});
+       circleAt(c, 10,1.6, 1.1, {stroke:RED, w:3});
+       arrow(c, 5.1,1.5, 7.1,1.5, {color:BLUE, w:2.5, label:'+3', fs:11, side:-1});
+       arrow(c, 8.7,1.6, 7.2,1.6, {color:RED, w:2.5, label:'−2', fs:11});
+       label(c, 5.4,4.2, 'cm frame: Σp = 0', {fs:11, italic:true});
+     }
+        },
+        { map:2, title:"The collision is a sign flip",
+          think:"With Σp = 0 and K conserved, why must each velocity simply reverse?",
+          model:"Elastic + zero total p ⇒ each speed preserved, directions flipped: −3.00 and +2.00.",
+          pose:"write",
+          say:"Here is the frame's second gift: with zero total momentum and energy conserved, the only possible outcome of a head-on elastic collision is that each ball REVERSES its velocity, keeping its speed. No formulas — symmetry alone dictates it. Plus three becomes minus three; minus two becomes plus two. The entire collision, performed by two minus signs.",
+          board:[
+            {tex:"u_{1f} = -3.00, \\quad u_{2f} = +2.00\\ \\mathrm{m/s}\\ \\text{(elastic in the cm frame = sign flip)}", kind:"answer", move:"flip signs"}
+          ]
+        },
+        { map:3, title:"Transform back out",
+          think:"Add v_cm back to each. Read off the lab-frame finals.",
+          model:"v1f = −1.00 m/s (rebounds); v2f = +4.00 m/s.",
+          pose:"write",
+          say:"Step off the train — add the two back: the projectile finishes at MINUS one metre per second, bouncing backward off its heavier target; the six kilogram ball rolls away at plus four. Notice the light-hits-heavy signature: rebound.",
+          board:[
+            {tex:"v_{1f} = -3.00+2.00 = -1.00, \\quad v_{2f} = 2.00+2.00 = 4.00\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Verify, and pocket the trick",
+          think:"Run the standard formulas. Do they concur — and which method generalizes better?",
+          model:"Formulas: −1.00 and 4.00 ✓. The cm trick works for ANY masses and extends to 2D scattering.",
+          pose:"excited",
+          say:"The standard formulas concur: minus one and plus four, to the decimal. But mark which method you would rather carry: the formulas are a memorised incantation; the cm frame is a PRINCIPLE — subtract, flip, add — that works for any masses, survives into two-dimensional scattering, and reappears intact in particle physics, where every accelerator physicist lives mentally aboard that train. Learn the trick once; bill it for a career.",
+          board:[
+            {label:"Verification", tex:"\\text{formulas: } v_{1f} = \\frac{4-6}{10}(5) = -1.00, \\ v_{2f} = \\frac{8}{10}(5) = 4.00\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"v_cm = Σp/Σm → subtract it → elastic head-on = sign flip → add it back → verify in the lab frame", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Center of mass of a rod with varying density",
+      problem:"A rod of length L has linear mass density λ(x) = λ₀(1 + x/L), measured from one end. Find its total mass and the position of its center of mass.",
+      goal:"Goal → M and x_cm",
+      world:{"x0":-0.1,"x1":1.15,"y0":-0.6,"y1":2.6},
+      pathway:["Slice","Total mass","First moment","Divide","Limit check"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x/L', ylab:'λ/λ₀'});
+    plotCurve(ctx, x=>1+x, 0, 1, {color:CHALKC, w:2.5, N:20});
+    label(ctx, 0.62,1.35, 'λ(x) = λ₀(1 + x/L)', {fs:11, color:CHALKC, italic:true});
+  },
+      steps:[
+        { map:0, title:"From sum to integral",
+          think:"A continuous rod has no 'particles'. What replaces Σmᵢxᵢ?",
+          model:"dm = λ(x)dx: slice the rod; sums become integrals.",
+          pose:"talk",
+          say:"Our centre-of-mass formula was born for particles; this rod is a continuum whose density DOUBLES from one end to the other. The cure is the oldest in calculus: slice the rod into slivers d x, each carrying mass lambda of x d x, and let the sums ripen into integrals.",
+          board:[
+            {label:"The upgrade", tex:"x_{\\rm cm} = \\frac{\\int x\\,dm}{\\int dm}, \\qquad dm = \\lambda(x)\\,dx", kind:"key"}
+          ]
+        },
+        { map:1, title:"Total mass",
+          think:"∫λ₀(1 + x/L)dx over the rod: what multiple of λ₀L?",
+          model:"M = λ₀(L + L/2) = (3/2)λ₀L.",
+          pose:"write",
+          say:"The mass: integrate lambda nought times one plus x over L, from zero to L — L plus L over two — three halves lambda nought L. Sensible: the density averages one and a half lambda nought along the way.",
+          board:[
+            {tex:"M = \\lambda_0\\int_0^L\\left(1+\\frac{x}{L}\\right)dx = \\tfrac32\\lambda_0L", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0,1],[1,2],[1,0]], {color:'rgba(232,172,86,.25)'});
+     }
+        },
+        { map:2, title:"The first moment",
+          think:"Now weight each slice by its position: ∫xλ dx = ?",
+          model:"∫xλ dx = λ₀(L²/2 + L²/3) = (5/6)λ₀L².",
+          pose:"write",
+          say:"The numerator — the first moment — weights every sliver by its position: integrate x plus x squared over L. Half plus a third: five sixths lambda nought L squared. The far slivers, being both farther AND heavier, punch twice.",
+          board:[
+            {tex:"\\int_0^Lx\\lambda\\,dx = \\lambda_0\\left(\\frac{L^2}{2}+\\frac{L^2}{3}\\right) = \\tfrac56\\lambda_0L^2", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Divide",
+          think:"(5/6)/(3/2) = ? Locate the cm as a fraction of L.",
+          model:"x_cm = (5/6)/(3/2) L = 5L/9 = 0.556L.",
+          pose:"write",
+          say:"Divide: five sixths over three halves — five ninths of L, zero point five five six. Past the midpoint, leaning toward the dense end — but NOT at two thirds, where a naive glance at doubled density might have guessed. Linear growth shifts the balance point gently, not dramatically.",
+          board:[
+            {tex:"x_{\\rm cm} = \\frac{\\tfrac56\\lambda_0L^2}{\\tfrac32\\lambda_0L} = \\frac{5}{9}L = 0.556\\,L", kind:"answer"}
+          ],
+          action(c){
+       dashLine(c, 0.556,0, 0.556,1.556, {});
+       circleAt(c, 0.556,-0.28, 0.035, {stroke:GOLD, w:3});
+       label(c, 0.6,-0.42, 'cm at 5L/9', {fs:11, color:GOLD});
+     }
+        },
+        { map:4, title:"Uniform limit: the audit",
+          think:"Drop the x/L term. What must x_cm collapse to?",
+          model:"Uniform rod → L/2 ✓. Limits are the calculus student's conscience.",
+          pose:"excited",
+          say:"The audit: erase the density gradient — drop the x over L — and rerun the machinery. Mass: lambda nought L. Moment: lambda nought L squared over two. Quotient: L over two, the midpoint, exactly as a uniform rod demands. An integral that cannot reproduce its own simple limit is confessing an error; this one passes, and so may we.",
+          board:[
+            {label:"Limit check", tex:"\\lambda\\to\\lambda_0: \\ x_{\\rm cm}\\to\\frac{L}{2}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"dm = λdx → M = ∫dm, moment = ∫x dm → divide → verify the uniform limit", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

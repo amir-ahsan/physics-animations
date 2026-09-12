@@ -1390,6 +1390,723 @@
           ] },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Magnitude and direction from components",
+      problem:"A displacement has components Ax = −3.00 m and Ay = 4.00 m. Find its magnitude and the angle it makes with the +x axis.",
+      goal:"Goal → A and θ",
+      world:{"x0":-5.2,"x1":5.2,"y0":-1.5,"y1":5.5},
+      pathway:["Read","Sketch","Magnitude","Quadrant","Answer"],
+      setup(ctx,w){ axes2D(ctx, w, {xlab:'x', ylab:'y'}); },
+      steps:[
+        { map:0, title:"Read the components",
+          think:"Before any formula — which quadrant do these components put the vector in?",
+          model:"Ax < 0, Ay > 0: quadrant II. Keep that in mind before the arithmetic.",
+          pose:"talk",
+          say:"A displacement with an x component of minus three metres and a y component of plus four. Two numbers, and yet they already whisper the answer's neighbourhood: x negative, y positive — quadrant two, up and to the left. Hold onto that before any button is pressed on any calculator.",
+          board:[
+            {label:"Given + find", text:"Given: Ax = −3.00 m, Ay = 4.00 m. Find: magnitude A and angle θ from +x.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Sketch first, compute second",
+          think:"Why does a ten-second sketch outrank the calculator here?",
+          model:"The sketch fixes the quadrant; the calculator never will.",
+          pose:"point",
+          say:"Sketch it. From the origin, three to the left, four up, and draw the arrow. The eye now KNOWS the angle is obtuse — somewhere between ninety and one hundred eighty degrees. Whatever the calculator says later must answer to this picture, not the other way round.",
+          board:[
+            {label:"The picture votes first", text:"Sketch: tail at origin, tip at (−3, 4). The angle from +x is clearly obtuse.", kind:"note"}
+          ],
+          action(c){
+       arrow(c, 0,0, -3,4, {color:GREEN, w:3.5, label:'A', fs:15});
+       dashLine(c, -3,0, -3,4, {}); dashLine(c, 0,4, -3,4, {});
+       label(c, -3.6,-0.9, 'Ax = −3', {fs:12, color:RED, anchor:'middle'});
+       label(c, 0.5,2.1, 'Ay = +4', {fs:12, color:BLUE});
+     }
+        },
+        { map:2, title:"The magnitude",
+          think:"Which theorem hides inside every magnitude formula?",
+          model:"A = √(Ax² + Ay²) = 5.00 m — Pythagoras, wearing components.",
+          pose:"write",
+          say:"The magnitude is Pythagoras in modern dress: the square root of A x squared plus A y squared. Nine plus sixteen is twenty five; the root is five. Notice the minus sign perished inside the square — magnitudes forget directions, which is precisely why we must remember them separately.",
+          board:[
+            {label:"Pythagoras", tex:"A = \\sqrt{A_x^2 + A_y^2} = \\sqrt{(-3.00)^2 + (4.00)^2} = 5.00\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, -3,4, {color:GREEN, w:3.5});
+       label(c, -2.2,2.6, 'A = 5.00 m', {fs:14, color:GREEN, italic:true});
+     }
+        },
+        { map:3, title:"The calculator's little lie",
+          think:"tan⁻¹ returns −53.1°. Which quadrant did the calculator assume — and why is it wrong?",
+          model:"arctan only knows the ratio Ay/Ax; it cannot see the two signs separately.",
+          pose:"think",
+          say:"Now the trap. The inverse tangent of four over minus three returns minus fifty three point one degrees — quadrant four, down and to the right. But our arrow lives in quadrant two! The calculator collapses two signs into one ratio and loses half the information. Whenever A x is negative, add one hundred eighty degrees to what the machine reports.",
+          board:[
+            {label:"What the machine says", tex:"\\tan^{-1}\\!\\left(\\frac{4.00}{-3.00}\\right) = -53.1^{\\circ} \\quad\\text{(quadrant IV — wrong!)}", kind:"warn"}
+          ],
+          action(c){
+       arrow(c, 0,0, -3,4, {color:GREEN, w:3.5});
+       arrow(c, 0,0, 3,-1.15, {color:RED, w:2.5, dash:'6,5', label:'calculator', fs:11, at:'mid', side:-1});
+       textAt(c, 2.4,-1.05, '−53.1°?', {fs:12, color:RED, italic:true});
+     }
+        },
+        { map:4, title:"Correct the quadrant — and check",
+          think:"Does 126.9° agree with the sketch's verdict of 'obtuse'?",
+          model:"θ = −53.1° + 180° = 126.9° from +x. The sketch approves.",
+          pose:"excited",
+          say:"Add the hundred and eighty: one hundred twenty six point nine degrees counterclockwise from plus x — equivalently, fifty three point one above the minus x axis. Obtuse, exactly as the sketch demanded. Always let the drawing, never the calculator, cast the deciding vote on quadrants.",
+          board:[
+            {label:"Quadrant corrected", tex:"\\theta = -53.1^{\\circ} + 180^{\\circ} = 126.9^{\\circ}\\ \\text{from } +x", kind:"answer"},
+            {label:"Reusable method", text:"sketch → quadrant from the signs → Pythagoras for A → arctan, then correct by 180° if Ax < 0", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, -3,4, {color:GREEN, w:3.5, label:'A = 5.00 m', fs:13});
+       arc(c, 0,0, 1.3, 0, 126.9, {color:GOLD, label:'126.9°', fs:12});
+       ground(c, -5,5, 0);
+     }
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"A unit vector and direction cosines",
+      problem:"Find the unit vector along B = 2.00 i − 3.00 j + 6.00 k, and the angle B makes with the z axis.",
+      goal:"Goal → B̂ and θz",
+      world:{"x0":-1,"x1":9,"y0":-1,"y1":8},
+      pathway:["Read","Magnitude","Unit vector","Angle","Check"],
+      steps:[
+        { map:0, title:"Read: three components",
+          think:"What single number must you compute before any unit vector can exist?",
+          model:"The magnitude B — a unit vector is the original divided by its own length.",
+          pose:"talk",
+          say:"A three dimensional vector: two along x, minus three along y, six along z. We want its unit vector — the pure direction with the length boiled away — and the angle it makes with the z axis. Both requests begin at the same place: the magnitude.",
+          board:[
+            {label:"Given + find", tex:"\\vec B = 2.00\\,\\ihat - 3.00\\,\\jhat + 6.00\\,\\khat; \\quad\\text{find } \\hat B \\text{ and } \\theta_z", kind:"key"}
+          ]
+        },
+        { map:1, title:"Magnitude in three dimensions",
+          think:"Does Pythagoras survive the promotion from 2D to 3D?",
+          model:"B = √(4+9+36) = √49 = 7.00 — Pythagoras twice over.",
+          pose:"write",
+          say:"Pythagoras generalises without complaint: square all three components, add, take the root. Four plus nine plus thirty six is forty nine — a perfect square, because textbook authors are kind. B equals seven.",
+          board:[
+            {label:"3D Pythagoras", tex:"B = \\sqrt{2^2 + 3^2 + 6^2} = \\sqrt{49} = 7.00", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 1.6,1, 1.2,2.0, {fill:'#2E6DA4', stroke:'#1D4568'});
+       boxAt(c, 3.2,1, 1.2,3.0, {fill:'#8a4444', stroke:'#5a2424'});
+       boxAt(c, 4.8,1, 1.2,6.0, {fill:'#3a7a4a', stroke:'#1d4a28'});
+       label(c, 1.2,0.2, '|Bx|=2', {fs:11, color:BLUE});
+       label(c, 2.8,0.2, '|By|=3', {fs:11, color:RED});
+       label(c, 4.4,0.2, '|Bz|=6', {fs:11, color:GREEN});
+       boxAt(c, 7.0,1, 1.2,7.0, {fill:'#b08830', stroke:'#7a5a10'});
+       label(c, 6.6,0.2, 'B=7', {fs:12, color:GOLD});
+     }
+        },
+        { map:2, title:"Divide by the length",
+          think:"Why must the three new components come out dimensionless?",
+          model:"B̂ = B/B: each component divided by 7. Length 1, direction unchanged.",
+          pose:"write",
+          say:"Divide every component by seven. Two sevenths, minus three sevenths, six sevenths — as decimals, point two eight six, minus point four two nine, point eight five seven. The result carries no units and no length worth mentioning: it is direction, distilled.",
+          board:[
+            {label:"The unit vector", tex:"\\hat B = \\frac{\\vec B}{B} = 0.286\\,\\ihat - 0.429\\,\\jhat + 0.857\\,\\khat", kind:"answer"},
+            {label:"Length check", tex:"\\sqrt{0.286^2 + 0.429^2 + 0.857^2} = 1.00\\;\\checkmark"}
+          ]
+        },
+        { map:3, title:"The angle with z",
+          think:"Which single component controls the angle with the z axis?",
+          model:"cos θz = Bz/B = 6/7 → θz = 31.0°.",
+          pose:"point",
+          say:"For the angle with any axis, take that axis's component over the magnitude: the direction cosine. Cosine of theta z equals six sevenths, so theta z is thirty one point zero degrees. The vector leans quite close to the z axis — as it should, with six of its seven units of length invested there.",
+          board:[
+            {label:"Direction cosine", tex:"\\cos\\theta_z = \\frac{B_z}{B} = \\frac{6}{7} \\;\\Rightarrow\\; \\theta_z = 31.0^{\\circ}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 4,0, 4,7, {color:DIMC, w:2, label:'z', fs:12});
+       arrow(c, 4,0, 6.8,6.0, {color:GREEN, w:3.5, label:'B', fs:14});
+       arc(c, 4,0, 1.5, 65, 90, {color:GOLD, label:'31°', fs:12});
+     }
+        },
+        { map:4, title:"Check: cosines that sum to one",
+          think:"What identity must the three direction cosines obey — and why?",
+          model:"cos²θx + cos²θy + cos²θz = (4+9+36)/49 = 1: Pythagoras again, in disguise.",
+          pose:"excited",
+          say:"The check is elegant: square the three direction cosines and add. Four plus nine plus thirty six, all over forty nine — exactly one. It is the Pythagorean theorem returning for a bow. If your direction cosines ever fail this test, one of your components is lying.",
+          board:[
+            {label:"The identity", tex:"\\cos^2\\theta_x + \\cos^2\\theta_y + \\cos^2\\theta_z = \\frac{4+9+36}{49} = 1\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"magnitude first → divide for the unit vector → axis component over B for each direction cosine → cosines² sum to 1", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Dot product in three dimensions",
+      problem:"For A = 3 i + 4 j and B = − i + 2 j + 2 k, compute A · B and the angle between the vectors.",
+      goal:"Goal → A·B and φ",
+      world:{"x0":-2,"x1":8,"y0":-1,"y1":7},
+      pathway:["Read","Multiply","Magnitudes","Angle","Interpret"],
+      steps:[
+        { map:0, title:"Read the two vectors",
+          think:"A has no z component. Which term of the dot product dies immediately?",
+          model:"Az = 0, so AzBz contributes nothing. The sum has two live terms.",
+          pose:"talk",
+          say:"Two vectors — one flat in the x y plane, one reaching into z. We want their dot product and the angle between them. Note at once that A has no z component, so one of the three products is dead on arrival.",
+          board:[
+            {label:"Given + find", tex:"\\vec A = 3\\,\\ihat + 4\\,\\jhat, \\quad \\vec B = -\\ihat + 2\\,\\jhat + 2\\,\\khat; \\quad\\text{find } \\vec A\\cdot\\vec B \\text{ and } \\phi", kind:"key"}
+          ]
+        },
+        { map:1, title:"Multiply matching components",
+          think:"Why do only matching components multiply — never x with y?",
+          model:"A·B = ΣAᵢBᵢ = −3 + 8 + 0 = 5. Unit vectors of different axes are perpendicular.",
+          pose:"write",
+          say:"Dot products pair like with like: x with x, y with y, z with z — because unit vectors of different axes are perpendicular and contribute nothing. Three times minus one, plus four times two, plus zero times two: minus three plus eight, which is five.",
+          board:[
+            {label:"Component recipe", tex:"\\vec A\\cdot\\vec B = (3)(-1) + (4)(2) + (0)(2) = 5", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The two magnitudes",
+          think:"Which classic 3-4-5 fact makes A instant?",
+          model:"A = 5 (a 3-4-5 triangle); B = √(1+4+4) = 3.",
+          pose:"write",
+          say:"For the angle we need both lengths. A is the beloved three four five triangle: five. B is root of one plus four plus four — root nine — three. The numbers in this problem were chosen by somebody who wanted you to succeed.",
+          board:[
+            {tex:"A = \\sqrt{3^2+4^2} = 5, \\qquad B = \\sqrt{1+4+4} = 3"}
+          ]
+        },
+        { map:3, title:"Extract the angle",
+          think:"cos φ = 1/3: without a calculator, is φ closer to 0°, 70°, or 90°?",
+          model:"cos φ = 5/15 = 1/3 → φ = 70.5°.",
+          pose:"point",
+          say:"The geometry definition — A dot B equals A B cosine phi — now runs in reverse. Cosine of phi equals five over fifteen: one third. Phi is seventy point five degrees. A cosine of a third means the vectors are well apart, but still on speaking terms.",
+          board:[
+            {label:"Geometry from algebra", tex:"\\cos\\phi = \\frac{\\vec A\\cdot\\vec B}{AB} = \\frac{5}{15} = \\frac13 \\;\\Rightarrow\\; \\phi = 70.5^{\\circ}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 1,0.5, 6.5,0.5, {color:GREEN, w:3.5, label:'A', fs:14, at:'mid', side:-1});
+       arrow(c, 1,0.5, 2.5,5.2, {color:BLUE, w:3.5, label:'B', fs:14});
+       arc(c, 1,0.5, 1.4, 0, 70.5, {color:GOLD, label:'70.5°', fs:12});
+     }
+        },
+        { map:4, title:"Interpret the sign",
+          think:"What would a negative dot product have told you, before any arccos?",
+          model:"A·B > 0 ⇔ φ < 90°: the vectors lean the same way.",
+          pose:"excited",
+          say:"One more dividend: the SIGN of a dot product is free information. Positive means the angle is acute — the vectors lean the same way; negative means obtuse; zero means perpendicular. Our plus five promised phi below ninety degrees before we computed a thing. The dot product editorialises, if you know how to read it.",
+          board:[
+            {label:"Sign as meaning", text:"A·B > 0 → φ < 90° (same general direction); < 0 → obtuse; = 0 → perpendicular.", kind:"key"},
+            {label:"Reusable method", text:"multiply matching components → magnitudes → cos φ = A·B / AB → read the sign as geometry", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Three legs of a sailboat",
+      problem:"A sailboat travels 2.50 km at 30.0° north of east, then 4.00 km due west, then 1.50 km at 45.0° south of west. Find its net displacement from the start.",
+      goal:"Goal → R and direction",
+      world:{"x0":-4.8,"x1":3.2,"y0":-1.8,"y1":2.6},
+      pathway:["Axes","Components","Sum","Magnitude","Compare"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'east (km)', ylab:'north (km)'});
+  },
+      steps:[
+        { map:0, title:"Choose the compass axes",
+          think:"Which choice of axes makes 'north of east' easiest to translate?",
+          model:"East = +x, north = +y. Every leg becomes (d cos θ, d sin θ) from east.",
+          pose:"talk",
+          say:"A sailboat tacks three times: two and a half kilometres at thirty degrees north of east, four kilometres due west, then one and a half at forty five south of west. Set east as plus x and north as plus y, and each leg surrenders its components without a fight.",
+          board:[
+            {label:"Setup", text:"East = +x, north = +y. Legs: 2.50 km @ 30.0° N of E; 4.00 km W; 1.50 km @ 45.0° S of W.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Resolve each leg",
+          think:"Which legs pick up negative components, and from which words in the problem?",
+          model:"'West' and 'south' are the minus signs, spoken aloud.",
+          pose:"write",
+          say:"Leg one: two point five cosine thirty east, two point five sine thirty north — two point one six five and one point two five. Leg two: minus four east, nothing north. Leg three points west AND south, so both components are negative: minus one point zero six one each. The words west and south are minus signs wearing hats.",
+          board:[
+            {label:"Leg by leg (km)", tex:"\\begin{aligned}\\text{1: }&(2.165,\\;1.250)\\\\ \\text{2: }&(-4.000,\\;0)\\\\ \\text{3: }&(-1.061,\\;-1.061)\\end{aligned}"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2.165,1.25, {color:GREEN, w:3, label:'1', fs:12, at:'mid', side:-1});
+       arrow(c, 2.165,1.25, -1.835,1.25, {color:BLUE, w:3, label:'2', fs:12, at:'mid'});
+       arrow(c, -1.835,1.25, -2.896,0.189, {color:PURPLE, w:3, label:'3', fs:12, at:'mid', side:-1});
+     }
+        },
+        { map:2, title:"Add the columns",
+          think:"Why may x's and y's be summed separately without ever interacting?",
+          model:"Components on perpendicular axes are independent bookkeeping columns.",
+          pose:"write",
+          say:"Now the great virtue of components: addition is columnwise. The x column: two point one six five, minus four, minus one point zero six one — total minus two point eight nine six. The y column: one point two five, zero, minus one point zero six one — total plus zero point one eight nine. The boat ends west of the start, and just barely north.",
+          board:[
+            {label:"Column sums", tex:"R_x = -2.896\\ \\mathrm{km}, \\qquad R_y = +0.189\\ \\mathrm{km}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, -2.896,0.189, {color:GOLD, w:3.5, label:'R', fs:14, at:'mid'});
+     }
+        },
+        { map:3, title:"Magnitude and heading",
+          think:"Rx < 0 again — which correction does the arctan owe you this time?",
+          model:"R = 2.90 km at 176.3° from +x — i.e. 3.7° north of west.",
+          pose:"point",
+          say:"Magnitude: root of two point eight nine six squared plus zero point one eight nine squared — two point nine zero kilometres. The angle: R x is negative, so we correct the arctangent by one hundred eighty, landing at one hundred seventy six point three degrees — in sailor's language, three point seven degrees north of west.",
+          board:[
+            {tex:"R = \\sqrt{2.896^2 + 0.189^2} = 2.90\\ \\mathrm{km}", kind:"answer"},
+            {tex:"\\theta = 180^{\\circ} - \\tan^{-1}\\!\\frac{0.189}{2.896} = 176.3^{\\circ}\\ \\text{(3.7° N of W)}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Distance is not displacement",
+          think:"The log reads 8.00 km. The displacement is 2.90 km. Which one does the crew feel in their arms?",
+          model:"Path length 8.00 km; displacement only 2.90 km. Vectors care about where, not how far.",
+          pose:"excited",
+          say:"And the closing moral: the crew sailed eight kilometres of water, yet stand only two point nine from where they began. Distance is what the hull travelled; displacement is what the map admits. Vectors keep the map's books, not the hull's.",
+          board:[
+            {label:"The comparison", text:"Path length = 2.50 + 4.00 + 1.50 = 8.00 km, but |R| = 2.90 km.", kind:"key"},
+            {label:"Reusable method", text:"axes from the compass → resolve every leg with signs → sum columns → magnitude + corrected angle → compare with path length", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Relative position by vector subtraction",
+      problem:"Hiker A is at rA = 3.00 i + 4.00 j km and hiker B at rB = −2.00 i + 1.00 j km from a trailhead (x east, y north). How far, and in what direction, must A walk to reach B?",
+      goal:"Goal → d = rB − rA",
+      world:{"x0":-3.6,"x1":4.6,"y0":-0.8,"y1":5.2},
+      pathway:["Map","Subtract","Magnitude","Direction","Order"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'east (km)', ylab:'north (km)'});
+    circleAt(ctx, 3,4, 0.16, {stroke:'#8ed29b', w:3});
+    circleAt(ctx, -2,1, 0.16, {stroke:'#7fb8e8', w:3});
+    label(ctx, 3.25,4.15, 'A (3, 4)', {fs:12, color:GREEN});
+    label(ctx, -1.8,1.35, 'B (−2, 1)', {fs:12, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"Two positions, one question",
+          think:"'From A to B' — which position vector gets the minus sign?",
+          model:"d = rB − rA: destination minus origin, always.",
+          pose:"talk",
+          say:"Two hikers on the same map: A at three east, four north; B at minus two east, one north. What walk takes A to B? Relative position is a subtraction — and the order is everything: destination minus origin. To B, from A: r B minus r A.",
+          board:[
+            {label:"The rule", tex:"\\vec d = \\vec r_B - \\vec r_A \\quad\\text{(destination minus origin)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Subtract component by component",
+          think:"Both components come out negative — what does that say in compass language?",
+          model:"d = −5.00 i − 3.00 j km: west and south.",
+          pose:"write",
+          say:"Minus two, minus three is minus five east — five west, in honest words. One minus four is minus three north — three south. The displacement is minus five i minus three j kilometres: quadrant three of the map, southwest-ish.",
+          board:[
+            {tex:"\\vec d = (-2.00-3.00)\\,\\ihat + (1.00-4.00)\\,\\jhat = -5.00\\,\\ihat - 3.00\\,\\jhat\\ \\mathrm{km}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3,4, -2,1, {color:GOLD, w:3.5, label:'d', fs:14, at:'mid', side:-1});
+     }
+        },
+        { map:2, title:"How far",
+          think:"Estimate before computing: is the walk nearer 5 km or 8 km?",
+          model:"d = √(25+9) = 5.83 km.",
+          pose:"write",
+          say:"The length: root of twenty five plus nine, root thirty four — five point eight three kilometres. A respectable morning's walk.",
+          board:[
+            {tex:"d = \\sqrt{5.00^2 + 3.00^2} = \\sqrt{34} = 5.83\\ \\mathrm{km}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Which way",
+          think:"Quadrant III: how do you phrase the arctan result as a compass bearing?",
+          model:"tan⁻¹(3/5) = 31.0° → 31.0° south of west.",
+          pose:"point",
+          say:"Both components negative — quadrant three. Inverse tangent of three over five is thirty one degrees, and since we are west and south, the bearing reads: thirty one degrees south of west. Say it like a navigator and no quadrant confusion can survive.",
+          board:[
+            {tex:"\\tan^{-1}\\!\\frac{3.00}{5.00} = 31.0^{\\circ} \\;\\Rightarrow\\; \\text{31.0° south of west}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3,4, -2,1, {color:GOLD, w:3.5});
+       dashLine(c, 3,4, -2,4, {});
+       arc(c, 3,4, 1.2, 180, 211, {color:GOLD, fs:11});
+       label(c, 0.9,4.35, '31° S of W', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:4, title:"The order matters",
+          think:"What does rA − rB describe — and who would want it?",
+          model:"Swapping the order reverses the arrow: B's trip to A.",
+          pose:"excited",
+          say:"Had we subtracted in the other order we would have obtained plus five, plus three — the same length pointing exactly backwards: B's walk to A. A subtraction of vectors is a question about direction, and the order of subtraction is the question's grammar. Destination minus origin — every time.",
+          board:[
+            {label:"Order check", text:"rA − rB = +5.00 i + 3.00 j km: same distance, opposite trip (B → A).", kind:"warn"},
+            {label:"Reusable method", text:"destination minus origin → subtract componentwise → Pythagoras → bearing from the signs, spoken as a compass phrase", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Cross product in three dimensions",
+      problem:"Compute A × B for A = 2 i + 3 j − k and B = i − j + 2 k, find its magnitude, and verify it is perpendicular to both vectors.",
+      goal:"Goal → A×B, |A×B|, ⊥ check",
+      world:{"x0":-1,"x1":9,"y0":-1,"y1":7},
+      pathway:["Read","Components","Magnitude","Perpendicular","Quadrant"],
+      steps:[
+        { map:0, title:"Read: a fully 3D product",
+          think:"What kind of object should A × B be — number or vector?",
+          model:"A vector, perpendicular to both inputs. That's the geometry to verify at the end.",
+          pose:"talk",
+          say:"Two vectors with all three components alive, and we want their cross product. Remember what species of answer to expect: not a number but a VECTOR, one that stands perpendicular to both parents. We will verify that pedigree at the end — the cross product supplies its own audit.",
+          board:[
+            {label:"Given + find", tex:"\\vec A = 2\\,\\ihat + 3\\,\\jhat - \\khat, \\quad \\vec B = \\ihat - \\jhat + 2\\,\\khat; \\quad\\text{find } \\vec A\\times\\vec B", kind:"key"}
+          ]
+        },
+        { map:1, title:"The cyclic recipe",
+          think:"Each output component ignores its own axis — why must it?",
+          model:"(A×B)x = AyBz − AzBy, and cyclically. Result: 5 i − 5 j − 5 k.",
+          pose:"write",
+          say:"Each component of the cross product is built from the OTHER two axes, cyclically: x from y and z, y from z and x, z from x and y. Three times two minus minus one times minus one: five. Minus one times one minus two times two: minus five. Two times minus one minus three times one: minus five. So five, minus five, minus five.",
+          board:[
+            {tex:"(\\vec A\\times\\vec B)_x = A_yB_z - A_zB_y = 6 - 1 = 5"},
+            {tex:"(\\vec A\\times\\vec B)_y = A_zB_x - A_xB_z = -1 - 4 = -5"},
+            {tex:"(\\vec A\\times\\vec B)_z = A_xB_y - A_yB_x = -2 - 3 = -5"},
+            {label:"Assembled", tex:"\\vec A\\times\\vec B = 5\\,\\ihat - 5\\,\\jhat - 5\\,\\khat", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Its magnitude",
+          think:"Why does 5√3 pop out so cleanly here?",
+          model:"|A×B| = 5√3 = 8.66 — three equal squares under one root.",
+          pose:"write",
+          say:"The magnitude: root of twenty five plus twenty five plus twenty five — five root three, eight point six six. Three equal components make for tidy arithmetic; nature is rarely so obliging, but examples may be.",
+          board:[
+            {tex:"|\\vec A\\times\\vec B| = \\sqrt{75} = 5\\sqrt3 = 8.66", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The perpendicularity audit",
+          think:"Which cheap operation certifies 'perpendicular to both'?",
+          model:"Dot each parent with the result: both must give exactly zero.",
+          pose:"point",
+          say:"Now the audit. Dot the answer with A: ten minus fifteen plus five — zero. Dot it with B: five plus five minus ten — zero. Two zeros, no rounding, no mercy. If either dot product had survived, the cross product would contain an arithmetic slip somewhere in its cycle.",
+          board:[
+            {tex:"\\vec A\\cdot(\\vec A\\times\\vec B) = 10 - 15 + 5 = 0\\;\\checkmark", kind:"key"},
+            {tex:"\\vec B\\cdot(\\vec A\\times\\vec B) = 5 + 5 - 10 = 0\\;\\checkmark", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 4,1, 7,2.2, {color:GREEN, w:3, label:'A', fs:13});
+       arrow(c, 4,1, 5.5,3.8, {color:BLUE, w:3, label:'B', fs:13});
+       arrow(c, 4,1, 2.2,4.6, {color:GOLD, w:3.5, label:'A×B', fs:13});
+       textAt(c, 1.2,0.2, 'one vector, perpendicular to both', {fs:11, italic:true});
+     }
+        },
+        { map:4, title:"Sine, cosine, and the quadrant",
+          think:"sin φ = 0.945 admits two angles. What breaks the tie?",
+          model:"AB sin φ = 8.66 gives φ = 70.9° or 109.1°; cos φ < 0 rules: 109.1°.",
+          pose:"think",
+          say:"A bonus lesson. From A B sine phi equals eight point six six, sine phi is point nine four five — but that allows BOTH seventy point nine and one hundred nine point one degrees. The sine never fixes a quadrant. Ask the dot product: A dot B is minus three, negative, so the angle is obtuse. One hundred nine point one degrees. Sine measures; cosine testifies.",
+          board:[
+            {tex:"\\sin\\phi = \\frac{8.66}{\\sqrt{14}\\sqrt{6}} = 0.945 \\;\\Rightarrow\\; \\phi = 70.9^{\\circ} \\text{ or } 109.1^{\\circ}", kind:"warn"},
+            {tex:"\\vec A\\cdot\\vec B = -3 < 0 \\;\\Rightarrow\\; \\phi = 109.1^{\\circ}", kind:"answer"},
+            {label:"Reusable method", text:"cyclic components → magnitude → dot-with-both audit = 0 → let cos, not sin, settle the quadrant", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Two products, two physical meanings",
+      problem:"A force F = 4.00 i + 3.00 j N acts on an object. (a) The object moves through d = 3.00 i + 2.00 j m; find the work W = F·d. (b) The force acts at r = 2.00 i − 1.00 j m from a pivot; find the torque τ = r × F.",
+      goal:"Goal → W and τ",
+      world:{"x0":-1.5,"x1":6.5,"y0":-2.5,"y1":4.5},
+      pathway:["Read","Work","Torque","Right hand","Contrast"],
+      steps:[
+        { map:0, title:"One pair of vectors, two products",
+          think:"Work is a scalar and torque a vector. Which product must each be?",
+          model:"W = F·d (scalar); τ = r×F (vector). The physics chooses the product.",
+          pose:"talk",
+          say:"The same force will be dotted once and crossed once — and produce two entirely different pieces of physics. Work asks how much of the force acts ALONG the motion: a dot product, a scalar. Torque asks how effectively the force turns things about a pivot: a cross product, a vector. The physics chooses the product; we merely compute.",
+          board:[
+            {label:"Given", tex:"\\vec F = 4.00\\,\\ihat + 3.00\\,\\jhat\\ \\mathrm{N}; \\quad \\vec d = 3.00\\,\\ihat + 2.00\\,\\jhat\\ \\mathrm{m}; \\quad \\vec r = 2.00\\,\\ihat - 1.00\\,\\jhat\\ \\mathrm{m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): work is a dot",
+          think:"Which portion of F does no work at all?",
+          model:"W = 12 + 6 = 18.0 J. Only the along-d part of F earns its keep.",
+          pose:"write",
+          say:"Work: four times three plus three times two — twelve plus six — eighteen joules. A scalar: no direction, no components, just an amount of energy transferred. The part of the force perpendicular to the path contributed precisely nothing, which is the dot product's entire editorial position.",
+          board:[
+            {label:"Work", tex:"W = \\vec F\\cdot\\vec d = (4.00)(3.00) + (3.00)(2.00) = 18.0\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 3,2, {color:BLUE, w:3.5, label:'d', fs:14, at:'mid', side:-1});
+       arrow(c, 0,0, 4,3, {color:RED, w:3, label:'F', fs:14});
+       textAt(c, 3.6,0.4, 'W = F·d = 18 J', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"Part (b): torque is a cross",
+          think:"Both r and F live in the xy plane — which single component of τ can survive?",
+          model:"τz = rxFy − ryFx = 6 + 4 = 10.0 N·m; τ = 10.0 k.",
+          pose:"write",
+          say:"Torque: r cross F. With both vectors flat in the x y plane, the cross product can only point along z. Tau z equals r x F y minus r y F x: two times three minus minus one times four — six plus four — ten newton metres, along plus k.",
+          board:[
+            {label:"Torque", tex:"\\tau_z = r_xF_y - r_yF_x = (2.00)(3.00) - (-1.00)(4.00) = 10.0\\ \\mathrm{N\\cdot m}", kind:"answer"},
+            {tex:"\\vec\\tau = 10.0\\,\\khat\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0,0, 0.18, {stroke:GOLD, w:3});
+       label(c, -0.9,-0.5, 'pivot', {fs:11, color:GOLD});
+       arrow(c, 0,0, 2,-1, {color:DIMC, w:2.5, label:'r', fs:13, at:'mid'});
+       arrow(c, 2,-1, 6,2, {color:RED, w:3, label:'F', fs:14, at:'mid', side:-1});
+     }
+        },
+        { map:3, title:"Read the k with your right hand",
+          think:"Positive k out of the page: which way does the object turn?",
+          model:"+k = counterclockwise, by the right-hand rule.",
+          pose:"point",
+          say:"What does plus k MEAN? Curl the right hand's fingers from r toward F; the thumb points out of the page. Out of the page is counterclockwise rotation, by convention and by right hands everywhere. The sign of a torque is a direction of turning, delivered as a vector component.",
+          board:[
+            {label:"Right-hand rule", text:"+k (out of the page) → the force turns the object counterclockwise about the pivot.", kind:"key"}
+          ],
+          action(c){
+       circleAt(c, 0,0, 1.4, {stroke:GOLD, w:2, dash:'6,5'});
+       arrow(c, 1.4,0, 1.25,0.75, {color:GOLD, w:2.5});
+       label(c, 1.7,0.9, 'ccw', {fs:12, color:GOLD, italic:true});
+       circleAt(c, 0,0, 0.1, {stroke:CHALKC, w:3});
+       textAt(c, -1.2,2.6, 'τ = +10 k: out of the page', {fs:12, italic:true});
+     }
+        },
+        { map:4, title:"Same vectors, different physics",
+          think:"Could a force do zero work yet exert maximum torque? Sketch the case.",
+          model:"Dot rewards parallel; cross rewards perpendicular. They measure opposite talents.",
+          pose:"excited",
+          say:"Contemplate the contrast. The dot product rewards parallelism: force along motion, work done. The cross product rewards perpendicularity: force at right angles to the lever arm, maximum turning. A force straight along r turns nothing; a force perpendicular to the motion lifts no energy. Two products, two opposite talents — and every equation of mechanics knows which one to call.",
+          board:[
+            {label:"The contrast", text:"Dot: rewards parallel, kills perpendicular. Cross: rewards perpendicular, kills parallel.", kind:"key"},
+            {label:"Reusable method", text:"identify the physics (along → dot, turning → cross) → planar vectors give τ along k → sign of k = sense of rotation", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Closing a vector triangle",
+      problem:"Three forces act on a particle in equilibrium: A is 4.00 N at 60.0° from +x, B is 5.00 N at 150.0°, and C is unknown. Find C.",
+      goal:"Goal → C for ΣF = 0",
+      world:{"x0":-6,"x1":4,"y0":-2,"y1":7},
+      pathway:["Equilibrium","Resolve","Negate","Report","Triangle"],
+      steps:[
+        { map:0, title:"Equilibrium writes the equation",
+          think:"Zero net force: what is C, before any arithmetic?",
+          model:"A + B + C = 0 → C = −(A + B). The physics is one line.",
+          pose:"talk",
+          say:"A particle in equilibrium under three forces — two known, one mystery. Equilibrium means the three sum to zero, so the mystery is solved in principle immediately: C is minus the sum of A and B. All that remains is honest bookkeeping.",
+          board:[
+            {label:"The physics", tex:"\\vec A + \\vec B + \\vec C = 0 \\;\\Rightarrow\\; \\vec C = -(\\vec A + \\vec B)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Resolve the two knowns",
+          think:"cos 150° is negative. Which way is B leaning?",
+          model:"A = (2.000, 3.464) N; B = (−4.330, 2.500) N.",
+          pose:"write",
+          say:"A: four at sixty degrees — two along x, three point four six four along y. B: five at one hundred fifty — cosine is negative there, minus four point three three zero, and sine gives two point five. B leans backwards over the negative x axis, as its angle promised.",
+          board:[
+            {tex:"\\vec A = (4.00\\cos60^{\\circ},\\,4.00\\sin60^{\\circ}) = (2.000,\\;3.464)\\ \\mathrm{N}"},
+            {tex:"\\vec B = (5.00\\cos150^{\\circ},\\,5.00\\sin150^{\\circ}) = (-4.330,\\;2.500)\\ \\mathrm{N}"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2,3.464, {color:GREEN, w:3, label:'A', fs:13});
+       arrow(c, 0,0, -4.33,2.5, {color:BLUE, w:3, label:'B', fs:13});
+     }
+        },
+        { map:2, title:"Sum, then flip every sign",
+          think:"Negating a vector: what happens to its magnitude, and what to its direction?",
+          model:"A+B = (−2.330, 5.964) → C = (2.330, −5.964) N.",
+          pose:"write",
+          say:"Add: minus two point three three zero, plus five point nine six four. Then C is the negative of that — flip BOTH signs: plus two point three three zero, minus five point nine six four newtons. Negating a vector keeps its length and reverses its arrow; nothing else changes.",
+          board:[
+            {tex:"\\vec A + \\vec B = (-2.330,\\;5.964)\\ \\mathrm{N}"},
+            {tex:"\\vec C = (2.330,\\;-5.964)\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Magnitude and direction",
+          think:"Quadrant IV this time — does the raw arctan need correcting?",
+          model:"C = 6.40 N at −68.7° (i.e. 68.7° below +x). No correction needed: Cx > 0.",
+          pose:"point",
+          say:"Magnitude: six point four zero newtons. Direction: inverse tangent of minus five point nine six four over two point three three zero is minus sixty eight point seven degrees — and since C x is positive, quadrant four is exactly where the vector lives, so for once the calculator's answer stands unedited. Sixty eight point seven degrees below the plus x axis.",
+          board:[
+            {tex:"C = \\sqrt{2.330^2 + 5.964^2} = 6.40\\ \\mathrm{N}", kind:"answer"},
+            {tex:"\\theta = \\tan^{-1}\\!\\frac{-5.964}{2.330} = -68.7^{\\circ}\\ \\text{(no correction: } C_x>0)", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2.33,-1.3, {color:GOLD, w:3.5, label:'C', fs:14});
+       textAt(c, 2.5,-1.9, '6.40 N, 68.7° below +x', {fs:11, color:GOLD, italic:true});
+     }
+        },
+        { map:4, title:"The triangle closes", solo:true,
+          think:"Why must three equilibrium vectors, drawn tip-to-tail, land exactly home?",
+          model:"Zero resultant = closed polygon. The picture is the proof.",
+          pose:"excited",
+          say:"The geometric check: draw the three forces tip to tail — A, then B, then C — and the final tip lands precisely on the original tail. A zero resultant IS a closed triangle; equilibrium is geometry you can see. If your triangle gapes open, your components are quietly wrong somewhere.",
+          board:[
+            {label:"Closure check", text:"Tip-to-tail, the three forces form a closed triangle — the visual signature of ΣF = 0.", kind:"key"},
+            {label:"Reusable method", text:"ΣF = 0 → C = −(A+B) → resolve, sum, negate → report magnitude + quadrant-checked angle → confirm the closed triangle", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2,3.464, {color:GREEN, w:3, label:'A', fs:12, at:'mid', side:-1});
+       arrow(c, 2,3.464, -2.33,5.964, {color:BLUE, w:3, label:'B', fs:12, at:'mid'});
+       arrow(c, -2.33,5.964, 0,0, {color:GOLD, w:3.5, label:'C', fs:12, at:'mid'});
+       textAt(c, -4.6,0.6, 'tip-to-tail: it closes', {fs:11, italic:true});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Angles inside a cube",
+      problem:"Use dot products to find (a) the angle between two body diagonals of a cube and (b) the angle between a body diagonal and an edge.",
+      goal:"Goal → φ and θ by dot product",
+      world:{"x0":-1,"x1":9,"y0":-1,"y1":7},
+      pathway:["Model","Diagonals","Angle (a)","Angle (b)","Moral"],
+      setup(ctx,w){
+    /* isometric-ish unit cube: project (x,y,z) -> (x + 0.45z, y + 0.32z), scaled by 4 */
+    const P=(x,y,z)=>[1.2 + 4*(x + 0.45*z), 0.8 + 4*(y + 0.32*z)];
+    const E=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]];
+    const edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+    edges.forEach(e=>{ const a=P(...E[e[0]]), b=P(...E[e[1]]);
+      el('line',{x1:ctx.M.X(a[0]),y1:ctx.M.Y(a[1]),x2:ctx.M.X(b[0]),y2:ctx.M.Y(b[1]),
+        stroke:'#9fb4a3','stroke-width':1.6,opacity:.8},ctx.svg); });
+  },
+      steps:[
+        { map:0, title:"Model the cube with coordinates",
+          think:"Where should the origin go to make the diagonals' components trivial?",
+          model:"Unit cube, corner at the origin: every vertex is 0s and 1s.",
+          pose:"talk",
+          say:"A geometry problem with no numbers given — so we manufacture our own. Place a unit cube with one corner at the origin and edges along the axes. Every vertex becomes a triple of zeros and ones, and every diagonal becomes a vector we can dot. Coordinates are the great equaliser of geometry.",
+          board:[
+            {label:"Setup", text:"Unit cube at the origin. Body diagonals run corner to opposite corner through the middle.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Write the two diagonals",
+          think:"Why do both diagonals have length √3 before any computation?",
+          model:"D₁ = i+j+k, D₂ = i+j−k (from adjacent bottom corners); |D| = √3.",
+          pose:"write",
+          say:"One body diagonal climbs from the origin to one one one: the vector i plus j plus k. Another climbs from the corner zero zero one down to one one zero: i plus j minus k. Each has length root three — one unit of progress along each axis, Pythagoras in triplicate.",
+          board:[
+            {tex:"\\vec D_1 = \\ihat+\\jhat+\\khat, \\qquad \\vec D_2 = \\ihat+\\jhat-\\khat, \\qquad |\\vec D| = \\sqrt3", kind:"key"}
+          ],
+          action(c){
+       const P=(x,y,z)=>[1.2 + 4*(x + 0.45*z), 0.8 + 4*(y + 0.32*z)];
+       const a=P(0,0,0), b=P(1,1,1), d=P(0,0,1), e2=P(1,1,0);
+       arrow(c, a[0],a[1], b[0],b[1], {color:GOLD, w:3, label:'D1', fs:12, at:'mid', side:-1});
+       arrow(c, d[0],d[1], e2[0],e2[1], {color:PURPLE, w:3, label:'D2', fs:12, at:'mid'});
+     }
+        },
+        { map:2, title:"Part (a): diagonal meets diagonal",
+          think:"D₁·D₂ = 1: which single term of the three flipped sign?",
+          model:"cos φ = 1/3 → φ = 70.5°.",
+          pose:"write",
+          say:"Dot them: one plus one minus one — one. Divide by root three times root three — three. Cosine of phi is one third, so phi is seventy point five degrees. The same one-third cosine we met with the sailboat's cousins earlier; it haunts three dimensional geometry wherever symmetric threes appear.",
+          board:[
+            {tex:"\\cos\\phi = \\frac{\\vec D_1\\cdot\\vec D_2}{3} = \\frac{1+1-1}{3} = \\frac13 \\;\\Rightarrow\\; \\phi = 70.5^{\\circ}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Part (b): diagonal meets edge",
+          think:"Which is bigger: the diagonal's angle to an edge, or to another diagonal?",
+          model:"cos θ = 1/√3 → θ = 54.7° — the famous 'magic angle'.",
+          pose:"point",
+          say:"Against an edge — take the k edge itself. D one dot k is simply one, over root three times one: cosine theta equals one over root three, theta is fifty four point seven degrees. Crystallographers and chemists call this the magic angle; to us it is one dot product on a Tuesday.",
+          board:[
+            {tex:"\\cos\\theta = \\frac{\\vec D_1\\cdot\\khat}{\\sqrt3} = \\frac{1}{\\sqrt3} \\;\\Rightarrow\\; \\theta = 54.7^{\\circ}", kind:"answer"}
+          ],
+          action(c){
+       const P=(x,y,z)=>[1.2 + 4*(x + 0.45*z), 0.8 + 4*(y + 0.32*z)];
+       const a=P(0,0,0), b=P(1,1,1), k2=P(0,0,1);
+       arrow(c, a[0],a[1], b[0],b[1], {color:GOLD, w:3, label:'D1', fs:12, at:'mid', side:-1});
+       arrow(c, a[0],a[1], k2[0],k2[1], {color:GREEN, w:3, label:'k', fs:12, at:'mid'});
+       textAt(c, 5.6,0.1, 'θ = 54.7°', {fs:12, color:GREEN, italic:true});
+     }
+        },
+        { map:4, title:"Geometry became arithmetic",
+          think:"What would this problem have cost with triangles and the law of cosines?",
+          model:"Coordinates + dot product turn spatial geometry into addition.",
+          pose:"excited",
+          say:"Observe what never happened: no triangle was solved, no law of cosines invoked, no spatial intuition strained. We assigned coordinates, multiplied matching components, and geometry surrendered to arithmetic. That is the dot product's deepest job description — it is the angle-measuring machine of coordinate physics.",
+          board:[
+            {label:"The moral", text:"Assign coordinates → angles become dot products → geometry becomes arithmetic.", kind:"key"},
+            {label:"Reusable method", text:"place the figure on axes with easy coordinates → write the vectors → cos = dot / product of magnitudes", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Perpendicular combinations and projections",
+      problem:"Let A = 3 i − 2 j and B = i + 4 j. (a) Find k so that A + kB is perpendicular to A. (b) Find the component (projection) of B along A.",
+      goal:"Goal → k and B∥",
+      world:{"x0":-2,"x1":7,"y0":-4,"y1":6},
+      pathway:["Read","Condition","Solve + verify","Projection","Meaning"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x', ylab:'y'});
+    arrow(ctx, 0,0, 3,-2, {color:GREEN, w:3, label:'A', fs:13});
+    arrow(ctx, 0,0, 1,4, {color:BLUE, w:3, label:'B', fs:13});
+  },
+      steps:[
+        { map:0, title:"Two small questions, one tool",
+          think:"Both parts mention perpendicularity or projection. Which product handles both?",
+          model:"The dot product: zero for perpendicular, B·Â for projection.",
+          pose:"talk",
+          say:"Part a asks for a mixture of A and B that stands perpendicular to A; part b asks how much of B lies along A. Different-sounding questions, identical tool: the dot product — zero when vectors are perpendicular, and, divided by a length, the very definition of a projection.",
+          board:[
+            {label:"Given", tex:"\\vec A = 3\\,\\ihat - 2\\,\\jhat, \\qquad \\vec B = \\ihat + 4\\,\\jhat", kind:"key"}
+          ]
+        },
+        { map:1, title:"Translate 'perpendicular' into algebra",
+          think:"(A + kB)·A expands into which two recognisable numbers?",
+          model:"A² + k(B·A) = 0, with A² = 13 and B·A = −5.",
+          pose:"write",
+          say:"Perpendicular to A means dot product with A equal to zero. Expand: A dot A plus k times B dot A. A dot A is nine plus four, thirteen. B dot A is three minus eight, minus five. Thirteen minus five k equals zero.",
+          board:[
+            {tex:"(\\vec A + k\\vec B)\\cdot\\vec A = A^2 + k\\,(\\vec B\\cdot\\vec A) = 13 - 5k = 0", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve — and then audit",
+          think:"Why is the numeric verification worth thirty seconds of your life?",
+          model:"k = 2.60; A + 2.6B = (5.6, 8.4), and (5.6)(3) + (8.4)(−2) = 0. ✓",
+          pose:"write",
+          say:"k equals thirteen fifths: two point six. Now the audit — build the vector: three plus two point six, that is five point six; minus two plus ten point four, that is eight point four. Dot with A: sixteen point eight minus sixteen point eight. Zero, on the nose. Thirty seconds of verification, a lifetime of confidence.",
+          board:[
+            {tex:"k = \\frac{13}{5} = 2.60", kind:"answer"},
+            {label:"Verify", tex:"\\vec A + 2.6\\vec B = 5.6\\,\\ihat + 8.4\\,\\jhat; \\quad (5.6)(3)+(8.4)(-2) = 0\\;\\checkmark", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, 3,-2, {color:GREEN, w:3, label:'A', fs:13});
+       arrow(c, 0,0, 2.8,4.2, {color:GOLD, w:3, label:'A + 2.6B', fs:12});
+       textAt(c, 4.2,4.4, 'perpendicular to A', {fs:11, italic:true});
+     }
+        },
+        { map:3, title:"The projection of B on A",
+          think:"Why divide by A — what would B·A alone fail to be?",
+          model:"B∥ = (A·B)/A = −5/√13 = −1.39.",
+          pose:"point",
+          say:"The projection of B along A is B dot A over the magnitude of A: minus five over root thirteen — minus one point three nine. Without the division the dot product mixes in A's own length; dividing leaves the pure shadow of B on A's direction.",
+          board:[
+            {label:"Projection", tex:"B_{\\parallel} = \\vec B\\cdot\\hat A = \\frac{\\vec A\\cdot\\vec B}{A} = \\frac{-5}{\\sqrt{13}} = -1.39", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 3,-2, {color:GREEN, w:3, label:'A', fs:13});
+       arrow(c, 0,0, 1,4, {color:BLUE, w:3, label:'B', fs:13});
+       dashLine(c, 1,4, -1.155,0.77, {});
+       arrow(c, 0,0, -1.155,0.77, {color:RED, w:3, label:'B∥', fs:12, at:'mid', side:-1});
+     }
+        },
+        { map:4, title:"Read the minus sign",
+          think:"A negative projection: acute or obtuse angle between B and A?",
+          model:"B leans against A: φ = cos⁻¹(−5/√221) = 109.7°.",
+          pose:"excited",
+          say:"The minus sign is the punchline: B's shadow on A points BACKWARDS along A. The two vectors meet at one hundred nine point seven degrees — obtuse, leaning apart. A projection is not merely a length; it is a signed report on whether two directions cooperate or quarrel. These two quarrel, politely.",
+          board:[
+            {tex:"\\phi = \\cos^{-1}\\!\\frac{-5}{\\sqrt{13}\\sqrt{17}} = 109.7^{\\circ}", kind:"answer"},
+            {label:"Reusable method", text:"perpendicular ⇔ dot = 0 → expand, solve, verify numerically → projection = dot / magnitude, sign included", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

@@ -1412,6 +1412,653 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Velocity and acceleration from a position vector",
+      problem:"A particle's position is r(t) = 3.00t i + (4.00t − 4.90t²) j (SI units). Find v(t) and a(t), and evaluate the velocity at t = 0.500 s.",
+      goal:"Goal → v(t), a(t), v(0.5)",
+      world:{"x0":-0.3,"x1":2.6,"y0":-0.4,"y1":1.4},
+      pathway:["Read","Differentiate","Evaluate","Recognise"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    plotCurve(ctx, t=>[3*t, 4*t-4.9*t*t], 0, 0.8, {color:DIMC, w:2, dash:'5,4', N:50});
+  },
+      steps:[
+        { map:0, title:"A vector function of time",
+          think:"Two components, one clock. What single variable links the x story to the y story?",
+          model:"r(t) holds both motions; t is the only thing they share.",
+          pose:"talk",
+          say:"Position given as a vector function: three t along x, four t minus four point nine t squared along y. Two separate one dimensional motions, stapled together by a single, shared clock. Everything we know about one dimension is about to be used twice.",
+          board:[
+            {label:"Given", tex:"\\vec r(t) = 3.00t\\,\\ihat + (4.00t - 4.90t^2)\\,\\jhat\\ \\ \\mathrm{(SI)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Differentiate componentwise",
+          think:"Why may each component be differentiated as if the other did not exist?",
+          model:"v = dr/dt done component by component; a = dv/dt likewise.",
+          pose:"write",
+          say:"Differentiate each component on its own: v is three i plus four minus nine point eight t j. Differentiate again: the acceleration is minus nine point eight j — constant, purely vertical. The components never borrow from each other; the derivative respects the staples.",
+          board:[
+            {tex:"\\vec v = \\frac{d\\vec r}{dt} = 3.00\\,\\ihat + (4.00 - 9.80t)\\,\\jhat", kind:"answer"},
+            {tex:"\\vec a = \\frac{d\\vec v}{dt} = -9.80\\,\\jhat\\ \\mathrm{m/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Evaluate at t = 0.500 s",
+          think:"vy has turned negative by half a second. What happened just before?",
+          model:"v = 3.00 i − 0.900 j m/s: 3.13 m/s at 16.7° below +x.",
+          pose:"write",
+          say:"At half a second: v x is still three — it never changes — while v y is four minus four point nine: minus zero point nine. Speed: root of nine plus point eight one — three point one three metres per second, dipping sixteen point seven degrees below horizontal. The y motion peaked at about point four one seconds and has already turned.",
+          board:[
+            {tex:"\\vec v(0.500) = 3.00\\,\\ihat - 0.900\\,\\jhat\\ \\mathrm{m/s}", kind:"answer"},
+            {tex:"|\\vec v| = \\sqrt{9.00 + 0.81} = 3.13\\ \\mathrm{m/s}, \\quad 16.7^{\\circ}\\ \\text{below } +x", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 1.5,0.775, 0.05, {stroke:GOLD, w:3});
+       arrow(c, 1.5,0.775, 2.25,0.55, {color:GREEN, w:3, label:'v(0.5 s)', fs:12});
+       arrow(c, 1.5,0.775, 1.5,0.375, {color:PURPLE, w:2.5, label:'a = −g j', fs:11, side:-1});
+     }
+        },
+        { map:3, title:"Recognise the motion",
+          think:"Constant a = −g j, uniform x: what physical situation have we re-derived?",
+          model:"Projectile motion — uniform x, free-fall y, coupled only through t.",
+          pose:"excited",
+          say:"Step back and name what the calculus found: constant downward acceleration g, uniform horizontal velocity — this is projectile motion, rebuilt from its position function. The x motion is a metronome, the y motion is free fall, and the only conversation between them is the time. That independence is the master key to the whole chapter.",
+          board:[
+            {label:"Identification", text:"a = −g j and uniform x ⇒ projectile motion: x uniform, y free fall, linked only by t.", kind:"key"},
+            {label:"Reusable method", text:"differentiate componentwise → evaluate → name the motion the derivatives reveal", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Horizontal launch from a ledge",
+      problem:"A ball rolls off a 20.0 m high ledge horizontally at 12.0 m/s. Find the time of flight, the horizontal distance traveled, and the velocity (magnitude and direction) just before impact.",
+      goal:"Goal → t, x, impact v",
+      world:{"x0":-4,"x1":30,"y0":-2.5,"y1":23},
+      pathway:["Split","Fall time","Range","Impact","Moral"],
+      setup(ctx,w){
+    ground(ctx, -3, 29, 0);
+    el('rect',{x:ctx.M.X(-3),y:ctx.M.Y(20),width:ctx.M.X(0)-ctx.M.X(-3),height:ctx.M.Y(0)-ctx.M.Y(20),fill:'#5a6b5e',opacity:.5},ctx.svg);
+    label(ctx, -2.7,21.2, 'ledge, 20.0 m', {fs:11});
+  },
+      steps:[
+        { map:0, title:"Split the motion at once",
+          think:"Which component of the initial velocity is zero — x or y?",
+          model:"Horizontal launch: v0x = 12.0, v0y = 0. Two independent problems.",
+          pose:"talk",
+          say:"A horizontal launch is the cleanest projectile there is: all twelve metres per second belong to x, and the y motion starts from rest — a pure drop. Split immediately: horizontal, uniform; vertical, free fall; one shared stopwatch.",
+          board:[
+            {label:"The split", tex:"v_{0x} = 12.0\\ \\mathrm{m/s}, \\quad v_{0y} = 0, \\quad a_y = -9.80\\ \\mathrm{m/s^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The vertical clock",
+          think:"Which motion decides when the flight ends — and why not the other?",
+          model:"20.0 = ½gt² → t = 2.02 s. Gravity owns the clock.",
+          pose:"write",
+          say:"The flight ends when the ball meets the ground, and that is the vertical motion's decision alone: twenty metres equals one half g t squared. t is the root of forty over nine point eight — two point zero two seconds. The horizontal speed had no vote whatsoever.",
+          board:[
+            {tex:"20.0 = \\tfrac12(9.80)t^2 \\;\\Rightarrow\\; t = 2.02\\ \\mathrm{s}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 0,20, 0.6, {stroke:RED, w:3});
+       tween(u=>{ const t=2.02*u; b.setAttribute('cx', c.M.X(12*t*1)); b.setAttribute('cy', c.M.Y(Math.max(0.6,20-4.9*t*t))); }, 2000, c.instant);
+       plotCurve(c, t=>[12*t, 20-4.9*t*t], 0, 2.02, {color:DIMC, w:2, dash:'5,4', N:50});
+     }
+        },
+        { map:2, title:"The horizontal ruler",
+          think:"With t known, why is the range mere multiplication?",
+          model:"x = v0x·t = (12.0)(2.02) = 24.2 m.",
+          pose:"write",
+          say:"With the time in hand, the horizontal motion — which has been ticking along at an unbothered twelve metres per second — hands over the range by multiplication: twenty four point two metres from the base of the ledge.",
+          board:[
+            {tex:"x = v_{0x}t = (12.0)(2.02) = 24.2\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,1.5, 24.2,1.5, {color:GOLD, dash:'7,5', w:2.5, label:'24.2 m', fs:13, at:'mid'});
+     }
+        },
+        { map:3, title:"The impact velocity",
+          think:"vx never changed; vy grew from zero. Which dominates at impact?",
+          model:"vx = 12.0, vy = −19.8 → 23.2 m/s at 58.8° below horizontal.",
+          pose:"write",
+          say:"At impact, v x is still twelve — untouched since launch — while v y has grown to minus g t: minus nineteen point eight. Magnitude: twenty three point two metres per second, plunging at fifty eight point eight degrees below horizontal. The fall has come to dominate the flight.",
+          board:[
+            {tex:"v_x = 12.0, \\quad v_y = -gt = -19.8\\ \\mathrm{m/s}"},
+            {tex:"v = \\sqrt{12.0^2 + 19.8^2} = 23.2\\ \\mathrm{m/s}, \\quad 58.8^{\\circ}\\ \\text{below horizontal}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 24.2,1.2, 27.2,1.2, {color:BLUE, w:2.5, label:'vx', fs:11});
+       arrow(c, 24.2,1.2, 24.2,-1.8, {color:RED, w:2.5});
+       arrow(c, 24.2,1.2, 27.2,-1.8, {color:GOLD, w:3, label:'23.2 m/s', fs:12});
+     }
+        },
+        { map:4, title:"The dropped-ball companion",
+          think:"A ball dropped (not rolled) from the same ledge — when does IT land?",
+          model:"Same 2.02 s. Horizontal motion neither hastens nor delays the fall.",
+          pose:"excited",
+          say:"The closing thought experiment: drop a second ball straight down at the same instant this one rolls off. They strike the ground TOGETHER — two point zero two seconds each — one at the wall's foot, one twenty four metres out. Horizontal motion neither hastens nor delays a fall. Galileo knew it; the components prove it.",
+          board:[
+            {label:"Independence", text:"A dropped ball lands at the same instant: the x motion cannot touch the y clock.", kind:"key"},
+            {label:"Reusable method", text:"split at launch → y motion sets t → x motion converts t to range → recombine components at impact", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Centripetal acceleration on a Ferris wheel",
+      problem:"A Ferris wheel of radius 15.0 m turns once every 40.0 s. Find a rider's speed and centripetal acceleration, and compare the latter with g.",
+      goal:"Goal → v, a_rad, a/g",
+      world:{"x0":-24,"x1":24,"y0":-19,"y1":21},
+      pathway:["Read","Speed","Acceleration","Compare"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 15, {stroke:CHALKC, w:2.5});
+    circleAt(ctx, 0,0, 0.8, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"Uniform circular motion",
+          think:"The speed is constant. Why is there any acceleration at all?",
+          model:"Velocity is a vector; turning IS accelerating, even at fixed speed.",
+          pose:"talk",
+          say:"A Ferris wheel: fifteen metre radius, one lap in forty seconds, serene and steady. Yet every rider is accelerating the entire ride. Velocity is a vector — magnitude AND direction — and on a circle the direction is in constant revolt. That revolt is the acceleration.",
+          board:[
+            {label:"Given", tex:"R = 15.0\\ \\mathrm{m}, \\quad T = 40.0\\ \\mathrm{s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Speed from the lap",
+          think:"One circumference per period: what is v?",
+          model:"v = 2πR/T = 2.36 m/s.",
+          pose:"write",
+          say:"Speed is circumference over period: two pi times fifteen, divided by forty — two point three six metres per second. A stroll, if the path weren't thirty metres in the air.",
+          board:[
+            {tex:"v = \\frac{2\\pi R}{T} = \\frac{2\\pi(15.0)}{40.0} = 2.36\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 15,0, 15,7, {color:GREEN, w:3, label:'v', fs:13});
+       arrow(c, 10.6,10.6, 5.6,15.6, {color:GREEN, w:3, label:'v', fs:13, side:-1});
+       textAt(c, -14,17.5, 'same speed, new direction', {fs:11, italic:true});
+     }
+        },
+        { map:2, title:"Centripetal acceleration",
+          think:"Which way does a_rad point at every instant of the ride?",
+          model:"a_rad = v²/R = 0.370 m/s², toward the axle always.",
+          pose:"write",
+          say:"The centripetal recipe: v squared over R. Two point three six squared over fifteen — zero point three seven metres per second squared, aimed at the axle at every instant. Not toward the ground, not along the motion — at the axle, forever.",
+          board:[
+            {tex:"a_{\\rm rad} = \\frac{v^2}{R} = \\frac{(2.36)^2}{15.0} = 0.370\\ \\mathrm{m/s^2}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 15,0, 9,0, {color:RED, w:3, label:'a_rad', fs:12, at:'mid', side:-1});
+       arrow(c, 0,15, 0,9, {color:RED, w:3});
+       arrow(c, -15,0, -9,0, {color:RED, w:3});
+       arrow(c, 0,-15, 0,-9, {color:RED, w:3});
+     }
+        },
+        { map:3, title:"Compare with g",
+          think:"0.038 g: what would riders feel if it were 1 g instead?",
+          model:"a/g = 0.038 — a gentle ride by design.",
+          pose:"excited",
+          say:"Divide by nine point eight: zero point zero three eight g — under four percent of gravity, which is why the ride sells tickets to grandparents. Make the wheel spin five times faster and the acceleration grows twenty five fold — very nearly one g, and a very different business model. The v squared is where the danger lives.",
+          board:[
+            {label:"The comparison", tex:"\\frac{a_{\\rm rad}}{g} = \\frac{0.370}{9.80} = 0.038", kind:"answer"},
+            {label:"Reusable method", text:"v = 2πR/T → a = v²/R toward the center → compare with g for the passenger's-eye view", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A soccer kick",
+      problem:"A ball is kicked from the ground at 20.0 m/s, 35.0° above the horizontal. Find the maximum height, the time of flight, and the range on level ground.",
+      goal:"Goal → H, T, R",
+      world:{"x0":-3,"x1":42,"y0":-2,"y1":12},
+      pathway:["Components","Height","Time","Range","Formula check"],
+      setup(ctx,w){
+    ground(ctx, -2, 41, 0);
+    plotCurve(ctx, x=>[x, x*Math.tan(35*Math.PI/180) - 9.8*x*x/(2*400*Math.pow(Math.cos(35*Math.PI/180),2))], 0, 38.4, {color:DIMC, w:2, dash:'5,4', N:60});
+  },
+      steps:[
+        { map:0, title:"Resolve the kick",
+          think:"Which component does gravity fight, and which does it ignore?",
+          model:"v0x = 16.4 m/s (safe from gravity); v0y = 11.5 m/s (in the firing line).",
+          pose:"talk",
+          say:"Twenty at thirty five degrees. First business: components. Cosine gives sixteen point four across; sine gives eleven point five up. Gravity will wage its entire war on the eleven point five and never lay a finger on the sixteen point four.",
+          board:[
+            {tex:"v_{0x} = 20.0\\cos35.0^{\\circ} = 16.4, \\quad v_{0y} = 20.0\\sin35.0^{\\circ} = 11.5\\ \\mathrm{m/s}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,0, 8.2,0, {color:BLUE, w:2.5, label:'16.4', fs:11});
+       arrow(c, 0,0, 0,5.75, {color:RED, w:2.5, label:'11.5', fs:11, side:-1});
+       arrow(c, 0,0, 8.2,5.75, {color:GOLD, w:3, label:'20 m/s', fs:12});
+     }
+        },
+        { map:1, title:"Maximum height",
+          think:"At the peak, which velocity component is zero — and which is not?",
+          model:"H = v0y²/2g = 6.71 m; vx = 16.4 m/s even at the top.",
+          pose:"write",
+          say:"The peak is where v y dies: H equals v nought y squared over two g — eleven point five squared over nineteen point six — six point seven one metres. And note well: at that summit the ball is still doing sixteen point four horizontally. Projectiles do not pause at the top; only their climb does.",
+          board:[
+            {tex:"H = \\frac{v_{0y}^2}{2g} = \\frac{(11.5)^2}{19.6} = 6.71\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       dashLine(c, 19.2,0, 19.2,6.71, {});
+       label(c, 19.9,7.3, 'H = 6.71 m', {fs:12, color:GREEN});
+     }
+        },
+        { map:2, title:"Time of flight",
+          think:"Level ground: how does symmetry hand you T from the rise time?",
+          model:"T = 2v0y/g = 2.34 s.",
+          pose:"write",
+          say:"Level launch and landing means perfect symmetry: up in v nought y over g, down in the same. Total: two times eleven point five over nine point eight — two point three four seconds airborne.",
+          board:[
+            {tex:"T = \\frac{2v_{0y}}{g} = \\frac{2(11.5)}{9.80} = 2.34\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Range: the x motion cashes in",
+          think:"Why is range always 'horizontal speed times total time' — no new physics?",
+          model:"R = v0x·T = 38.4 m.",
+          pose:"write",
+          say:"The range is bookkeeping: the untouchable sixteen point four, multiplied by the two point three four seconds the vertical motion allowed. Thirty eight point four metres — a respectable clearance kick.",
+          board:[
+            {tex:"R = v_{0x}T = (16.4)(2.34) = 38.4\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,1.2, 38.4,1.2, {color:GOLD, dash:'7,5', w:2.5, label:'R = 38.4 m', fs:13, at:'mid'});
+     }
+        },
+        { map:4, title:"The range formula agrees — this once",
+          think:"What condition must hold before R = v₀² sin 2θ / g may be used at all?",
+          model:"R = 400 sin70°/9.8 = 38.4 m ✓ — valid only for equal launch/landing heights.",
+          pose:"think",
+          say:"The famous range formula — v nought squared, sine of double the angle, over g — gives four hundred times sine seventy over nine point eight: thirty eight point four. Agreement! But hear the fine print: that formula works ONLY when launch and landing share a height. The component method carries no such asterisk. Trust the method; treat the formula as a treat.",
+          board:[
+            {label:"Check", tex:"R = \\frac{v_0^2\\sin2\\theta_0}{g} = \\frac{400\\sin70.0^{\\circ}}{9.80} = 38.4\\ \\mathrm{m}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"components → H from v0y² = 2gH → T from symmetry → R = v0x T → formula only as a cross-check", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Where does the ball hit the wall?",
+      problem:"A ball is thrown at 25.0 m/s at 40.0° above horizontal toward a vertical wall 30.0 m away. At what height does it strike the wall, and is it rising or falling at that moment?",
+      goal:"Goal → y at the wall, rising or falling",
+      world:{"x0":-3,"x1":36,"y0":-2,"y1":16},
+      pathway:["Components","Wall sets t","Height","State"],
+      setup(ctx,w){
+    ground(ctx, -2, 35, 0);
+    el('rect',{x:ctx.M.X(30),y:ctx.M.Y(15.5),width:6,height:ctx.M.Y(0)-ctx.M.Y(15.5),fill:'#5a6b5e',opacity:.6},ctx.svg);
+    label(ctx, 31,15.2, 'wall, 30.0 m away', {fs:11});
+  },
+      steps:[
+        { map:0, title:"Resolve, as always",
+          think:"Which piece of the problem will convert the wall's distance into a time?",
+          model:"v0x = 19.15, v0y = 16.07 m/s. The x motion is the timekeeper here.",
+          pose:"talk",
+          say:"Twenty five at forty degrees, and a wall thirty metres downrange refuses to move. Components first: nineteen point one five across, sixteen point zero seven up. The novelty: the flight ends not when gravity says, but when the WALL says — and the wall speaks through the x motion.",
+          board:[
+            {tex:"v_{0x} = 25.0\\cos40.0^{\\circ} = 19.15, \\quad v_{0y} = 25.0\\sin40.0^{\\circ} = 16.07\\ \\mathrm{m/s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The wall fixes the time",
+          think:"Distance ÷ uniform speed: why does the wall's position translate directly into t?",
+          model:"t = 30.0/19.15 = 1.57 s — the only moment that matters.",
+          pose:"write",
+          say:"The uniform x motion covers thirty metres at nineteen point one five per second: one point five seven seconds to arrival. The wall has converted a distance into a time — and handed that time to the vertical motion for judgement.",
+          board:[
+            {tex:"t = \\frac{30.0}{19.15} = 1.57\\ \\mathrm{s}", kind:"answer", move:"x → t"}
+          ]
+        },
+        { map:2, title:"Height at that instant",
+          think:"Two competing terms: the climb 16.07t versus the fall 4.90t². Who is winning at 1.57 s?",
+          model:"y = 25.2 − 12.0 = 13.1 m up the wall.",
+          pose:"write",
+          say:"Feed one point five seven to the y motion: sixteen point zero seven t gives twenty five point two of climb; four point nine t squared claws back twelve. The strike lands thirteen point one metres up the wall — a first-storey window is safe, a fourth-storey one is not.",
+          board:[
+            {tex:"y = v_{0y}t - \\tfrac12gt^2 = 25.2 - 12.0 = 13.1\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>[19.15*t, 16.07*t-4.9*t*t], 0, 1.566, {color:GOLD, w:2.5, N:50});
+       circleAt(c, 30,13.1, 0.5, {stroke:RED, w:3});
+       label(c, 24.5,14.6, '13.1 m', {fs:12, color:RED});
+     }
+        },
+        { map:3, title:"Rising or falling?",
+          think:"Compute vy at 1.57 s before you guess.",
+          model:"vy = 16.07 − 15.35 = +0.72 m/s: just barely still rising.",
+          pose:"excited",
+          say:"And its state on arrival? v y equals sixteen point zero seven minus nine point eight times one point five seven: PLUS zero point seven two. Still rising — by a whisker. The ball meets the wall a breath before its peak. Never guess the state from the picture; the sign of v y knows.",
+          board:[
+            {label:"State check", tex:"v_y = 16.07 - 9.80(1.566) = +0.72\\ \\mathrm{m/s}\\ \\text{(rising)}", kind:"key"},
+            {label:"Reusable method", text:"components → the obstacle's x converts to t → y(t) for the height → sign of vy for the state", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 30,13.1, 27,13.6, {color:GREEN, w:2.5, label:'still rising', fs:11, side:-1});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Crosswind navigation",
+      problem:"An airplane's airspeed is 200 km/h. A wind blows toward the east at 50.0 km/h. (a) If the pilot points the nose due north, what is the plane's velocity relative to the ground? (b) In what direction must she point the nose to travel due north, and what is the ground speed then?",
+      goal:"Goal → ground velocity, heading",
+      world:{"x0":-90,"x1":110,"y0":-25,"y1":230},
+      pathway:["The rule","Drift","Cancel","Cost"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'east', ylab:'north'});
+  },
+      steps:[
+        { map:0, title:"The relative-velocity rule",
+          think:"P/E = P/A + A/E: why do the inner letters have to match?",
+          model:"Plane/Earth = Plane/Air + Air/Earth. The subscripts chain like dominoes.",
+          pose:"talk",
+          say:"Every navigation problem is one sentence: velocity of plane relative to earth equals plane relative to AIR, plus air relative to earth. The inner labels — air and air — touch and cancel, like dominoes. Write the chain, and the vectors do the flying.",
+          board:[
+            {label:"The chain rule of frames", tex:"\\vec v_{P/E} = \\vec v_{P/A} + \\vec v_{A/E}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): nose north, drifting east",
+          think:"The nose points north. Why does the plane not GO north?",
+          model:"200 j + 50 i → 206 km/h at 14.0° east of north.",
+          pose:"write",
+          say:"Point the nose north and add the wind: two hundred north plus fifty east. The ground sees root of two hundred squared plus fifty squared — two hundred six kilometres per hour — angled fourteen degrees east of north. The pilot's compass says north; the pilot's shadow disagrees.",
+          board:[
+            {tex:"\\vec v_{P/E} = 200\\,\\jhat + 50.0\\,\\ihat: \\quad v = 206\\ \\mathrm{km/h}, \\ 14.0^{\\circ}\\ \\text{E of N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 0,200, {color:BLUE, w:3, label:'airspeed 200', fs:11});
+       arrow(c, 0,200, 50,200, {color:RED, w:3, label:'wind 50', fs:11, at:'mid', side:-1});
+       arrow(c, 0,0, 50,200, {color:GOLD, w:3, label:'ground 206', fs:11, at:'mid'});
+     }
+        },
+        { map:2, title:"Part (b): crab into the wind",
+          think:"To track due north, which component must the nose's tilt annihilate?",
+          model:"200 sin θ = 50 → θ = 14.5° west of north.",
+          pose:"write",
+          say:"To TRAVEL north, the eastward wind must be annihilated: tilt the nose west of north until two hundred sine theta equals fifty. Theta is fourteen point five degrees. Pilots call it crabbing — flying slightly sideways so the ground track runs straight.",
+          board:[
+            {tex:"200\\sin\\theta = 50.0 \\;\\Rightarrow\\; \\theta = 14.5^{\\circ}\\ \\text{west of north}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, -50,193.6, {color:BLUE, w:3, label:'nose', fs:11, at:'mid', side:-1});
+       arrow(c, -50,193.6, 0,193.6, {color:RED, w:3, label:'wind', fs:11, at:'mid'});
+       arrow(c, 0,0, 0,193.6, {color:GOLD, w:3, label:'track: due north', fs:11, at:'mid', side:-1});
+     }
+        },
+        { map:3, title:"The price of the crab",
+          think:"Why is the ground speed now √(200² − 50²), a Pythagorean LEG rather than a hypotenuse?",
+          model:"Ground speed = 200 cos θ = 194 km/h. Fighting wind costs speed; riding it costs heading.",
+          pose:"excited",
+          say:"The ground speed is what survives of the airspeed after the sideways sacrifice: two hundred cosine fourteen point five — one hundred ninety four. In part a the wind was a free hypotenuse boost; in part b it is a tax. Fighting the wind costs speed; letting it push you costs heading. Aviation, like physics, offers no free lunches — only exchanges.",
+          board:[
+            {tex:"v_{\\rm ground} = 200\\cos\\theta = \\sqrt{200^2 - 50^2} = 194\\ \\mathrm{km/h}", kind:"answer"},
+            {label:"Reusable method", text:"write the frame chain P/E = P/A + A/E → drift: add; hold a track: cancel the crosswind component → read the cost", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Speeding up on a curve",
+      problem:"A car on a circular track of radius 50.0 m is moving at 10.0 m/s and increasing its speed at 2.00 m/s². Find the magnitude and direction of its total acceleration at this instant.",
+      goal:"Goal → total a",
+      world:{"x0":-15,"x1":75,"y0":-12,"y1":60},
+      pathway:["Two jobs","Radial","Combine","Interpret"],
+      setup(ctx,w){
+    arc(ctx, 30,-20, 55, 35, 145, {color:CHALKC, w:2.5});
+    boxAt(ctx, 2.5,26, 7,4.5, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"Acceleration holds two jobs",
+          think:"Changing speed and changing direction: which component handles which?",
+          model:"a_tan changes |v| (along v); a_rad changes direction (toward center). They are perpendicular.",
+          pose:"talk",
+          say:"A car gathering speed on a bend is accelerating in two distinct senses at once. The tangential part — along the velocity — changes how FAST; the radial part — toward the centre — changes which WAY. They are perpendicular colleagues, and the total acceleration is their vector sum.",
+          board:[
+            {label:"Division of labour", text:"a_tan = d|v|/dt (along v); a_rad = v²/R (toward center). Perpendicular by construction.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate both pieces",
+          think:"Is it coincidence that both come out 2.00 here?",
+          model:"a_tan = 2.00 (given); a_rad = 100/50 = 2.00 m/s².",
+          pose:"write",
+          say:"The tangential piece is handed to us: two metres per second squared, the rate the speedometer climbs. The radial piece we compute: v squared over R — one hundred over fifty — also two. The problem has arranged a perfect tie, the better to show the geometry.",
+          board:[
+            {tex:"a_{\\rm tan} = 2.00\\ \\mathrm{m/s^2}, \\qquad a_{\\rm rad} = \\frac{v^2}{R} = \\frac{100}{50.0} = 2.00\\ \\mathrm{m/s^2}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6,30, 22,36, {color:GREEN, w:3, label:'a_tan (along v)', fs:11});
+       arrow(c, 6,30, 18,9, {color:RED, w:3, label:'a_rad (to center)', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Combine perpendicular pieces",
+          think:"Perpendicular components: which theorem assembles them?",
+          model:"a = √(2² + 2²) = 2.83 m/s² at 45.0° inward from v.",
+          pose:"write",
+          say:"Perpendicular components combine by Pythagoras: root of four plus four — two point eight three metres per second squared — tilted, with this perfect tie, exactly forty five degrees inward from the direction of travel.",
+          board:[
+            {tex:"a = \\sqrt{a_{\\rm tan}^2 + a_{\\rm rad}^2} = \\sqrt{8.00} = 2.83\\ \\mathrm{m/s^2}, \\quad 45.0^{\\circ}\\ \\text{inward from } \\vec v", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 6,30, 25,20, {color:GOLD, w:3.5, label:'a total', fs:12});
+     }
+        },
+        { map:3, title:"Read the direction",
+          think:"Later in the lap, v has grown but a_tan hasn't. Which way does the total a swing?",
+          model:"a_rad ∝ v² grows; the total acceleration swings toward the center as speed builds.",
+          pose:"excited",
+          say:"One forward look: as the car keeps gaining speed, a radial grows like v squared while a tangential idles at two. The total acceleration therefore swings steadily toward the centre — by the end of a fast lap it is nearly all turning and hardly any speeding. The forty five degrees you found is one frame of a moving picture.",
+          board:[
+            {label:"The trend", text:"a_rad ∝ v² grows; a_tan fixed → the total a rotates toward the center as speed builds.", kind:"key"},
+            {label:"Reusable method", text:"split a into tangential (speed) + radial (direction) → evaluate each → Pythagoras + angle → note how the balance evolves", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Projectile landing on an incline",
+      problem:"A ball is launched from the foot of a 20.0° incline at 20.0 m/s, 50.0° above the horizontal. How far up the incline does it land?",
+      goal:"Goal → distance along the slope",
+      world:{"x0":-3,"x1":34,"y0":-2,"y1":16},
+      pathway:["Two curves","Intersect","Solve","Slope","Limit"],
+      setup(ctx,w){
+    ground(ctx, -2, 33, 0);
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(0),x2:ctx.M.X(33),y2:ctx.M.Y(33*Math.tan(20*Math.PI/180)),stroke:'#8a7d60','stroke-width':3},ctx.svg);
+    label(ctx, 26,11.5, 'incline, 20°', {fs:11, color:'#c9b98a'});
+  },
+      steps:[
+        { map:0, title:"A meeting of two curves",
+          think:"What equation describes 'the ground' when the ground is tilted?",
+          model:"Landing = trajectory parabola meets the line y = x tan 20°.",
+          pose:"talk",
+          say:"Launched up a hill, the ball lands not when y returns to zero but when it returns to the HILL — the line y equals x tangent twenty degrees. A landing is always an intersection: the trajectory's parabola, meeting whatever curve plays the part of the ground.",
+          board:[
+            {label:"The two curves", tex:"y = x\\tan\\theta_0 - \\frac{gx^2}{2v_0^2\\cos^2\\theta_0} \\quad\\text{and}\\quad y = x\\tan20.0^{\\circ}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Set them equal",
+          think:"Both sides carry a factor of x. What does cancelling it discard, and is that loss acceptable?",
+          model:"Cancel one x: the x = 0 root is the launch point itself.",
+          pose:"write",
+          say:"Equate and cancel one factor of x — discarding, quite properly, the x equals zero root, which merely reports that the ball began on the hill. What remains is linear in x: the landing coordinate in one line of algebra.",
+          board:[
+            {tex:"x\\tan20^{\\circ} = x\\tan\\theta_0 - \\frac{gx^2}{2v_0^2\\cos^2\\theta_0}", move:"cancel x"},
+            {tex:"x = \\frac{2v_0^2\\cos^2\\theta_0(\\tan\\theta_0 - \\tan20^{\\circ})}{g}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Numbers in",
+          think:"Which factor carries the 'excess steepness' of the throw over the hill?",
+          model:"x = 2(400)(0.4132)(0.8278)/9.80 = 27.9 m.",
+          pose:"write",
+          say:"Insert: two times four hundred times cosine squared fifty — point four one three two — times the difference of tangents, one point one nine two minus point three six four. All over nine point eight: twenty seven point nine metres of horizontal progress before the hill rises to meet the ball.",
+          board:[
+            {tex:"x = \\frac{2(400)(0.4132)(1.1918 - 0.3640)}{9.80} = 27.9\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, x=>[x, x*Math.tan(50*Math.PI/180) - 9.8*x*x/(2*400*Math.pow(Math.cos(50*Math.PI/180),2))], 0, 27.9, {color:GOLD, w:2.5, N:60});
+       circleAt(c, 27.9,10.15, 0.5, {stroke:RED, w:3});
+     }
+        },
+        { map:3, title:"Distance along the slope",
+          think:"x is horizontal. What converts it into metres of hillside?",
+          model:"d = x/cos 20° = 29.7 m.",
+          pose:"write",
+          say:"The question asked for distance UP THE INCLINE, and x is merely its horizontal shadow. Divide by cosine twenty: twenty nine point seven metres along the slope. Read the question twice; convert once.",
+          board:[
+            {tex:"d = \\frac{x}{\\cos20.0^{\\circ}} = \\frac{27.9}{0.940} = 29.7\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,1.2, 27.9,11.4, {color:GREEN, dash:'6,5', w:2.5, label:'d = 29.7 m', fs:12, at:'mid', side:-1});
+     }
+        },
+        { map:4, title:"Flatten the hill: the limit test",
+          think:"Set the incline to 0° in your formula. What must it become?",
+          model:"θ_incline → 0 recovers the level range formula: 40.2 m. Larger, as it must be.",
+          pose:"excited",
+          say:"The audit: flatten the hill to zero degrees and the formula must collapse into the ordinary level-ground range. It does — two v nought squared sine theta cosine theta over g, forty point two metres — and rightly LARGER than our twenty seven point nine, since the hill rose up early to intercept. A formula that passes its limits has earned a measure of trust.",
+          board:[
+            {label:"Limit check", tex:"\\theta_{\\rm incline}\\to0: \\ x \\to \\frac{2v_0^2\\sin\\theta_0\\cos\\theta_0}{g} = 40.2\\ \\mathrm{m} > 27.9\\ \\mathrm{m}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"landing = intersection of trajectory and terrain → cancel the trivial root → convert x to slope distance → flatten-the-hill limit check", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Rain seen from a bicycle",
+      problem:"Rain falls vertically at 8.00 m/s relative to the ground. (a) A cyclist rides at 6.00 m/s; find the velocity of the rain relative to her and the umbrella angle. (b) How fast must she ride for the rain to appear to come in at 45.0° from the vertical?",
+      goal:"Goal → v_rain/cyclist, then v for 45°",
+      world:{"x0":-4,"x1":14,"y0":-2,"y1":12},
+      pathway:["Subtract","Tilt","Invert","Unify"],
+      setup(ctx,w){
+    ground(ctx, -3, 13, 0);
+  },
+      steps:[
+        { map:0, title:"Relative velocity is a subtraction",
+          think:"R/C = R/G − C/G: why does the cyclist's own velocity enter with a minus sign?",
+          model:"v_R/C = v_R/G − v_C/G = −8 j − 6 i.",
+          pose:"talk",
+          say:"What the cyclist sees is the rain's velocity MINUS her own: relative to her, the world streams backwards at her riding speed. Vertical rain, eight down; her motion, six forward; so in her frame the rain is eight down AND six backward-toward-her. Head-on, as every cyclist has bitterly observed.",
+          board:[
+            {label:"Frame subtraction", tex:"\\vec v_{R/C} = \\vec v_{R/G} - \\vec v_{C/G} = -8.00\\,\\jhat - 6.00\\,\\ihat\\ \\mathrm{m/s}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 4,10, 4,4, {color:BLUE, w:3, label:'rain 8', fs:11});
+       arrow(c, 1,1.4, 4.6,1.4, {color:GREEN, w:3, label:'cyclist 6', fs:11, at:'mid'});
+       circleAt(c, 0.4,1.6, 0.7, {stroke:CHALKC, w:2.5});
+     }
+        },
+        { map:1, title:"Part (a): magnitude and umbrella angle",
+          think:"6-8-10: which classic triangle has reappeared?",
+          model:"|v_R/C| = 10.0 m/s at tan⁻¹(6/8) = 36.9° from vertical: tilt forward 36.9°.",
+          pose:"write",
+          say:"Magnitude: root of sixty four plus thirty six — ten metres per second; the three four five triangle at double scale. The slant: inverse tangent of six over eight — thirty six point nine degrees from vertical. Tilt the umbrella FORWARD by that angle, into the apparent stream, and arrive merely damp.",
+          board:[
+            {tex:"|\\vec v_{R/C}| = \\sqrt{8.00^2 + 6.00^2} = 10.0\\ \\mathrm{m/s}", kind:"answer"},
+            {tex:"\\tan^{-1}\\!\\frac{6.00}{8.00} = 36.9^{\\circ}\\ \\text{from vertical — tilt forward}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 10,9.4, 5.5,3.4, {color:GOLD, w:3, label:'apparent rain', fs:11, at:'mid'});
+       label(c, 8.7,10.6, '36.9° off vertical', {fs:11, color:GOLD});
+     }
+        },
+        { map:2, title:"Part (b): demand 45° and invert",
+          think:"tan 45° = 1: what must her speed equal for the apparent slant to reach 45°?",
+          model:"tan 45° = v/8 → v = 8.00 m/s: ride as fast as the rain falls.",
+          pose:"write",
+          say:"Now run the logic backwards: for a forty five degree slant, the tangent — her speed over eight — must equal one. She must ride at eight metres per second, precisely the rain's falling speed. The apparent world tilts one degree at a time as she pedals harder.",
+          board:[
+            {tex:"\\tan45.0^{\\circ} = \\frac{v_{C/G}}{8.00} \\;\\Rightarrow\\; v_{C/G} = 8.00\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"One geometry, many costumes",
+          think:"Where have you already met this exact triangle today?",
+          model:"Identical to the crosswind problem: observer moving vs medium moving — same subtraction, same triangle.",
+          pose:"excited",
+          say:"Recognise the shape: this is the crosswind aeroplane wearing a raincoat. There the MEDIUM moved and the traveller compensated; here the OBSERVER moves and the world apparently tilts. One subtraction of velocities, one right triangle, a wardrobe of disguises. Physics is economical with its geometry; learn the triangle once and bill it everywhere.",
+          board:[
+            {label:"The unification", text:"Crosswind flight and rain-on-a-bicycle are the same triangle: v_apparent = v_object − v_observer.", kind:"key"},
+            {label:"Reusable method", text:"apparent velocity = true minus observer's → right triangle → tan for the tilt → invert to design for a chosen angle", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Nonuniform circular motion from a speed function",
+      problem:"A bead moves on a circle of radius 2.00 m with speed v(t) = 2.00t (SI), starting from rest. At t = 2.00 s find the tangential, radial, and total accelerations, the angle between a and v, and the arc length covered.",
+      goal:"Goal → a_tan, a_rad, a, angle, s",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":2.9},
+      pathway:["Read","Two pieces","Combine","Arc","Trend"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2, {stroke:CHALKC, w:2.5});
+    circleAt(ctx, 0,0, 0.06, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"A circle with a growing speed",
+          think:"Which of the two acceleration components will be constant here, and which will grow?",
+          model:"a_tan = dv/dt = 2.00 always; a_rad = v²/R grows like t².",
+          pose:"talk",
+          say:"A bead on a two metre circle, its speed climbing steadily: two t. Both faces of acceleration will appear — the tangential one constant by construction, the radial one growing as the square of the speed. We interrogate the moment t equals two seconds.",
+          board:[
+            {label:"Given", tex:"R = 2.00\\ \\mathrm{m}, \\quad v(t) = 2.00\\,t; \\quad\\text{evaluate at } t = 2.00\\ \\mathrm{s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate both components",
+          think:"At t = 2, v = 4. What does v²/R give, and why is it already four times a_tan?",
+          model:"a_tan = 2.00 m/s²; a_rad = 16.0/2.00 = 8.00 m/s².",
+          pose:"write",
+          say:"Tangential: the derivative of two t — two, at every instant. At two seconds the speed is four, so radial is sixteen over two: eight. Already four times the tangential piece — the v squared is doing what v squared does.",
+          board:[
+            {tex:"a_{\\rm tan} = \\frac{dv}{dt} = 2.00\\ \\mathrm{m/s^2}, \\qquad a_{\\rm rad} = \\frac{v^2}{R} = \\frac{16.0}{2.00} = 8.00\\ \\mathrm{m/s^2}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 2,0, 2,1.3, {color:GREEN, w:3, label:'v = 4', fs:12});
+       arrow(c, 2,0, 2.55,0, {color:BLUE, w:2.5, label:'a_tan', fs:11, side:-1});
+       arrow(c, 2,0, 0.6,0, {color:RED, w:3, label:'a_rad', fs:11, at:'mid', side:-1});
+     }
+        },
+        { map:2, title:"Total acceleration and its angle",
+          think:"The angle is measured from v. Which component pulls it away from the velocity?",
+          model:"a = √(4+64) = 8.25 m/s² at 76.0° from v.",
+          pose:"write",
+          say:"Combine: root of four plus sixty four — eight point two five metres per second squared. Its angle from the velocity: inverse tangent of eight over two — seventy six degrees. The acceleration leans hard toward the centre; only a sliver of it still serves the speedometer.",
+          board:[
+            {tex:"a = \\sqrt{2.00^2 + 8.00^2} = 8.25\\ \\mathrm{m/s^2}, \\quad \\tan^{-1}\\!\\frac{8.00}{2.00} = 76.0^{\\circ}\\ \\text{from } \\vec v", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 2,0, 0.65,0.34, {color:GOLD, w:3.5, label:'a total', fs:12, side:-1});
+     }
+        },
+        { map:3, title:"Arc length by integration",
+          think:"Why is distance the integral of speed — even on a curve?",
+          model:"s = ∫₀² 2t dt = t² = 4.00 m — about a third of the circumference.",
+          pose:"write",
+          say:"Distance travelled is the integral of speed, on a circle as anywhere: integral of two t from nought to two — t squared — four metres. The circumference is about twelve point six, so the bead has swept roughly a third of its lap while we watched.",
+          board:[
+            {tex:"s = \\int_0^{2}2.00\\,t\\,dt = t^2\\Big|_0^2 = 4.00\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arc(c, 0,0, 2, 0, 114.6, {color:GOLD, w:3});
+       label(c, -1.9,2.35, 's = 4.00 m', {fs:12, color:GOLD});
+     }
+        },
+        { map:4, title:"Watch the vector swing",
+          think:"As v keeps growing, what limit does the angle between a and v approach?",
+          model:"a_rad ∝ t² outruns a_tan: the acceleration swings ever closer to the radial direction.",
+          pose:"excited",
+          say:"And the moving picture: as the bead speeds up, the radial component grows like t squared while the tangential sits at two. The acceleration vector swings steadily toward the centre, approaching — but never reaching — the purely radial. Uniform circular motion is simply this story's final frame, where the swing is complete. Two formulas, one film.",
+          board:[
+            {label:"The trend", text:"a_rad/a_tan = v²/(R·a_tan) = t²: the total acceleration rotates toward the center without limit.", kind:"key"},
+            {label:"Reusable method", text:"a_tan from dv/dt, a_rad from v²/R → Pythagoras + angle from v → s = ∫v dt → describe the trend, not just the instant", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

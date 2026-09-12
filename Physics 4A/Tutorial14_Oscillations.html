@@ -1331,6 +1331,563 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Period and frequency of a spring–mass system",
+      problem:"A 0.500 kg block is attached to a spring with k = 200 N/m on a frictionless surface. Find the angular frequency, the frequency, and the period.",
+      goal:"Goal → ω, f, T",
+      world:{"x0":-0.2,"x1":1.0,"y0":-0.09,"y1":0.09},
+      pathway:["ω","f and T","No amplitude","Scaling"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'x (m)'});
+    plotCurve(ctx, t=>0.05*Math.cos(20*t), 0, 0.95, {color:CHALKC, w:2.5, N:120});
+  },
+      steps:[
+        { map:0, title:"The master frequency",
+          think:"ω = √(k/m): why do stiffness and lightness both speed the oscillation?",
+          model:"ω = √(200/0.500) = 20.0 rad/s.",
+          pose:"talk",
+          say:"Every simple harmonic oscillator is governed by one number: omega, the root of stiffness over inertia. Root of two hundred over half: twenty radians per second. A stiff spring pulls back harder; a light mass responds faster; omega is their negotiated tempo.",
+          board:[
+            {tex:"\\omega = \\sqrt{\\frac{k}{m}} = \\sqrt{\\frac{200}{0.500}} = 20.0\\ \\mathrm{rad/s}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Frequency and period",
+          think:"Divide by 2π; invert. Which one would a stopwatch measure?",
+          model:"f = ω/2π = 3.18 Hz; T = 1/f = 0.314 s.",
+          pose:"write",
+          say:"Convert for the laboratory: frequency is omega over two pi — three point one eight cycles per second — and the period is its reciprocal, point three one four seconds per round trip. Three complete journeys out, back, through, and back again, every second.",
+          board:[
+            {tex:"f = \\frac{\\omega}{2\\pi} = 3.18\\ \\mathrm{Hz}, \\qquad T = \\frac{1}{f} = 0.314\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The amplitude never appeared",
+          think:"Big swing or small — same T. What property of the force makes this true?",
+          model:"Isochronism: linear restoring force → period independent of amplitude.",
+          pose:"point",
+          say:"Notice the guest who never arrived: the AMPLITUDE. Swing this block a millimetre or five centimetres — the period is identical, because a linear restoring force scales the push in exact proportion to the journey. This isochronism is the defining aristocracy of simple harmonic motion, and the reason pendulum clocks could keep time before electronics.",
+          board:[
+            {label:"Isochronism", text:"T is independent of amplitude — the signature of F = −kx. Big and small swings keep the same time.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Square-root economics",
+          think:"To double f, multiply k by what? Or m by what?",
+          model:"f ∝ √(k/m): ×4 in k (or ÷4 in m) doubles the frequency.",
+          pose:"excited",
+          say:"And the scaling, for your engineering intuition: frequency grows only as the SQUARE ROOT — quadruple the stiffness to merely double the pitch. Guitar tuners live this arithmetic: substantial turns of the peg for each semitone. Nature sells frequency at diminishing returns, and every vibrating machine pays the same tariff.",
+          board:[
+            {label:"Scaling", tex:"f \\propto \\sqrt{k/m}: \\ \\times4\\ \\text{in } k \\Rightarrow \\times2\\ \\text{in } f", kind:"key"},
+            {label:"Reusable method", text:"ω = √(k/m) → f = ω/2π, T = 1/f → amplitude never enters", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Maximum speed and acceleration",
+      problem:"The block of the previous example oscillates with amplitude 5.00 cm. Find its maximum speed and maximum acceleration, and state where each occurs.",
+      goal:"Goal → v_max, a_max, and where",
+      world:{"x0":-0.075,"x1":0.075,"y0":-1.4,"y1":1.4},
+      pathway:["From x(t)","v_max","a_max","Never together"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:''});
+    ground(ctx, -0.065, 0.065, -1.1);
+    dashLine(ctx, -0.05,-1.1, -0.05,0.9, {});
+    dashLine(ctx, 0.05,-1.1, 0.05,0.9, {});
+    label(ctx, -0.063,1.05, '−A', {fs:11, color:DIMC});
+    label(ctx, 0.045,1.05, '+A', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Differentiate the motion",
+          think:"From x = A cos ωt: what are v(t) and a(t), and their peak values?",
+          model:"v_max = ωA; a_max = ω²A. The ω's stack up with each derivative.",
+          pose:"talk",
+          say:"From x equals A cosine omega t, each differentiation pays a factor of omega: velocity peaks at omega A, acceleration at omega SQUARED A. Frequency amplifies motion's derivatives relentlessly — a fact your ears know, since a tweeter's cone barely moves yet accelerates ferociously.",
+          board:[
+            {label:"The peaks", tex:"v_{\\max} = \\omega A, \\qquad a_{\\max} = \\omega^2A", kind:"key"}
+          ]
+        },
+        { map:1, title:"Maximum speed — at the middle",
+          think:"Where is the spring momentarily irrelevant?",
+          model:"v_max = (20.0)(0.0500) = 1.00 m/s at x = 0.",
+          pose:"write",
+          say:"Twenty times five hundredths: one metre per second, achieved exactly at EQUILIBRIUM — where the spring, momentarily unstretched, has nothing to say, and the block coasts through at full inheritance. The middle of the journey is the fastest place.",
+          board:[
+            {tex:"v_{\\max} = \\omega A = (20.0)(0.0500) = 1.00\\ \\mathrm{m/s}\\ \\text{at } x = 0", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0,-0.55, 0.006, {stroke:GOLD, w:4});
+       arrow(c, 0.005,-0.55, 0.035,-0.55, {color:GREEN, w:3, label:'v_max here', fs:11});
+     }
+        },
+        { map:2, title:"Maximum acceleration — at the ends",
+          think:"Where does the spring pull hardest?",
+          model:"a_max = (400)(0.0500) = 20.0 m/s² at x = ±A, where F = kA = 10 N.",
+          pose:"write",
+          say:"Four hundred times five hundredths: twenty metres per second squared — TWICE gravity — at the turning points, where the spring is stretched to its fullest ten newtons and the block, momentarily at rest, receives the hardest shove of its life. The ends of the journey are the most violent places.",
+          board:[
+            {tex:"a_{\\max} = \\omega^2A = (400)(0.0500) = 20.0\\ \\mathrm{m/s^2}\\ \\text{at } x = \\pm A", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0.05,-0.55, 0.006, {stroke:GOLD, w:4});
+       arrow(c, 0.044,-0.55, 0.014,-0.55, {color:RED, w:3, label:'a_max here', fs:11, at:'mid'});
+     }
+        },
+        { map:3, title:"Out of phase forever",
+          think:"Where v peaks, a = 0; where a peaks, v = 0. Why must this be?",
+          model:"v and a peak a quarter-cycle apart — one is the other's derivative.",
+          pose:"excited",
+          say:"And mark the choreography: where speed is greatest, acceleration is ZERO; where acceleration is greatest, the block stands still. The two maxima never coincide — they waltz a quarter cycle apart, as a function and its derivative must. Interviews with oscillators should always ask WHERE, not just HOW MUCH; position is half the answer in SHM.",
+          board:[
+            {label:"The choreography", text:"v peaks at the center (a = 0); a peaks at the ends (v = 0). Never simultaneous.", kind:"key"},
+            {label:"Reusable method", text:"v_max = ωA at x = 0; a_max = ω²A at x = ±A → always report the where with the how-much", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"A pendulum on the Moon",
+      problem:"A simple pendulum 1.00 m long has period 2.01 s on Earth. What would its period be on the Moon, where g = 1.62 m/s²?",
+      goal:"Goal → T_Moon",
+      world:{"x0":-4,"x1":8,"y0":-1,"y1":8},
+      pathway:["The formula","Ratio","Slow motion","g-meter"],
+      setup(ctx,w){
+    circleAt(ctx, 1.5,7, 0.12, {stroke:DIMC, w:2.5});
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(7),x2:ctx.M.X(2.7),y2:ctx.M.Y(3.2)},ctx.svg);
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(7),x2:ctx.M.X(2.7),y2:ctx.M.Y(3.2),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    circleAt(ctx, 2.7,3.0, 0.3, {stroke:GOLD, w:3});
+  },
+      steps:[
+        { map:0, title:"What sets a pendulum's pace",
+          think:"T = 2π√(L/g): which two things matter, and which (famously) does not?",
+          model:"Length and gravity only — not mass, not (small) amplitude.",
+          pose:"talk",
+          say:"The simple pendulum's period: two pi root L over g. Length and local gravity — nothing else. Not the bob's mass, not the amplitude while it stays modest. Galileo noticed the amplitude part watching a cathedral lamp; we shall exploit the g part by relocating to the Moon.",
+          board:[
+            {label:"The law", tex:"T = 2\\pi\\sqrt{\\frac{L}{g}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Ratio out the constants",
+          think:"Same L: T scales as 1/√g. Set up the ratio.",
+          model:"T_Moon = 2.01√(9.80/1.62) = 4.94 s.",
+          pose:"write",
+          say:"Same pendulum, different planet: the ratio disposes of two pi and L together. T Moon equals two point zero one times root of nine point eight over one point six two — root six — four point nine four seconds. The ratio method again: constants are for cancelling.",
+          board:[
+            {tex:"T_{\\rm Moon} = T_{\\rm Earth}\\sqrt{\\frac{g_E}{g_M}} = 2.01\\sqrt{\\frac{9.80}{1.62}} = 4.94\\ \\mathrm{s}", kind:"answer", move:"ratio: 2π, L cancel"}
+          ]
+        },
+        { map:2, title:"A world in slow motion",
+          think:"Everything gravity-driven slows by √6 ≈ 2.46. What would lunar life look like?",
+          model:"Pendula, sloshing, swinging — all ×2.46 slower. Astronaut footage confirms it.",
+          pose:"point",
+          say:"Every gravity-paced rhythm on the Moon runs slow by root six — about two and a half: pendula, swinging arms, sloshing coffee, falling dust. The Apollo footage LOOKS like slow motion precisely because, gravitationally speaking, it is. No camera trickery; just a smaller g in every square root.",
+          board:[
+            {label:"The factor", tex:"\\sqrt{g_E/g_M} = \\sqrt{6.05} = 2.46: \\ \\text{lunar rhythms run 2.5× slow}", kind:"key"}
+          ]
+        },
+        { map:3, title:"The pendulum as g-meter",
+          think:"Invert the logic: measure T and L, infer what?",
+          model:"g = 4π²L/T²: pendulum timing measures local gravity — historically, to mapping precision.",
+          pose:"excited",
+          say:"Run the formula backwards and the toy becomes an instrument: time a known length's swing and you have measured g — g equals four pi squared L over T squared. Nineteenth century surveyors carried precision pendula across continents mapping gravity's variations before anyone dreamed of satellites; oil prospectors followed. A string, a weight, a stopwatch: geophysics for pocket change.",
+          board:[
+            {label:"Inverted", tex:"g = \\frac{4\\pi^2L}{T^2}\\ \\text{— the pendulum is a gravimeter}", kind:"key"},
+            {label:"Reusable method", text:"T = 2π√(L/g) → ratio across worlds (constants cancel) → invert to measure g", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Energy bookkeeping in SHM",
+      problem:"For the oscillator with k = 200 N/m, m = 0.500 kg, A = 5.00 cm: find (a) the total energy, (b) the speed at x = 3.00 cm, and (c) the displacement where kinetic and potential energies are equal.",
+      goal:"Goal → E, v(3 cm), x at K = U",
+      world:{"x0":-0.065,"x1":0.065,"y0":-0.05,"y1":0.32},
+      pathway:["Total E","Speed anywhere","K = U","The 71%"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'E (J)'});
+    plotCurve(ctx, x=>100*x*x, -0.058, 0.058, {color:CHALKC, w:2.5, N:60});
+    dashLine(ctx, -0.058,0.25, 0.058,0.25, {});
+    label(ctx, 0.017,0.29, 'E = 0.250 J', {fs:11, color:GOLD});
+    label(ctx, -0.055,0.115, 'U = ½kx²', {fs:10, color:CHALKC, italic:true});
+  },
+      steps:[
+        { map:0, title:"The total, two ways",
+          think:"E = ½kA² — or ½mv_max². Verify they agree.",
+          model:"E = ½(200)(0.0025) = 0.250 J = ½(0.5)(1.00)² ✓.",
+          pose:"talk",
+          say:"The oscillator's fortune is fixed at birth: one half k A squared — a quarter joule. Audit it from the other end of the swing: one half m v max squared, half of half times one — the same quarter joule. All potential at the turning points, all kinetic at the centre, constant in total: energy sloshing in a parabolic bowl.",
+          board:[
+            {tex:"E = \\tfrac12kA^2 = 0.250\\ \\mathrm{J} = \\tfrac12mv_{\\max}^2\\;\\checkmark", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Speed at any station",
+          think:"½mv² = E − ½kx²: derive the v(x) formula.",
+          model:"v = ω√(A² − x²) = 20√(25−9)×10⁻² = 0.800 m/s at 3 cm.",
+          pose:"write",
+          say:"At any displacement, the kinetic share is the total minus the spring's holdings: v equals omega root A squared minus x squared. At three centimetres: twenty times root of twenty five minus nine, in centimetres — zero point eight metres per second. One formula, every station on the line.",
+          board:[
+            {tex:"v = \\omega\\sqrt{A^2 - x^2} = 20.0\\sqrt{(0.0500)^2-(0.0300)^2} = 0.800\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0.03,0.09, 0.0015, {stroke:GOLD, w:4});
+       dashLine(c, 0.03,0, 0.03,0.25, {});
+       label(c, 0.033,0.05, 'K', {fs:11, color:GREEN, italic:true});
+     }
+        },
+        { map:2, title:"Where K equals U",
+          think:"K = U means U = E/2: solve ½kx² = ¼kA².",
+          model:"x = A/√2 = 3.54 cm.",
+          pose:"write",
+          say:"Where do the two accounts hold equal shares? U must be HALF the total: one half k x squared equals one quarter k A squared — x equals A over root two, three point five four centimetres.",
+          board:[
+            {tex:"\\tfrac12kx^2 = \\tfrac12\\cdot\\tfrac12kA^2 \\;\\Rightarrow\\; x = \\frac{A}{\\sqrt2} = 3.54\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"71%, not 50%",
+          think:"Why is the halfway-energy point NOT at half the amplitude?",
+          model:"U ∝ x²: half the energy sits at 1/√2 = 71% of the swing. Quadratics mislead linear intuition.",
+          pose:"excited",
+          say:"And note where that is: at seventy one percent of the amplitude, NOT the halfway mark — because potential energy grows as the SQUARE of displacement, half the energy is stored in the outer twenty nine percent of the journey. Quadratic quantities ambush linear intuition at every turn; the root-two point is where this particular ambush waits. You will meet its twin in RMS voltages, a course from now.",
+          board:[
+            {label:"The 71%", tex:"x_{K=U} = \\frac{A}{\\sqrt2} = 0.707A\\ \\text{— square laws defy linear guesses}", kind:"key"},
+            {label:"Reusable method", text:"E = ½kA² → v(x) = ω√(A²−x²) → equal split at A/√2 → distrust linear instinct on quadratic ledgers", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A mass hanging from a vertical spring",
+      problem:"A 2.00 kg mass stretches a vertical spring 10.0 cm when hung at rest. It is pulled down 4.00 cm more and released. Find k, the period, and the maximum speed. Does gravity change the period?",
+      goal:"Goal → k, T, v_max; gravity's role",
+      world:{"x0":-3,"x1":9,"y0":-1.5,"y1":8},
+      pathway:["k from statics","New equilibrium","T and v_max","The shortcut"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(7.5),x2:ctx.M.X(5),y2:ctx.M.Y(7.5),stroke:'#9fb4a3','stroke-width':4},ctx.svg);
+    el('path',{d:`M ${ctx.M.X(3)} ${ctx.M.Y(7.5)} q 5 -3 0 -5 q -5 -3 0 -5 q 5 -3 0 -5`,fill:'none',stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    boxAt(ctx, 3,0.3, 1.6,1.5, {fill:'#8a4444', stroke:'#5a2424'});
+  },
+      steps:[
+        { map:0, title:"Statics measures k",
+          think:"At rest, kΔℓ = mg. Extract k.",
+          model:"k = mg/Δℓ = 19.6/0.100 = 196 N/m.",
+          pose:"talk",
+          say:"The static sag is a free measurement: at rest, the spring's pull balances the weight, so k equals m g over the stretch — nineteen point six over a tenth — one hundred ninety six newtons per metre. The spring constant, read off with a ruler.",
+          board:[
+            {tex:"k = \\frac{mg}{\\Delta\\ell} = \\frac{(2.00)(9.80)}{0.100} = 196\\ \\mathrm{N/m}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Oscillation about the NEW equilibrium",
+          think:"The motion centers where — natural length, or the sagged point?",
+          model:"About the sagged equilibrium, amplitude 4.00 cm. Gravity only relocates the center.",
+          pose:"point",
+          say:"Pull down four more centimetres and release: the mass oscillates about the SAGGED position — the new equilibrium — with amplitude four centimetres. Measure displacements from there and gravity vanishes from the dynamics entirely: the restoring force about that point is minus k x, pure and simple. Gravity moved the stage; it does not join the dance.",
+          board:[
+            {label:"The insight", text:"Oscillation is about the sagged equilibrium; measured from there, F = −kx exactly. Gravity shifts the center only.", kind:"key"}
+          ]
+        },
+        { map:2, title:"Period and top speed",
+          think:"Same T as horizontal: 2π√(m/k). Then v_max = ωA.",
+          model:"T = 2π√(2/196) = 0.635 s; v_max = 9.90 × 0.04 = 0.396 m/s.",
+          pose:"write",
+          say:"Hence the period is the horizontal formula untouched: two pi root of two over one ninety six — zero point six three five seconds. Top speed, at the equilibrium crossing: omega A — root of ninety eight, times point zero four — zero point three nine six metres per second.",
+          board:[
+            {tex:"T = 2\\pi\\sqrt{\\frac{m}{k}} = 0.635\\ \\mathrm{s}; \\qquad v_{\\max} = \\omega A = 0.396\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The ruler-only shortcut",
+          think:"Combine k = mg/Δℓ with T = 2π√(m/k). What survives?",
+          model:"T = 2π√(Δℓ/g): the static sag ALONE fixes the period.",
+          pose:"excited",
+          say:"And a jewel for your pocket: substitute k equals m g over delta ell into the period and the mass cancels — T equals two pi root of the SAG over g. Any vertical spring system's period, from a ruler measurement alone: ten centimetres of sag always means zero point six three seconds, be the passenger a mouse or an engine block. Elegant, exam-beloved, and yours.",
+          board:[
+            {label:"The shortcut", tex:"T = 2\\pi\\sqrt{\\frac{\\Delta\\ell}{g}}\\ \\text{— the static sag alone sets the period}", kind:"key"},
+            {label:"Reusable method", text:"k from the sag → oscillate about the new equilibrium (gravity exits) → T = 2π√(Δℓ/g) as the fast check", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A disk swinging from its rim (physical pendulum)",
+      problem:"A uniform solid disk of radius R = 0.200 m is pivoted at a point on its rim and swings in its own plane. Find the period of small oscillations.",
+      goal:"Goal → T",
+      world:{"x0":-3.2,"x1":3.2,"y0":-4.6,"y1":1.4},
+      pathway:["Physical pendulum","I about the rim","Evaluate","Equivalent length"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0.6, 0.1, {stroke:GOLD, w:3});
+    circleAt(ctx, 0,-1.4, 2, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,-1.4, 0.07, {stroke:DIMC, w:2});
+    label(ctx, 0.25,0.8, 'pivot on the rim', {fs:10, color:GOLD});
+    label(ctx, 0.2,-1.7, 'cm', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The physical pendulum formula",
+          think:"A swinging extended body: T = 2π√(I/Mgd). Identify each symbol.",
+          model:"I about the PIVOT; d = pivot-to-cm distance.",
+          pose:"talk",
+          say:"When the swinging object is a BODY rather than a bob on a string, the period generalises: two pi root of I over M g d — I about the pivot, d from pivot to centre of mass. Every rigid object that swings — disks, bats, legs, chandeliers — answers to this one formula.",
+          board:[
+            {label:"Physical pendulum", tex:"T = 2\\pi\\sqrt{\\frac{I}{Mgd}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Inertia about the rim",
+          think:"Parallel-axis: ½MR² + MR². Total?",
+          model:"I = (3/2)MR²; d = R.",
+          pose:"write",
+          say:"The disk about a rim point: the central half M R squared, plus the parallel axis surcharge M R squared — three halves M R squared. And the centre of mass hangs exactly one radius below the pivot: d equals R.",
+          board:[
+            {tex:"I = \\tfrac12MR^2 + MR^2 = \\tfrac32MR^2; \\qquad d = R", kind:"key"}
+          ]
+        },
+        { map:2, title:"Evaluate",
+          think:"Insert; watch M cancel; compute for R = 0.200 m.",
+          model:"T = 2π√(3R/2g) = 2π√(0.600/19.6) = 1.10 s.",
+          pose:"write",
+          say:"Substitute and the mass bows out, as it must for anything swung by gravity: T equals two pi root of three R over two g. For a twenty centimetre radius: two pi root of point six over nineteen point six — one point one zero seconds.",
+          board:[
+            {tex:"T = 2\\pi\\sqrt{\\frac{3R}{2g}} = 2\\pi\\sqrt{\\frac{0.600}{19.6}} = 1.10\\ \\mathrm{s}", kind:"answer", move:"cancel M"}
+          ]
+        },
+        { map:3, title:"The equivalent simple pendulum",
+          think:"What string length would match this period — and why is it longer than d = R?",
+          model:"L_eq = 3R/2 = 0.300 m > R: far-flung mass adds inertia without adding torque.",
+          pose:"excited",
+          say:"Ask what SIMPLE pendulum keeps this time: length three halves R — thirty centimetres, LONGER than the twenty from pivot to centre. The disk's outlying mass contributes extra inertia without commensurate restoring torque, so the disk swings lazier than its centre of mass alone would. Sports scientists locate a bat's sweet spot with this very idea, and clockmakers trimmed their compound pendula by it for three centuries.",
+          board:[
+            {label:"Equivalent length", tex:"L_{\\rm eq} = \\frac{I}{Md} = \\frac{3R}{2} = 0.300\\ \\mathrm{m} > d", kind:"key"},
+            {label:"Reusable method", text:"I about the pivot (parallel axis) → T = 2π√(I/Mgd) → interpret via the equivalent length I/Md", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Torsion pendulum",
+      problem:"A disk with I = 2.00×10⁻³ kg·m² hangs from a wire with torsion constant κ = 0.500 N·m/rad. Find the period. If twisted 0.300 rad and released, find the maximum angular speed.",
+      goal:"Goal → T and θ̇_max",
+      world:{"x0":-3,"x1":9,"y0":-1.5,"y1":8},
+      pathway:["Rotational Hooke","Period","Max spin","Why labs love it"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(7.5),x2:ctx.M.X(5),y2:ctx.M.Y(7.5),stroke:'#9fb4a3','stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(7.5),x2:ctx.M.X(3),y2:ctx.M.Y(3.6),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('ellipse',{cx:ctx.M.X(3),cy:ctx.M.Y(3.0),rx:ctx.M.X(5.2)-ctx.M.X(3),ry:14,fill:'none',stroke:GOLD,'stroke-width':3},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Hooke's law, rotated",
+          think:"τ = −κθ: what plays the role of k? Of m?",
+          model:"κ replaces k; I replaces m. The SHM equation follows verbatim.",
+          pose:"talk",
+          say:"Twist the wire and it twists back, in proportion: torque equals minus kappa theta — Hooke's law with everything rotated. Kappa stands where k stood, I where m stood, and the whole simple harmonic apparatus transfers without modification. Physics recycles its best equations shamelessly.",
+          board:[
+            {label:"Rotational Hooke", tex:"\\tau = -\\kappa\\theta \\;\\Rightarrow\\; I\\ddot\\theta = -\\kappa\\theta", kind:"key"}
+          ]
+        },
+        { map:1, title:"The period",
+          think:"T = 2π√(I/κ): evaluate.",
+          model:"T = 2π√(2×10⁻³/0.5) = 0.397 s; ω_osc = 15.8 rad/s.",
+          pose:"write",
+          say:"The period: two pi root I over kappa — two pi root of four thousandths — zero point three nine seven seconds. The oscillation's own angular frequency: fifteen point eight radians per second.",
+          board:[
+            {tex:"T = 2\\pi\\sqrt{\\frac{I}{\\kappa}} = 2\\pi\\sqrt{\\frac{2.00\\times10^{-3}}{0.500}} = 0.397\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Maximum angular speed",
+          think:"The rotational ωA: θ̇_max = ω_osc × Θ.",
+          model:"θ̇_max = (15.8)(0.300) = 4.74 rad/s, at θ = 0.",
+          pose:"write",
+          say:"The rotational analogue of omega A: maximum angular speed equals the oscillation frequency times the angular amplitude — fifteen point eight times point three — four point seven four radians per second, collected as the disk whirls through its untwisted position.",
+          board:[
+            {tex:"\\dot\\theta_{\\max} = \\omega_{\\rm osc}\\Theta = (15.8)(0.300) = 4.74\\ \\mathrm{rad/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The laboratory's favourite oscillator",
+          think:"No g, no small-angle caveat: why do precision experiments choose torsion?",
+          model:"Exact for any amplitude (elastic wire); independent of g; infinitely tunable. Cavendish, Coulomb chose it.",
+          pose:"excited",
+          say:"Why does this instrument haunt the great experiments? Count its virtues: the linearity is EXACT for any amplitude the wire's elasticity tolerates — no small-angle apology; g never enters, so it works sideways, in cellars, on ships; and a thinner wire buys near-limitless sensitivity. Cavendish weighed the Earth on one; Coulomb measured electric force on another. The humble twisted fibre is precision physics' oldest friend.",
+          board:[
+            {label:"Virtues", text:"Exact at any amplitude; g-independent; arbitrarily sensitive. Cavendish and Coulomb both chose torsion.", kind:"key"},
+            {label:"Reusable method", text:"τ = −κθ → T = 2π√(I/κ) → θ̇_max = ω_osc Θ → recall its precision pedigree", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Springs in parallel and in series",
+      problem:"A 1.00 kg block is attached to two springs, k₁ = 100 N/m and k₂ = 300 N/m. Find the period when they are connected (a) in parallel and (b) in series.",
+      goal:"Goal → T_parallel, T_series",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":8},
+      pathway:["Parallel","Series","Compare","The pattern"],
+      setup(ctx,w){
+    ground(ctx, -0.5, 12.5, 0);
+  },
+      steps:[
+        { map:0, title:"Parallel: forces add",
+          think:"Side by side, both stretch by the same x. What adds?",
+          model:"k_eff = k₁ + k₂ = 400 N/m → T = 0.314 s.",
+          pose:"talk",
+          say:"Side by side, both springs suffer the SAME stretch and their pulls simply add: effective stiffness one hundred plus three hundred — four hundred newtons per metre, stiffer than either alone. Period: two pi root of one over four hundred — zero point three one four seconds.",
+          board:[
+            {tex:"\\text{parallel: } k_{\\rm eff} = k_1+k_2 = 400\\ \\mathrm{N/m}; \\quad T = 2\\pi\\sqrt{\\frac{1.00}{400}} = 0.314\\ \\mathrm{s}", kind:"answer"}
+          ],
+          action(c){
+       el('path',{d:`M ${c.M.X(0)} ${c.M.Y(4.6)} q 8 -8 16 0 q 8 -8 16 0 q 8 -8 16 0`,fill:'none',stroke:CHALKC,'stroke-width':2},c.svg);
+       el('path',{d:`M ${c.M.X(0)} ${c.M.Y(2.6)} q 8 -8 16 0 q 8 -8 16 0 q 8 -8 16 0`,fill:'none',stroke:GOLD,'stroke-width':2},c.svg);
+       boxAt(c, 5.4,2.2, 1.6,2.6, {fill:'#2E6DA4', stroke:'#1D4568'});
+       label(c, 0.3,5.6, 'both stretch x: forces add', {fs:10, italic:true});
+     }
+        },
+        { map:1, title:"Series: stretches add",
+          think:"End to end, both carry the same F. What adds now?",
+          model:"1/k_eff = 1/k₁ + 1/k₂ → k_eff = 75.0 N/m → T = 0.726 s.",
+          pose:"write",
+          say:"End to end, the same FORCE threads both springs and their STRETCHES add: one over k effective equals one over one hundred plus one over three hundred — k effective is seventy five, softer than the SOFTEST member. Period: zero point seven two six seconds, more than double the parallel case.",
+          board:[
+            {tex:"\\text{series: } \\frac{1}{k_{\\rm eff}} = \\frac{1}{100}+\\frac{1}{300} \\Rightarrow k_{\\rm eff} = 75.0; \\quad T = 0.726\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Bracket the answers",
+          think:"Parallel beats the stiffest; series undercuts the softest. Why, physically?",
+          model:"400 > 300 and 75 < 100: helpers add stiffness; a chain adds give.",
+          pose:"point",
+          say:"Sanity-bracket both: parallel, four hundred, exceeds even the stiff spring — a helper always stiffens. Series, seventy five, undercuts even the soft one — every link in a chain contributes its give, and give accumulates. If your combined k ever lands between the originals, an equation has been misfiled.",
+          board:[
+            {label:"Brackets", tex:"k_{\\parallel} > \\max(k_1,k_2); \\qquad k_{\\rm series} < \\min(k_1,k_2)", kind:"key"}
+          ]
+        },
+        { map:3, title:"A pattern with a future",
+          think:"Which electrical components combine like springs — and which the opposite way?",
+          model:"Springs combine like capacitors (parallel adds), opposite to resistors. One pattern, many costumes.",
+          pose:"excited",
+          say:"File the pattern with its cross-references: springs combine exactly like CAPACITORS — parallel adds the constants, series adds the reciprocals — and precisely OPPOSITE to resistors. The deep reason: what adds is whatever the elements share less of — force paths in parallel, compliances in chains. You will re-derive this table twice more in your physics career; better to recognise it on arrival.",
+          board:[
+            {label:"The pattern", text:"Springs ≡ capacitors (parallel: add; series: reciprocals) — the reverse of resistors.", kind:"key"},
+            {label:"Reusable method", text:"same stretch → add k's; same force → add 1/k's → bracket-check → map to the capacitor rule", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Losing contact with a vibrating platform",
+      problem:"A block rests on a platform oscillating vertically in SHM at 2.00 Hz. As the amplitude slowly increases, at what amplitude does the block first lose contact, and where in the cycle?",
+      goal:"Goal → A_max and the point",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":8},
+      pathway:["Contact condition","The top","Threshold","Frequency scaling"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(3.5),x2:ctx.M.X(10),y2:ctx.M.Y(3.5),stroke:CHALKC,'stroke-width':4},ctx.svg);
+    boxAt(ctx, 6,3.55, 1.8,1.5, {fill:'#8a4444', stroke:'#5a2424'});
+    arrow(ctx, 11,2.5, 11,4.5, {color:DIMC, w:2});
+    arrow(ctx, 11,4.5, 11,2.5, {color:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"What keeps them together",
+          think:"The block can only be pushed UP by the platform, and pulled down by gravity at most g. When does it fail to follow?",
+          model:"Contact requires n ≥ 0: platform's downward acceleration must never exceed g.",
+          pose:"talk",
+          say:"The platform can PUSH the block but never pull it. Riding down, the block's only downward driver is gravity — it can fall no faster than g. The moment the platform accelerates downward FASTER than g, it drops away beneath the block, and the two part company mid-air. Contact survives while the demanded downward acceleration stays below g.",
+          board:[
+            {label:"Contact condition", tex:"n = m(g - a_{\\rm down}) \\ge 0 \\;\\Rightarrow\\; a_{\\rm down} \\le g", kind:"key"}
+          ]
+        },
+        { map:1, title:"The dangerous point: the top",
+          think:"In SHM, where is the acceleration largest and directed downward?",
+          model:"At the peak of the motion: a = ω²A, pointing down. That's where separation strikes first.",
+          pose:"point",
+          say:"Where is the platform's downward acceleration fiercest? At the TOP of its swing, where SHM's restoring acceleration, omega squared A, points straight down toward equilibrium. The crest of the ride is where the floor first falls out from under the passenger.",
+          board:[
+            {label:"The spot", text:"Max downward acceleration = ω²A, at the highest point of the cycle.", kind:"key"}
+          ]
+        },
+        { map:2, title:"The threshold amplitude",
+          think:"Set ω²A = g at f = 2.00 Hz.",
+          model:"A = g/ω² = 9.80/(4π·2)² = 6.2 cm.",
+          pose:"write",
+          say:"Set omega squared A equal to g: A equals g over omega squared, with omega two pi times two — about twelve point six. Nine point eight over one fifty eight: six point two centimetres. Raise the amplitude past that and, at every crest, the block briefly becomes a projectile — the rattling begins.",
+          board:[
+            {tex:"A = \\frac{g}{\\omega^2} = \\frac{9.80}{(2\\pi\\cdot2.00)^2} = 0.0621\\ \\mathrm{m} = 6.2\\ \\mathrm{cm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why high frequencies rattle",
+          think:"At 4 Hz, the threshold is how much smaller? Note the ω² dependence.",
+          model:"A_threshold ∝ 1/f²: at 4 Hz, only 1.55 cm. Fast vibration launches loose parts with tiny amplitudes.",
+          pose:"excited",
+          say:"The scaling carries the engineering: the threshold shrinks as the SQUARE of frequency — at four hertz, a mere one and a half centimetres suffices to launch the block. This is why fast machinery rattles its loose bolts, why speaker cones fling dust at high notes, and why earthquake accelerations are quoted in g's: the moment ground acceleration beats one g, unanchored things — and unanchored buildings — go briefly, catastrophically airborne.",
+          board:[
+            {label:"Scaling", tex:"A_{\\rm thresh} = \\frac{g}{4\\pi^2f^2}: \\ \\text{at 4 Hz, } 1.55\\ \\mathrm{cm}\\ \\text{— fast vibration launches easily}", kind:"key"},
+            {label:"Reusable method", text:"contact ⇔ n ≥ 0 → worst case a_down = ω²A at the top → threshold A = g/ω², scaling as 1/f²", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Liquid sloshing in a U-tube (deriving SHM)",
+      problem:"A U-shaped tube of uniform cross-section contains a liquid column of total length L = 0.500 m. The liquid is displaced slightly and released. Show that it oscillates in SHM and find the period (neglect viscosity).",
+      goal:"Goal → prove SHM, find T",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Displace","Restoring force","The ODE","Period","Recognize SHM"],
+      setup(ctx,w){
+    el('path',{d:`M ${ctx.M.X(2.5)} ${ctx.M.Y(7.5)} L ${ctx.M.X(2.5)} ${ctx.M.Y(1.5)} Q ${ctx.M.X(2.5)} ${ctx.M.Y(0.3)} ${ctx.M.X(3.7)} ${ctx.M.Y(0.3)} L ${ctx.M.X(6.3)} ${ctx.M.Y(0.3)} Q ${ctx.M.X(7.5)} ${ctx.M.Y(0.3)} ${ctx.M.X(7.5)} ${ctx.M.Y(1.5)} L ${ctx.M.X(7.5)} ${ctx.M.Y(7.5)}`,fill:'none',stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(2.5),y1:ctx.M.Y(5.8),x2:ctx.M.X(3.3),y2:ctx.M.Y(5.8),stroke:BLUE,'stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(6.7),y1:ctx.M.Y(4.2),x2:ctx.M.X(7.5),y2:ctx.M.Y(4.2),stroke:BLUE,'stroke-width':3},ctx.svg);
+    label(ctx, 0.5,5.9, '+x', {fs:11, color:BLUE});
+    label(ctx, 8.0,4.3, '−x', {fs:11, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"Displace and inventory",
+          think:"One arm up x, the other down x: what column of liquid is now unbalanced?",
+          model:"A column of height 2x — weight ρ(2xA)g — is the entire net force.",
+          pose:"talk",
+          say:"Push the liquid so one arm rides x high and the other x low. Most of the liquid balances itself, arm against arm; the entire net force comes from the surplus column of height TWO x — one x of excess here, one of deficit there. Its weight, rho times two x A times g, is gravity's whole complaint.",
+          board:[
+            {label:"The unbalance", tex:"F = -\\rho(2xA)g\\ \\text{— the weight of the 2x column}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Who gets accelerated",
+          think:"The restoring force moves how much mass — the surplus, or everything?",
+          model:"The ENTIRE column, m = ρAL, moves together: F = ma with the full mass.",
+          pose:"point",
+          say:"But that modest force must shepherd the ENTIRE column — every drop in both arms and the bend moves in unison, a mass of rho A L. Small force, full congregation: the makings of a gentle oscillation.",
+          board:[
+            {tex:"\\rho AL\\,\\frac{d^2x}{dt^2} = -2\\rho gA\\,x", kind:"key"}
+          ]
+        },
+        { map:2, title:"Recognise the equation",
+          think:"Cancel ρA. What famous ODE remains?",
+          model:"ẍ = −(2g/L)x: SHM with ω² = 2g/L. The proof is complete.",
+          pose:"write",
+          say:"Cancel rho and A — the liquid's identity and the tube's calibre both resign — and behold: acceleration proportional to minus displacement, constant of two g over L. That IS the simple harmonic equation; the sloshing is proven sinusoidal, QED, with omega squared equal to two g over L.",
+          board:[
+            {tex:"\\frac{d^2x}{dt^2} = -\\frac{2g}{L}x \\;\\Rightarrow\\; \\omega^2 = \\frac{2g}{L}\\ \\text{— SHM, proven}", kind:"answer", move:"cancel ρ, A"}
+          ]
+        },
+        { map:3, title:"The period",
+          think:"T = 2π√(L/2g) for L = 0.500 m.",
+          model:"T = 2π√(0.5/19.6) = 1.00 s — a half-metre of liquid ticks seconds.",
+          pose:"write",
+          say:"The period: two pi root of L over two g — two pi root of point five over nineteen point six — one point zero zero seconds, by the friendly conspiracy of these numbers. Half a metre of liquid in a bent straw is a one-second clock.",
+          board:[
+            {tex:"T = 2\\pi\\sqrt{\\frac{L}{2g}} = 2\\pi\\sqrt{\\frac{0.500}{19.6}} = 1.00\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The SHM-recognition method",
+          think:"Summarize the derivation recipe you just used — it works on ANY candidate oscillator.",
+          model:"Displace → net restoring force → F = ma → if ẍ ∝ −x, read ω² off the coefficient.",
+          pose:"excited",
+          say:"Step back and pocket the METHOD, for it is universal: displace the system a little; find the net restoring force; write Newton; and if the acceleration comes out proportional to minus the displacement, the motion is simple harmonic and omega squared is sitting there as the coefficient, free of charge. Ships' tanks, harbour seiches, your coffee as you walk — this tutorial's grand technique, and physics', is recognising the same equation in a thousand disguises. Where you find minus x, you have found a clock.",
+          board:[
+            {label:"The universal recipe", text:"Displace → restoring force → Newton → ẍ = −(ω²)x ⇒ SHM with that ω. Works on everything that wiggles.", kind:"key"},
+            {label:"Reusable method", text:"identify the unbalanced part → accelerate the WHOLE moving mass → cancel → read ω² from the coefficient of −x", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

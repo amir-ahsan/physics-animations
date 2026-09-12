@@ -828,6 +828,11 @@
        Each example: pathway chips + chapter steps.
        board lines: {label?, tex? | text?, kind?: key|answer|warn|note, move?}
        ============================================================ */
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1311,6 +1316,602 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Two people carrying a loaded plank",
+      problem:"A uniform 4.00 m plank of mass 20.0 kg is carried horizontally by two people, one at each end. A 30.0 kg toolbox sits 1.00 m from the left end. How much force does each person exert?",
+      goal:"Goal → F_L and F_R",
+      world:{"x0":-0.6,"x1":4.8,"y0":-1.6,"y1":3},
+      pathway:["Two conditions","Pivot choice","Torques","Forces","Check"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(1),x2:ctx.M.X(4),y2:ctx.M.Y(1),stroke:'#8a7d60','stroke-width':7,'stroke-linecap':'round'},ctx.svg);
+    boxAt(ctx, 1,1.05, 0.5,0.45, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 0.62,1.75, 'toolbox', {fs:10, color:RED});
+  },
+      steps:[
+        { map:0, title:"Equilibrium's two demands",
+          think:"A rigid body at rest satisfies TWO vector conditions. Name them.",
+          model:"ΣF = 0 AND Στ = 0 — forces balance and torques balance.",
+          pose:"talk",
+          say:"Statics stands on two pillars: the forces must sum to zero — no acceleration — and the TORQUES must sum to zero about any point — no spin either. A plank could have balanced forces yet still rotate; both books must close, and we shall need both.",
+          board:[
+            {label:"The two conditions", tex:"\\Sigma F = 0 \\quad\\text{and}\\quad \\Sigma\\tau = 0\\ \\text{(about any point)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Pivot where the unknown lives",
+          think:"Torques about the LEFT end: which unknown conveniently vanishes?",
+          model:"Choose the left end: F_L's lever arm is zero, leaving one unknown.",
+          pose:"point",
+          say:"The tactical move of all statics: take torques about a point where an unknown force ACTS — its lever arm is zero and it exits the equation. Choose the left hand; F L disappears, and F R stands alone before the court.",
+          board:[
+            {label:"The trick", text:"Torques about the left end ⇒ F_L drops out. One equation, one unknown.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,1.35, 0,2.6, {color:GREEN, w:3, label:'F_L', fs:12, side:-1});
+       arrow(c, 4,1.35, 4,2.6, {color:BLUE, w:3, label:'F_R', fs:12});
+       arrow(c, 2,0.8, 2,-0.5, {color:RED, w:2.5, label:'196 N', fs:11});
+       arrow(c, 1,0.8, 1,-0.8, {color:RED, w:2.5, label:'294 N', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Balance the torques",
+          think:"Plank weight at 2.00 m, toolbox at 1.00 m, F_R at 4.00 m. Write Στ = 0.",
+          model:"F_R(4.00) = 196(2.00) + 294(1.00) → F_R = 172 N.",
+          pose:"write",
+          say:"About the left end: F R at four metres turns one way; the plank's one hundred ninety six newtons at the two metre midpoint and the toolbox's two ninety four at one metre turn the other. Balance: F R equals three ninety two plus two ninety four, over four — one hundred seventy two newtons.",
+          board:[
+            {tex:"F_R(4.00) = (196)(2.00) + (294)(1.00) \\;\\Rightarrow\\; F_R = 172\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Forces finish the job",
+          think:"ΣF_y = 0 now yields F_L. Who carries more, and why?",
+          model:"F_L = 490 − 172 = 319 N — the person nearer the toolbox.",
+          pose:"write",
+          say:"Now the force balance: the pair must jointly carry four hundred ninety newtons, so F L is four ninety minus one seventy two — three hundred nineteen. Nearly double the partner's load: proximity to the toolbox is proximity to its bill. Choose your end of the plank with care.",
+          board:[
+            {tex:"F_L = 196 + 294 - 172 = 319\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Re-pivot to verify",
+          think:"Torques about the RIGHT end should yield F_L independently. Do they?",
+          model:"F_L(4.00) = 196(2.00) + 294(3.00) = 1274 → 319 N ✓.",
+          pose:"excited",
+          say:"The audit privilege of statics: equilibrium holds about EVERY point, so re-run the torques about the right end. F L times four equals three ninety two plus eight eighty two — twelve seventy four; F L is three nineteen. Same answer by an independent route. Any pivot is a free second opinion — statics is generous that way.",
+          board:[
+            {label:"Re-pivot check", tex:"F_L(4.00) = (196)(2.00) + (294)(3.00) \\;\\Rightarrow\\; F_L = 319\\ \\mathrm{N}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"pivot on an unknown → Στ = 0 for the other → ΣF = 0 finishes → re-pivot to verify", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Stretching a steel rod",
+      problem:"A steel rod 2.00 m long with cross-sectional area 1.00 cm² supports a 5000 N load. Find the tensile stress, the strain, and the elongation (Y = 2.0×10¹¹ Pa).",
+      goal:"Goal → stress, strain, ΔL",
+      world:{"x0":-3,"x1":9,"y0":-1.5,"y1":8},
+      pathway:["Stress","Strain","Elongation","Scaling"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(7.5),x2:ctx.M.X(5),y2:ctx.M.Y(7.5),stroke:'#9fb4a3','stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(7.5),x2:ctx.M.X(3),y2:ctx.M.Y(2.2),stroke:CHALKC,'stroke-width':4},ctx.svg);
+    boxAt(ctx, 3,0.2, 1.8,2, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 4.2,1.2, '5000 N', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"Stress: force per area",
+          think:"5000 N over 1 cm² — convert the area and compute, then compare to yield.",
+          model:"σ = F/A = 5000/10⁻⁴ = 5.0×10⁷ Pa — safely below yield (~few ×10⁸).",
+          pose:"talk",
+          say:"Elasticity begins by normalising the load: stress is force per unit area. Five thousand newtons across one square centimetre — ten to the minus four square metres — is fifty megapascals. Steel yields at a few hundred; we are working the material at perhaps a fifth of its patience.",
+          board:[
+            {tex:"\\sigma = \\frac{F}{A} = \\frac{5000}{1.00\\times10^{-4}} = 5.0\\times10^{7}\\ \\mathrm{Pa}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Strain: the material's reply",
+          think:"strain = stress/Y: a pure number. How small?",
+          model:"ε = 5.0×10⁷/2.0×10¹¹ = 2.5×10⁻⁴.",
+          pose:"write",
+          say:"The material answers through Young's modulus: strain equals stress over Y — two and a half parts in ten thousand. A dimensionless whisper: each metre of rod grows by a quarter of a millimetre.",
+          board:[
+            {tex:"\\varepsilon = \\frac{\\sigma}{Y} = \\frac{5.0\\times10^{7}}{2.0\\times10^{11}} = 2.5\\times10^{-4}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Elongation",
+          think:"ΔL = εL₀ over 2.00 m: the actual stretch?",
+          model:"ΔL = (2.5×10⁻⁴)(2.00) = 0.50 mm.",
+          pose:"write",
+          say:"Elongation is strain times original length: half a millimetre over the two metre rod. Invisible to the eye, decisive to the engineer — bridges live and die by summed half-millimetres.",
+          board:[
+            {tex:"\\Delta L = \\varepsilon L_0 = (2.5\\times10^{-4})(2.00) = 0.50\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Read the formula's scaling",
+          think:"Double the length: ΔL? Double the area: ΔL?",
+          model:"ΔL = FL/AY: linear in L, inverse in A. Y belongs to the material alone.",
+          pose:"excited",
+          say:"Assemble the master form — delta L equals F L over A Y — and read its politics: double the length, double the stretch; double the area, halve it; and Y, the only material property present, belongs to STEEL, not to this rod. Stress and strain are the engineer's way of separating what the geometry does from what the substance is.",
+          board:[
+            {label:"The scalings", tex:"\\Delta L = \\frac{FL}{AY}: \\ \\propto L, \\ \\propto1/A, \\ Y\\ \\text{fixed by the material}", kind:"key"},
+            {label:"Reusable method", text:"stress = F/A → strain = stress/Y → ΔL = strain × L₀ → sanity-check against the yield stress", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Compressing water at depth",
+      problem:"At about 1 km depth the ocean pressure is 1.0×10⁷ Pa above atmospheric. By what fraction is a parcel of water compressed? (B = 2.2×10⁹ Pa.)",
+      goal:"Goal → ΔV/V₀",
+      world:{"x0":-2,"x1":10,"y0":-1,"y1":8},
+      pathway:["Bulk modulus","Compute","Interpret"],
+      setup(ctx,w){
+    shadePoly(ctx, [[-1.5,0],[9.5,0],[9.5,7],[-1.5,7]], {color:'rgba(46,109,164,.15)'});
+    circleAt(ctx, 4,3.5, 1.2, {stroke:CHALKC, w:2.5, dash:'6,5'});
+    label(ctx, 5.4,3.9, 'water parcel, 1 km down', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Volume stress, volume strain",
+          think:"Pressure squeezes from all sides. Which modulus answers?",
+          model:"Δp = −B(ΔV/V₀): the bulk modulus governs uniform squeeze.",
+          pose:"talk",
+          say:"A kilometre down, the ocean squeezes from every direction at once — volume stress. The material's resistance is the BULK modulus: delta p equals minus B times the fractional volume change. The minus records the obvious: more pressure, less volume.",
+          board:[
+            {label:"Bulk law", tex:"\\Delta p = -B\\,\\frac{\\Delta V}{V_0}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Compute the fraction",
+          think:"10⁷ over 2.2×10⁹: how much smaller does the parcel get?",
+          model:"ΔV/V₀ = −4.5×10⁻³ — about 0.45%.",
+          pose:"write",
+          say:"Divide: ten megapascals against a bulk modulus of two point two gigapascals — minus four and a half parts per thousand. Under the weight of a kilometre of ocean, water yields less than half a percent of its volume. Stubborn stuff.",
+          board:[
+            {tex:"\\frac{\\Delta V}{V_0} = -\\frac{\\Delta p}{B} = -\\frac{1.0\\times10^{7}}{2.2\\times10^{9}} = -4.5\\times10^{-3}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Nearly — but not perfectly — incompressible",
+          think:"Name two consequences of water's small-but-nonzero compressibility.",
+          model:"The deep ocean is slightly denser; sound propagates because water CAN compress.",
+          pose:"excited",
+          say:"The moral lives in the word NEARLY. Treating water as incompressible is fine for plumbing — yet that residual half percent makes the abyss measurably denser than the surface, and, more beautifully, it is the very spring that carries sound: a truly incompressible ocean would be silent. Whales sing through this number.",
+          board:[
+            {label:"Consequences", text:"Slightly denser depths; sound exists in water only because B is finite. 'Incompressible' is an approximation with fine print.", kind:"key"},
+            {label:"Reusable method", text:"uniform squeeze → bulk law ΔV/V = −Δp/B → interpret the smallness, and its exceptions", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Hinged beam held by a cable",
+      problem:"A uniform 100 N beam 3.00 m long is hinged to a wall and held horizontal by a cable from its far end to the wall at 40.0° to the beam. Find the cable tension and the hinge force components.",
+      goal:"Goal → T, Hx, Hy",
+      world:{"x0":-0.8,"x1":4.2,"y0":-0.8,"y1":3.6},
+      pathway:["Pivot at hinge","Tension","Hinge force","Split the load"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(-0.6),y:ctx.M.Y(3.4),width:ctx.M.X(-0.1)-ctx.M.X(-0.6),height:ctx.M.Y(-0.5)-ctx.M.Y(3.4),fill:'#5a6b5e',opacity:.6},ctx.svg);
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(1),x2:ctx.M.X(3),y2:ctx.M.Y(1),stroke:'#8a7d60','stroke-width':6,'stroke-linecap':'round'},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(1),x2:ctx.M.X(0),y2:ctx.M.Y(3.52),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    circleAt(ctx, 0,1, 0.12, {stroke:GOLD, w:3});
+    label(ctx, 0.15,0.45, 'hinge', {fs:10, color:GOLD});
+    label(ctx, 1.9,2.5, 'cable', {fs:10, color:CHALKC});
+  },
+      steps:[
+        { map:0, title:"Silence the hinge",
+          think:"The hinge force has two unknown components. Where must the pivot go?",
+          model:"Torques about the hinge: both hinge components vanish at a stroke.",
+          pose:"talk",
+          say:"The hinge is the problem's chief nuisance — an unknown force with two components and no stated direction. So we silence it: torques about the hinge itself, where its lever arm is zero. One equation will then hold a single unknown, the cable's tension.",
+          board:[
+            {label:"Strategy", text:"Στ about the hinge ⇒ Hx, Hy both drop out; only T and the weight remain.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Torques: tension found",
+          think:"The cable's perpendicular component is T sin40°, at 3.00 m; weight at 1.50 m.",
+          model:"T sin40°(3.00) = 100(1.50) → T = 77.8 N.",
+          pose:"write",
+          say:"Only the cable's PERPENDICULAR component turns the beam: T sine forty, at the full three metres. Against it, the beam's hundred newtons at the midpoint. T equals one hundred fifty over three sine forty: seventy seven point eight newtons.",
+          board:[
+            {tex:"T\\sin40.0^{\\circ}(3.00) = (100)(1.50) \\;\\Rightarrow\\; T = 77.8\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3,1, 2.1,1.75, {color:GOLD, w:3, label:'T', fs:13, side:-1});
+       arrow(c, 1.5,0.9, 1.5,0.0, {color:RED, w:2.5, label:'100 N', fs:11});
+     }
+        },
+        { map:2, title:"The hinge confesses",
+          think:"ΣFx and ΣFy = 0 now reveal both components. Which way does Hx push?",
+          model:"Hx = T cos40° = 59.6 N (away from the wall); Hy = 100 − 50.0 = 50.0 N up.",
+          pose:"write",
+          say:"With T known, force balance interrogates the hinge. Horizontally: the cable hauls the beam toward the wall with T cosine forty — fifty nine point six — so the hinge pushes back OUTWARD with the same. Vertically: the cable lifts fifty; the hinge supplies the remaining fifty, upward.",
+          board:[
+            {tex:"H_x = T\\cos40^{\\circ} = 59.6\\ \\mathrm{N}\\ \\text{(outward)}; \\quad H_y = 100 - 50.0 = 50.0\\ \\mathrm{N}\\ \\text{(up)}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,1, 0.9,1, {color:GREEN, w:2.5, label:'Hx', fs:11, side:-1});
+       arrow(c, 0,1, 0,1.9, {color:GREEN, w:2.5, label:'Hy', fs:11});
+     }
+        },
+        { map:3, title:"Why fifty-fifty?",
+          think:"Cable lifts 50 N, hinge lifts 50 N. Coincidence, or the midpoint's doing?",
+          model:"The load at the exact middle splits its weight evenly between the two vertical supporters.",
+          pose:"excited",
+          say:"Cable and hinge each lift exactly half the weight — no accident, but the geometry of the midpoint: a load centred between two supports divides its patronage evenly. Slide the beam's mass toward the tip and the cable's share swells; toward the hinge, the reverse. The lever arm is the whole of politics in statics.",
+          board:[
+            {label:"The split", text:"Midpoint load ⇒ 50/50 vertical split between hinge and cable. Lever arms decide all shares.", kind:"key"},
+            {label:"Reusable method", text:"pivot at the messiest unknown → torques give T → ΣF resolves the hinge → interpret the shares", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Minimum friction for a ladder with a person on it",
+      problem:"A 5.00 m, 20.0 kg ladder leans against a frictionless wall at 60.0° to the floor. A 70.0 kg person stands two-thirds of the way up. What minimum μs with the floor prevents slipping?",
+      goal:"Goal → μs,min",
+      world:{"x0":-0.8,"x1":4.6,"y0":-0.6,"y1":5},
+      pathway:["Inventory","Vertical","Torques","μ","The climb"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(2.5),y:ctx.M.Y(4.9),width:6,height:ctx.M.Y(-0.4)-ctx.M.Y(4.9),fill:'#5a6b5e',opacity:.6},ctx.svg);
+    ground(ctx, -0.6, 2.6, 0);
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(0),x2:ctx.M.X(2.5),y2:ctx.M.Y(4.33),stroke:'#8a7d60','stroke-width':5,'stroke-linecap':'round'},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Five forces, one diagram",
+          think:"List them: two weights, two normals, one friction. Where does each act?",
+          model:"196 N at 2.50 m; 686 N at 3.33 m along the ladder; n_w at top (horizontal); n_f, f at the foot.",
+          pose:"talk",
+          say:"The classic ladder, now carrying a passenger. Five forces: the ladder's one ninety six at its middle; the person's six eighty six at two thirds of the way up; the frictionless wall's purely horizontal push at the top; and at the foot, the floor's normal and the friction that is the question's whole subject.",
+          board:[
+            {label:"Inventory", text:"196 N @ 2.50 m; 686 N @ 3.33 m; n_w horizontal at top; n_f and f at the foot.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 1.25,2.17, 1.25,1.1, {color:RED, w:2.5, label:'196', fs:10, side:-1});
+       arrow(c, 1.67,2.89, 1.67,1.4, {color:RED, w:2.5, label:'686', fs:10});
+       arrow(c, 2.5,4.33, 1.7,4.33, {color:BLUE, w:2.5, label:'n_w', fs:11, at:'mid'});
+     }
+        },
+        { map:1, title:"The vertical ledger",
+          think:"The frictionless wall contributes nothing vertical. So n_f = ?",
+          model:"n_f = 196 + 686 = 882 N.",
+          pose:"write",
+          say:"Vertically the wall abstains — frictionless walls push only sideways — so the floor carries everything: n f equals eight hundred eighty two newtons. Half the answer's denominator, secured.",
+          board:[
+            {tex:"n_f = 196 + 686 = 882\\ \\mathrm{N}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Torques about the foot",
+          think:"Weights' lever arms are horizontal distances; n_w's is the top's height. Solve for n_w.",
+          model:"n_w(5 sin60°) = 196(2.5cos60°) + 686(3.33cos60°) → n_w = 321 N.",
+          pose:"write",
+          say:"Torques about the foot, where two unknowns loiter armless. The weights lean on their HORIZONTAL lever arms — r cosine sixty each — while the wall's push acts at the top's full height, five sine sixty. Solve: n w equals two forty five plus eleven forty three, over four point three three — three hundred twenty one newtons.",
+          board:[
+            {tex:"n_w(5.00\\sin60^{\\circ}) = 196(1.25) + 686(1.67) \\;\\Rightarrow\\; n_w = 321\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Horizontal ledger → μ",
+          think:"Only friction can answer n_w. The minimum coefficient follows.",
+          model:"f = n_w = 321 N; μs,min = 321/882 = 0.364.",
+          pose:"write",
+          say:"Horizontally, only the foot's friction opposes the wall's push: f equals three twenty one. The minimum coefficient: three twenty one over eight eighty two — zero point three six four. A dry wooden floor obliges; a waxed one may not.",
+          board:[
+            {tex:"\\mu_{s,\\min} = \\frac{f}{n_f} = \\frac{321}{882} = 0.364", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Why ladders slip at the top",
+          think:"Re-run the torque equation mentally with the person at 4.5 m. What grows?",
+          model:"Higher person → longer lever arm → larger n_w → more friction demanded. The foot slips as you near the top.",
+          pose:"excited",
+          say:"And the safety lesson hiding in the algebra: as the climber ascends, her lever arm about the foot lengthens, the wall must push harder, and the friction bill rises step by step — the floor's supply, mu s n f, standing still all the while. Ladders do not slip when you step on; they slip near the top, and now you can compute exactly which rung is one too many.",
+          board:[
+            {label:"The climb", text:"Friction demand grows with the climber's height; supply doesn't. The top rungs are the dangerous ones.", kind:"warn"},
+            {label:"Reusable method", text:"vertical → n_f; torques at the foot → n_w; horizontal → f = n_w; μ = f/n_f; track the demand as loads move", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Diving board: one support pulls down",
+      problem:"A 3.00 m diving board of mass 40.0 kg is bolted at its left end (A) and rests on a fulcrum (B) 1.00 m from A. A 70.0 kg diver stands at the free end. Find the forces at A and B.",
+      goal:"Goal → F_A and F_B",
+      world:{"x0":-0.5,"x1":3.6,"y0":-2.2,"y1":2.6},
+      pathway:["Assume up","Torques at B","Negative!","F_B","Lever lesson"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(0.8),x2:ctx.M.X(3),y2:ctx.M.Y(0.8),stroke:'#8a7d60','stroke-width':6,'stroke-linecap':'round'},ctx.svg);
+    el('polygon',{points:`${ctx.M.X(1)},${ctx.M.Y(0.7)} ${ctx.M.X(0.8)},${ctx.M.Y(-0.1)} ${ctx.M.X(1.2)},${ctx.M.Y(-0.1)}`,fill:'#5a6b5e'},ctx.svg);
+    circleAt(ctx, 0,0.8, 0.1, {stroke:DIMC, w:3});
+    circleAt(ctx, 3,1.5, 0.28, {stroke:GREEN, w:3});
+    label(ctx, 0.0,0.15, 'A (bolts)', {fs:10, color:DIMC});
+    label(ctx, 1.05,-0.55, 'B (fulcrum)', {fs:10, color:DIMC});
+    label(ctx, 2.4,2.0, 'diver', {fs:10, color:GREEN});
+  },
+      steps:[
+        { map:0, title:"Assume, and let algebra vote",
+          think:"Draw F_A upward and let its sign report the truth. Why is this safe?",
+          model:"Assume F_A up; a negative answer will mean 'actually down'. Signs are self-correcting.",
+          pose:"talk",
+          say:"A board bolted at one end, resting on a fulcrum, diver at the tip. Which way does the bolt force point? Do not agonise — ASSUME upward and let the algebra vote. A negative result is not an error; it is the equation politely reversing your arrow.",
+          board:[
+            {label:"The stance", text:"Draw F_A upward by assumption. The SIGN of the answer will decide the truth.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Torques about the fulcrum",
+          think:"About B: F_A at 1.00 m; board weight 0.50 m beyond B; diver 2.00 m beyond. Write it.",
+          model:"−F_A(1.00) − 392(0.500) − 686(2.00) = 0.",
+          pose:"write",
+          say:"Torques about B, silencing its force. The board's three ninety two acts half a metre beyond the fulcrum; the diver's six eighty six, two full metres beyond; both turn the board the SAME way — tip-downward. Our assumed-up F A also turns it that way from the other side. Three terms, one sign: something must give.",
+          board:[
+            {tex:"-F_A(1.00) - (392)(0.500) - (686)(2.00) = 0", kind:"key"}
+          ]
+        },
+        { map:2, title:"F_A = −1568 N: read the minus",
+          think:"What does the sign say the bolts are actually doing?",
+          model:"A pushes DOWN with 1.57 kN — the bolts are in tension, anchoring the board.",
+          pose:"write",
+          say:"Solve: F A equals MINUS fifteen hundred sixty eight newtons. The minus is the message: the left end must be held DOWN — the bolts strain in tension against a board trying to see-saw its near end skyward. Remove them and the diver departs early, board and all.",
+          board:[
+            {tex:"F_A = -1568\\ \\mathrm{N}\\ \\text{— i.e. } 1.57\\ \\mathrm{kN\\ downward\\ (bolts\\ in\\ tension)}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0.7, 0,-0.9, {color:RED, w:3, label:'1.57 kN down', fs:11});
+     }
+        },
+        { map:3, title:"The fulcrum's mighty share",
+          think:"ΣF_y = 0 with A pulling down: what must B push up?",
+          model:"F_B = 1568 + 392 + 686 = 2.65 kN — 2.5 times the total weight aboard.",
+          pose:"write",
+          say:"The force balance now reads: B must lift the board, the diver, AND the bolts' downward pull. Two point six five kilonewtons — two and a half times the actual weight it hosts. The fulcrum earns its name the hard way.",
+          board:[
+            {tex:"F_B = 1568 + 392 + 686 = 2.65\\times10^{3}\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 1,-0.05, 1,1.6, {color:GREEN, w:3.5, label:'2.65 kN up', fs:11, side:-1});
+     }
+        },
+        { map:4, title:"Levers amplify onto supports",
+          think:"Total weight aboard: ~1.08 kN. Internal forces: 1.57 + 2.65 kN. What did the lever do?",
+          model:"Long lever arms multiply support forces far beyond the loads. Cantilevers punish their anchors.",
+          pose:"excited",
+          say:"Step back and total the ledger: barely eleven hundred newtons of actual weight stands on this board, yet the supports wrestle with over four thousand between them. Levers amplify — and not only the useful output; they amplify the REACTIONS, quietly, inside the structure. Every cantilevered balcony, crane arm, and diving board pays its anchors in exactly this multiplied currency. Engineers size the bolts for the lever, not the load.",
+          board:[
+            {label:"The lesson", text:"Cantilevers multiply forces on their supports (here ×2.5). Design for the lever arm, not the load.", kind:"key"},
+            {label:"Reusable method", text:"assume directions freely → torques about one support → negative sign = reversed arrow → ΣF for the other → read the amplification", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Tip or slide? A crate on an incline",
+      problem:"A uniform crate 1.20 m tall and 0.600 m wide sits on a plank whose angle is slowly increased. At what angle would it tip over? If μs = 0.400, does it tip or slide first?",
+      goal:"Goal → θ_tip vs θ_slide",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7.5},
+      pathway:["Tip criterion","θ_tip","θ_slide","Verdict"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(4.2)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"When does a box tip?",
+          think:"Track the vertical line through the center of gravity. Tipping starts when it crosses what?",
+          model:"Tip when the cg's plumb line passes outside the downhill edge of the base.",
+          pose:"talk",
+          say:"Two failure modes compete as the plank steepens: sliding, friction's surrender; and TIPPING, geometry's. The tipping criterion is beautifully visual: hang a plumb line from the centre of gravity, and the crate stands while that line lands inside its base. The instant it crosses the downhill edge, the normal force can no longer reach far enough to balance the torque, and over she goes.",
+          board:[
+            {label:"Tip criterion", text:"Tipping begins when the vertical through the cg exits the base's downhill edge.", kind:"key"}
+          ],
+          action(c){
+       boxAt(c, 4,2.31, 1.7,3.4, {fill:'rgba(46,109,164,.35)', stroke:'#1D4568'});
+       dashLine(c, 4,4.0, 4,0.6, {});
+       circleAt(c, 4,4.0, 0.12, {stroke:GOLD, w:3});
+       label(c, 4.3,4.6, 'cg', {fs:11, color:GOLD});
+     }
+        },
+        { map:1, title:"The tipping angle",
+          think:"cg sits 0.600 up, 0.300 in from the pivot edge. What tanθ crosses the corner?",
+          model:"tanθ_tip = (w/2)/(h/2) = 0.300/0.600 = 0.500 → θ_tip = 26.6°.",
+          pose:"write",
+          say:"Geometry: the centre of gravity perches half the height up — sixty centimetres — and half the width in from the downhill edge — thirty. The plumb line reaches that corner when tangent theta equals thirty over sixty: twenty six point six degrees. Note the ratio is WIDTH over HEIGHT — squat crates cling; tall ones topple.",
+          board:[
+            {tex:"\\tan\\theta_{\\rm tip} = \\frac{0.300}{0.600} = 0.500 \\;\\Rightarrow\\; \\theta_{\\rm tip} = 26.6^{\\circ}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The sliding angle",
+          think:"From Tutorial 5: sliding begins at tanθ = μs. Evaluate.",
+          model:"tanθ_slide = 0.400 → θ_slide = 21.8°.",
+          pose:"write",
+          say:"Sliding's threshold is an old acquaintance: the crate lets go when tangent theta reaches mu s — point four — twenty one point eight degrees. Two thresholds now stand on the same axis, and the mountain will reach one of them first.",
+          board:[
+            {tex:"\\tan\\theta_{\\rm slide} = \\mu_s = 0.400 \\;\\Rightarrow\\; \\theta_{\\rm slide} = 21.8^{\\circ}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The verdict — and the design dial",
+          think:"21.8° < 26.6°: which failure wins? What changes would flip it?",
+          model:"Slides first. Flip with μs > w/h = 0.5, or a taller/narrower crate. Compare tanθ's, not instincts.",
+          pose:"excited",
+          say:"Twenty one point eight comes before twenty six point six: this crate SLIDES first, arriving intact at the bottom. But watch the dials: stickier feet — mu above one half — or a taller, narrower build, and tipping wins instead. It is the whole freight-handling trade in one comparison: tall wardrobes on rubber mats tip; low pallets on smooth beds slide. Compare the two tangents and you have the crate's destiny.",
+          board:[
+            {label:"Verdict", tex:"\\mu_s = 0.400 < \\frac{w}{h} = 0.500: \\ \\text{slides first}", kind:"answer"},
+            {label:"Reusable method", text:"θ_tip from tanθ = (base/2)/(cg height); θ_slide from tanθ = μs → the smaller angle names the failure", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Crane boom with a hanging load",
+      problem:"A uniform 200 kg boom 6.00 m long is hinged at its base and held at 50.0° above horizontal by a horizontal cable at its top. A 500 kg load hangs from the top. Find the cable tension and the hinge force.",
+      goal:"Goal → T and H",
+      world:{"x0":-1,"x1":7,"y0":-0.8,"y1":6.4},
+      pathway:["Lever arms","Tension","Hinge","Not along the boom"],
+      setup(ctx,w){
+    ground(ctx, -0.8, 6.8, 0);
+    el('line',{x1:ctx.M.X(0.5),y1:ctx.M.Y(0),x2:ctx.M.X(0.5+6*0.643),y2:ctx.M.Y(6*0.766),stroke:'#8a7d60','stroke-width':6,'stroke-linecap':'round'},ctx.svg);
+    el('line',{x1:ctx.M.X(0.5+6*0.643),y1:ctx.M.Y(6*0.766),x2:ctx.M.X(6.8),y2:ctx.M.Y(6*0.766),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(0.5+6*0.643),y1:ctx.M.Y(6*0.766),x2:ctx.M.X(0.5+6*0.643),y2:ctx.M.Y(2.8),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 0.5+6*0.643,2.0, 0.8,0.8, {fill:'#8a4444', stroke:'#5a2424'});
+    circleAt(ctx, 0.5,0, 0.12, {stroke:GOLD, w:3});
+  },
+      steps:[
+        { map:0, title:"Lever arms with care",
+          think:"Weights pull DOWN: their lever arms about the hinge are horizontal projections. The HORIZONTAL cable's lever arm is what?",
+          model:"Weights: r cos50°. Horizontal cable at the top: lever arm = 6 sin50° (the height).",
+          pose:"talk",
+          say:"A tilted boom demands care with lever arms. The weights pull vertically DOWN, so each one's lever arm about the hinge is its HORIZONTAL reach — r cosine fifty. The cable pulls HORIZONTALLY, so its lever arm is the attachment's HEIGHT — six sine fifty. Perpendicular distance to the line of action, always: draw it before you write it.",
+          board:[
+            {label:"Lever arms", text:"Vertical forces: arm = r cos50°. Horizontal cable at the tip: arm = 6.00 sin50°.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Torques about the hinge",
+          think:"1960 N at 3 m, 4900 N at 6 m (both ×cos50°) vs T at 6 sin50°. Solve.",
+          model:"T = (3780 + 18900)/4.596 = 4.93×10³ N.",
+          pose:"write",
+          say:"About the hinge: the boom's nineteen sixty at three metres and the load's four thousand nine hundred at six — both scaled by cosine fifty — against T at the four point six metre height. T equals twenty two thousand seven hundred over four point six: four point nine three kilonewtons.",
+          board:[
+            {tex:"T(6.00\\sin50^{\\circ}) = 1960(3.00\\cos50^{\\circ}) + 4900(6.00\\cos50^{\\circ})", kind:"key"},
+            {tex:"T = \\frac{3780 + 18900}{4.596} = 4.93\\times10^{3}\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 4.36,4.6, 6.3,4.6, {color:GOLD, w:3, label:'T', fs:13});
+     }
+        },
+        { map:2, title:"The hinge force",
+          think:"ΣF: horizontally the hinge answers T; vertically, both weights. Assemble H.",
+          model:"Hx = 4.93 kN, Hy = 6.86 kN: H = 8.45 kN at 54.3° above horizontal.",
+          pose:"write",
+          say:"Force balance: horizontally the hinge must counter the cable's full four point nine three; vertically it carries both weights, six point eight six kilonewtons. Magnitude: eight point four five kilonewtons, aimed fifty four point three degrees above horizontal.",
+          board:[
+            {tex:"H_x = 4.93, \\ H_y = 1.96+4.90 = 6.86\\ \\mathrm{kN}: \\quad H = 8.45\\ \\mathrm{kN}\\ \\text{at } 54.3^{\\circ}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0.5,0, 1.7,1.65, {color:GREEN, w:3, label:'H', fs:13, side:-1});
+     }
+        },
+        { map:3, title:"The hinge force is NOT along the boom",
+          think:"The boom points at 50.0°; H points at 54.3°. Why the difference?",
+          model:"Only massless two-force members carry force along their length. A heavy boom with three attachments does not.",
+          pose:"excited",
+          say:"And the misconception laid to rest: the hinge force points at fifty four point three degrees while the boom leans at fifty — CLOSE, and not equal. Forces align with a member only when it is a massless TWO-force member, loaded solely at its ends. Our boom carries its own weight amidships and a cable besides; its hinge force answers the totality, not the timber's direction. Assume 'along the member' only after counting to two.",
+          board:[
+            {label:"The misconception", text:"H is at 54.3°, the boom at 50°: only massless two-force members carry purely axial force.", kind:"warn"},
+            {label:"Reusable method", text:"lever arm = ⊥ distance to each line of action → torques at the hinge for T → ΣF for H → never assume H is axial", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Two rods in series: the softer one stretches more",
+      problem:"A steel rod (Y = 2.0×10¹¹ Pa) and an aluminum rod (Y = 7.0×10¹⁰ Pa), each 1.00 m long, area 2.00 cm², are joined end to end and loaded with 10.0 kN. Find each elongation, the total, and the effective Young's modulus.",
+      goal:"Goal → ΔL's and Y_eff",
+      world:{"x0":-3,"x1":9,"y0":-1.5,"y1":8},
+      pathway:["Series = same F","Each stretch","Total","Compliances add"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(7.5),x2:ctx.M.X(5),y2:ctx.M.Y(7.5),stroke:'#9fb4a3','stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(7.5),x2:ctx.M.X(3),y2:ctx.M.Y(4.8),stroke:CHALKC,'stroke-width':5},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(4.8),x2:ctx.M.X(3),y2:ctx.M.Y(2.1),stroke:'#b8c4d8','stroke-width':5},ctx.svg);
+    boxAt(ctx, 3,0.2, 1.6,1.7, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 3.4,6.0, 'steel', {fs:10, color:CHALKC});
+    label(ctx, 3.4,3.3, 'aluminum', {fs:10, color:'#b8c4d8'});
+  },
+      steps:[
+        { map:0, title:"Series carries one force",
+          think:"The same 10 kN threads both rods. So which quantity is common — stress or strain?",
+          model:"Same F, same A → same stress (5.0×10⁷ Pa); the STRAINS differ by material.",
+          pose:"talk",
+          say:"End to end, the rods form a series chain: the full ten kilonewtons threads through steel AND aluminum alike — one force, and with equal areas, one stress: fifty megapascals in each. What differs is each material's RESPONSE. Same question, two temperaments.",
+          board:[
+            {label:"Series rule", tex:"\\text{same } F, \\text{same } A \\Rightarrow \\sigma = \\frac{10^4}{2.00\\times10^{-4}} = 5.0\\times10^{7}\\ \\mathrm{Pa\\ in\\ both}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Each rod answers",
+          think:"ΔL = σL/Y per rod: steel vs aluminum.",
+          model:"Steel: 0.25 mm. Aluminum: 0.71 mm — nearly 3× more.",
+          pose:"write",
+          say:"Steel, stiff at two hundred gigapascals: a quarter millimetre. Aluminum, at seventy: zero point seven one millimetres — nearly three times the stretch under the identical stress. Young's modulus is precisely this ratio of temperaments, laid bare.",
+          board:[
+            {tex:"\\Delta L_{\\rm steel} = \\frac{\\sigma L}{Y_s} = 0.25\\ \\mathrm{mm}; \\qquad \\Delta L_{\\rm Al} = \\frac{\\sigma L}{Y_{Al}} = 0.71\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Total the chain",
+          think:"Series: elongations add. Total?",
+          model:"ΔL_tot = 0.96 mm; aluminum did ~¾ of it.",
+          pose:"write",
+          say:"In series the stretches simply add: zero point nine six millimetres in all, of which the aluminum — one half the chain by length — contributed three quarters. The soft link does the lion's share of the yielding; chains are as compliant as their most compliant member is willing.",
+          board:[
+            {tex:"\\Delta L_{\\rm tot} = 0.25 + 0.71 = 0.96\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Compliances add like series resistors",
+          think:"Define Y_eff for the 2 m composite. What combination rule appears?",
+          model:"2/Y_eff = 1/Y_s + 1/Y_Al → Y_eff = 1.04×10¹¹ Pa — the harmonic flavor of series.",
+          pose:"excited",
+          say:"Ask what single material would mimic the pair, and a familiar pattern surfaces: two over Y effective equals one over Y steel plus one over Y aluminum — the RECIPROCALS add. Y effective: one hundred four gigapascals. Springs in series, resistors in series, rods in series: nature keeps reusing one law — when elements share the flow and split the displacement, it is the compliances that sum. File the pattern; it will greet you again in circuits.",
+          board:[
+            {tex:"\\frac{2}{Y_{\\rm eff}} = \\frac{1}{Y_s} + \\frac{1}{Y_{Al}} \\;\\Rightarrow\\; Y_{\\rm eff} = 1.04\\times10^{11}\\ \\mathrm{Pa}", kind:"answer"},
+            {label:"Reusable method", text:"series ⇒ common stress → per-rod ΔL = σL/Y → add stretches → reciprocals of Y combine (compliances add)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A cable stretched by its own weight",
+      problem:"A steel cable (ρ = 7800 kg/m³, Y = 2.0×10¹¹ Pa) of length L = 100 m hangs vertically from one end. Find the total elongation due to its own weight, and the maximum stress.",
+      goal:"Goal → ΔL and σ_max",
+      world:{"x0":-3,"x1":9,"y0":-0.5,"y1":8.5},
+      pathway:["T varies","Integrate","The half","Breaking length"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(8),x2:ctx.M.X(5),y2:ctx.M.Y(8),stroke:'#9fb4a3','stroke-width':4},ctx.svg);
+    el('line',{x1:ctx.M.X(3),y1:ctx.M.Y(8),x2:ctx.M.X(3),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':4},ctx.svg);
+    label(ctx, 3.4,7.4, 'top: max tension', {fs:10, color:DIMC});
+    label(ctx, 3.4,1.0, 'bottom: zero', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Tension that varies with height",
+          think:"At height y above the bottom, what weight does the cable cross-section carry?",
+          model:"T(y) = ρgAy: zero at the free bottom, maximum at the top.",
+          pose:"talk",
+          say:"A hanging cable is its own load, and unevenly so: a cross-section at height y carries only the cable BELOW it — tension rho g A y, nothing at the free bottom tip, everything at the top. A single delta L formula cannot serve a tension that will not sit still; we must slice and integrate.",
+          board:[
+            {label:"Varying tension", tex:"T(y) = \\rho gAy \\;\\Rightarrow\\; \\sigma(y) = \\rho gy\\ \\text{(0 at bottom, max at top)}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 1.9,7.2, 1.9,5.6, {color:RED, w:3});
+       arrow(c, 1.9,3.5, 1.9,2.7, {color:RED, w:1.8});
+       label(c, 0.35,6.3, 'T big', {fs:10, color:RED});
+       label(c, 0.35,3.0, 'T small', {fs:10, color:RED});
+     }
+        },
+        { map:1, title:"Integrate the slivers",
+          think:"Each dy stretches by (ρgy/Y)dy. Sum them.",
+          model:"ΔL = ∫₀ᴸ(ρgy/Y)dy = ρgL²/2Y = 1.9 mm.",
+          pose:"write",
+          say:"Each sliver d y, under its local stress, stretches by rho g y over Y, d y. Integrate from bottom to top: rho g L squared over two Y. Numbers: seventy eight hundred times nine point eight times ten thousand, over four times ten to the eleven — one point nine millimetres, for a hundred metres of self-supporting steel.",
+          board:[
+            {tex:"\\Delta L = \\int_0^L\\frac{\\rho gy}{Y}dy = \\frac{\\rho gL^2}{2Y} = \\frac{(7800)(9.80)(100)^2}{2(2.0\\times10^{11})} = 1.9\\ \\mathrm{mm}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Why exactly half",
+          think:"Compare with a cable under uniform tension equal to its full weight. What ratio?",
+          model:"Average tension = half the max → ΔL is half the naive value. The ½ IS the averaging.",
+          pose:"point",
+          say:"Observe the factor of two: a cable pulled by a constant force equal to its whole weight would stretch twice as much. Our integral, in effect, averaged a tension that ramps from nothing to everything — and the average of a ramp is half its peak. Integrals are often just careful averages; this one wears its meaning openly.",
+          board:[
+            {label:"Interpretation", text:"ΔL = half the uniform-tension value: the linear ramp averages to half its maximum.", kind:"key"}
+          ]
+        },
+        { map:3, title:"The breaking length",
+          think:"σ_max = ρgL. Set it to the breaking stress: what L snaps steel by itself?",
+          model:"σ_max = 7.6×10⁶ Pa here; ρgL = σ_break at L ≈ 5 km — why long cables taper.",
+          pose:"excited",
+          say:"The maximum stress, up at the anchorage, is rho g L — seven point six megapascals here, a trifle. But the formula grows with LENGTH alone: set it against steel's breaking stress and a uniform cable snaps under its own weight at roughly five kilometres, regardless of thickness — thicker means heavier in exact proportion. Hence deep-mine hoists and dreamed-of space elevators TAPER, thick where the burden gathers. A hundred-metre integral, and suddenly you are doing aerospace materials science.",
+          board:[
+            {tex:"\\sigma_{\\max} = \\rho gL = 7.6\\times10^{6}\\ \\mathrm{Pa}; \\quad L_{\\rm break} = \\frac{\\sigma_{\\rm break}}{\\rho g}\\approx5\\ \\mathrm{km}", kind:"answer"},
+            {label:"Reusable method", text:"T(y) from the weight below → integrate strain over the length → the ½ from averaging the ramp → ρgL sets the self-breaking scale", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

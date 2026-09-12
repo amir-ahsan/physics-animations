@@ -1371,6 +1371,635 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Choosing the zero of potential energy",
+      problem:"A 3.00 kg book is lifted from a desk 0.800 m above the floor to a shelf 2.80 m above the floor. Find the change in gravitational potential energy taking U = 0 (a) at the floor and (b) at the desk.",
+      goal:"Goal → ΔU both ways",
+      world:{"x0":-2,"x1":12,"y0":-0.5,"y1":3.6},
+      pathway:["Convention","Floor zero","Desk zero","The lesson"],
+      setup(ctx,w){
+    ground(ctx, -1, 11, 0);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(0.8),x2:ctx.M.X(5),y2:ctx.M.Y(0.8),stroke:'#9fb4a3','stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(6.5),y1:ctx.M.Y(2.8),x2:ctx.M.X(10.5),y2:ctx.M.Y(2.8),stroke:'#9fb4a3','stroke-width':3},ctx.svg);
+    label(ctx, 1.1,0.95, 'desk, 0.800 m', {fs:11});
+    label(ctx, 6.6,2.95, 'shelf, 2.80 m', {fs:11});
+    boxAt(ctx, 2.5,0.82, 1.2,0.5, {fill:'#8a4444', stroke:'#5a2424'});
+  },
+      steps:[
+        { map:0, title:"U needs a zero — yours to choose",
+          think:"What part of U = mgy is physics, and what part is convention?",
+          model:"Only ΔU is physical; the reference level is a free choice.",
+          pose:"talk",
+          say:"Gravitational potential energy is m g y — but y measured from WHERE? From wherever you like. The zero of potential energy is a convention, like the zero of longitude; only DIFFERENCES carry physics. We shall lift one book twice, with two different zeros, and let the answers make the point.",
+          board:[
+            {label:"The convention", tex:"U = mgy\\ \\text{with } y \\text{ from a reference of your choosing — only } \\Delta U \\text{ is physical}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Zero at the floor",
+          think:"Both Ui and Uf are nonzero now. Compute each, then the difference.",
+          model:"Ui = 23.5 J, Uf = 82.3 J → ΔU = 58.8 J.",
+          pose:"write",
+          say:"Zero at the floor: initially, three times nine point eight times point eight — twenty three and a half joules. Finally, at two point eight metres — eighty two point three. The difference: fifty eight point eight joules.",
+          board:[
+            {tex:"U_i = (3.00)(9.80)(0.800) = 23.5\\ \\mathrm{J}; \\quad U_f = (3.00)(9.80)(2.80) = 82.3\\ \\mathrm{J}"},
+            {tex:"\\Delta U = 82.3 - 23.5 = 58.8\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Zero at the desk",
+          think:"Now Ui = 0 by choice. What is the lift height in this bookkeeping?",
+          model:"Ui = 0, Uf = mg(2.00) = 58.8 J → ΔU = 58.8 J. Same.",
+          pose:"write",
+          say:"Now put the zero at the desk: the book starts AT zero, and rises two metres to the shelf — fifty eight point eight joules, full stop. Same change, half the arithmetic. A well-chosen zero is the difference between bookkeeping and busywork.",
+          board:[
+            {tex:"U_i = 0; \\quad U_f = (3.00)(9.80)(2.00) = 58.8\\ \\mathrm{J}; \\quad \\Delta U = 58.8\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 2.5,0.82, 1.2,0.5, {fill:'rgba(138,68,68,.6)', stroke:'#5a2424'});
+       tween(u=>{ b.setAttribute('x', c.M.X(2.5+6*u-0.6)); b.setAttribute('y', c.M.Y(0.82+2.0*u+0.5)); }, 1600, c.instant);
+       arrow(c, 5.6,0.9, 5.6,2.75, {color:GREEN, w:2.5, label:'Δy = 2.00 m', fs:11});
+     }
+        },
+        { map:3, title:"The physical content",
+          think:"What operation removed the arbitrary zero from the answer?",
+          model:"Subtraction. ΔU = mgΔy always; 58.8 J is the work done against gravity.",
+          pose:"excited",
+          say:"Both bookkeepers report fifty eight point eight joules, because subtraction annihilates the arbitrary zero — delta U is m g delta y and delta y belongs to the world, not the accountant. Those fifty eight point eight joules are precisely the work your arm performed against gravity, now on deposit and refundable the moment the book slips off the shelf.",
+          board:[
+            {label:"The invariant", tex:"\\Delta U = mg\\,\\Delta y\\ \\text{— independent of the zero; equal to the work done against gravity}", kind:"key"},
+            {label:"Reusable method", text:"choose the zero for convenience → compute U at each state → only the difference is reported, and it never depends on the choice", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Speed of a pendulum at its lowest point",
+      problem:"A pendulum bob on a 1.50 m string is released from rest with the string at 40.0° from the vertical. How fast is it moving at the bottom of the swing?",
+      goal:"Goal → v at the bottom",
+      world:{"x0":-3,"x1":7,"y0":-0.6,"y1":6},
+      pathway:["Why energy","Geometry","Conserve","Why not Newton"],
+      setup(ctx,w){
+    circleAt(ctx, 2,5.4, 0.12, {stroke:DIMC, w:2.5});
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(5.4),x2:ctx.M.X(2+1.5*2*0.643),y2:ctx.M.Y(5.4-1.5*2*0.766),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    dashLine(ctx, 2,5.4, 2,2.4, {});
+    circleAt(ctx, 3.93,3.1, 0.3, {stroke:GOLD, w:3});
+    label(ctx, 2.25,4.4, '40°', {fs:12, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Why energy wins here",
+          think:"The tension changes direction constantly. What is its work over the swing?",
+          model:"T ⊥ motion always → zero work → mechanical energy conserved.",
+          pose:"talk",
+          say:"A pendulum swings on a curved path under a tension that changes direction every instant — a nightmare for Newton, a holiday for energy. The tension is always perpendicular to the motion, so it does NO work; gravity alone keeps the books, and mechanical energy is conserved from release to bottom.",
+          board:[
+            {label:"The license", text:"String tension ⊥ velocity at every instant ⇒ W_T = 0 ⇒ E conserved.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The drop is the whole problem",
+          think:"Express the vertical drop from 40° purely in terms of L and cos θ.",
+          model:"h = L(1 − cos40°) = 1.50(0.234) = 0.351 m.",
+          pose:"write",
+          say:"All energy needs is the vertical drop. The bob hangs L cosine forty below the pivot at release, and a full L below at the bottom: h equals L times one minus cosine forty — thirty five point one centimetres. That little geometric phrase, L one minus cosine theta, is worth memorising; every pendulum problem begins with it.",
+          board:[
+            {tex:"h = L(1 - \\cos40.0^{\\circ}) = 1.50(1 - 0.766) = 0.351\\ \\mathrm{m}", kind:"key"}
+          ],
+          action(c){
+       dashLine(c, 3.93,3.1, 3.93,2.4, {});
+       dashLine(c, 1.6,2.4, 4.3,2.4, {});
+       arrow(c, 4.6,3.1, 4.6,2.4, {color:GREEN, w:2.5, label:'h = 0.351 m', fs:11});
+       circleAt(c, 2,2.7, 0.3, {stroke:DIMC, w:2, dash:'4,3'});
+     }
+        },
+        { map:2, title:"Trade height for speed",
+          think:"mgh = ½mv²: what cancels, and what does the path shape contribute?",
+          model:"v = √(2gh) = √(2·9.80·0.351) = 2.62 m/s.",
+          pose:"write",
+          say:"Conservation: m g h becomes one half m v squared. The mass cancels — pendulums are egalitarian — and the CURVE of the path never appears: v equals root two g h, two point six two metres per second. The bob might as well have fallen straight down thirty five centimetres, so far as its speed is concerned.",
+          board:[
+            {tex:"mgh = \\tfrac12mv^2 \\;\\Rightarrow\\; v = \\sqrt{2(9.80)(0.351)} = 2.62\\ \\mathrm{m/s}", kind:"answer", move:"cancel m"}
+          ]
+        },
+        { map:3, title:"What Newton would have charged",
+          think:"Why would F = ma struggle with this trajectory?",
+          model:"Newton needs the full differential equation of the arc; energy needed one subtraction.",
+          pose:"excited",
+          say:"Appreciate the bargain: by Newton's route, this problem is a differential equation — tension varying, direction wheeling, sines of theta everywhere. Energy reduced it to one subtraction and one square root. When a question asks only how FAST at a given PLACE — not when, not along what curve — energy is not just easier; it is the professionally correct tool.",
+          board:[
+            {label:"The comparison", text:"Newton: a differential equation along the arc. Energy: one line. Ask 'how fast at this height?' → energy.", kind:"key"},
+            {label:"Reusable method", text:"workless constraint forces → conserve E → h from geometry (L(1−cosθ)) → v = √(2gh)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Spring launcher on a frictionless surface",
+      problem:"A spring with k = 500 N/m is compressed 0.200 m against a 0.500 kg block on a frictionless horizontal surface and released. Find the block's speed when it leaves the spring.",
+      goal:"Goal → launch speed",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":8},
+      pathway:["Stored","Convert","Launch","Scaling"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    el('path',{d:`M ${ctx.M.X(0)} ${ctx.M.Y(1.1)} q 8 -14 16 0 q 8 -14 16 0 q 8 -14 16 0`,fill:'none',stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    boxAt(ctx, 4.4,0.05, 2.2,1.9, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"Energy in the coils",
+          think:"How much energy does ½kx² put in storage here?",
+          model:"U_s = ½(500)(0.200)² = 10.0 J.",
+          pose:"talk",
+          say:"Half k x squared: half of five hundred times four hundredths — ten joules, wound into the coils and held there by your hand. The spring is a loaded bank account with a hair trigger.",
+          board:[
+            {label:"Stored", tex:"U_s = \\tfrac12kx^2 = \\tfrac12(500)(0.200)^2 = 10.0\\ \\mathrm{J}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Release: a clean conversion",
+          think:"Frictionless, horizontal: where can the 10 J possibly go?",
+          model:"All of U_s → K: ½kx² = ½mv².",
+          pose:"write",
+          say:"Release. No friction to skim, no height to bank — every joule of spring energy has exactly one destination: kinetic. Half k x squared equals half m v squared, a complete and unembezzled transfer.",
+          board:[
+            {tex:"\\tfrac12kx^2 = \\tfrac12mv^2", kind:"key"}
+          ],
+          action(c){
+       const b=boxAt(c, 4.4,0.05, 2.2,1.9, {fill:'rgba(46,109,164,.55)', stroke:'#1D4568'});
+       tween(u=>{ b.setAttribute('x', c.M.X(4.4+7*u-1.1)); }, 1400, c.instant);
+       arrow(c, 7,3.2, 10.5,3.2, {color:GREEN, w:3, label:'v', fs:13});
+     }
+        },
+        { map:2, title:"Solve for the launch speed",
+          think:"v = x√(k/m): check the units of √(k/m) make this work.",
+          model:"v = 0.200√(500/0.500) = 6.32 m/s.",
+          pose:"write",
+          say:"Solve: v equals x root k over m — point two times the root of a thousand — six point three two metres per second. Note the tidy structure: the compression sets the scale, and root k over m converts metres of squeeze into metres per second of launch.",
+          board:[
+            {tex:"v = x\\sqrt{\\frac{k}{m}} = 0.200\\sqrt{\\frac{500}{0.500}} = 6.32\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Double the squeeze",
+          think:"x → 2x: factor on the energy? On the speed?",
+          model:"Energy ×4 (to 40 J); speed ×2 (to 12.6 m/s). The square and its root.",
+          pose:"excited",
+          say:"Double the compression: the ENERGY quadruples — the x squared again — but the SPEED merely doubles, since speed carries a square root. Pinball machines, crossbows, and pole vaults all run on this arithmetic: quadratic effort in, linear velocity out. Nature grants speed at diminishing returns.",
+          board:[
+            {label:"Scaling", tex:"x\\to2x: \\ U_s\\to4U_s = 40\\ \\mathrm{J}, \\quad v\\to2v = 12.6\\ \\mathrm{m/s}", kind:"key"},
+            {label:"Reusable method", text:"bank ½kx² → frictionless: full conversion to ½mv² → v = x√(k/m) → scale with the square/root pair", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Roller coaster without friction",
+      problem:"A roller-coaster car starts from rest at the top of a 30.0 m hill. Neglecting friction, find its speed (a) at the bottom and (b) at the top of a second hill 20.0 m high. (c) What is the highest hill it could just barely climb?",
+      goal:"Goal → v at 0 m, v at 20 m, h_max",
+      world:{"x0":-2,"x1":32,"y0":-3,"y1":34},
+      pathway:["One number","Bottom","Second hill","The ceiling"],
+      setup(ctx,w){
+    plotCurve(ctx, x=>x<8? 30-30*Math.pow(Math.sin(x/8*Math.PI/2),2) : (x<14? 0.2 : (x<22? 20*Math.pow(Math.sin((x-14)/8*Math.PI),2)*0+20*Math.pow(Math.sin((x-14)/8*Math.PI/1.0),0)*Math.pow(Math.sin((x-14)/8*Math.PI),2) : 0.2)), 0, 30, {color:CHALKC, w:2.5, N:120});
+    label(ctx, -1.6,31.5, '30 m', {fs:11, color:DIMC});
+    label(ctx, 16.6,22.3, '20 m', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The whole ride is one number",
+          think:"With no friction, what single quantity is the same at every point of the track?",
+          model:"E = mg(30.0) + 0, fixed for the entire ride. Track shape irrelevant.",
+          pose:"talk",
+          say:"From rest at thirty metres, the car's total mechanical energy is m g times thirty — and with friction dismissed, that number is the ride's entire biography. Every dip, loop, and rise merely shuffles it between height and speed. The SHAPE of the track — the very thing the engineers agonise over — never enters the energy books.",
+          board:[
+            {label:"The invariant", tex:"E = mg(30.0)\\ \\text{everywhere on the track}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the bottom",
+          think:"All potential at the top → all kinetic at the bottom. Solve.",
+          model:"v = √(2g·30.0) = 24.2 m/s.",
+          pose:"write",
+          say:"At the bottom the entire account is kinetic: v equals root two g h — root of two times nine point eight times thirty — twenty four point two metres per second. Eighty seven kilometres per hour, and again the mass cancelled: loaded or empty, the car arrives at the same speed.",
+          board:[
+            {tex:"v = \\sqrt{2(9.80)(30.0)} = 24.2\\ \\mathrm{m/s}", kind:"answer", move:"cancel m"}
+          ],
+          action(c){
+       circleAt(c, 11,1.6, 1.1, {stroke:GOLD, w:3});
+       arrow(c, 12.5,1.6, 16,1.6, {color:GREEN, w:3, label:'24.2 m/s', fs:12});
+     }
+        },
+        { map:2, title:"Part (b): the second hill",
+          think:"Only the height DIFFERENCE matters. What drop funds the speed at 20 m?",
+          model:"½mv² = mg(30 − 20) → v = 14.0 m/s.",
+          pose:"write",
+          say:"Atop the twenty metre hill, ten metres of the original altitude remain converted: v equals root two g times ten — fourteen metres per second. The car did not care that it went DOWN thirty and UP twenty; energy reads only the net ten.",
+          board:[
+            {tex:"\\tfrac12mv^2 = mg(30.0-20.0) \\;\\Rightarrow\\; v = \\sqrt{2(9.80)(10.0)} = 14.0\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 18,21.5, 1.1, {stroke:GOLD, w:3});
+       arrow(c, 19.5,21.5, 22.5,21.5, {color:GREEN, w:2.5, label:'14.0 m/s', fs:11});
+     }
+        },
+        { map:3, title:"Part (c): the energy ceiling",
+          think:"Where does v = 0 put the car? Could clever track design beat it?",
+          model:"h_max = 30.0 m — the starting height is an inviolable ceiling (friction only lowers it).",
+          pose:"excited",
+          say:"And the highest conquerable hill? Where the speed runs dry: exactly thirty metres — the starting height, to the centimetre. No cunning of track design can lift a coaster above its release point; that would require creating energy from goodwill. Real coasters, taxed by friction, fall ever further below the ceiling with each hill — which is why the first drop is always the biggest.",
+          board:[
+            {label:"The ceiling", tex:"h_{\\max} = 30.0\\ \\mathrm{m}\\ \\text{— the release height; friction only lowers it}", kind:"key"},
+            {label:"Reusable method", text:"fix E at the start → at any point ½mv² = g × (height drop) → v = 0 defines the reachable ceiling", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"How much energy did friction take?",
+      problem:"A 60.0 kg skier starts from rest at the top of a 25.0 m high slope and reaches the bottom at 18.0 m/s. How much mechanical energy was dissipated, and what fraction of the initial energy is that?",
+      goal:"Goal → W_diss and fraction",
+      world:{"x0":-2,"x1":30,"y0":-3,"y1":29},
+      pathway:["Ledger","Expected","Actual","The gap","No details"],
+      setup(ctx,w){
+    plotCurve(ctx, x=>25*Math.exp(-x/9), 0, 28, {color:CHALKC, w:2.5, N:60});
+    label(ctx, -1.6,26.3, '25 m', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Bookkeeping with a leak",
+          think:"Write the energy equation WITH the nonconservative term in it.",
+          model:"K₁ + U₁ + W_other = K₂ + U₂: W_other is the leak we seek.",
+          pose:"talk",
+          say:"A skier starts with a known account and arrives with a suspicious shortfall — our task is forensic accounting. The statement: initial kinetic plus potential, PLUS the work of the nonconservative forces, equals the final books. That W other — friction and air — is the leak, and the equation will read it off directly.",
+          board:[
+            {label:"The ledger", tex:"K_1 + U_1 + W_{\\rm other} = K_2 + U_2", kind:"key"}
+          ]
+        },
+        { map:1, title:"The gravity deposit",
+          think:"mgh with h = 25 m: the opening balance is?",
+          model:"U₁ = (60.0)(9.80)(25.0) = 14,700 J.",
+          pose:"write",
+          say:"The deposit: sixty kilograms lowered twenty five metres — fourteen thousand seven hundred joules released by gravity. That is what the skier's speed SHOULD be built from.",
+          board:[
+            {tex:"mgh = (60.0)(9.80)(25.0) = 1.47\\times10^{4}\\ \\mathrm{J}", kind:"key"}
+          ]
+        },
+        { map:2, title:"The actual arrival",
+          think:"½mv² at 18.0 m/s: how much actually arrived as speed?",
+          model:"K₂ = ½(60.0)(324) = 9720 J.",
+          pose:"write",
+          say:"The arrival: half of sixty times eighteen squared — nine thousand seven hundred twenty joules of actual kinetic energy at the bottom. The books do not balance, and the difference has a culprit.",
+          board:[
+            {tex:"K_2 = \\tfrac12(60.0)(18.0)^2 = 9720\\ \\mathrm{J}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Read off the loss",
+          think:"W_other = K₂ − mgh: sign and size?",
+          model:"W_other = 9720 − 14,700 = −4980 J: 4.98 kJ became heat — 34%.",
+          pose:"write",
+          say:"Subtract: nine seven two zero minus fourteen seven hundred — minus four thousand nine hundred eighty joules. Friction and the wind pocketed four point nine eight kilojoules — a full third of the estate — now dispersed as slightly warmer snow and stirred air, unrecoverable by any legal process.",
+          board:[
+            {tex:"W_{\\rm other} = 9720 - 14700 = -4980\\ \\mathrm{J} \\quad (34\\%\\ \\text{of the initial energy})", kind:"answer"}
+          ]
+        },
+        { map:4, title:"What we never needed",
+          think:"Slope length? Angle? μ? Why did none of them appear?",
+          model:"Energy audits read endpoints only. Without losses: v = √(2gh) = 22.1 m/s.",
+          pose:"excited",
+          say:"And mark what this audit never requested: the slope's length, its angle, the coefficient of friction, the skier's line down the mountain. Energy accounting reads endpoint states and bills the difference to whatever forces are not conservative. Had the run been clean, the arrival speed would have read twenty two point one. The gap between the ideal and the actual is always, precisely, the dissipation.",
+          board:[
+            {label:"The power of endpoints", text:"No slope details needed. Lossless speed would be √(2gh) = 22.1 m/s; the shortfall IS the dissipation.", kind:"key"},
+            {label:"Reusable method", text:"write the ledger with W_other → fill in endpoint energies → the imbalance is the dissipated energy", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Dropped onto a spring",
+      problem:"A 2.00 kg block is dropped from rest 0.500 m above the top of a vertical spring with k = 1960 N/m. Find the maximum compression of the spring.",
+      goal:"Goal → x_max",
+      world:{"x0":-3,"x1":9,"y0":-1.5,"y1":8},
+      pathway:["States","The subtlety","Quadratic","Root","Two traps"],
+      setup(ctx,w){
+    ground(ctx, -2, 8, 0);
+    el('path',{d:`M ${ctx.M.X(3)} ${ctx.M.Y(0)} q 5 -3 0 -6 q -5 -3 0 -6 q 5 -3 0 -6 q -5 -3 0 -6`,fill:'none',stroke:CHALKC,'stroke-width':2.5,transform:''},ctx.svg);
+    boxAt(ctx, 3,6.0, 2.0,1.4, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 4.3,6.6, '2.00 kg', {fs:11, color:RED});
+    label(ctx, 4.0,1.8, 'k = 1960 N/m', {fs:10, color:DIMC});
+    dashLine(ctx, 1.5,5.5, 1.5,3.4, {});
+    label(ctx, 0.0,4.6, '0.5 m', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Choose the two states wisely",
+          think:"Both chosen states have K = 0. Why is that the smart choice?",
+          model:"State 1: at rest, 0.5 m above the spring. State 2: max compression, momentarily at rest.",
+          pose:"talk",
+          say:"Compare two photographs: the block at rest half a metre above the spring, and the block at rest again at MAXIMUM compression — for maximum compression is precisely the instant motion pauses. Both kinetic energies vanish, and the entire problem becomes potential energy trading places with potential energy.",
+          board:[
+            {label:"The two states", text:"1: at rest, h above the spring. 2: v = 0 at maximum compression x. K = 0 in both.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The subtlety: it falls h AND x",
+          think:"While compressing the spring, does the block continue to lose gravitational PE?",
+          model:"Total drop = h + x, not h. Gravity works during the compression too.",
+          pose:"point",
+          say:"Now the point that separates the careful from the quick: by the lowest moment, the block has fallen not half a metre but half a metre PLUS the compression x — gravity keeps collecting while the spring is being crushed. Omit that x and the equation is quietly, confidently wrong.",
+          board:[
+            {label:"The drop", tex:"\\text{descent} = h + x\\ \\text{— gravity works during compression as well}", kind:"warn"}
+          ]
+        },
+        { map:2, title:"Set up the energy equation",
+          think:"mg(h+x) = ½kx²: recognise the equation type before solving.",
+          model:"980x² − 19.6x − 9.80 = 0 — a quadratic in x.",
+          pose:"write",
+          say:"Energy: m g times h plus x, all captured by the spring as one half k x squared. Insert numbers and tidy: nine hundred eighty x squared minus nineteen point six x minus nine point eight equals zero. A quadratic — because the spring's storage is quadratic while gravity's spending is linear.",
+          board:[
+            {tex:"mg(h+x) = \\tfrac12kx^2 \\;\\Rightarrow\\; 980x^2 - 19.6x - 9.80 = 0", kind:"key"}
+          ]
+        },
+        { map:3, title:"Take the physical root",
+          think:"The quadratic offers two roots. Which one is compression?",
+          model:"x = [19.6 + √(19.6² + 4·980·9.80)]/1960 = 0.110 m.",
+          pose:"write",
+          say:"The quadratic formula yields two candidates; compression must be positive, so we take the plus branch: eleven point zero centimetres. The negative root describes a mathematical spring that pulls — interesting to algebra, unemployed by this problem.",
+          board:[
+            {tex:"x = \\frac{19.6 + \\sqrt{19.6^2 + 4(980)(9.80)}}{2(980)} = 0.110\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 3,6.0, 2.0,1.4, {fill:'rgba(138,68,68,.6)', stroke:'#5a2424'});
+       tween(u=>{ b.setAttribute('y', c.M.Y(6.0-5.61*u+1.4)); }, 1500, c.instant);
+     }
+        },
+        { map:4, title:"Two named traps",
+          think:"Why is the answer NOT x = mg/k = 1.00 cm? What would that x describe?",
+          model:"mg/k is the EQUILIBRIUM sag; the block overshoots it with plenty of K. And never forget the +x in the drop.",
+          pose:"excited",
+          say:"Two traps, both with victims. First: forgetting the extra x in gravity's drop — already discussed. Second, subtler: computing m g over k — one centimetre — and calling it the answer. That is the EQUILIBRIUM sag, where forces balance; but the block arrives there carrying kinetic energy and sails straight through, compressing eleven times further before the spring finally wins. Equilibrium is where a is zero, not where v is zero — the whole drama of oscillation lives in that distinction.",
+          board:[
+            {label:"Trap check", tex:"x_{\\rm eq} = \\frac{mg}{k} = 0.0100\\ \\mathrm{m} \\ne x_{\\max} = 0.110\\ \\mathrm{m}", kind:"warn"},
+            {label:"Reusable method", text:"two v = 0 states → drop = h + x → quadratic in x → positive root; never confuse equilibrium sag with max compression", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Reading a potential-energy curve",
+      problem:"A particle moves along x with potential energy U(x) = 3x² − 2x³ (J, x in m). Find the force, locate the equilibrium points, and classify each as stable or unstable.",
+      goal:"Goal → F(x), equilibria, stability",
+      world:{"x0":-0.8,"x1":2.1,"y0":-1.3,"y1":2.2},
+      pathway:["F = −dU/dx","Equilibria","Stability","The well"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'U (J)'});
+    plotCurve(ctx, x=>3*x*x-2*x*x*x, -0.55, 1.85, {color:CHALKC, w:2.5, N:70});
+  },
+      steps:[
+        { map:0, title:"Force is downhill on the U curve",
+          think:"F = −dU/dx: which way does force point where U slopes upward?",
+          model:"F = −6x + 6x² = 6x(x−1). Force always points downhill in U.",
+          pose:"talk",
+          say:"A potential energy curve is a landscape, and force is the urge to roll downhill: F equals MINUS the slope of U. Differentiate: minus six x plus six x squared — six x times x minus one. Wherever the landscape climbs, the force points back down; the minus sign is gravity's metaphor made algebra.",
+          board:[
+            {label:"The rule", tex:"F_x = -\\frac{dU}{dx} = -6x + 6x^2 = 6x(x-1)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Find the flat spots",
+          think:"Equilibrium = zero force = zero slope. Read the roots.",
+          model:"F = 0 at x = 0 and x = 1 m.",
+          pose:"write",
+          say:"Equilibrium is where the force vanishes — the flat spots of the landscape: x equals zero and x equals one. The curve shows them plainly: a valley floor at the origin, a hilltop at one.",
+          board:[
+            {tex:"F = 0: \\quad x = 0\\ \\text{and}\\ x = 1\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0,0, 0.05, {stroke:GREEN, w:3});
+       circleAt(c, 1,1, 0.05, {stroke:RED, w:3});
+     }
+        },
+        { map:2, title:"Classify by curvature",
+          think:"U'' = 6 − 12x: sign at each equilibrium, and what does the sign say?",
+          model:"x = 0: U'' = +6 (minimum, stable). x = 1: U'' = −6 (maximum, unstable).",
+          pose:"write",
+          say:"Stability is curvature. The second derivative, six minus twelve x: positive six at the origin — a true valley; displace the particle and the force ushers it home. Minus six at x equals one — a summit; the slightest tremor and the force ESCORTS it away. Valleys forgive; summits hold grudges.",
+          board:[
+            {tex:"U'' = 6 - 12x: \\quad U''(0) = +6\\ \\text{(stable)}, \\quad U''(1) = -6\\ \\text{(unstable)}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, -0.35,0.5, -0.12,0.12, {color:GREEN, w:2.5});
+       arrow(c, 0.35,0.5, 0.12,0.12, {color:GREEN, w:2.5});
+       arrow(c, 1.12,1.05, 1.4,0.75, {color:RED, w:2.5});
+       arrow(c, 0.88,1.05, 0.62,0.8, {color:RED, w:2.5});
+     }
+        },
+        { map:3, title:"The well and its prisoners",
+          think:"The well is 1.00 J deep. What K at the origin means trapped? What means escape?",
+          model:"K < 1.00 J: oscillates between turning points (U = E). K ≥ 1.00 J: over the barrier, gone.",
+          pose:"excited",
+          say:"The valley's depth: U at the summit minus U at the floor — one joule exactly. A particle at the origin with LESS than a joule of kinetic energy is a prisoner, shuttling between the two turning points where U meets its energy line. Grant it a full joule and it crests the barrier at x equals one, beyond which the landscape plunges forever. Every barrier in chemistry, every escape velocity, every trapped electron — this picture, with different labels.",
+          board:[
+            {label:"The well", tex:"\\text{depth} = U(1) - U(0) = 1.00\\ \\mathrm{J}: \\ K<1\\ \\text{trapped}, \\ K\\ge1\\ \\text{escapes}", kind:"key"},
+            {label:"Reusable method", text:"F = −U′ → roots of F are equilibria → U″ sign classifies → energy line vs barrier heights reads the fate", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Sliding off a frictionless dome",
+      problem:"A small block starts from rest at the top of a frictionless hemisphere of radius R = 2.00 m and is given a negligible nudge. At what angle from the vertical does it leave the surface, and how fast is it moving then?",
+      goal:"Goal → θ_leave and v",
+      world:{"x0":-3.4,"x1":3.4,"y0":-0.4,"y1":3.4},
+      pathway:["Two ideas","Energy","Newton radial","Combine","Wonder"],
+      setup(ctx,w){
+    arc(ctx, 0,0, 2.4, 0, 180, {color:CHALKC, w:2.5});
+    ground(ctx, -3.2, 3.2, 0);
+  },
+      steps:[
+        { map:0, title:"Two ideas must shake hands",
+          think:"What does energy give you as a function of θ? What does Newton demand radially?",
+          model:"Energy: v²(θ). Newton: the radial equation with n. Leaving = n → 0.",
+          pose:"talk",
+          say:"The block slips from the crown of a dome and, somewhere on the way down, abandons the surface entirely. One idea cannot solve this; two can. ENERGY tells us how fast it moves at each angle; NEWTON, applied along the radius, tells us how much normal force the geometry requires. The block leaves where the requirement hits zero.",
+          board:[
+            {label:"The strategy", text:"Energy gives v²(θ); radial Newton gives n(θ); departure is n = 0.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Energy: speed from the drop",
+          think:"At angle θ from vertical, the drop below the crown is what expression?",
+          model:"drop = R(1 − cosθ) → v² = 2gR(1 − cosθ).",
+          pose:"write",
+          say:"At angle theta from the vertical, the block sits R cosine theta above the centre — it has descended R times one minus cosine theta. Energy converts that directly: v squared equals two g R one minus cosine theta. Faster and faster, as the fall deepens.",
+          board:[
+            {tex:"v^2 = 2gR(1 - \\cos\\theta)", kind:"key"}
+          ],
+          action(c){
+       circleAt(c, 1.2,2.078, 0.16, {stroke:GOLD, w:3});
+       dashLine(c, 0,0, 1.2,2.078, {});
+       dashLine(c, 0,0, 0,2.4, {});
+       label(c, 0.15,1.5, 'θ', {fs:12, color:GOLD});
+     }
+        },
+        { map:2, title:"Newton along the radius",
+          think:"Which forces have radial components, and who funds mv²/R?",
+          model:"mg cosθ − n = mv²/R.",
+          pose:"write",
+          say:"Along the radius, pointing inward: gravity's share m g cosine theta, minus the surface's outward push n, must equal the centripetal demand m v squared over R. As v grows and cosine theta shrinks, poor n is squeezed from both sides.",
+          board:[
+            {tex:"mg\\cos\\theta - n = \\frac{mv^2}{R}", kind:"key"}
+          ]
+        },
+        { map:3, title:"n = 0: the departure",
+          think:"Substitute v² into the radial equation with n = 0. Solve for cosθ.",
+          model:"g cosθ = 2g(1−cosθ) → cosθ = 2/3 → θ = 48.2°; v = √(gR·2/3) = 3.61 m/s.",
+          pose:"write",
+          say:"Set n to zero and marry the two ideas: g cosine theta equals two g one minus cosine theta. Three cosine theta equals two: cosine theta is two thirds, theta is forty eight point two degrees. The speed there: root of g R times two thirds — three point six one metres per second. From that instant the dome is scenery and the block is a projectile.",
+          board:[
+            {tex:"g\\cos\\theta = 2g(1-\\cos\\theta) \\;\\Rightarrow\\; \\cos\\theta = \\tfrac23, \\ \\theta = 48.2^{\\circ}", kind:"answer"},
+            {tex:"v = \\sqrt{gR\\cos\\theta} = \\sqrt{(9.80)(2.00)(2/3)} = 3.61\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 1.79,1.6, 0.16, {stroke:RED, w:3});
+       arrow(c, 1.95,1.75, 2.9,2.05, {color:RED, w:2.5, dash:'5,4', label:'departs', fs:11, side:-1});
+     }
+        },
+        { map:4, title:"The two-thirds theorem",
+          think:"Neither R nor m appears in cosθ = 2/3. What does that universality mean?",
+          model:"Every frictionless dome, any size, any block: departure at cosθ = 2/3.",
+          pose:"excited",
+          say:"Savour the result: cosine theta equals two thirds — no mass, no radius, no g even. A marble on a teacup and an avalanche on a mountain dome part company at the same forty eight degrees. When a problem's answer sheds every particular of its setup, you have not solved an exercise; you have discovered a small theorem. This one is yours to keep.",
+          board:[
+            {label:"Universality", text:"cosθ = 2/3 for EVERY frictionless dome — independent of m, R, and even g.", kind:"key"},
+            {label:"Reusable method", text:"energy for v²(θ) → radial Newton for n(θ) → the constraint's failure (n = 0) locates the event", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Bungee jump: lowest point and fastest point",
+      problem:"A 70.0 kg jumper steps off a bridge attached to a bungee cord of unstretched length 20.0 m with k = 100 N/m. Find (a) the maximum distance fallen and (b) the maximum speed.",
+      goal:"Goal → total fall, v_max",
+      world:{"x0":-3,"x1":9,"y0":-48,"y1":4},
+      pathway:["Phases","Lowest point","Fastest point","v_max","Distinguish"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(-2.5),y:ctx.M.Y(2.5),width:ctx.M.X(8)-ctx.M.X(-2.5),height:ctx.M.Y(0)-ctx.M.Y(2.5),fill:'#5a6b5e',opacity:.5},ctx.svg);
+    label(ctx, -2.2,-2.5, 'bridge', {fs:11});
+    dashLine(ctx, 2,0, 2,-20, {});
+    label(ctx, 2.5,-19, 'cord goes taut: 20 m', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Two phases, one energy story",
+          think:"Phase 1: free fall 20 m. Phase 2: falling + stretching. Where is v max likely to live?",
+          model:"Free fall until the cord tautens; then gravity vs spring. Max speed somewhere in phase 2.",
+          pose:"talk",
+          say:"A bungee jump is two movies: twenty metres of pure free fall, then a tug of war between gravity and an ever-angrier cord. Two questions — the LOWEST point and the FASTEST point — and the trap of the day is assuming they coincide. They do not, and the physics of why is the whole lesson.",
+          board:[
+            {label:"Phases", text:"Phase 1: free fall, L = 20 m. Phase 2: cord stretches x, force kx grows. Lowest ≠ fastest.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the lowest point",
+          think:"From bridge to bottom: v = 0 at both ends. Balance mg(L+x) against ½kx².",
+          model:"50x² − 686x − 13720 = 0 → x = 24.8 m; total fall 44.8 m.",
+          pose:"write",
+          say:"Bridge to bottom, rest to rest: gravity's full donation m g times L plus x is banked entirely in the cord, one half k x squared. The quadratic: fifty x squared minus six eighty six x minus thirteen thousand seven twenty. Positive root: twenty four point eight metres of stretch — a total plunge of forty four point eight metres.",
+          board:[
+            {tex:"mg(L+x) = \\tfrac12kx^2 \\;\\Rightarrow\\; x = 24.8\\ \\mathrm{m}; \\quad \\text{fall} = 44.8\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 2,-44.8, 1.2, {stroke:GOLD, w:3});
+       dashLine(c, -1,-44.8, 7,-44.8, {});
+       label(c, 4.2,-43.4, 'lowest: 44.8 m', {fs:11, color:GOLD});
+     }
+        },
+        { map:2, title:"Part (b): where is the speed greatest?",
+          think:"Speed grows while net force is downward. When does the net force flip?",
+          model:"At kx₁ = mg: x₁ = 6.86 m below the taut point — the equilibrium crossing.",
+          pose:"point",
+          say:"The jumper accelerates as long as gravity outpulls the cord — so the speed peaks where the two forces momentarily balance: k x equals m g, at six point eight six metres of stretch. Beyond that the cord wins and every metre costs speed. Maximum speed lives at the equilibrium point; maximum stretch, much further down, where all that speed has been spent.",
+          board:[
+            {tex:"kx_1 = mg \\;\\Rightarrow\\; x_1 = \\frac{686}{100} = 6.86\\ \\mathrm{m}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Evaluate v_max",
+          think:"Energy from the bridge to L + x₁, minus the cord's ½kx₁².",
+          model:"½mv² = mg(26.86) − ½k(6.86)² = 16,080 J → v_max = 21.4 m/s.",
+          pose:"write",
+          say:"Energy to that point: gravity has released m g times twenty six point eight six metres; the cord has impounded half k x one squared. Balance: sixteen thousand eighty joules of kinetic energy — twenty one point four metres per second. Note free fall alone through that height would have given twenty three: the cord had already begun its rescue before the fastest moment.",
+          board:[
+            {tex:"\\tfrac12mv^2 = mg(L+x_1) - \\tfrac12kx_1^2 = 18430 - 2353 = 16080\\ \\mathrm{J}", kind:"key"},
+            {tex:"v_{\\max} = \\sqrt{\\frac{2(16080)}{70.0}} = 21.4\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"v = 0 versus a = 0",
+          think:"Name the two special points in the language of v and a.",
+          model:"Fastest: a = 0 (force balance). Lowest: v = 0 (energy exhausted). Never the same place.",
+          pose:"excited",
+          say:"The moral, engraved: the FASTEST point is where acceleration is zero — forces balanced, energy still flowing in. The LOWEST point is where velocity is zero — energy spent, force wildly unbalanced and about to hurl the jumper skyward. Two different zeros, two different places, twenty metres apart. Physics examinations have harvested this confusion for a century; you are now beyond its reach.",
+          board:[
+            {label:"The distinction", text:"v_max where a = 0 (kx = mg); lowest point where v = 0 (energy exhausted). Different places, always.", kind:"warn"},
+            {label:"Reusable method", text:"phase the motion → rest-to-rest energy for the extremes → force balance locates v_max → evaluate energy there", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Turning points in a molecular-style potential",
+      problem:"A particle moves in one dimension (x > 0) with U(x) = a/x² − b/x, where a = 1.00 J·m² and b = 4.00 J·m. (a) Find the equilibrium position and well depth. (b) With E = −1.00 J, find the turning points. (c) What minimum energy lets it escape?",
+      goal:"Goal → x₀, depth, turning points, E_escape",
+      world:{"x0":-0.2,"x1":4.4,"y0":-5,"y1":3.5},
+      pathway:["The landscape","Equilibrium","Turning points","Escape"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'U (J)'});
+    plotCurve(ctx, x=>1/(x*x)-4/x, 0.21, 4.3, {color:CHALKC, w:2.5, N:90});
+  },
+      steps:[
+        { map:0, title:"A repulsive wall, an attractive tail",
+          think:"Which term dominates at small x? At large x? Sketch the sum mentally.",
+          model:"a/x² repels (steep wall); −b/x attracts (gentle tail). Their truce is a well.",
+          pose:"talk",
+          say:"This potential is a molecule in miniature: a over x squared — a furious repulsion at close quarters — and minus b over x, a patient attraction at distance. Near the origin the wall is vertical; far away the curve sidles up to zero from below. Between the two moods lies a well, and in wells, things live.",
+          board:[
+            {label:"The anatomy", tex:"U(x) = \\frac{a}{x^2} - \\frac{b}{x}: \\ \\text{repulsive wall} + \\text{attractive tail} = \\text{a well}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the resting place",
+          think:"Set F = −dU/dx = 0. Where is the floor, and how deep?",
+          model:"x₀ = 2a/b = 0.500 m; U_min = 4 − 8 = −4.00 J: a 4 J deep well.",
+          pose:"write",
+          say:"Equilibrium: differentiate and demand zero. Two a over x cubed equals b over x squared — x nought equals two a over b: half a metre. The floor's depth: four minus eight — minus four joules, and since the far countryside sits at zero, the well is four joules deep. The curvature there is positive: a stable home.",
+          board:[
+            {tex:"F = \\frac{2a}{x^3} - \\frac{b}{x^2} = 0 \\;\\Rightarrow\\; x_0 = \\frac{2a}{b} = 0.500\\ \\mathrm{m}", kind:"answer"},
+            {tex:"U_{\\min} = 4.00 - 8.00 = -4.00\\ \\mathrm{J}\\ \\text{(well depth 4.00 J)}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0.5,-4, 0.07, {stroke:GOLD, w:3});
+     }
+        },
+        { map:2, title:"Part (b): where E meets U",
+          think:"Set U = −1 and clear denominators. What equation appears?",
+          model:"x² − 4x + 1 = 0 → x = 2 ± √3: 0.268 m and 3.73 m.",
+          pose:"write",
+          say:"With total energy minus one joule, the particle turns wherever U climbs to meet that line: one over x squared minus four over x equals minus one — clear the fractions — x squared minus four x plus one equals zero. Roots: two plus or minus root three — zero point two seven and three point seven three metres. Between them it shuttles; beyond them, its energy cannot pay U's toll.",
+          board:[
+            {tex:"U = E: \\ x^2 - 4x + 1 = 0 \\;\\Rightarrow\\; x = 2\\pm\\sqrt3 = 0.268,\\ 3.73\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       dashLine(c, 0.2,-1, 4.2,-1, {});
+       label(c, 3.5,-0.55, 'E = −1 J', {fs:11, color:GOLD});
+       circleAt(c, 0.268,-1, 0.07, {stroke:RED, w:3});
+       circleAt(c, 3.73,-1, 0.07, {stroke:RED, w:3});
+     }
+        },
+        { map:3, title:"Part (c): the price of freedom",
+          think:"Escape to infinity requires E ≥ what? From the well floor, how much K is that?",
+          model:"E ≥ 0: from U_min = −4 J the particle needs 4.00 J — its binding energy.",
+          pose:"excited",
+          say:"Freedom means reaching infinity, where U is zero — so the ticket price is total energy at least zero. A particle resting at the well floor, minus four joules down, must be handed four joules of kinetic energy: its BINDING energy. Scale the constants and this same curve holds two atoms in a molecule, its asymmetric walls explain why solids expand when heated, and its escape price is chemistry's bond energy. One little formula, wearing many uniforms.",
+          board:[
+            {label:"Escape", tex:"E \\ge 0 \\;\\Rightarrow\\; K_{\\min} = 4.00\\ \\mathrm{J}\\ \\text{from the well floor — the binding energy}", kind:"answer"},
+            {label:"Reusable method", text:"anatomize U (wall + tail) → F = 0 for the floor → U = E for turning points → U(∞) sets the escape price", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

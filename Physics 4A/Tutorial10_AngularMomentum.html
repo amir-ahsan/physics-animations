@@ -1323,6 +1323,600 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Angular momentum of a spinning disk",
+      problem:"A uniform disk of mass 2.00 kg and radius 0.300 m spins about its axis at 20.0 rad/s. Find its angular momentum and rotational kinetic energy.",
+      goal:"Goal → L and K",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["I","L = Iω","K = L²/2I","Direction"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 0.1, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"Inertia first",
+          think:"Solid disk about its axis: which formula, which value?",
+          model:"I = ½MR² = ½(2.00)(0.300)² = 0.0900 kg·m².",
+          pose:"talk",
+          say:"A spinning disk, and the rotational trinity — inertia, momentum, energy — in one sitting. Inertia first: half M R squared, point zero nine kilogram metres squared. Everything downstream leans on this number.",
+          board:[
+            {tex:"I = \\tfrac12MR^2 = \\tfrac12(2.00)(0.300)^2 = 0.0900\\ \\mathrm{kg\\cdot m^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Angular momentum",
+          think:"L = Iω: the rotational analogue of which linear formula?",
+          model:"L = (0.0900)(20.0) = 1.80 kg·m²/s.",
+          pose:"write",
+          say:"Angular momentum: I omega — the rotational cousin of p equals m v. Point zero nine times twenty: one point eight kilogram metres squared per second, riding along the spin axis.",
+          board:[
+            {tex:"L = I\\omega = (0.0900)(20.0) = 1.80\\ \\mathrm{kg\\cdot m^2/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Energy — and a useful identity",
+          think:"Compute K two ways: ½Iω² and L²/2I. Why is the second form worth knowing?",
+          model:"K = ½(0.09)(400) = 18.0 J = L²/2I.",
+          pose:"write",
+          say:"Kinetic energy: half I omega squared — eighteen joules. But file the equivalent form K equals L squared over two I: at FIXED angular momentum, a smaller inertia means MORE energy. That innocent identity is the secret engine of every figure-skating spin, as a later example will confess.",
+          board:[
+            {tex:"K = \\tfrac12I\\omega^2 = \\frac{L^2}{2I} = 18.0\\ \\mathrm{J}", kind:"answer"},
+            {label:"File this", tex:"K = \\frac{L^2}{2I}: \\ \\text{fixed } L,\\ \\text{smaller } I \\Rightarrow \\text{more } K", kind:"key"}
+          ]
+        },
+        { map:3, title:"L is a vector",
+          think:"Curl your right hand with the spin. Where does the thumb — and L — point?",
+          model:"L lies along the axis, sense by the right-hand rule.",
+          pose:"excited",
+          say:"And do not forget angular momentum's vector soul: L points along the AXIS, in the sense your right hand's thumb gives when the fingers curl with the spin. That perpendicular disposition — momentum pointing where nothing moves — takes an evening to accept and a lifetime to appreciate; gyroscopes are its standing ovation.",
+          board:[
+            {label:"Direction", text:"L is along the spin axis (right-hand rule) — perpendicular to every particle's motion.", kind:"key"},
+            {label:"Reusable method", text:"I from the shape → L = Iω → K = ½Iω² = L²/2I → direction from the right hand", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 0,2.6, {color:GOLD, w:3.5, label:'L', fs:14});
+       arc(c, 0,-0.6, 1.2, 200, 340, {color:GREEN, w:2.5});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Angular momentum of a particle moving in a straight line",
+      problem:"A 0.200 kg puck slides at 5.00 m/s along a straight line that passes 2.00 m from point O. Find its angular momentum about O. Does it change as the puck moves?",
+      goal:"Goal → L about O",
+      world:{"x0":-5.5,"x1":5.5,"y0":-1.2,"y1":4.6},
+      pathway:["Surprise","Compute","Why constant","Foreshadow"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.12, {stroke:GOLD, w:3});
+    label(ctx, -0.5,-0.7, 'O', {fs:13, color:GOLD});
+    dashLine(ctx, -5,2, 5,2, {});
+  },
+      steps:[
+        { map:0, title:"No circle required",
+          think:"Must something rotate to possess angular momentum?",
+          model:"L = mvr sinφ = mvℓ about any point off the line. Straight motion qualifies.",
+          pose:"talk",
+          say:"A puck in a perfectly straight line — and we ask for its ANGULAR momentum. No trick: angular momentum belongs to any moving mass, about any chosen point; circles are merely its most photogenic case. The formula: m v times the perpendicular distance from the point to the line of motion.",
+          board:[
+            {label:"Definition", tex:"L = mvr\\sin\\phi = mv\\,\\ell\\ \\text{(} \\ell = \\text{perpendicular miss distance)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Compute it",
+          think:"m = 0.2, v = 5, ℓ = 2: assemble L.",
+          model:"L = (0.200)(5.00)(2.00) = 2.00 kg·m²/s.",
+          pose:"write",
+          say:"Point two kilograms, five metres per second, missing O by two metres: L equals two point zero zero kilogram metres squared per second. Out of the page, if you ask the right hand.",
+          board:[
+            {tex:"L = (0.200)(5.00)(2.00) = 2.00\\ \\mathrm{kg\\cdot m^2/s}", kind:"answer"}
+          ],
+          action(c){
+       const p=circleAt(c, -4,2, 0.22, {stroke:BLUE, w:3});
+       tween(u=>{ p.setAttribute('cx', c.M.X(-4+8*u)); }, 1800, c.instant);
+       arrow(c, 0,0, 0,1.85, {color:RED, w:2, dash:'5,4', label:'ℓ = 2.00 m', fs:11});
+     }
+        },
+        { map:2, title:"Constant along the whole flight",
+          think:"r grows, φ shrinks — what product stays fixed as the puck slides by?",
+          model:"r sinφ = ℓ always: L is constant, as zero torque demands.",
+          pose:"point",
+          say:"Does L change as the puck slides past? Watch the geometry: r stretches while the angle narrows, and their product — r sine phi — is forever the perpendicular miss distance, two metres. L is constant. And so it must be: no force acts, hence no torque about O, hence d L d t is zero. The geometry and the dynamics tell one story in two dialects.",
+          board:[
+            {label:"Invariance", tex:"r\\sin\\phi = \\ell\\ \\text{always} \\;\\Rightarrow\\; L\\ \\text{constant (no torque, no change)}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why this matters",
+          think:"A comet far from the Sun moves almost straight. What does this example license?",
+          model:"Straight-line L = mvℓ is the workhorse for capture and orbit problems ahead.",
+          pose:"excited",
+          say:"Keep this example within reach: when a child leaps tangentially onto a merry-go-round, or putty strikes a hanging rod, the incoming traveller moves in a straight line — and its m v ell about the pivot is the angular momentum the collision must conserve. Today's oddity is next week's opening move.",
+          board:[
+            {label:"Foreshadow", text:"Capture problems start with L = mvℓ of the straight-line arrival. Remember it.", kind:"key"},
+            {label:"Reusable method", text:"L about O = mv × (perpendicular miss distance) → constant when no torque acts → the standard opening for capture collisions", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Torque as the rate of change of angular momentum",
+      problem:"A flywheel's angular momentum increases uniformly from 4.00 to 10.0 kg·m²/s in 3.00 s. What net torque acts? If I = 0.500 kg·m², what is α?",
+      goal:"Goal → τ and α",
+      world:{"x0":-0.4,"x1":3.6,"y0":-1,"y1":12},
+      pathway:["The law","τ","α","Which is deeper"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'L (kg·m²/s)'});
+    plotCurve(ctx, t=>4+2*t, 0, 3, {color:CHALKC, w:2.5, N:15});
+  },
+      steps:[
+        { map:0, title:"Newton's second law, mature form",
+          think:"F = dp/dt has what rotational twin?",
+          model:"τ = dL/dt — torque is the rate of change of angular momentum.",
+          pose:"talk",
+          say:"The second law's most seasoned formulation: force is the rate of change of momentum, and torque the rate of change of ANGULAR momentum. Tau equals d L d t. From this one sentence, every conservation law of rotation follows by setting the left side to zero.",
+          board:[
+            {label:"The law", tex:"\\tau_{\\rm net} = \\frac{dL}{dt}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Read the torque off the slope",
+          think:"L climbs 6 units in 3 s, uniformly. τ = ?",
+          model:"τ = (10.0 − 4.00)/3.00 = 2.00 N·m.",
+          pose:"write",
+          say:"L climbs uniformly — six units in three seconds. The torque is the slope: two newton metres, steady. On an L versus t graph, torque is what slope is everywhere else in physics: the whole story, at a glance.",
+          board:[
+            {tex:"\\tau = \\frac{\\Delta L}{\\Delta t} = \\frac{10.0-4.00}{3.00} = 2.00\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ],
+          action(c){
+       dashLine(c, 1,6, 2,6, {}); dashLine(c, 2,6, 2,8, {});
+       label(c, 2.15,6.8, 'slope = τ', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"With fixed I, get α",
+          think:"τ = Iα when I is constant. Find α, and check against ω's rise.",
+          model:"α = 2.00/0.500 = 4.00 rad/s²; ω went 8 → 20 in 3 s ✓.",
+          pose:"write",
+          say:"With the inertia pinned at half a kilogram metre squared, tau equals I alpha gives alpha equals four radians per second squared. Cross-check: omega must have climbed from eight to twenty in those three seconds — twelve in three — four per second. Consistent.",
+          board:[
+            {tex:"\\alpha = \\frac{\\tau}{I} = \\frac{2.00}{0.500} = 4.00\\ \\mathrm{rad/s^2} \\quad (\\omega: 8\\to20\\ \\mathrm{rad/s}\\checkmark)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Which form is deeper?",
+          think:"When I itself changes — arms pulled in — which law survives, τ = Iα or τ = dL/dt?",
+          model:"τ = dL/dt always; τ = Iα only while I holds still. The next examples live on the difference.",
+          pose:"excited",
+          say:"A ranking, before the door opens to stranger things: tau equals I alpha is a special case, valid while the body keeps its shape. Tau equals d L d t is the LAW — it survives skaters folding their arms, platforms with wandering passengers, collapsing stars. The next examples all inhabit exactly the territory where I refuses to hold still; travel with the general form.",
+          board:[
+            {label:"The hierarchy", text:"τ = dL/dt is general; τ = Iα assumes fixed I. When shape changes, only the first survives.", kind:"warn"},
+            {label:"Reusable method", text:"τ from the slope of L(t) → α = τ/I only while I is constant → default to dL/dt when shape changes", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Jumping onto a merry-go-round",
+      problem:"A 200 kg merry-go-round (uniform disk, radius 2.00 m) is at rest. A 30.0 kg child running at 4.00 m/s tangent to the rim jumps on and holds the edge. Find the final angular speed.",
+      goal:"Goal → ω after the jump",
+      world:{"x0":-4.2,"x1":4.2,"y0":-3.2,"y1":3.4},
+      pathway:["Which law","L before","I after","ω","Why not p"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.5, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 0.1, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"Choose the conserved quantity",
+          think:"The axle pushes on the disk during the landing. What is conserved about the axle, and what is not?",
+          model:"About the axle: zero external torque → L conserved. Linear p is NOT (the axle shoves).",
+          pose:"talk",
+          say:"A running child meets a resting carousel — a collision, rotational style. Choose your conserved quantity with care: the axle will shove the disk during the landing, so LINEAR momentum dies without ceremony. But that axle force passes through the axis — zero torque about it — so ANGULAR momentum about the axle sails through untouched. About the axle, then, we work.",
+          board:[
+            {label:"The choice", text:"Axle force → linear p not conserved. But it has no torque about the axle → L conserved there.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The child's incoming L",
+          think:"Tangent to the rim: the miss distance is R itself. L = ?",
+          model:"L = mvR = (30.0)(4.00)(2.00) = 240 kg·m²/s.",
+          pose:"write",
+          say:"The straight-line-runner's angular momentum, exactly as rehearsed two examples ago: m v times the miss distance — and running tangent to the rim, she misses the axle by precisely R. Thirty times four times two: two hundred forty units, delivered on impact.",
+          board:[
+            {tex:"L = mvR = (30.0)(4.00)(2.00) = 240\\ \\mathrm{kg\\cdot m^2/s}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, -4,2.5, -2.6,2.5, {color:GREEN, w:3, label:'child, 4 m/s', fs:11, side:-1});
+       circleAt(c, -2.3,2.5, 0.3, {stroke:GREEN, w:3});
+     }
+        },
+        { map:2, title:"The combined inertia",
+          think:"Disk (½MR²) plus child on the rim (mR²): total?",
+          model:"I = ½(200)(4) + (30)(4) = 400 + 120 = 520 kg·m².",
+          pose:"write",
+          say:"After the catch, the rotating cast has two members: the disk — half of two hundred times four, four hundred — and the child riding the rim as a point mass — thirty times four, one twenty. Five hundred twenty kilogram metres squared, turning as one.",
+          board:[
+            {tex:"I = \\tfrac12(200)(2.00)^2 + (30.0)(2.00)^2 = 520\\ \\mathrm{kg\\cdot m^2}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Conserve and solve",
+          think:"ω = L/I: the carousel's gentle response.",
+          model:"ω = 240/520 = 0.462 rad/s — about one lap every 14 s.",
+          pose:"write",
+          say:"Conservation does the rest: omega equals two forty over five twenty — zero point four six two radians per second, a stately lap every fourteen seconds. The sprint has been diluted across a quarter tonne of carousel.",
+          board:[
+            {tex:"\\omega = \\frac{L}{I} = \\frac{240}{520} = 0.462\\ \\mathrm{rad/s}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, -2.5,0, 0.3, {stroke:GREEN, w:3});
+       arc(c, 0,0, 2.5, 120, 200, {color:GOLD, w:2.5});
+       arrow(c, -2.4,-0.8, -2.1,-1.5, {color:GOLD, w:2.5});
+     }
+        },
+        { map:4, title:"The choosing of laws",
+          think:"State, in one sentence each, why p failed and L succeeded here.",
+          model:"External axle force kills p; its zero lever arm about the axle spares L. Choose the axis where the unknown force lives.",
+          pose:"excited",
+          say:"The strategic lesson outlasts the number: when an unknown, possibly violent force lurks — an axle, a pivot, a hinge — take angular momentum ABOUT THAT VERY POINT, and the nuisance force, armless, vanishes from the books. Choosing the conserved quantity, and the point about which to conserve it, is half the art of collision physics.",
+          board:[
+            {label:"Strategy", text:"Put the reference point ON the unknown force: its torque vanishes, and L about that point is yours.", kind:"key"},
+            {label:"Reusable method", text:"incoming L = mvℓ → combined I after capture → ω = L/I → never invoke linear p when an axle interferes", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Pulling in the arms: where does the energy come from?",
+      problem:"A spinning student on a stool has I = 5.00 kg·m² and ω = 2.00 rad/s with arms out. She pulls in weights so I = 2.00 kg·m². Find her new angular speed and the change in kinetic energy, and account for it.",
+      goal:"Goal → ω₂, ΔK, and the source",
+      world:{"x0":-4,"x1":4,"y0":-1,"y1":6},
+      pathway:["Conserve L","New ω","Energy rises","Who paid"],
+      setup(ctx,w){
+    circleAt(ctx, 0,4.6, 0.5, {stroke:CHALKC, w:2.5});
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(4.1),x2:ctx.M.X(0),y2:ctx.M.Y(1.4),stroke:CHALKC,'stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(-2.6),y1:ctx.M.Y(3.4),x2:ctx.M.X(2.6),y2:ctx.M.Y(3.4),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    circleAt(ctx, -2.6,3.4, 0.25, {stroke:RED, w:3});
+    circleAt(ctx, 2.6,3.4, 0.25, {stroke:RED, w:3});
+  },
+      steps:[
+        { map:0, title:"No torque, no change in L",
+          think:"Her muscles are internal. What external torques act about the vertical axis?",
+          model:"None (frictionless stool): I₁ω₁ = I₂ω₂.",
+          pose:"talk",
+          say:"The stool spins freely; her muscles, however heroic, are INTERNAL. About the vertical axis no external torque acts, and angular momentum holds its value like a grudge: I one omega one equals I two omega two.",
+          board:[
+            {label:"Conservation", tex:"I_1\\omega_1 = I_2\\omega_2", kind:"key"}
+          ]
+        },
+        { map:1, title:"The spin-up",
+          think:"I falls from 5 to 2: by what factor must ω rise?",
+          model:"ω₂ = (5.00/2.00)(2.00) = 5.00 rad/s.",
+          pose:"write",
+          say:"Inertia falls to two fifths of itself, so omega must rise by five halves: five radians per second. The skater's secret, performed on lab furniture: fold the mass inward and the world spins faster.",
+          board:[
+            {tex:"\\omega_2 = \\frac{I_1}{I_2}\\omega_1 = \\frac{5.00}{2.00}(2.00) = 5.00\\ \\mathrm{rad/s}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, -2.6,3.4, -0.8,3.4, {color:GOLD, w:2.5});
+       arrow(c, 2.6,3.4, 0.8,3.4, {color:GOLD, w:2.5, side:-1});
+       label(c, -3.6,5.4, 'pull in → spin up', {fs:11, italic:true});
+     }
+        },
+        { map:2, title:"Audit the energy",
+          think:"K₁ = 10 J, K₂ = 25 J. Conservation of energy — violated?",
+          model:"K₂/K₁ = I₁/I₂: energy GREW by 15 J while L held fixed.",
+          pose:"write",
+          say:"Now audit: before, half of five times four — ten joules. After, half of two times twenty five — twenty five. The kinetic energy has GROWN by fifteen joules while the angular momentum sat perfectly still. Two conservation laws, and only one of them held. Scandal — or bookkeeping?",
+          board:[
+            {tex:"K_1 = 10.0\\ \\mathrm{J}, \\quad K_2 = 25.0\\ \\mathrm{J}: \\quad \\Delta K = +15.0\\ \\mathrm{J}", kind:"warn"},
+            {tex:"\\frac{K_2}{K_1} = \\frac{I_1}{I_2}\\ \\text{— the } L^2/2I\\ \\text{identity at work}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Her muscles paid",
+          think:"Pulling a whirling weight inward: with or against the centripetal requirement?",
+          model:"She does real work hauling the weights inward against their outward tendency: +15 J of muscle.",
+          pose:"excited",
+          say:"Bookkeeping. To drag a whirling weight INWARD she must pull against its centrifugal insistence, through a real distance — honest mechanical work, fifteen joules of it, from breakfast, via muscle. Angular momentum is conserved because nothing external twists; energy is NOT because someone internal sweats. The K equals L squared over two I identity we filed earlier — this is the bill it foretold.",
+          board:[
+            {label:"The source", text:"ΔK = the work her muscles do pulling mass inward. L conserved; K bought and paid for.", kind:"key"},
+            {label:"Reusable method", text:"no external torque → conserve L → recompute K (it changes!) → charge the difference to the internal forces", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Walking toward the center of a rotating platform",
+      problem:"A platform with I = 300 kg·m² rotates at 0.500 rad/s with a 60.0 kg person at the rim, 2.50 m out. The person walks to the center. Find the final angular speed.",
+      goal:"Goal → ω_f",
+      world:{"x0":-4.2,"x1":4.2,"y0":-3.2,"y1":3.4},
+      pathway:["System L","Person vanishes from I","Solve","The waypoint"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.8, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 0.1, {stroke:DIMC, w:2});
+    circleAt(ctx, 2.8,0, 0.3, {stroke:GREEN, w:3});
+  },
+      steps:[
+        { map:0, title:"Total the initial L",
+          think:"Platform I plus person-as-point at r = 2.50 m: the system's L?",
+          model:"L = (300 + 60·2.5²)(0.500) = (675)(0.500) = 338 kg·m²/s.",
+          pose:"talk",
+          say:"Person plus platform form one isolated rotating system — the feet's friction is internal gossip. Initial inertia: three hundred for the platform, plus sixty times two and a half squared — three seventy five — for the rim-stander. Total six seventy five, at half a radian per second: three hundred thirty eight units of angular momentum, in trust.",
+          board:[
+            {tex:"L = (300 + 60.0\\times2.50^2)(0.500) = 337.5\\ \\mathrm{kg\\cdot m^2/s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Walk to the axis",
+          think:"At r = 0, what does the person contribute to I?",
+          model:"mr² → 0: the person vanishes from the inertia books entirely.",
+          pose:"write",
+          say:"She walks inward, and with every step her m r squared dwindles; at the axis it is ZERO — sixty kilograms of person, rotationally invisible. The system's inertia has slimmed from six seventy five to the platform's bare three hundred.",
+          board:[
+            {tex:"I_f = 300\\ \\mathrm{kg\\cdot m^2}\\ \\text{(person at } r=0 \\text{ contributes nothing)}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 2.5,0, 0.5,0, {color:GREEN, w:2.5, dash:'6,5', label:'walks in', fs:11, at:'mid', side:-1});
+     }
+        },
+        { map:2, title:"Conserve and solve",
+          think:"ω_f = L/I_f: the speed-up factor is what ratio?",
+          model:"ω_f = 337.5/300 = 1.13 rad/s — a factor 675/300 = 2.25.",
+          pose:"write",
+          say:"Omega final: three thirty seven point five over three hundred — one point one three radians per second, a spin-up by the ratio of the inertias, two and a quarter. The platform inherits her share of the motion as she surrenders her radius.",
+          board:[
+            {tex:"\\omega_f = \\frac{337.5}{300} = 1.13\\ \\mathrm{rad/s} \\quad(\\times2.25)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The journey, not just the endpoints",
+          think:"Halfway in, r = 1.25 m: what ω? What force on her feet drives the change?",
+          model:"ω(1.25) = 337.5/393.75 = 0.857 rad/s: continuous spin-up via the floor's sideways (Coriolis-style) push.",
+          pose:"excited",
+          say:"And between the endpoints? At the halfway mark the books read three thirty seven point five over three ninety three point seven five — point eight five seven: the spin-up is CONTINUOUS, step by step. Feel the mechanism: as she moves inward she must keep shedding tangential speed, and the floor drags at her feet sideways — the platform, by the third law, is pushed forward. Anyone who has walked inward on a moving carousel has felt that strange sideways insistence; it now has a ledger entry.",
+          board:[
+            {label:"Waypoint", tex:"r = 1.25\\ \\mathrm{m}: \\ \\omega = \\frac{337.5}{300+93.75} = 0.857\\ \\mathrm{rad/s}", kind:"key"},
+            {label:"Reusable method", text:"L of platform + person-as-point → walk changes only the mr² term → ω = L/I(r) at every waypoint", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Precession of a toy gyroscope",
+      problem:"A gyroscope wheel with I = 0.0100 kg·m² spins at 200 rad/s. Its mass is 0.500 kg and its center of mass is 0.100 m from the pivot along the horizontal axle. Find the precession rate and period.",
+      goal:"Goal → Ω and T_prec",
+      world:{"x0":-2,"x1":10,"y0":-1,"y1":7},
+      pathway:["The paradox","Torque ⊥ L","Ω = τ/L","Fine print"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(0),x2:ctx.M.X(2),y2:ctx.M.Y(3.4),stroke:'#8a7d60','stroke-width':5},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(3.4),x2:ctx.M.X(6),y2:ctx.M.Y(3.4),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    circleAt(ctx, 6,3.4, 0.9, {stroke:GOLD, w:3});
+    label(ctx, 0.6,1.5, 'pivot', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Why doesn't it fall?",
+          think:"Gravity torques the leaning gyroscope. A dead wheel flops; a spinning one circles. What differs?",
+          model:"The spinning wheel already owns a large L along its axle; torque must now REDIRECT it.",
+          pose:"talk",
+          say:"The toy that has embarrassed generations of intuition: a spinning wheel on a leaning axle refuses to fall, and instead swings serenely around the post. The difference between flop and orbit is the wheel's large standing angular momentum along its axle — gravity's torque can no longer create motion from scratch; it must negotiate with an L already in office.",
+          board:[
+            {label:"The setup", tex:"\\tau = mgr = (0.500)(9.80)(0.100) = 0.490\\ \\mathrm{N\\cdot m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"A torque perpendicular to L",
+          think:"τ is horizontal, ⊥ to the axle's L. Can it change L's magnitude?",
+          model:"dL = τdt ⊥ L: magnitude fixed, direction swung — like centripetal force for velocity.",
+          pose:"point",
+          say:"The geometry is everything: gravity's torque is HORIZONTAL, perpendicular to the axle's angular momentum. A perpendicular push changes direction, never magnitude — the same logic that lets centripetal force curve a velocity without speeding it. So L cannot grow or shrink; it can only be swung, tip tracing a circle around the vertical. That swinging is precession.",
+          board:[
+            {label:"The mechanism", text:"τ ⊥ L ⇒ |L| fixed, direction rotates: precession, the rotational analogue of circular motion.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 2,3.4, 6.8,3.4, {color:GOLD, w:3, label:'L', fs:13, side:-1});
+       arrow(c, 6,3.4, 6,5.2, {color:RED, w:2.5, dash:'5,4', label:'τ swings it', fs:10});
+     }
+        },
+        { map:2, title:"The precession rate",
+          think:"Ω = τ/L: assemble and evaluate; then the period.",
+          model:"Ω = 0.490/2.00 = 0.245 rad/s; T = 2π/Ω = 25.6 s.",
+          pose:"write",
+          say:"The rate follows in one line: omega precession equals torque over L — point four nine over I omega, which is two — zero point two four five radians per second. A full circuit of the post: two pi over that — twenty five point six seconds. Faster spin, slower precession: the heavier the incumbent L, the less gravity's lobbying achieves.",
+          board:[
+            {tex:"\\Omega = \\frac{\\tau}{L} = \\frac{mgr}{I\\omega} = \\frac{0.490}{2.00} = 0.245\\ \\mathrm{rad/s}", kind:"answer"},
+            {tex:"T_{\\rm prec} = \\frac{2\\pi}{\\Omega} = 25.6\\ \\mathrm{s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The fine print, and the family",
+          think:"The formula assumed Ω ≪ ω. Verify — and name a famous precession.",
+          model:"0.245 ≪ 200 ✓. Same physics: bicycle stability, spinning tops, Earth's 26,000-year wobble.",
+          pose:"excited",
+          say:"Fine print: we quietly ignored the precession's OWN angular momentum, legitimate only while omega precession is small beside omega — point two four five against two hundred; granted. And the family album: the leaning bicycle that steers itself upright, the top that circles instead of toppling, and the Earth herself, whose axis precesses once per twenty six thousand years under the Moon's patient torque. Your toy gyroscope and the pole star keep the same law.",
+          board:[
+            {label:"Validity + family", tex:"\\Omega \\ll \\omega\\;\\checkmark\\ \\ (0.245 \\ll 200)\\text{; same physics: tops, bikes, Earth's axial precession}", kind:"key"},
+            {label:"Reusable method", text:"τ = mgr → Ω = τ/(Iω) → period 2π/Ω → check Ω ≪ ω before trusting it", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Putty striking a pivoted rod",
+      problem:"A uniform rod (M = 2.00 kg, L = 1.00 m) hangs from a frictionless pivot at its top. A 0.100 kg lump of putty moving horizontally at 10.0 m/s strikes the lower end and sticks. Find ω just after impact and the fraction of kinetic energy lost.",
+      goal:"Goal → ω and %K lost",
+      world:{"x0":-3,"x1":7,"y0":-1,"y1":7},
+      pathway:["About the pivot","Incoming L","Combined I","ω","Energy toll"],
+      setup(ctx,w){
+    circleAt(ctx, 2,6.2, 0.15, {stroke:DIMC, w:3});
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(6.2),x2:ctx.M.X(2),y2:ctx.M.Y(1.2)},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(6.2),x2:ctx.M.X(2),y2:ctx.M.Y(1.2),stroke:'#8a7d60','stroke-width':5,'stroke-linecap':'round'},ctx.svg);
+    label(ctx, 2.4,6.35, 'pivot', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Conserve about the pivot",
+          think:"The pivot may deliver a violent impulse. Why doesn't it disturb L about itself?",
+          model:"The pivot force has zero lever arm about the pivot: L there is conserved through the impact.",
+          pose:"talk",
+          say:"Putty meets hanging rod: a capture, with a pivot standing by to deliver whatever impulse it pleases. So we conserve angular momentum ABOUT THE PIVOT, where that unknowable force has no lever arm and therefore no vote. The strategy of the merry-go-round, redeployed.",
+          board:[
+            {label:"The choice", text:"Pivot impulse: unknown, but zero torque about the pivot ⇒ conserve L there. (Linear p is NOT conserved.)", kind:"key"}
+          ]
+        },
+        { map:1, title:"The putty's incoming L",
+          think:"Horizontal putty, striking the tip at depth L: its miss distance from the pivot?",
+          model:"L = mvL_rod = (0.100)(10.0)(1.00) = 1.00 kg·m²/s.",
+          pose:"write",
+          say:"The straight-line traveller again: the putty flies horizontally and meets the rod a full rod-length below the pivot — miss distance one metre. L equals point one times ten times one: exactly one kilogram metre squared per second, incoming.",
+          board:[
+            {tex:"L = mv\\,\\ell = (0.100)(10.0)(1.00) = 1.00\\ \\mathrm{kg\\cdot m^2/s}", kind:"key"}
+          ],
+          action(c){
+       const p=circleAt(c, -2,1.2, 0.25, {stroke:RED, w:3});
+       tween(u=>{ p.setAttribute('cx', c.M.X(-2+3.75*u)); }, 900, c.instant);
+       arrow(c, -2,2.1, -0.5,2.1, {color:RED, w:2.5, label:'10 m/s', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Inertia of rod plus passenger",
+          think:"Rod about its END (not center!) plus putty at distance L.",
+          model:"I = ⅓ML² + mL² = 0.667 + 0.100 = 0.767 kg·m².",
+          pose:"write",
+          say:"The rotating assembly: the rod about its END — one THIRD M L squared, not the twelfth; a classic ambush — plus the putty riding the tip, m L squared. Two thirds plus a tenth: point seven six seven kilogram metres squared.",
+          board:[
+            {tex:"I = \\tfrac13ML^2 + mL^2 = 0.667 + 0.100 = 0.767\\ \\mathrm{kg\\cdot m^2}", kind:"key"}
+          ]
+        },
+        { map:3, title:"The swing begins",
+          think:"ω = L/I: how fast does the pendulum start?",
+          model:"ω = 1.00/0.767 = 1.30 rad/s.",
+          pose:"write",
+          say:"Divide: one point three zero radians per second — the rod-and-putty pendulum's opening angular speed, from which an energy method could carry it on to its highest swing. Capture first, then swing: two stages, two laws, as ever.",
+          board:[
+            {tex:"\\omega = \\frac{L}{I} = \\frac{1.00}{0.767} = 1.30\\ \\mathrm{rad/s}", kind:"answer"}
+          ],
+          action(c){
+       arc(c, 2,6.2, 5, 262, 292, {color:GOLD, w:2, dash:'5,4', lr:-1});
+     }
+        },
+        { map:4, title:"The 87% toll",
+          think:"K before = 5.00 J; K after = ½Iω². What fraction fed the capture?",
+          model:"K₂ = 0.652 J: 87% lost — the light-captured-by-heavy signature.",
+          pose:"excited",
+          say:"The energy audit: five joules arrived; half of point seven six seven times one point three squared — zero point six five two joules — survived. Eighty seven percent perished in the splat, deforming putty and shaking the pivot. The pattern to remember: whenever something light and fast is captured by something heavy and slow, the energy toll is savage, though the momentum ledger — angular, in this case — balances to the last decimal.",
+          board:[
+            {tex:"K_1 = 5.00\\ \\mathrm{J} \\to K_2 = \\tfrac12(0.767)(1.30)^2 = 0.652\\ \\mathrm{J}: \\ 87\\%\\ \\text{lost}", kind:"answer"},
+            {label:"Reusable method", text:"L = mvℓ about the pivot → I = ⅓ML² + mL² → ω = L/I → audit K (expect carnage)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A comet's speed at aphelion",
+      problem:"A comet passes perihelion at 0.500 AU from the Sun moving at 58.8 km/s. Its aphelion is at 20.0 AU. Find its speed there. Where is the comet's angular momentum about the Sun largest?",
+      goal:"Goal → v_a; where L is largest",
+      world:{"x0":-23,"x1":3,"y0":-8,"y1":9},
+      pathway:["Central force","The endpoints","Solve","Kepler"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.7, {stroke:GOLD, w:4});
+    el('ellipse',{cx:ctx.M.X(-9.75),cy:ctx.M.Y(0),rx:ctx.M.X(0.5)-ctx.M.X(-20),ry:38,fill:'none',stroke:CHALKC,'stroke-width':2,'stroke-dasharray':'6,5'},ctx.svg);
+    label(ctx, 0.6,1.4, 'Sun', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Gravity is a central force",
+          think:"Gravity points at the Sun. What torque does it exert about the Sun?",
+          model:"Zero torque about the Sun → L conserved around the entire orbit.",
+          pose:"talk",
+          say:"The Sun pulls the comet always TOWARD the Sun — a central force, whose lever arm about its own centre is eternally zero. No torque, ever; angular momentum about the Sun is conserved around the whole ellipse — through the sprint past perihelion and the decades-long drift beyond Neptune alike.",
+          board:[
+            {label:"Central force", text:"Gravity points at the Sun ⇒ zero torque about the Sun ⇒ L conserved on the entire orbit.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The two clean endpoints",
+          think:"Why do perihelion and aphelion, alone, have v ⊥ r?",
+          model:"At the turning radii, v is purely tangential: L = mvr exactly there.",
+          pose:"write",
+          say:"In general L is m v r sine phi, and the angle is a nuisance. But at perihelion and aphelion — the nearest and farthest breaths of the orbit — the radial motion pauses and the velocity runs exactly perpendicular to the radius: sine phi is one, and L is plainly m v r. Conservation, evaluated where the geometry is kindest.",
+          board:[
+            {tex:"\\text{at both apsides: } v\\perp r \\;\\Rightarrow\\; mv_pr_p = mv_ar_a", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve for the aphelion crawl",
+          think:"v_a = v_p(r_p/r_a): a factor of 40 in radius costs what in speed?",
+          model:"v_a = 58.8 × 0.5/20 = 1.47 km/s.",
+          pose:"write",
+          say:"The masses cancel and the ratio rules: v aphelion equals fifty eight point eight times a fortieth — one point four seven kilometres per second. From a headlong sprint at perihelion to a contemplative drift at aphelion, dictated entirely by one conserved number.",
+          board:[
+            {tex:"v_a = v_p\\frac{r_p}{r_a} = 58.8\\times\\frac{0.500}{20.0} = 1.47\\ \\mathrm{km/s}", kind:"answer", move:"cancel m"}
+          ],
+          action(c){
+       arrow(c, 0.5,0, 0.5,4.5, {color:GREEN, w:3, label:'fast', fs:11});
+       arrow(c, -20,0, -20,-1.5, {color:RED, w:2.5, label:'slow', fs:11, side:-1});
+     }
+        },
+        { map:3, title:"Kepler's second law, unmasked",
+          think:"The rate of sweeping area is L/2m. So where is L largest on the orbit?",
+          model:"L is the SAME everywhere — that constancy IS the equal-areas law.",
+          pose:"excited",
+          say:"And the trap in the question: where is the angular momentum LARGEST? Nowhere — it is identical at every point; only the split between r and v changes hands. That very constancy, divided by two m, is the rate at which the radius sweeps area: Kepler's second law, discovered from Tycho's tables sixty years before Newton could explain it as conservation of angular momentum wearing an astronomer's cloak.",
+          board:[
+            {label:"Kepler unmasked", tex:"\\frac{dA}{dt} = \\frac{L}{2m} = \\text{const — equal areas} \\equiv \\text{conserved } L", kind:"key"},
+            {label:"Reusable method", text:"central force → L conserved → evaluate at the apsides (v ⊥ r) → v scales inversely with r", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Angular momentum and torque from a trajectory",
+      problem:"A 0.500 kg particle moves with r(t) = 3t² i + 2t j (SI). Find its angular momentum about the origin as a function of time, the torque on it, and check that τz = dLz/dt.",
+      goal:"Goal → Lz(t), τz(t), and the check",
+      world:{"x0":-1,"x1":14,"y0":-1,"y1":6},
+      pathway:["Kinematics","Lz","τz","Close the loop"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    plotCurve(ctx, t=>[3*t*t, 2*t], 0, 2.05, {color:DIMC, w:2, dash:'5,4', N:50});
+  },
+      steps:[
+        { map:0, title:"Differentiate the path",
+          think:"v and a from r(t): componentwise, as always.",
+          model:"v = 6t i + 2 j; a = 6 i — constant, along x.",
+          pose:"talk",
+          say:"Everything flows from the trajectory: differentiate once for velocity — six t i plus two j — and again for acceleration — a constant six along x. A parabola in space, swept at growing speed; now we interrogate its rotational bookkeeping about the origin.",
+          board:[
+            {tex:"\\vec v = 6t\\,\\ihat + 2\\,\\jhat, \\qquad \\vec a = 6\\,\\ihat\\ \\mathrm{m/s^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Angular momentum, z component",
+          think:"Lz = m(xv_y − yv_x): expand and simplify.",
+          model:"Lz = 0.5[(3t²)(2) − (2t)(6t)] = −3.00t² kg·m²/s.",
+          pose:"write",
+          say:"For planar motion the whole of L lives in z: m times x v y minus y v x. Expand: six t squared minus twelve t squared — minus six t squared — times the half kilogram: minus three t squared. The minus sign reports CLOCKWISE circulation about the origin, growing quadratically.",
+          board:[
+            {tex:"L_z = m(xv_y - yv_x) = 0.500(6t^2 - 12t^2) = -3.00\\,t^2\\ \\mathrm{kg\\cdot m^2/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Torque, z component",
+          think:"F = ma = 3 i. τz = xF_y − yF_x: which term survives?",
+          model:"τz = 0 − (2t)(3.00) = −6.00t N·m — growing, though F is constant.",
+          pose:"write",
+          say:"The force is constant — three newtons along x — yet the torque is NOT: tau z equals x F y minus y F x — zero minus two t times three — minus six t. Why growing? The force's lever arm about the origin is the height y, which climbs as two t. A constant force on a rising line of action twists ever harder.",
+          board:[
+            {tex:"\\vec F = m\\vec a = 3.00\\,\\ihat\\ \\mathrm{N}; \\qquad \\tau_z = xF_y - yF_x = -6.00\\,t\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 3,2, 0.14, {stroke:GOLD, w:3});
+       arrow(c, 3,2, 5.5,2, {color:RED, w:2.5, label:'F = 3 N', fs:11, side:-1});
+       dashLine(c, 0,2, 3,2, {});
+       label(c, 0.3,2.5, 'lever arm y = 2t', {fs:10, color:DIMC, italic:true});
+     }
+        },
+        { map:3, title:"τ = dL/dt, verified",
+          think:"Differentiate Lz = −3t². Does it reproduce τz?",
+          model:"dLz/dt = −6.00t = τz ✓. At t = 2: Lz = −12.0, τz = −12.0.",
+          pose:"excited",
+          say:"The closing handshake: differentiate L z — minus six t — and there is the torque, identically. At two seconds, minus twelve and minus twelve. The law tau equals d L d t is not a formula to memorise but an identity the calculus enforces — and having watched it verify itself on a concrete trajectory, you may henceforth trust it on faith and use it on everything.",
+          board:[
+            {tex:"\\frac{dL_z}{dt} = -6.00\\,t = \\tau_z\\;\\checkmark \\quad (t=2: \\ L_z = -12.0, \\ \\tau_z = -12.0)", kind:"key"},
+            {label:"Reusable method", text:"v, a from r(t) → Lz = m(xv_y − yv_x), τz = xF_y − yF_x → confirm τ = dL/dt", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

@@ -843,6 +843,11 @@
       return g;
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1342,6 +1347,586 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"From rpm to rad/s to m/s",
+      problem:"A compact disc spins at 500 rev/min. Find its angular speed in rad/s and the linear speed of a point 6.00 cm from the axis.",
+      goal:"Goal → ω and v",
+      world:{"x0":-4.5,"x1":4.5,"y0":-3.2,"y1":3.6},
+      pathway:["Convert","v = rω","Shared ω","Units"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 2.6, {stroke:CHALKC, w:2.5});
+    circleAt(ctx, 0,0, 0.35, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"Convert to physics units",
+          think:"Two conversion factors take rev/min to rad/s. Which are they?",
+          model:"ω = 500 × 2π/60 = 52.4 rad/s.",
+          pose:"talk",
+          say:"Five hundred revolutions per minute — marketing units. Physics wants radians per second: multiply by two pi radians per revolution, divide by sixty seconds per minute. Fifty two point four radians per second. The radian is the natural currency of rotation; everything downstream assumes it.",
+          board:[
+            {tex:"\\omega = 500\\,\\frac{\\mathrm{rev}}{\\mathrm{min}}\\times\\frac{2\\pi\\ \\mathrm{rad}}{\\mathrm{rev}}\\times\\frac{1\\ \\mathrm{min}}{60\\ \\mathrm{s}} = 52.4\\ \\mathrm{rad/s}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Linear speed at 6 cm",
+          think:"v = rω: with r in metres, what speed rides at 6 cm?",
+          model:"v = (0.0600)(52.4) = 3.14 m/s.",
+          pose:"write",
+          say:"A point six centimetres out rides at v equals r omega: point zero six times fifty two point four — three point one four metres per second. A brisk walking pace, executed in circles a thousand times a minute.",
+          board:[
+            {tex:"v = r\\omega = (0.0600)(52.4) = 3.14\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 1.56,0, 0.1, {stroke:GOLD, w:3});
+       arrow(c, 1.56,0.15, 1.56,1.5, {color:GREEN, w:2.5, label:'v = rω', fs:12});
+       dashLine(c, 0,0, 1.56,0, {});
+     }
+        },
+        { map:2, title:"One ω, many v's",
+          think:"Which quantity is shared by every point of the disc, and which varies with r?",
+          model:"All points share ω; v grows linearly with r. Angular variables describe the whole body.",
+          pose:"point",
+          say:"Here is why rotation gets its own variables: every atom of the disc shares the SAME omega — the hub and the rim complete their laps together — while each has its own v, proportional to its radius. Angular quantities describe the rigid body wholesale; linear ones, point by point. Speak omega when you mean the disc, v when you mean a spot on it.",
+          board:[
+            {label:"The division", text:"ω: one number for the whole rigid body. v = rω: each point's own, growing with r.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0.35,0.12, 0.35,0.55, {color:BLUE, w:2, label:'slow', fs:10, side:-1});
+       arrow(c, 2.6,0.12, 2.6,2.3, {color:RED, w:2.5, label:'fast', fs:10});
+     }
+        },
+        { map:3, title:"The radian fine print",
+          think:"Why would v = rω fail if ω were left in rev/min?",
+          model:"v = rω is DERIVED from s = rθ with θ in radians. Degrees and revs break it.",
+          pose:"excited",
+          say:"One clause of fine print: v equals r omega descends from arc length equals r theta, which is the DEFINITION of the radian. Feed the formula revolutions or degrees and it returns cheerful nonsense. Convert first, always — the two pi over sixty is not bureaucracy, it is the difference between three metres per second and three hundred.",
+          board:[
+            {label:"The fine print", text:"s = rθ, v = rω, a_tan = rα all require radians. Convert before, not after.", kind:"warn"},
+            {label:"Reusable method", text:"rev/min × 2π/60 → rad/s → v = rω per point → remember: ω is the body's, v is the point's", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Angular kinematics of a fan",
+      problem:"A ceiling fan speeds up uniformly from 3.00 rad/s to 15.0 rad/s in 4.00 s. Find the angular acceleration and the number of revolutions made during the speed-up.",
+      goal:"Goal → α and revs",
+      world:{"x0":-0.5,"x1":4.6,"y0":-1.5,"y1":17},
+      pathway:["Translate","α","Angle","Back to revs"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'ω (rad/s)'});
+    plotCurve(ctx, t=>3+3*t, 0, 4, {color:CHALKC, w:2.5, N:20});
+  },
+      steps:[
+        { map:0, title:"The great translation",
+          think:"x→θ, v→ω, a→α: which Tutorial 2 toolkit equation will each part need?",
+          model:"All constant-a kinematics carries over with the angular alphabet.",
+          pose:"talk",
+          say:"A fan accelerating uniformly is Tutorial two wearing a ceiling fixture. Translate the alphabet — x becomes theta, v becomes omega, a becomes alpha — and every constant-acceleration formula follows across, unchanged in soul. Nothing new to learn; only new letters to greet.",
+          board:[
+            {label:"The dictionary", tex:"x\\to\\theta, \\quad v\\to\\omega, \\quad a\\to\\alpha\\ \\text{— the whole toolkit carries over}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Angular acceleration",
+          think:"Δω/Δt: twelve rad/s gained in four seconds.",
+          model:"α = 12.0/4.00 = 3.00 rad/s².",
+          pose:"write",
+          say:"Alpha: fifteen minus three, over four — three radians per second squared, steady as promised. The angular speedometer climbs three marks each second.",
+          board:[
+            {tex:"\\alpha = \\frac{\\Delta\\omega}{\\Delta t} = \\frac{15.0-3.00}{4.00} = 3.00\\ \\mathrm{rad/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The angle turned",
+          think:"Average ω times t — why is that average legitimate here?",
+          model:"θ = ½(3+15)(4.00) = 36.0 rad.",
+          pose:"write",
+          say:"The angle: with uniform alpha, average the endpoints — nine radians per second — for four seconds: thirty six radians. The same endpoint-averaging that measured our merging car's ramp, now wrapped around an axis.",
+          board:[
+            {tex:"\\theta = \\tfrac12(\\omega_0+\\omega)t = \\tfrac12(18.0)(4.00) = 36.0\\ \\mathrm{rad}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0,3],[4,15],[4,0]], {color:'rgba(232,172,86,.28)'});
+       label(c, 2,5.5, 'area = θ = 36 rad', {fs:12, color:GOLD, italic:true, anchor:'middle'});
+     }
+        },
+        { map:3, title:"Convert back for the customer",
+          think:"36 rad in revolutions: divide by what?",
+          model:"36.0/2π = 5.73 revolutions.",
+          pose:"excited",
+          say:"And for the customer who thinks in blade-turns: thirty six radians over two pi — five point seven three revolutions during the spin-up. Physics computes in radians and reports in whatever the listener loves; the conversion factor is diplomacy, not mathematics.",
+          board:[
+            {tex:"\\frac{36.0}{2\\pi} = 5.73\\ \\mathrm{rev}", kind:"answer"},
+            {label:"Reusable method", text:"translate to θ, ω, α → apply the Tutorial 2 toolkit verbatim → convert to revs only at the end", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Torque from a wrench",
+      problem:"A 50.0 N force is applied to the end of a 0.300 m wrench at 60.0° to the handle. Find the torque about the bolt. How could the same force give more torque?",
+      goal:"Goal → τ and its maximum",
+      world:{"x0":-1,"x1":11,"y0":-1.5,"y1":7},
+      pathway:["Definition","Compute","Lever arm","Optimize"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(1.5),y1:ctx.M.Y(2),x2:ctx.M.X(7.5),y2:ctx.M.Y(2),stroke:'#8a7d60','stroke-width':7,'stroke-linecap':'round'},ctx.svg);
+    circleAt(ctx, 1.5,2, 0.45, {stroke:DIMC, w:3});
+    label(ctx, 0.6,0.9, 'bolt', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Torque wants three things",
+          think:"r, F, and the angle: which arrangement of the three maximises turning?",
+          model:"τ = rF sinφ: only the perpendicular component of F turns the wrench.",
+          pose:"talk",
+          say:"Torque — the turning effectiveness of a force — bills three factors: how far from the pivot, how hard, and how PERPENDICULAR. Tau equals r F sine phi. The component of force along the handle merely tugs at the bolt's socket; the perpendicular component does all the turning.",
+          board:[
+            {label:"Definition", tex:"\\tau = rF\\sin\\phi", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 7.5,2, 9.0,4.6, {color:GOLD, w:3.5, label:'50 N', fs:12});
+       label(c, 7.9,2.6, '60°', {fs:11, color:GOLD});
+     }
+        },
+        { map:1, title:"Compute it",
+          think:"0.300 × 50.0 × sin60°: assemble.",
+          model:"τ = (0.300)(50.0)(0.866) = 13.0 N·m.",
+          pose:"write",
+          say:"Thirty centimetres, fifty newtons, sine of sixty — thirteen point zero newton metres about the bolt. Adequate for a stubborn nut; short of its potential, as the next line will show.",
+          board:[
+            {tex:"\\tau = (0.300)(50.0)\\sin60.0^{\\circ} = 13.0\\ \\mathrm{N\\cdot m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The lever-arm view",
+          think:"Slide the force along its line of action: what stays fixed?",
+          model:"ℓ = r sin60° = 0.260 m; τ = Fℓ — same 13.0 N·m.",
+          pose:"point",
+          say:"The same torque wears a second costume: extend the force's line of action and drop a perpendicular from the bolt — the LEVER ARM, r sine sixty, twenty six centimetres. Torque is force times lever arm. The two views always agree; use whichever makes the geometry cleaner.",
+          board:[
+            {label:"Lever arm", tex:"\\ell = r\\sin60^{\\circ} = 0.260\\ \\mathrm{m}; \\quad \\tau = F\\ell = 13.0\\ \\mathrm{N\\cdot m}", kind:"key"}
+          ],
+          action(c){
+       dashLine(c, 7.5,2, 5.8,-0.9, {});
+       dashLine(c, 1.5,2, 4.3,0.35, {});
+       label(c, 2.4,0.25, 'lever arm ℓ', {fs:10, color:DIMC, italic:true});
+     }
+        },
+        { map:3, title:"Same force, more turn",
+          think:"Two free upgrades: adjust the angle, or adjust what else?",
+          model:"φ = 90° → 15.0 N·m; a longer handle scales τ linearly. Along the handle: zero.",
+          pose:"excited",
+          say:"How to profit without pushing harder? Square up: at ninety degrees the full fifty newtons turns, and torque rises to fifteen. Or lengthen the handle — every centimetre is a raise. And the cautionary extreme: push ALONG the handle and the torque is zero exactly, however mighty the shove. Mechanics' folklore — 'get a longer wrench, and push square' — is the sine and the r, spoken in workshop dialect.",
+          board:[
+            {tex:"\\phi = 90^{\\circ}: \\ \\tau = 15.0\\ \\mathrm{N\\cdot m}; \\quad \\phi = 0: \\ \\tau = 0", kind:"answer"},
+            {label:"Reusable method", text:"τ = rF sinφ or Fℓ → maximize with φ = 90° and long r → the along-handle component never turns", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Moment of inertia of a dumbbell",
+      problem:"Two 2.00 kg spheres (point masses) sit at the ends of a uniform 1.00 kg rod of length 1.00 m. Find the moment of inertia about the central perpendicular axis. What fraction comes from the rod?",
+      goal:"Goal → I and the rod's share",
+      world:{"x0":-0.8,"x1":0.8,"y0":-0.5,"y1":0.6},
+      pathway:["Add the parts","Spheres","Rod","The r² lesson"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(-0.5),y1:ctx.M.Y(0),x2:ctx.M.X(0.5),y2:ctx.M.Y(0),stroke:'#8a7d60','stroke-width':6,'stroke-linecap':'round'},ctx.svg);
+    circleAt(ctx, -0.5,0, 0.07, {stroke:RED, w:4});
+    circleAt(ctx, 0.5,0, 0.07, {stroke:RED, w:4});
+    dashLine(ctx, 0,-0.35, 0,0.42, {});
+    label(ctx, 0.03,0.47, 'axis', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Moments of inertia add",
+          think:"Why may the rod's I and the spheres' I simply be summed?",
+          model:"I = ΣI_parts about the SAME axis: inertia is additive.",
+          pose:"talk",
+          say:"Moment of inertia — rotation's version of mass — has one great administrative convenience: about a common axis, the parts simply ADD. Compute the spheres, compute the rod, sum. The only discipline required is that every term be reckoned about the SAME axis.",
+          board:[
+            {label:"Additivity", tex:"I = \\sum_i I_i\\ \\text{(all about the same axis)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The spheres",
+          think:"Point masses at r = 0.500 m: I = Σmr².",
+          model:"I_spheres = 2(2.00)(0.500)² = 1.00 kg·m².",
+          pose:"write",
+          say:"Each sphere: mass times distance squared — two times a quarter — half a kilogram metre squared; two of them, one point zero zero. The definition in its purest form: m r squared, no geometry factors, because points have no shape to argue about.",
+          board:[
+            {tex:"I_{\\rm spheres} = 2(2.00)(0.500)^2 = 1.00\\ \\mathrm{kg\\cdot m^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The rod",
+          think:"Central axis: which standard formula, and what does it give?",
+          model:"I_rod = (1/12)ML² = 0.083 kg·m²; total I = 1.08 kg·m².",
+          pose:"write",
+          say:"The rod about its centre: one twelfth M L squared — one twelfth of one — point zero eight three. Total: one point zero eight kilogram metres squared. The twelfth is the badge of mass spread evenly and mostly CLOSE to the axis.",
+          board:[
+            {tex:"I_{\\rm rod} = \\tfrac{1}{12}(1.00)(1.00)^2 = 0.083; \\quad I = 1.08\\ \\mathrm{kg\\cdot m^2}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"20% of the mass, 8% of the inertia",
+          think:"Why does the rod punch so far below its mass?",
+          model:"I weights by r²: near-axis mass barely counts. Placement outranks quantity.",
+          pose:"excited",
+          say:"The rod holds a fifth of the system's mass yet contributes under eight percent of its inertia — because I weights every gram by the SQUARE of its distance, and the rod's grams huddle near the axis where the exchange rate is pitiful. In rotation, placement outranks quantity: a flywheel's rim is worth more than its hub, and figure skaters bank on precisely this arithmetic.",
+          board:[
+            {label:"The r² lesson", tex:"\\frac{I_{\\rm rod}}{I} = \\frac{0.083}{1.08} = 7.7\\%\\ \\text{from } 20\\%\\ \\text{of the mass}", kind:"key"},
+            {label:"Reusable method", text:"decompose the body → point masses: mr²; standard shapes: table formulas → add about one axis → read where the inertia lives", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Spinning up a disk with a string",
+      problem:"A string wrapped around a uniform solid disk (M = 4.00 kg, R = 0.200 m, free to turn about its center) is pulled with a constant 10.0 N. Find α, ω after 3.00 s, and the rotational KE then. Verify with the string's work.",
+      goal:"Goal → α, ω, K + check",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.8,"y1":3},
+      pathway:["I and τ","α","ω and K","The audit"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 1.8, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 0.12, {stroke:DIMC, w:2});
+  },
+      steps:[
+        { map:0, title:"Gather I and τ",
+          think:"Solid disk: I = ? Tangent string: τ = ?",
+          model:"I = ½MR² = 0.0800 kg·m²; τ = FR = 2.00 N·m.",
+          pose:"talk",
+          say:"The rotational cast: the disk's inertia, one half M R squared — point zero eight kilogram metres squared — and the string's torque. A wrapped string pulls TANGENT, always at full lever arm R: torque equals ten times point two — two newton metres, steady as the pull.",
+          board:[
+            {tex:"I = \\tfrac12MR^2 = 0.0800\\ \\mathrm{kg\\cdot m^2}; \\qquad \\tau = FR = 2.00\\ \\mathrm{N\\cdot m}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 1.8,0, 1.8,-2.4, {color:GOLD, w:3, label:'F = 10 N', fs:12});
+     }
+        },
+        { map:1, title:"Newton's second law, rotated",
+          think:"τ = Iα is F = ma in angular dress. Solve for α.",
+          model:"α = τ/I = 2.00/0.0800 = 25.0 rad/s².",
+          pose:"write",
+          say:"Rotation's second law: torque equals I alpha. Alpha is two over point zero eight — twenty five radians per second squared. The same sentence as F equals m a, with every noun rotated.",
+          board:[
+            {tex:"\\alpha = \\frac{\\tau}{I} = \\frac{2.00}{0.0800} = 25.0\\ \\mathrm{rad/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Spin and energy at 3 s",
+          think:"ω = αt; K = ½Iω². Evaluate both.",
+          model:"ω = 75.0 rad/s; K = ½(0.0800)(75.0)² = 225 J.",
+          pose:"write",
+          say:"After three seconds: omega is alpha t — seventy five radians per second, about twelve revolutions per second. Kinetic energy: half I omega squared — half of point zero eight times five thousand six hundred twenty five — two hundred twenty five joules of pure spin.",
+          board:[
+            {tex:"\\omega = \\alpha t = 75.0\\ \\mathrm{rad/s}; \\qquad K = \\tfrac12I\\omega^2 = 225\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Audit via the unwound string",
+          think:"How much string left the disk, and what work did the 10 N do through it?",
+          model:"θ = ½αt² = 112.5 rad → 22.5 m of string; W = (10.0)(22.5) = 225 J ✓.",
+          pose:"excited",
+          say:"The audit, and it is a beauty: the disk turned half alpha t squared — one hundred twelve and a half radians — so R theta, twenty two and a half METRES of string, unwound through the pulling hand. Work: ten newtons times twenty two point five — two hundred twenty five joules. The energy books close to the joule. Torque times angle, force times distance: one payment, two receipts.",
+          board:[
+            {label:"The audit", tex:"\\theta = \\tfrac12\\alpha t^2 = 112.5\\ \\mathrm{rad}; \\ W = F(R\\theta) = (10.0)(22.5) = 225\\ \\mathrm{J}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"I from the shape, τ = FR → α = τ/I → ω = αt, K = ½Iω² → verify with W = τθ = F·(string length)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Parallel-axis theorem: rod pivoted off center",
+      problem:"A uniform rod of mass M and length L is pivoted one quarter of the way from one end. Find its moment of inertia about the pivot, comparing with the center and end values.",
+      goal:"Goal → I about the L/4 point",
+      world:{"x0":-0.15,"x1":1.15,"y0":-0.5,"y1":0.6},
+      pathway:["The theorem","Apply","Compare","Minimum at cm"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(0),x2:ctx.M.X(1),y2:ctx.M.Y(0),stroke:'#8a7d60','stroke-width':6,'stroke-linecap':'round'},ctx.svg);
+    dashLine(ctx, 0.25,-0.3, 0.25,0.38, {});
+    dashLine(ctx, 0.5,-0.3, 0.5,0.3, {});
+    label(ctx, 0.16,0.44, 'pivot: L/4', {fs:11, color:GOLD});
+    label(ctx, 0.44,0.37, 'cm', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"The parallel-axis theorem",
+          think:"I about any axis = I_cm + Md². What must be true of the two axes?",
+          model:"Parallel axes only; d = distance between them. It ONLY ever adds.",
+          pose:"talk",
+          say:"The parallel axis theorem: the inertia about any axis equals the inertia about the parallel axis through the centre of mass, plus M d squared for the transplant distance d. Note its temperament — it only ever ADDS. The centre of mass is where rotation is cheapest; every relocation costs M d squared.",
+          board:[
+            {label:"The theorem", tex:"I = I_{\\rm cm} + Md^2", kind:"key"}
+          ]
+        },
+        { map:1, title:"Apply at L/4",
+          think:"The pivot sits d = L/4 from the center. Assemble the two terms.",
+          model:"I = ML²/12 + M(L/4)² = ML²(1/12 + 1/16) = 7ML²/48.",
+          pose:"write",
+          say:"Our pivot sits a quarter length from the end — hence a quarter length from the CENTRE as well: d equals L over four. One twelfth plus one sixteenth: common denominator forty eight — four forty-eighths plus three — seven forty-eighths M L squared. Point one four six, for the decimal-minded.",
+          board:[
+            {tex:"I = \\frac{ML^2}{12} + M\\left(\\frac{L}{4}\\right)^2 = ML^2\\left(\\frac{1}{12}+\\frac{1}{16}\\right) = \\frac{7}{48}ML^2", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Place it on the spectrum",
+          think:"Center: ML²/12 ≈ 0.083. End: ML²/3 ≈ 0.333. Where does 0.146 sit — and why?",
+          model:"Between them, nearer the center value, as d = L/4 < L/2.",
+          pose:"write",
+          say:"Compare the family: about the centre, point zero eight three M L squared; about the very end — which the theorem also yields, with d equal to L over two — point three three three. Our pivot, a modest relocation, lands at point one four six: past the minimum, well short of the maximum. The theorem interpolates exactly as intuition hopes.",
+          board:[
+            {tex:"\\tfrac{1}{12} = 0.083 \\ <\\ \\tfrac{7}{48} = 0.146 \\ <\\ \\tfrac13 = 0.333\\ \\ (\\times ML^2)", kind:"key"}
+          ]
+        },
+        { map:3, title:"The cm minimum, certified",
+          think:"Could any parallel axis beat the center of mass for low inertia?",
+          model:"Never: Md² ≥ 0 with equality only at d = 0. The cm is rotation's cheapest address.",
+          pose:"excited",
+          say:"And the theorem's quiet corollary deserves its own sentence: since M d squared can never be negative, NO parallel axis undercuts the centre of mass. The cm is the cheapest place in the universe to spin any object — which is why hurled hammers, flipped phones, and pirouetting divers all rotate about it uninvited. Objects know their own minimum.",
+          board:[
+            {label:"Corollary", text:"I_cm is the minimum over all parallel axes; every offset adds Md² ≥ 0.", kind:"key"},
+            {label:"Reusable method", text:"find d from the cm (not from an end!) → I = I_cm + Md² → sanity-bracket between the cm and end values", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Rolling race down an incline: the shape decides",
+      problem:"A solid cylinder and a thin hollow cylinder roll without slipping from rest down an incline of vertical height 3.00 m. Find each one's speed at the bottom.",
+      goal:"Goal → v for each shape",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Split the K","Master formula","Two shapes","The moral"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(0)} ${ctx.M.X(0)},${ctx.M.Y(5.5)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    circleAt(ctx, 1.3,5.05, 0.55, {stroke:GOLD, w:3});
+    circleAt(ctx, 2.6,4.3, 0.55, {stroke:PURPLE, w:3});
+    circleAt(ctx, 2.6,4.3, 0.42, {stroke:PURPLE, w:1.5});
+  },
+      steps:[
+        { map:0, title:"Rolling splits the energy",
+          think:"Rolling without slipping: what ties ω to v, and how does K split?",
+          model:"ω = v/R → K = ½Mv²(1 + I/MR²): translation plus spin, in a fixed ratio.",
+          pose:"talk",
+          say:"A rolling body leads a double life — translating AND spinning — and rolling without slipping chains the two: omega equals v over R. Total kinetic energy becomes one half M v squared times one plus I over M R squared. That bracketed number — the shape factor — decides today's race.",
+          board:[
+            {label:"Rolling energy", tex:"K = \\tfrac12Mv^2 + \\tfrac12I\\omega^2 = \\tfrac12Mv^2\\left(1 + \\frac{I}{MR^2}\\right)", kind:"key"}
+          ]
+        },
+        { map:1, title:"The master formula",
+          think:"Set Mgh equal to the rolling K. What v emerges?",
+          model:"v = √(2gh/(1 + I/MR²)) — mass and radius both cancel.",
+          pose:"write",
+          say:"Energy conservation: M g h equals the rolling package. Solve: v equals root of two g h over one plus the shape factor. Mass gone, radius gone — a bowling ball and a marble of the same SHAPE tie exactly. Only geometry survives.",
+          board:[
+            {tex:"v = \\sqrt{\\frac{2gh}{1 + I/MR^2}}", kind:"answer", move:"cancel M, R"}
+          ]
+        },
+        { map:2, title:"Run the race",
+          think:"Solid: I/MR² = ½. Hollow: 1. Evaluate both speeds.",
+          model:"Solid: √(4gh/3) = 6.26 m/s. Hollow: √(gh) = 5.42 m/s.",
+          pose:"write",
+          say:"The solid cylinder, shape factor one half: v equals root of four thirds g h — six point two six metres per second. The hollow shell, factor one: root g h — five point four two. The solid wins, every time, on any hill — less of its energy is mortgaged to spin.",
+          board:[
+            {tex:"\\text{solid: } v = \\sqrt{\\tfrac43(9.80)(3.00)} = 6.26\\ \\mathrm{m/s}", kind:"answer"},
+            {tex:"\\text{hollow: } v = \\sqrt{(9.80)(3.00)} = 5.42\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3.2,1.2, 6.4,1.2, {color:GOLD, w:3, label:'solid: 6.26', fs:11});
+       arrow(c, 3.2,2.6, 5.6,2.6, {color:PURPLE, w:3, label:'hollow: 5.42', fs:11});
+     }
+        },
+        { map:3, title:"Read the shape factor",
+          think:"Where does a sliding block (no spin) fit? Rank block, sphere, solid & hollow cylinders.",
+          model:"Block: √(2gh) = 7.67. The smaller I/MR² (mass near the axis), the faster the descent.",
+          pose:"excited",
+          say:"Extend the podium: a frictionless SLIDING block, banking nothing in rotation, arrives at seven point six seven — champion. Then a solid sphere, factor two fifths; our solid cylinder; and trailing, the hollow shell, whose every gram rides the rim at maximum rotational expense. The rule to keep: mass near the axis rolls fast, mass at the rim rolls slow — and neither size nor weight can bribe the ranking.",
+          board:[
+            {label:"The ranking", text:"slide (7.67) > sphere > solid cyl (6.26) > hollow cyl (5.42): smaller I/MR² wins. Mass and R never matter.", kind:"key"},
+            {label:"Reusable method", text:"rolling ⇒ ω = v/R → K carries the (1 + I/MR²) factor → v = √(2gh/(1+shape)) → rank by shape alone", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"The yo-yo (unwinding cylinder)",
+      problem:"A uniform solid cylinder of mass m and radius R has a string wound around it; the string's upper end is held fixed and the cylinder is released. Find its downward acceleration and the string tension.",
+      goal:"Goal → a and T",
+      world:{"x0":-4,"x1":8,"y0":-2,"y1":9},
+      pathway:["Two laws","Constraint","Solve","Energy view"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(8.6),x2:ctx.M.X(2),y2:ctx.M.Y(5)},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(8.6),x2:ctx.M.X(2),y2:ctx.M.Y(5),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    circleAt(ctx, 3.1,3.9, 1.55, {stroke:GOLD, w:3});
+    circleAt(ctx, 3.1,3.9, 0.1, {stroke:DIMC, w:2});
+    label(ctx, 5,4.4, 'm, R', {fs:12, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Translation and rotation, together",
+          think:"Write Newton for the fall AND for the spin. Which force appears in both?",
+          model:"mg − T = ma (down +); TR = ½mR²α. The tension stars in both.",
+          pose:"talk",
+          say:"A yo-yo is two problems holding hands: the centre of mass FALLS — m g minus T equals m a — while the cylinder SPINS about that centre, driven by the tension's torque at radius R: T R equals half m R squared alpha. One string, cast in both dramas.",
+          board:[
+            {tex:"\\text{fall: } mg - T = ma; \\qquad \\text{spin: } TR = \\tfrac12mR^2\\alpha", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 2,5.5, 2,7.5, {color:GREEN, w:3, label:'T', fs:13, side:-1});
+       arrow(c, 3.1,3.9, 3.1,1.4, {color:RED, w:3, label:'mg', fs:13});
+     }
+        },
+        { map:1, title:"The unwinding constraint",
+          think:"The string does not slip. What kinematic chain links a and α?",
+          model:"a = Rα — every metre fallen unwinds a metre of string.",
+          pose:"write",
+          say:"The third equation is geometry: the string pays out exactly as fast as the cylinder descends, so a equals R alpha. Insert it into the spin equation and the tension confesses: T equals one half m a.",
+          board:[
+            {tex:"a = R\\alpha \\;\\Rightarrow\\; T = \\tfrac12ma", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve the pair",
+          think:"Substitute T into the fall equation. What clean fractions appear?",
+          model:"a = ⅔g = 6.53 m/s²; T = ⅓mg. Independent of m AND R.",
+          pose:"write",
+          say:"Substitute: m g minus half m a equals m a — three halves a equals g — a equals two thirds g, six point five three metres per second squared. And T is one third m g. Notice what vanished: the mass, the radius. Every solid-cylinder yo-yo that ever descended a string did so at two thirds g, from the toy shop to the physics final.",
+          board:[
+            {tex:"mg - \\tfrac12ma = ma \\;\\Rightarrow\\; a = \\tfrac23g = 6.53\\ \\mathrm{m/s^2}", kind:"answer"},
+            {tex:"T = \\tfrac13mg", kind:"answer"}
+          ],
+          action(c){
+       const g=circleAt(c, 3.1,3.9, 1.55, {stroke:'rgba(232,172,86,.5)', w:3});
+       tween(u=>{ g.setAttribute('cy', c.M.Y(3.9-2.8*u*u)); }, 1500, c.instant);
+     }
+        },
+        { map:3, title:"Where the missing third went",
+          think:"Free fall would give g. Why only two thirds — and where is the energy?",
+          model:"⅓ of gravity's work becomes spin: K_rot = ½·K_trans for the solid cylinder. Hollow: a = g/2.",
+          pose:"excited",
+          say:"Why slower than free fall? Because gravity's income is split between two accounts: for every two joules of falling motion, one joule is wound into spin — a fixed one-third rotational tithe set by the shape factor. A HOLLOW cylinder, hoarding its mass at the rim, would tithe half and fall at only g over two. The yo-yo's descent rate is, literally, its moment of inertia made visible.",
+          board:[
+            {label:"Energy split", text:"Solid cylinder: ⅓ of mgh to spin, ⅔ to fall (hence a = ⅔g). Hollow: half and half (a = g/2).", kind:"key"},
+            {label:"Reusable method", text:"Newton for fall + torque for spin + a = Rα → solve; the shape factor sets the fraction of g", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Atwood's machine with a massive pulley",
+      problem:"Masses m₁ = 2.00 kg and m₂ = 3.00 kg hang over a uniform disk pulley (M = 2.00 kg, R = 0.100 m) turning without friction; the string does not slip. Find a and both tensions.",
+      goal:"Goal → a, T₁, T₂",
+      world:{"x0":-2,"x1":10,"y0":-3,"y1":8},
+      pathway:["Why T₁ ≠ T₂","Three laws","Combine","Check"],
+      setup(ctx,w){
+    circleAt(ctx, 4,6, 1.2, {stroke:CHALKC, w:3});
+    el('line',{x1:ctx.M.X(2.8),y1:ctx.M.Y(6),x2:ctx.M.X(2.8),y2:ctx.M.Y(2)},ctx.svg);
+    el('line',{x1:ctx.M.X(2.8),y1:ctx.M.Y(6),x2:ctx.M.X(2.8),y2:ctx.M.Y(2),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(5.2),y1:ctx.M.Y(6),x2:ctx.M.X(5.2),y2:ctx.M.Y(0.7),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 2.8,0.8, 1.3,1.2, {fill:'#2E6DA4', stroke:'#1D4568'});
+    boxAt(ctx, 5.2,-0.7, 1.5,1.4, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 1.2,1.3, '2 kg', {fs:11, color:BLUE});
+    label(ctx, 6.2,-0.1, '3 kg', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"Why the tensions must differ",
+          think:"If T₁ equaled T₂, what would the net torque on the pulley be — and could it spin up?",
+          model:"A massive pulley needs net torque to gain ω: T₂ > T₁, and the gap drives the disk.",
+          pose:"talk",
+          say:"With a massless pulley we blithely wrote one tension throughout the string. No longer: THIS pulley has inertia, and inertia demands a net torque to spin up. The two sides of the string must therefore pull with DIFFERENT tensions — the falling side harder — and their difference is precisely the pulley's angular ration.",
+          board:[
+            {label:"The new physics", text:"Massive pulley: T₂ ≠ T₁; the difference (T₂ − T₁)R supplies Iα.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Three bodies, three laws",
+          think:"Write Newton for each hanging mass and the torque law for the disk.",
+          model:"m₂g − T₂ = m₂a; T₁ − m₁g = m₁a; (T₂−T₁)R = ½MR²(a/R).",
+          pose:"write",
+          say:"Three actors, three statements. The heavy hanger: three g minus T two equals three a. The light one: T one minus two g equals two a. The pulley: the tension difference times R equals I alpha — and with the no-slip constraint alpha equals a over R, that tidies to T two minus T one equals half M a.",
+          board:[
+            {tex:"m_2g - T_2 = m_2a; \\quad T_1 - m_1g = m_1a; \\quad T_2 - T_1 = \\tfrac12Ma", kind:"key"}
+          ]
+        },
+        { map:2, title:"Add all three",
+          think:"Summing kills both tensions. What effective mass does the pulley contribute?",
+          model:"a = (m₂−m₁)g/(m₁+m₂+M/2) = 9.80/6.00 = 1.63 m/s²; T₁ = 22.9 N, T₂ = 24.5 N.",
+          pose:"write",
+          say:"Add all three equations: the tensions annihilate, leaving the driving weight difference — one kilogram's worth of g — against an effective mass of two plus three plus HALF the pulley. a equals nine point eight over six: one point six three. Back-substitute: T one is m one g plus a — twenty two point nine; T two is m two g minus a — twenty four point five newtons.",
+          board:[
+            {tex:"a = \\frac{(m_2-m_1)g}{m_1+m_2+\\tfrac12M} = \\frac{9.80}{6.00} = 1.63\\ \\mathrm{m/s^2}", kind:"answer", move:"add: T's cancel"},
+            {tex:"T_1 = m_1(g+a) = 22.9\\ \\mathrm{N}; \\quad T_2 = m_2(g-a) = 24.5\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Close the loop",
+          think:"Does T₂ − T₁ equal ½Ma? And what would a massless pulley have given?",
+          model:"24.5 − 22.9 = 1.63 = ½(2.00)(1.63) ✓. Massless: a = 1.96, tensions equal.",
+          pose:"excited",
+          say:"Verify in the unused relation: twenty four point five minus twenty two point nine — one point six three — equals half of two times one point six three. The books balance. And note the pulley's effective résumé: it behaves exactly like an extra M over two of ORDINARY translating mass — one kilogram of pure reluctance. Remove it and a would rise to one point nine six with the tensions merging. Every real pulley is half itself, in disguise.",
+          board:[
+            {label:"Check", tex:"T_2 - T_1 = 1.63\\ \\mathrm{N} = \\tfrac12(2.00)(1.63)\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"per-body Newton + pulley torque + no-slip → add to kill tensions → pulley = M/2 of effective mass → verify the gap", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Moment of inertia of a nonuniform rod",
+      problem:"A rod of length L has linear density λ(x) = λ₀x/L, with x from the light end. Find its mass M and its moment of inertia about an axis through the light end, in terms of M and L.",
+      goal:"Goal → M and I(end)",
+      world:{"x0":-0.1,"x1":1.15,"y0":-0.35,"y1":1.35},
+      pathway:["Slice","Mass","Integrate x²dm","Express in M","Limits"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x/L', ylab:'λ/λ₀'});
+    plotCurve(ctx, x=>x, 0, 1, {color:CHALKC, w:2.5, N:15});
+    dashLine(ctx, 0,0, 0,1.1, {});
+    label(ctx, 0.03,1.2, 'axis at the light end', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Slice and weigh",
+          think:"dm = λ(x)dx: which slivers are heavy, and where do they sit?",
+          model:"Density grows linearly: the far end is the heavy end. dm = (λ₀x/L)dx.",
+          pose:"talk",
+          say:"A rod whose density grows from nothing at one end to lambda nought at the other, spun about its LIGHT end. Slice it: each sliver at position x carries mass lambda nought x over L, d x — feather-light near the axis, heaviest at the far tip. An ominous arrangement for the moment of inertia, as we shall see.",
+          board:[
+            {label:"The slices", tex:"dm = \\lambda(x)\\,dx = \\frac{\\lambda_0x}{L}\\,dx", kind:"key"}
+          ]
+        },
+        { map:1, title:"Total mass",
+          think:"∫(λ₀x/L)dx over the rod: what fraction of λ₀L?",
+          model:"M = λ₀L/2 — the average density is half the peak.",
+          pose:"write",
+          say:"Mass first: the integral of x from zero to L is L squared over two, so M equals one half lambda nought L. Sensible — a linear ramp averages half its summit.",
+          board:[
+            {tex:"M = \\frac{\\lambda_0}{L}\\int_0^Lx\\,dx = \\tfrac12\\lambda_0L", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Integrate x² dm",
+          think:"Each sliver contributes x²dm — an x³ integrand. Evaluate.",
+          model:"I = (λ₀/L)∫x³dx = λ₀L³/4.",
+          pose:"write",
+          say:"Now the inertia: each sliver pays x squared d m — an x cubed integrand, since the mass itself carries an x. Integrate: L to the fourth over four, times lambda nought over L — lambda nought L cubed over four.",
+          board:[
+            {tex:"I = \\int_0^Lx^2\\,\\frac{\\lambda_0x}{L}\\,dx = \\frac{\\lambda_0}{L}\\cdot\\frac{L^4}{4} = \\frac{\\lambda_0L^3}{4}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Express in M and L",
+          think:"Substitute λ₀ = 2M/L. What coefficient of ML² appears?",
+          model:"I = ½ML² — larger than the uniform rod's ⅓ML² about an end.",
+          pose:"write",
+          say:"Trade lambda nought for two M over L: I equals ONE HALF M L squared. Compare the uniform rod about its end: one third. Our rod is lazier to spin, kilogram for kilogram, because its mass conspires to sit far from the axis — exactly where the x squared exchange rate is dearest.",
+          board:[
+            {tex:"I = \\frac{(2M/L)L^3}{4} = \\tfrac12ML^2 \\ \\ (>\\tfrac13ML^2\\ \\text{uniform})", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Bracket with limits",
+          think:"All mass at the tip: I = ? All at the axis: I = ? Does ½ sit between?",
+          model:"Extremes: ML² and 0. Our 0.50 ML² sits sensibly within — and above the uniform ⅓.",
+          pose:"excited",
+          say:"The final audit is a bracket: were ALL the mass parked at the far tip, I would be M L squared; all at the axis, zero. Our one half lies between, and — as the density tilt demands — above the uniform rod's one third. When an integral hands you a coefficient, always ask the extremes to vouch for it. Ours passes, and the tutorial closes its books.",
+          board:[
+            {label:"Bracket", tex:"0 < \\tfrac13 < \\tfrac12 < 1\\ \\ (\\times ML^2)\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"dm = λdx → M = ∫dm → I = ∫x²dm → convert to M, L → bracket against the point-mass extremes", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

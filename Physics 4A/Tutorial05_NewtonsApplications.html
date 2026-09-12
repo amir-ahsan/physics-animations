@@ -1384,6 +1384,597 @@
           } },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Measuring a coefficient of kinetic friction",
+      problem:"A 20.0 kg crate slides across a level floor at constant velocity when pushed horizontally with 50.0 N. Find the coefficient of kinetic friction.",
+      goal:"Goal → μk",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Equilibrium","Normal","Ratio","Meaning"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 5,0.05, 3.4,2.4, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"Constant velocity is a confession",
+          think:"'Constant velocity' — what does that phrase tell you about the net force?",
+          model:"ΣF = 0: the 50.0 N push exactly balances kinetic friction.",
+          pose:"talk",
+          say:"A crate sliding at CONSTANT velocity under a fifty newton push. Those words are a confession: zero net force. The push and the kinetic friction are locked in a perfect draw, so friction is fifty newtons — measured, not assumed.",
+          board:[
+            {label:"Equilibrium", tex:"\\Sigma F_x = F - f_k = 0 \\;\\Rightarrow\\; f_k = 50.0\\ \\mathrm{N}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6.7,1.2, 10.2,1.2, {color:GREEN, w:3, label:'F = 50 N', fs:12});
+       arrow(c, 3.3,1.2, -0.2,1.2, {color:RED, w:3, label:'f_k', fs:12, side:-1});
+     }
+        },
+        { map:1, title:"The normal force on a level floor",
+          think:"No vertical acceleration, no vertical pull: what must n equal?",
+          model:"n = mg = (20.0)(9.80) = 196 N.",
+          pose:"write",
+          say:"Friction's law needs the normal force. On a level floor with a HORIZONTAL push, the vertical ledger is short: n equals m g — one hundred ninety six newtons. Had the push tilted, this line would change; keep the reflex of checking.",
+          board:[
+            {tex:"n = mg = (20.0)(9.80) = 196\\ \\mathrm{N}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 5,2.5, 5,5.5, {color:GREEN, w:3, label:'n', fs:13, side:-1});
+       arrow(c, 5,1.2, 5,-1.8, {color:RED, w:3, label:'mg', fs:13});
+     }
+        },
+        { map:2, title:"The coefficient is a ratio",
+          think:"μk = f/n: why does this come out dimensionless?",
+          model:"μk = 50.0/196 = 0.255.",
+          pose:"write",
+          say:"Kinetic friction obeys f equals mu times n, so the coefficient is the ratio: fifty over one ninety six — zero point two five five. A pure number, force divided by force; the newtons cancel and leave behind a property of the SURFACES.",
+          board:[
+            {tex:"\\mu_k = \\frac{f_k}{n} = \\frac{50.0}{196} = 0.255", kind:"answer"}
+          ]
+        },
+        { map:3, title:"What μ does and does not care about",
+          think:"Double the crate's mass: what happens to μk? To the required push?",
+          model:"μ is a surface-pair property: independent of mass, area, and speed (roughly).",
+          pose:"excited",
+          say:"What have we measured? A property of the crate-floor PAIR. Double the mass and the required push doubles — but so does n, and the ratio stands firm at point two five five. Contact area? Absent from the law entirely, to most people's surprise. The coefficient belongs to the surfaces, not to the load.",
+          board:[
+            {label:"The character of μ", text:"μ depends on the surface pair — not on mass, not on contact area, (nearly) not on speed.", kind:"key"},
+            {label:"Reusable method", text:"constant v ⇒ ΣF = 0 → f = applied force → n from the vertical ledger → μ = f/n", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Getting a box moving",
+      problem:"A 40.0 kg box rests on a floor with μs = 0.600 and μk = 0.400. (a) What minimum horizontal force starts it moving? (b) If that same force is maintained once it moves, what is the acceleration?",
+      goal:"Goal → F_min, then a",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Two frictions","Break free","After the break","Lurch"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 5,0.05, 3.4,2.8, {fill:'#8a4444', stroke:'#5a2424'});
+  },
+      steps:[
+        { map:0, title:"Static and kinetic are different laws",
+          think:"Which of μs, μk governs BEFORE motion — and what kind of law is it?",
+          model:"Static friction is an inequality (f ≤ μs n); kinetic is an equation (f = μk n).",
+          pose:"talk",
+          say:"Two coefficients because friction leads two lives. Before motion, static friction is an INEQUALITY — it supplies whatever is needed, up to a ceiling of mu s times n. After motion begins, kinetic friction is a plain equation — mu k times n, take it or leave it. The whole problem lives in the gap between the two.",
+          board:[
+            {label:"Two regimes", tex:"f_s \\le \\mu_sn \\ \\text{(whatever is needed, up to the ceiling)}; \\quad f_k = \\mu_kn", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the break-free force",
+          think:"The box moves when the push first exceeds what ceiling?",
+          model:"F_min = μs mg = (0.600)(40.0)(9.80) = 235 N.",
+          pose:"write",
+          say:"The box breaks free when the push reaches static friction's ceiling: mu s times m g — point six times forty times nine point eight — two hundred thirty five newtons. One newton less, and the box absorbs the push in silence.",
+          board:[
+            {tex:"F_{\\min} = \\mu_smg = (0.600)(40.0)(9.80) = 235\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 6.7,1.4, 10.6,1.4, {color:GREEN, w:3.5, label:'235 N', fs:13});
+       arrow(c, 3.3,1.4, -0.4,1.4, {color:RED, w:3.5, label:'f_s ≤ 235 N', fs:12, side:-1});
+     }
+        },
+        { map:2, title:"Part (b): friction drops, surplus appears",
+          think:"The instant it slides, friction falls to μk mg. How big is the sudden surplus?",
+          model:"f_k = 157 N; a = (235 − 157)/40.0 = 1.96 m/s².",
+          pose:"write",
+          say:"The instant sliding begins, friction abruptly discounts itself to mu k m g — one hundred fifty seven newtons — while our push still delivers two thirty five. The surplus, seventy eight newtons on forty kilograms: one point nine six metres per second squared, from a standing start.",
+          board:[
+            {tex:"f_k = \\mu_kmg = 157\\ \\mathrm{N}; \\qquad a = \\frac{235 - 157}{40.0} = 1.96\\ \\mathrm{m/s^2}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Why boxes lurch",
+          think:"Explain the lurch using nothing but μs > μk.",
+          model:"The force that starts motion exceeds the force that sustains it — surplus = instant acceleration.",
+          pose:"excited",
+          say:"And there is the everyday mystery solved: the LURCH. You lean harder, harder — nothing — then the box leaps away. Because the force required to START exceeds the force required to SUSTAIN, the moment of breaking free arrives with a built-in surplus. Mu s above mu k: two numbers, one undignified stumble across the warehouse.",
+          board:[
+            {label:"The lurch", text:"μs > μk means break-free force > sustaining force: motion begins with a surplus, hence the jump.", kind:"key"},
+            {label:"Reusable method", text:"threshold from μs n → after breakaway swap in μk n → surplus/m = a", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Fastest safe speed on a flat curve",
+      problem:"A car rounds a flat curve of radius 60.0 m. If μs = 0.800 between tires and road, what is the maximum speed without skidding?",
+      goal:"Goal → v_max",
+      world:{"x0":-14,"x1":14,"y0":-11,"y1":11},
+      pathway:["Who turns the car","Limit","Solve","Scaling"],
+      setup(ctx,w){
+    arc(ctx, 0,-16, 22, 55, 125, {color:CHALKC, w:2.5});
+    boxAt(ctx, 0,5.4, 3.2,1.8, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"What force turns a car?",
+          think:"The tires do not slide sideways. So which KIND of friction is at work?",
+          model:"Static friction, pointing toward the center, is the centripetal force.",
+          pose:"talk",
+          say:"What turns a car? Not the steering wheel — that merely aims the tires. The road turns the car, through friction; and because rolling tires do not slide sideways across the pavement, it is STATIC friction. Sideways static friction, pointed at the centre of the curve, is the only centripetal force on offer.",
+          board:[
+            {label:"The physics", text:"Static friction (tires not sliding sideways) supplies the centripetal force, toward the center.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,5.2, 0,0.5, {color:RED, w:3.5, label:'f_s → center', fs:12});
+       arrow(c, 1.7,6.3, 6.2,6.3, {color:GREEN, w:3, label:'v', fs:12});
+     }
+        },
+        { map:1, title:"Push the inequality to its edge",
+          think:"At the fastest safe speed, where does f_s sit relative to its ceiling?",
+          model:"μs mg = mv²/R at the limit.",
+          pose:"write",
+          say:"Demanding a tighter or faster turn raises the friction bill — m v squared over R — until it hits static friction's ceiling, mu s m g. The fastest safe speed is exactly at that edge: ceiling equals bill.",
+          board:[
+            {tex:"f_{s,\\max} = \\mu_smg = \\frac{mv_{\\max}^2}{R}", kind:"key"}
+          ]
+        },
+        { map:2, title:"The mass cancels; solve",
+          think:"Why does a loaded truck share the same limit as a motorcycle here?",
+          model:"v_max = √(μs g R) = 21.7 m/s ≈ 78 km/h.",
+          pose:"write",
+          say:"The masses cancel — the heavier car needs more centripetal force and receives proportionally more friction; democracy again. v max is the root of mu s g R: point eight times nine point eight times sixty — twenty one point seven metres per second, seventy eight kilometres per hour.",
+          board:[
+            {tex:"v_{\\max} = \\sqrt{\\mu_sgR} = \\sqrt{(0.800)(9.80)(60.0)} = 21.7\\ \\mathrm{m/s}", kind:"answer", move:"cancel m"}
+          ]
+        },
+        { map:3, title:"Rain and the square root",
+          think:"μ halves in the wet. By what factor does the safe speed fall?",
+          model:"v ∝ √μs: wet road μ = 0.4 → 15.3 m/s. Halving μ costs only √2 in speed — but overshooting is quadratic.",
+          pose:"excited",
+          say:"Now make it rain: mu drops to point four, and the limit falls to fifteen point three — not half the speed, but one over root two of it, because v grows only as the ROOT of mu. Read that both ways: rain costs less speed than you might fear, but the friction bill grows as v SQUARED, so a small overshoot of the limit is a large overdraft. The square root gives; the square takes away.",
+          board:[
+            {label:"Scaling", tex:"v \\propto \\sqrt{\\mu_s}: \\ \\mu_s = 0.4 \\Rightarrow v_{\\max} = 15.3\\ \\mathrm{m/s}", kind:"key"},
+            {label:"Reusable method", text:"identify static friction as the centripetal supplier → set μs mg = mv²/R → v = √(μgR), mass-free", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Pushing a block up a rough incline at constant speed",
+      problem:"A 10.0 kg block is pushed up a 25.0° incline at constant speed by a force parallel to the incline. With μk = 0.300, find the required force.",
+      goal:"Goal → F (up), then F (down)",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7.5},
+      pathway:["Axes","Normal","Up the slope","Flip friction"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(4.66)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    boxAt(ctx, 5,2.33, 1.5,1.0, {fill:'#2E6DA4', stroke:'#1D4568'});
+    label(ctx, 1.7,0.45, '25°', {fs:12, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Constant speed on a slope",
+          think:"Constant speed again — but now how many forces populate the along-slope ledger?",
+          model:"Equilibrium along the incline with THREE players: F up; mg sin25° and f_k down.",
+          pose:"talk",
+          say:"Pushed UP a rough slope at constant speed: equilibrium again, but the along-slope ledger now has three entries. Our push F climbing; gravity's component m g sine twenty five descending; and kinetic friction — which opposes the MOTION, so it too points down the slope. Friction takes gravity's side whenever you climb.",
+          board:[
+            {label:"Along the slope", text:"Up: F. Down: mg sin25° AND f_k (motion is up, so friction acts down).", kind:"key"}
+          ]
+        },
+        { map:1, title:"Perpendicular first: get n",
+          think:"Why does n here involve cos25° and not the full mg?",
+          model:"n = mg cos25° = 88.8 N; then f_k = 0.300n = 26.6 N.",
+          pose:"write",
+          say:"The perpendicular axis pays for friction's ammunition: n equals m g cosine twenty five — eighty eight point eight newtons — and so f k is point three of that: twenty six point six. On a slope, friction is always slightly cheaper than on the flat, because the surface holds less of the weight.",
+          board:[
+            {tex:"n = mg\\cos25.0^{\\circ} = 88.8\\ \\mathrm{N}; \\qquad f_k = \\mu_kn = 26.6\\ \\mathrm{N}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 5,2.85, 4.03,4.93, {color:GREEN, w:3, label:'n', fs:12, side:-1});
+       arrow(c, 5,2.85, 5,0.3, {color:RED, w:3, label:'mg', fs:12});
+     }
+        },
+        { map:2, title:"Sum the climb's bill",
+          think:"F must pay both gravity and friction. Write the equilibrium and total it.",
+          model:"F = mg sin25° + μk n = 41.4 + 26.6 = 68.1 N.",
+          pose:"write",
+          say:"Equilibrium along the slope: F equals m g sine twenty five plus f k — forty one point four of gravity plus twenty six point six of friction — sixty eight point one newtons. The climb bills you twice: once for altitude, once for roughness.",
+          board:[
+            {tex:"F = mg\\sin25.0^{\\circ} + \\mu_kn = 41.4 + 26.6 = 68.1\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 5.6,3.3, 7.4,4.14, {color:GOLD, w:3.5, label:'F = 68.1 N', fs:12, side:-1});
+       arrow(c, 4.4,2.35, 2.6,1.51, {color:RED, w:2.5, label:'f_k + mg sin25°', fs:10, at:'mid'});
+     }
+        },
+        { map:3, title:"Now let it descend: friction defects",
+          think:"For constant-speed descent, which way does f_k point — and what force is needed now?",
+          model:"Friction flips uphill: F = 41.4 − 26.6 = 14.8 N. Direction of motion sets friction's side.",
+          pose:"excited",
+          say:"The instructive twin: let the block slide DOWN at constant speed, still holding it with an up-slope force. Friction, ever loyal to opposing motion, defects to the uphill side, and the required push collapses to gravity minus friction: fourteen point eight newtons. Same block, same slope — a factor of four and a half in force, purely because friction switched teams. Always ask which way the block MOVES before drawing f.",
+          board:[
+            {label:"Descending twin", tex:"F_{\\rm down} = mg\\sin25^{\\circ} - \\mu_kn = 41.4 - 26.6 = 14.8\\ \\mathrm{N}", kind:"answer"},
+            {label:"Reusable method", text:"n from the perpendicular axis → friction opposes the MOTION → equilibrium along the slope, once per direction of travel", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Stacked blocks: how hard before the top one slips?",
+      problem:"A 2.00 kg block rests on a 5.00 kg block on a frictionless table; μs between the blocks is 0.400. What is the largest horizontal force on the LOWER block that leaves the pair moving together?",
+      goal:"Goal → F_max",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Who moves the top","Top's limit","Whole system","Beyond"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 6,0.05, 4.4,2.2, {fill:'#2E6DA4', stroke:'#1D4568'});
+    boxAt(ctx, 6,2.25, 2.6,1.6, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 3.2,3.3, '2 kg', {fs:11, color:RED});
+    label(ctx, 3.2,0.7, '5 kg', {fs:11, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"What accelerates the top block?",
+          think:"List the horizontal forces on the TOP block alone. There is only one candidate.",
+          model:"Only friction from the lower block. Here friction is the engine, not the brake.",
+          pose:"talk",
+          say:"The applied force touches only the LOWER block. Then what moves the upper one? Look at its ledger: gravity down, normal up, and horizontally — nothing but friction from the block beneath. Friction here is not resisting the top block's motion; friction IS its motion's entire cause. The villain of the last example is this one's engine.",
+          board:[
+            {label:"Top block's ledger", text:"Horizontal forces on the 2 kg block: static friction from below. Nothing else. Friction DRIVES it.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6,2.7, 8.6,2.7, {color:GREEN, w:3, label:'f_s drives it', fs:11, side:-1});
+     }
+        },
+        { map:1, title:"The top block's speed limit",
+          think:"Friction can supply at most μs m_top g. What acceleration ceiling does that impose?",
+          model:"a_max = μs g = 3.92 m/s² — independent of the top mass.",
+          pose:"write",
+          say:"Static friction's best offer to the top block is mu s times its weight; divide by its mass and the mass bows out: a max equals mu s g — three point nine two metres per second squared. Any team acceleration beyond that, and the top block simply cannot keep up.",
+          board:[
+            {tex:"a_{\\max} = \\frac{\\mu_sm_{\\rm top}g}{m_{\\rm top}} = \\mu_sg = 3.92\\ \\mathrm{m/s^2}", kind:"answer", move:"cancel m"}
+          ]
+        },
+        { map:2, title:"Bill the whole stack",
+          think:"For the pair to move together at a_max, who must be accelerated?",
+          model:"F_max = (7.00)(3.92) = 27.4 N.",
+          pose:"write",
+          say:"For the pair to travel as one at that ceiling, the applied force must move the ENTIRE seven kilograms: seven times three point nine two — twenty seven point four newtons. That is the loudest you may push before the partnership dissolves.",
+          board:[
+            {tex:"F_{\\max} = (m_{\\rm top}+m_{\\rm bot})\\,a_{\\max} = (7.00)(3.92) = 27.4\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 8.2,1.1, 12,1.1, {color:GOLD, w:3.5, label:'F ≤ 27.4 N', fs:12});
+     }
+        },
+        { map:3, title:"And if you exceed it?",
+          think:"Push with 40 N: describe what each block does.",
+          model:"The lower block runs out from under; the top slides back RELATIVE to it (still forward in the room).",
+          pose:"excited",
+          say:"Exceed the limit and the choreography fails: the lower block surges ahead, the upper — now on kinetic friction's smaller ration — lags, sliding backward RELATIVE to its partner while still moving forward across the room. Every tablecloth trick and every toppling coffee cup on a braking dashboard is this problem, performed without calculation.",
+          board:[
+            {label:"Beyond the limit", text:"F > 27.4 N: bottom block escapes; top slips backward relative to it (forward relative to the room).", kind:"warn"},
+            {label:"Reusable method", text:"the driven-by-friction body sets a_max = μs g → bill the total mass for F_max → interpret slipping as relative motion", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Vertical circle: bucket of water",
+      problem:"You swing a 2.00 kg bucket of water in a vertical circle of radius 1.00 m. (a) What minimum speed at the top keeps the water in the bucket? (b) If the speed at the bottom is 5.00 m/s, what force does the bucket exert on the water there?",
+      goal:"Goal → v_min at top, n at bottom",
+      world:{"x0":-3.2,"x1":3.2,"y0":-2.4,"y1":2.6},
+      pathway:["Top","The limit","Bottom","Apparent weight"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 1.7, {stroke:CHALKC, w:2, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"At the top: everything points down",
+          think:"At the top, which direction is 'centripetal' — and which forces point that way?",
+          model:"Center is DOWN: n + mg = mv²/R. Both forces feed the turn.",
+          pose:"talk",
+          say:"At the summit of the circle the centre is DOWNWARD, and both forces on the water — gravity and the bucket's floor pressing on it — point that way. So they cooperate: n plus m g equals m v squared over R. No minus signs at the top; everything is centripetal.",
+          board:[
+            {label:"Top of the circle", tex:"n + mg = \\frac{mv^2}{R}", kind:"key"}
+          ],
+          action(c){
+       circleAt(c, 0,1.7, 0.28, {stroke:BLUE, w:3});
+       arrow(c, 0,1.35, 0,0.45, {color:RED, w:3, label:'mg + n', fs:11});
+     }
+        },
+        { map:1, title:"The minimum: n → 0",
+          think:"What does 'the water just barely stays in' translate to, algebraically?",
+          model:"n = 0: v_min = √(gR) = 3.13 m/s.",
+          pose:"write",
+          say:"Slow down and the required centripetal force shrinks until gravity ALONE suffices — the bucket presses no more, n goes to zero. That is the minimum: v min equals root g R — three point one three metres per second. Any slower and gravity is over-supplied; the water leaves the bucket to spend its surplus, on you.",
+          board:[
+            {tex:"n\\to0: \\quad v_{\\min} = \\sqrt{gR} = \\sqrt{(9.80)(1.00)} = 3.13\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"At the bottom: the roles split",
+          think:"Now the center is UP. Rewrite the second law and note who fights whom.",
+          model:"n − mg = mv²/R → n = 2.00(9.80 + 25.0) = 69.6 N.",
+          pose:"write",
+          say:"At the bottom the centre is UP, so the bucket must both cancel gravity and fund the turn: n minus m g equals m v squared over R. With five metres per second: n equals two times nine point eight plus twenty five — sixty nine point six newtons.",
+          board:[
+            {label:"Bottom of the circle", tex:"n - mg = \\frac{mv^2}{R} \\;\\Rightarrow\\; n = m\\left(g + \\frac{v^2}{R}\\right) = 69.6\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 0,-1.7, 0.28, {stroke:BLUE, w:3});
+       arrow(c, 0,-1.35, 0,-0.45, {color:GREEN, w:3, label:'n', fs:11});
+       arrow(c, 0.4,-1.75, 0.4,-2.35, {color:RED, w:2.5, label:'mg', fs:11});
+     }
+        },
+        { map:3, title:"Apparent weight around the loop",
+          think:"69.6 N is 3.6 mg. Where in ANY vertical circle is apparent weight greatest? Least?",
+          model:"Heaviest at the bottom, lightest at the top — true for buckets, coasters, and pilots.",
+          pose:"excited",
+          say:"Sixty nine point six newtons is three point six times the water's weight — at the bottom of the swing the water is effectively three and a half times heavier. Greatest apparent weight at the bottom, least at the top: the universal weather of vertical circles, felt by roller coaster riders, fighter pilots, and the water in your bucket alike. n is what a scale would read; g never changed at all.",
+          board:[
+            {label:"The pattern", text:"Apparent weight n: maximum at the bottom (n = m(g + v²/R)), minimum at the top (n = m(v²/R − g)).", kind:"key"},
+            {label:"Reusable method", text:"point the positive axis at the center → ΣF = mv²/R at top and bottom separately → the minimum condition is n = 0", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Banked curve with friction",
+      problem:"A highway curve of radius 80.0 m is banked at 15.0°. With μs = 0.500, find the maximum speed at which a car can round it without sliding up the bank.",
+      goal:"Goal → v_max",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Setup","Two axes","Divide","Limits"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(1)},${ctx.M.Y(0.5)} ${ctx.M.X(10)},${ctx.M.Y(0.5)} ${ctx.M.X(10)},${ctx.M.Y(2.91)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    boxAt(ctx, 6.5,2.0, 1.7,0.9, {fill:'#2E6DA4', stroke:'#1D4568'});
+    label(ctx, 2.2,0.9, '15°', {fs:12, color:DIMC});
+    label(ctx, 0.0,5.8, 'center of curve ←', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"At the limit, friction points downhill",
+          think:"The car is on the verge of sliding UP the bank. Which way does static friction act?",
+          model:"Friction opposes impending slide: down the slope. Axes: horizontal (to center) and vertical.",
+          pose:"talk",
+          say:"A banked curve taken at the limit of speed: the car is on the verge of sliding UP the bank, so static friction digs in DOWN the slope. And a tactical note: for circular motion on a bank, take axes horizontal and vertical — the acceleration is horizontal, toward the centre, and tilted axes would smear it across both.",
+          board:[
+            {label:"Setup", text:"Max speed ⇒ friction acts down the bank. Use horizontal (centripetal) and vertical axes.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6.5,2.9, 5.05,4.28, {color:GREEN, w:3, label:'n', fs:12, side:-1});
+       arrow(c, 6.5,2.0, 6.5,0.2, {color:RED, w:2.5, label:'mg', fs:12});
+       arrow(c, 5.9,1.74, 4.45,1.35, {color:GOLD, w:2.5, label:'f_s', fs:11, at:'mid'});
+     }
+        },
+        { map:1, title:"Newton on both axes",
+          think:"n and f both split across the axes. Which components point at the center?",
+          model:"Horizontal: n sinθ + μn cosθ = mv²/R. Vertical: n cosθ − μn sinθ = mg.",
+          pose:"write",
+          say:"Both the normal force and friction split across our axes. Toward the centre: n sine theta plus mu n cosine theta funds the turn. Vertically: n cosine theta, minus friction's downward-slope contribution mu n sine theta, holds up the weight. Two equations; n and m both about to disappear.",
+          board:[
+            {tex:"n\\sin\\theta + \\mu_sn\\cos\\theta = \\frac{mv^2}{R}", kind:"key"},
+            {tex:"n\\cos\\theta - \\mu_sn\\sin\\theta = mg", kind:"key"}
+          ]
+        },
+        { map:2, title:"Divide and evaluate",
+          think:"Dividing kills n AND m. What structure remains?",
+          model:"v_max = √(Rg(sinθ + μcosθ)/(cosθ − μsinθ)) = 26.4 m/s.",
+          pose:"write",
+          say:"Divide the first by the second: n gone, m gone. v max squared equals R g times sine plus mu cosine, over cosine minus mu sine. Numbers: eighty times nine point eight times point seven four two over point eight three seven — root it — twenty six point four metres per second. Ninety five kilometres per hour, from geometry and grip together.",
+          board:[
+            {tex:"v_{\\max} = \\sqrt{Rg\\,\\frac{\\sin\\theta + \\mu_s\\cos\\theta}{\\cos\\theta - \\mu_s\\sin\\theta}} = \\sqrt{(80.0)(9.80)\\frac{0.742}{0.837}} = 26.4\\ \\mathrm{m/s}", kind:"answer", move:"divide: n, m cancel"}
+          ]
+        },
+        { map:3, title:"Test both limits",
+          think:"Set μ = 0; set θ = 0. What must the formula collapse into?",
+          model:"μ = 0 → √(Rg tanθ) = 14.5; θ = 0 → √(μRg) = 19.8. Together: 26.4 — more than either.",
+          pose:"excited",
+          say:"The audit, twice over. Remove friction: the formula collapses to root R g tangent theta — fourteen point five, the pure banking result. Flatten the bank: root mu R g — nineteen point eight, the flat-curve result of an earlier example. Both limits check, and the full answer, twenty six point four, exceeds either — banking and friction are allies, and together they outperform each working alone.",
+          board:[
+            {label:"Limit checks", tex:"\\mu=0: 14.5\\ \\mathrm{m/s}; \\quad \\theta=0: 19.8\\ \\mathrm{m/s}; \\quad\\text{both: } 26.4\\ \\mathrm{m/s}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"impending-slide direction fixes f → horizontal/vertical axes → divide to kill n, m → verify both limiting cases", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Conical pendulum",
+      problem:"A 0.200 kg ball on a 1.20 m string moves in a horizontal circle with the string at a constant 30.0° from the vertical. Find the tension, the ball's speed, and the period.",
+      goal:"Goal → T, v, period",
+      world:{"x0":-4,"x1":8,"y0":-1,"y1":8},
+      pathway:["Geometry","Two axes","Speed","Period"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(7.5),x2:ctx.M.X(4.4),y2:ctx.M.Y(3.34),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    dashLine(ctx, 2,7.5, 2,3.0, {});
+    circleAt(ctx, 4.4,3.1, 0.35, {stroke:GOLD, w:3});
+    el('ellipse',{cx:ctx.M.X(2),cy:ctx.M.Y(3.1),rx:ctx.M.X(4.4)-ctx.M.X(2),ry:12,fill:'none',stroke:DIMC,'stroke-width':1.5,'stroke-dasharray':'5,4'},ctx.svg);
+    label(ctx, 2.3,5.6, '30°', {fs:12, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Read the cone's geometry",
+          think:"The circle's radius is not L. What is it?",
+          model:"r = L sin30° = 0.600 m; the vertical drop is L cos30°.",
+          pose:"talk",
+          say:"A ball whirling on a string that sweeps a cone: the classic conical pendulum. First, geometry — the circle's radius is not the string's length but its horizontal shadow: L sine thirty, sixty centimetres. The vertical drop, L cosine thirty, will matter later in a way I promise is charming.",
+          board:[
+            {label:"Geometry", tex:"r = L\\sin30.0^{\\circ} = 0.600\\ \\mathrm{m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Vertical equilibrium gives T",
+          think:"The ball never moves vertically. What must T cosθ equal?",
+          model:"T cos30° = mg → T = 2.26 N.",
+          pose:"write",
+          say:"The ball circles at a constant height, so vertically: T cosine thirty equals m g. The tension is m g over cosine thirty — two point two six newtons. As with every tilted string holding something up, T exceeds the bare weight.",
+          board:[
+            {tex:"T\\cos30.0^{\\circ} = mg \\;\\Rightarrow\\; T = \\frac{(0.200)(9.80)}{0.866} = 2.26\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 4.4,3.45, 3.2,5.53, {color:GREEN, w:3, label:'T', fs:12, side:-1});
+       arrow(c, 4.4,2.75, 4.4,1.1, {color:RED, w:2.5, label:'mg', fs:12});
+     }
+        },
+        { map:2, title:"Horizontal: the centripetal budget",
+          think:"Divide the two axis equations. What expression for v² drops out?",
+          model:"T sinθ = mv²/r → v² = gr tanθ → v = 1.84 m/s.",
+          pose:"write",
+          say:"Horizontally, the tension's sideways component funds the circle: T sine thirty equals m v squared over r. Divide by the vertical equation and T departs: v squared equals g r tangent theta. Root of nine point eight times point six times point five seven seven: one point eight four metres per second.",
+          board:[
+            {tex:"\\frac{T\\sin\\theta}{T\\cos\\theta} = \\frac{mv^2/r}{mg} \\;\\Rightarrow\\; v = \\sqrt{gr\\tan\\theta} = 1.84\\ \\mathrm{m/s}", kind:"answer", move:"divide: T, m cancel"}
+          ],
+          action(c){
+       arrow(c, 4.4,3.1, 2.9,3.1, {color:GOLD, w:3, label:'T sinθ → center', fs:10, at:'mid'});
+     }
+        },
+        { map:3, title:"The period's secret",
+          think:"τ = 2π√(L cosθ/g): which pendulum formula does this impersonate?",
+          model:"τ = 2πr/v = 2π√(Lcosθ/g) = 2.05 s — set by the cone's HEIGHT, not the mass.",
+          pose:"excited",
+          say:"The period: circumference over speed — and when the algebra settles, tau equals two pi root of L cosine theta over g. Two point zero five seconds. Look closely: that is the simple pendulum's formula wearing the cone's HEIGHT, L cosine theta, in place of L. The mass never appears; the radius hides inside the geometry. Whirl it faster and the cone rises, shortening its effective length to keep the books balanced — the promised charm.",
+          board:[
+            {tex:"\\tau = \\frac{2\\pi r}{v} = 2\\pi\\sqrt{\\frac{L\\cos\\theta}{g}} = 2.05\\ \\mathrm{s}", kind:"answer"},
+            {label:"Reusable method", text:"r = L sinθ → vertical: T cosθ = mg → horizontal: T sinθ = mv²/r → divide; period from 2πr/v", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Terminal speed with quadratic drag",
+      problem:"An 80.0 kg skydiver experiences drag f = Dv² with D = 0.250 kg/m. (a) Find the terminal speed. (b) At what speed is the acceleration g/2? (c) How does v_t change if she dives head-first, halving D?",
+      goal:"Goal → v_t, v at g/2, new v_t",
+      world:{"x0":-1,"x1":12,"y0":-5,"y1":65},
+      pathway:["Balance","Terminal","Half g","Reshape"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (m/s)'});
+  },
+      steps:[
+        { map:0, title:"Drag grows until it wins",
+          think:"Weight is fixed; drag grows as v². What state must the fall approach?",
+          model:"mg constant vs Dv² growing: equilibrium at mg = Dv_t².",
+          pose:"talk",
+          say:"A skydiver falls; gravity is a fixed seven hundred eighty four newtons, while the air pushes back as the SQUARE of her speed. The contest can end only one way: drag grows until it precisely matches the weight, acceleration dies, and the fall settles at terminal speed.",
+          board:[
+            {label:"The balance", tex:"mg = Dv_t^2\\ \\text{at terminal speed}", kind:"key"}
+          ],
+          action(c){
+       plotCurve(c, t=>56*Math.tanh(9.8*t/56*1.0), 0, 11, {color:GOLD, w:3, N:70});
+       dashLine(c, 0,56, 11,56, {});
+       label(c, 7.6,60, 'v_t = 56 m/s', {fs:12, color:GOLD});
+     }
+        },
+        { map:1, title:"Part (a): terminal speed",
+          think:"Solve mg = Dv² for v. Which parameters raise v_t; which lower it?",
+          model:"v_t = √(mg/D) = √(784/0.250) = 56.0 m/s ≈ 200 km/h.",
+          pose:"write",
+          say:"Solve the balance: v t equals root of m g over D — root of seven hundred eighty four over point two five — fifty six metres per second, roughly two hundred kilometres per hour. Heavier means faster; draggier means slower; the root softens everything.",
+          board:[
+            {tex:"v_t = \\sqrt{\\frac{mg}{D}} = \\sqrt{\\frac{784}{0.250}} = 56.0\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): where a = g/2",
+          think:"a = g/2 means drag has grown to what fraction of the weight?",
+          model:"Dv² = mg/2 → v = v_t/√2 = 39.6 m/s.",
+          pose:"write",
+          say:"Where has the acceleration fallen to half of g? Where drag has clawed back exactly half the weight: D v squared equals m g over two, so v is v t over root two — thirty nine point six. A tidy structural fact: half the acceleration lives at one-over-root-two of terminal speed, whatever the diver.",
+          board:[
+            {tex:"mg - Dv^2 = \\tfrac{mg}{2} \\;\\Rightarrow\\; v = \\frac{v_t}{\\sqrt2} = 39.6\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Part (c): reshape the body",
+          think:"v_t ∝ 1/√D: halving D multiplies v_t by what?",
+          model:"Head-first: v_t → √2 × 56.0 = 79.2 m/s. Posture is the skydiver's throttle.",
+          pose:"excited",
+          say:"Dive head-first and D halves; since v t goes as one over root D, the terminal speed rises by root two, to seventy nine point two. Posture is the skydiver's throttle — spread to brake, streamline to dive. And for the calculus-minded: the full equation integrates to a hyperbolic tangent, v t tanh of g t over v t — the smooth S-curve on our board, forever approaching its asymptote with dwindling enthusiasm.",
+          board:[
+            {tex:"v_t \\propto \\frac{1}{\\sqrt D}: \\quad D\\to D/2 \\Rightarrow v_t = 79.2\\ \\mathrm{m/s}", kind:"answer"},
+            {label:"For the curious", tex:"v(t) = v_t\\tanh\\!\\left(\\frac{gt}{v_t}\\right)", kind:"note"},
+            {label:"Reusable method", text:"terminal = balance point mg = Dv² → fractions of g map to fractions of v_t² → v_t scales as √(m/D)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Up a rough slope and back down",
+      problem:"A block is launched up a 20.0° incline at 6.00 m/s, with μk = 0.250 and μs = 0.300. (a) How far up does it go? (b) Does it stay? (c) If not, how fast does it return to the launch point?",
+      goal:"Goal → d, stay?, v_return",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Up: allies","Distance","The verdict","Down: rivals","Asymmetry"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(0)} ${ctx.M.X(10)},${ctx.M.Y(3.64)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    label(ctx, 1.7,0.4, '20°', {fs:12, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Going up: gravity and friction ally",
+          think:"On the way up, both retarding effects add. Write the deceleration.",
+          model:"a = −g(sin20° + μk cos20°) = −5.65 m/s².",
+          pose:"talk",
+          say:"Launched uphill at six metres per second, the block faces a coalition: gravity's slope component AND friction, both pointing down the slope while it climbs. Deceleration: g times sine twenty plus mu k cosine twenty — five point six five metres per second squared of united opposition.",
+          board:[
+            {tex:"a_{\\rm up} = -g(\\sin20^{\\circ} + \\mu_k\\cos20^{\\circ}) = -9.80(0.342+0.235) = -5.65\\ \\mathrm{m/s^2}", kind:"key"}
+          ],
+          action(c){
+       const b=boxAt(c, 1.5,0.55, 1.2,0.8, {fill:'#2E6DA4', stroke:'#1D4568'});
+       tween(u=>{ const s=u*2.99; b.setAttribute('x', c.M.X(1.5+s*0.94-0.6)); b.setAttribute('y', c.M.Y(0.55+s*0.342+0.8)); }, 1500, c.instant);
+       arrow(c, 3.5,3.4, 2.1,2.89, {color:RED, w:2.5, label:'mg sinθ + f_k', fs:10, at:'mid'});
+     }
+        },
+        { map:1, title:"Part (a): how far",
+          think:"Which timeless equation converts 6.00 m/s into metres of slope?",
+          model:"d = v₀²/(2|a|) = 36.0/11.3 = 3.18 m.",
+          pose:"write",
+          say:"The distance: v nought squared over twice the deceleration — thirty six over eleven point three — three point one eight metres along the slope before the climb is spent.",
+          board:[
+            {tex:"d = \\frac{v_0^2}{2|a|} = \\frac{36.0}{11.3} = 3.18\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): the pause at the top",
+          think:"At rest, the fight is mg sinθ vs static friction's best. Compare tan20° with μs.",
+          model:"tan20° = 0.364 > μs = 0.300: static friction loses; it slides back.",
+          pose:"think",
+          say:"At the momentary summit, a trial: can static friction hold the block? Gravity pulls downhill with m g sine twenty — point three four two m g; static friction can muster at most point three of m g cosine twenty — point two eight two m g. Gravity wins the hearing. Equivalently: the slope's tangent, point three six four, exceeds mu s. The block WILL return.",
+          board:[
+            {label:"The verdict", tex:"\\tan20^{\\circ} = 0.364 > \\mu_s = 0.300 \\;\\Rightarrow\\; \\text{it slides back down}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"Coming down: friction defects again",
+          think:"Now friction points UP the slope. Write the (smaller) downhill acceleration.",
+          model:"a = g(sin20° − μk cos20°) = 1.05 m/s²; v = √(2·1.05·3.18) = 2.59 m/s.",
+          pose:"write",
+          say:"On the descent, friction switches sides — now it points uphill, resisting the slide. The net acceleration shrinks to g times sine twenty MINUS mu k cosine twenty: one point zero five. Over the same three point one eight metres: v equals two point five nine metres per second at the launch point.",
+          board:[
+            {tex:"a_{\\rm down} = 9.80(0.342-0.235) = 1.05\\ \\mathrm{m/s^2}", kind:"key"},
+            {tex:"v = \\sqrt{2(1.05)(3.18)} = 2.59\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Out at 6, home at 2.6",
+          think:"Where did the missing kinetic energy go — and on which legs of the trip?",
+          model:"Friction taxed BOTH directions; gravity's work canceled round-trip. Hence the asymmetry.",
+          pose:"excited",
+          say:"Launched at six, home at two point six. Gravity, the honest broker, took energy on the climb and returned every joule on the descent. Friction taxed BOTH legs of the journey and returned nothing — it never does. The asymmetry of the round trip is the signature of a dissipative force, and next chapter we will give that signature a name: energy.",
+          board:[
+            {label:"The asymmetry", text:"Gravity's round-trip work = 0; friction charged both ways. Return speed 2.59 < launch 6.00 m/s.", kind:"key"},
+            {label:"Reusable method", text:"up: retarders add → d from the timeless equation → static trial (tanθ vs μs) at the top → down: retarders fight → compare speeds", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

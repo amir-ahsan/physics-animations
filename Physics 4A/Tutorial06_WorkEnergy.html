@@ -840,6 +840,11 @@
       return p;
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1386,6 +1391,614 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Work by a force at an angle",
+      problem:"A worker pulls a crate 8.00 m across a level floor with a 120 N force directed 30.0° above the horizontal. How much work does the pull do? How much do gravity and the normal force do?",
+      goal:"Goal → W for each force",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Definition","The pull","The bystanders","Where the rest went"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 3.5,0.05, 3,2.2, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"Work is a dot product",
+          think:"Which part of a force does work: along the path, or across it?",
+          model:"W = Fs cosφ — only the along-the-path component earns.",
+          pose:"talk",
+          say:"Work is force times distance times the cosine of the angle between them — a dot product wearing work clothes. Only the component of force ALONG the displacement is paid; the perpendicular part labours in vain. Keep that cosine in view; it is the entire law.",
+          board:[
+            {label:"Definition", tex:"W = \\vec F\\cdot\\vec s = Fs\\cos\\phi", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 5,1.4, 9.3,3.9, {color:GOLD, w:3.5, label:'120 N', fs:13});
+       arrow(c, 5,1.4, 9.3,1.4, {color:GREEN, w:2.5, dash:'6,5', label:'F cos30°', fs:11, at:'mid'});
+       label(c, 6.3,2.0, '30°', {fs:11, color:GOLD});
+     }
+        },
+        { map:1, title:"The pull's paycheck",
+          think:"120 N, 8 m, cos 30°: assemble the work.",
+          model:"W = (120)(8.00)cos30° = 831 J.",
+          pose:"write",
+          say:"The pull: one hundred twenty newtons, eight metres, cosine thirty — eight hundred thirty one joules delivered to the crate. The other component of the force is doing something too — but not work; hold that thought.",
+          board:[
+            {tex:"W_{\\rm pull} = (120)(8.00)\\cos30.0^{\\circ} = 831\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3.5,-1.1, 11.5,-1.1, {color:GREEN, dash:'7,5', w:2.5, label:'s = 8.00 m', fs:12, at:'mid'});
+     }
+        },
+        { map:2, title:"Gravity and the normal: zero each",
+          think:"Both are perpendicular to the motion. What is cos 90°?",
+          model:"φ = 90° for both → W = 0 for both. Big forces, no work.",
+          pose:"point",
+          say:"Gravity — nearly two hundred newtons of it — and the normal force both act at ninety degrees to this horizontal march, and the cosine of ninety is unimpressed by size: zero work each. A force can be enormous and unpaid; work is compensation for progress along the path, not for attendance.",
+          board:[
+            {tex:"W_{\\rm grav} = W_{n} = Fs\\cos90^{\\circ} = 0", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 3.5,2.4, 3.5,5.2, {color:DIMC, w:2.5, label:'n', fs:12, side:-1});
+       arrow(c, 3.5,1.1, 3.5,-1.7, {color:RED, w:2.5, label:'mg', fs:12});
+       textAt(c, 8.7,5.9, 'both ⊥ path: no work', {fs:11, italic:true});
+     }
+        },
+        { map:3, title:"What the vertical component did instead",
+          think:"F sin30° = 60 N upward: no work — but it changed which other force?",
+          model:"It lightens the load: n drops by 60 N, easing friction if any existed.",
+          pose:"excited",
+          say:"So what of the pull's sixty newton vertical component? It earned no work — but it lightened the crate's press on the floor by sixty newtons. On a frictionless floor that is a mere courtesy; on a rough one, it is a discount on every metre. Forces that do no work can still change the terms under which other forces operate — bookkeeping the cosine will never show.",
+          board:[
+            {label:"The silent partner", text:"F sin30° = 60 N does no work, but reduces n by 60 N — lightening any friction bill.", kind:"key"},
+            {label:"Reusable method", text:"W = Fs cosφ force by force → perpendicular forces earn zero → note what the workless components still change", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Kinetic energy scales with the square of speed",
+      problem:"Find the kinetic energy of a 1200 kg car at 25.0 m/s. By what factor does it change if the speed doubles? If the speed is halved?",
+      goal:"Goal → K and its scaling",
+      world:{"x0":-2,"x1":56,"y0":-2,"y1":18},
+      pathway:["Compute","Double","Halve","Consequence"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'v (m/s)', ylab:'K (×10⁵ J)'});
+    plotCurve(ctx, v=>0.5*1200*v*v/1e5, 0, 52, {color:CHALKC, w:2.5, N:60});
+  },
+      steps:[
+        { map:0, title:"The baseline",
+          think:"½mv² with m = 1200, v = 25: estimate the order of magnitude first.",
+          model:"K = ½(1200)(625) = 3.75×10⁵ J.",
+          pose:"talk",
+          say:"A family car at highway speed: one half times twelve hundred times twenty five squared — three hundred seventy five thousand joules. About the energy of a stick of dynamite, riding along in perfect silence.",
+          board:[
+            {tex:"K = \\tfrac12mv^2 = \\tfrac12(1200)(25.0)^2 = 3.75\\times10^{5}\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 25,3.75, 0.9, {stroke:GOLD, w:3});
+       label(c, 26.5,2.5, '25 m/s', {fs:11, color:GOLD});
+     }
+        },
+        { map:1, title:"Double the speed",
+          think:"v → 2v: what happens inside the square?",
+          model:"K → 4K = 1.50×10⁶ J.",
+          pose:"write",
+          say:"Double the speed and the square quadruples the energy: one and a half MILLION joules at fifty metres per second. The car is twice as fast and four times as dangerous — the square is not a technicality; it is the headline.",
+          board:[
+            {tex:"v\\to2v: \\quad K\\to4K = 1.50\\times10^{6}\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 50,15, 0.9, {stroke:RED, w:3});
+       label(c, 44,16.3, '×4 the energy', {fs:11, color:RED});
+     }
+        },
+        { map:2, title:"Halve the speed",
+          think:"And v → v/2?",
+          model:"K → K/4 = 9.4×10⁴ J.",
+          pose:"write",
+          say:"Halve the speed and three quarters of the energy simply vanishes from the ledger: ninety four thousand joules at twelve and a half metres per second. Slowing down is the cheapest safety technology ever invented.",
+          board:[
+            {tex:"v\\to v/2: \\quad K\\to K/4 = 9.4\\times10^{4}\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 12.5,0.94, 0.9, {stroke:GREEN, w:3});
+       label(c, 5.5,2.6, '¼ the energy', {fs:11, color:GREEN});
+     }
+        },
+        { map:3, title:"Why stopping distance is quadratic",
+          think:"The brakes must remove ALL of K with a roughly constant force. So distance ∝ ...?",
+          model:"W_brakes = f·d must equal K ∝ v² → d ∝ v². The Tutorial 2 result, explained.",
+          pose:"excited",
+          say:"And here is an old friend explained: stopping distance grows as v squared because the brakes must swallow ALL of this kinetic energy with a roughly fixed force — work equals force times distance, so distance inherits the square. In Tutorial two that was a kinematic curiosity; now it is an energy theorem. The deeper the theory, the shorter the explanation.",
+          board:[
+            {label:"The connection", tex:"fd = \\tfrac12mv^2 \\;\\Rightarrow\\; d \\propto v^2\\ \\text{— the braking law, from energy}", kind:"key"},
+            {label:"Reusable method", text:"compute K once → scale by (v₂/v₁)² for any other speed → read braking distances as energy bills", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Power to lift a load",
+      problem:"A motor lifts a 50.0 kg load 10.0 m at constant speed in 8.00 s. Find the work done by the motor and its average power output in watts and horsepower.",
+      goal:"Goal → W and P",
+      world:{"x0":-2,"x1":12,"y0":-1,"y1":12},
+      pathway:["Force","Work","Power","Rate vs amount"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(11),x2:ctx.M.X(5),y2:ctx.M.Y(2.2),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 5,0.2, 2.2,2.0, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 6.2,1.3, '50 kg', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"Constant speed sets the force",
+          think:"Lifting at constant speed: how does the motor's force compare with the weight?",
+          model:"F = mg = 490 N exactly — no more, no less.",
+          pose:"talk",
+          say:"Constant speed upward means equilibrium: the motor pulls with exactly the load's weight — four hundred ninety newtons. Not a newton more; extra force would mean acceleration, and none was ordered.",
+          board:[
+            {tex:"F = mg = (50.0)(9.80) = 490\\ \\mathrm{N}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The work",
+          think:"Force along displacement, 10 m of it: the work is?",
+          model:"W = (490)(10.0) = 4.90×10³ J.",
+          pose:"write",
+          say:"Work: four hundred ninety newtons through ten metres, fully aligned — four thousand nine hundred joules, deposited into gravitational potential energy where a later tutorial will find it waiting.",
+          board:[
+            {tex:"W = Fs = (490)(10.0) = 4.90\\times10^{3}\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 5,0.2, 2.2,2.0, {fill:'rgba(138,68,68,.6)', stroke:'#5a2424'});
+       tween(u=>{ b.setAttribute('y', c.M.Y(0.2+8*u+2.0)); }, 1800, c.instant);
+       arrow(c, 7.4,1, 7.4,9.5, {color:GREEN, w:2.5, label:'10.0 m', fs:12});
+     }
+        },
+        { map:2, title:"The power, two ways",
+          think:"P = W/t and P = Fv: verify they agree here.",
+          model:"P = 4900/8.00 = 613 W = 0.82 hp; also P = Fv = 490 × 1.25 = 613 W ✓.",
+          pose:"write",
+          say:"Power is the RATE: forty nine hundred joules in eight seconds — six hundred thirteen watts. Or, the elegant twin: P equals F v — four ninety times ten-over-eight — the same six thirteen. In horsepower, divide by seven forty six: point eight two horsepower. A strong pony, working steadily.",
+          board:[
+            {tex:"P_{\\rm avg} = \\frac{W}{\\Delta t} = \\frac{4900}{8.00} = 613\\ \\mathrm{W} = 0.82\\ \\mathrm{hp}", kind:"answer"},
+            {tex:"P = Fv = (490)(1.25) = 613\\ \\mathrm{W}\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"Rate is not amount",
+          think:"Same lift in 4.00 s: what changes — the work, the power, or both?",
+          model:"Half the time: same 4900 J, double the power (1230 W). Power is a rate; work is a quantity.",
+          pose:"excited",
+          say:"Now do the identical job in four seconds: the WORK is untouched — the load rose the same ten metres against the same gravity — but the POWER doubles. Energy is the bill; power is how fast you pay it. Utilities sell you kilowatt HOURS — power times time, which is energy — and the distinction on your invoice is exactly the one on our chalkboard.",
+          board:[
+            {label:"The distinction", text:"Halve the time: W unchanged (4900 J), P doubles (1230 W). Work is the amount; power is the rate.", kind:"key"},
+            {label:"Reusable method", text:"constant v → F = mg → W = Fs → P = W/t = Fv; check both power routes agree", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Sliding to a slower speed on a rough floor",
+      problem:"A 4.00 kg block moving at 5.00 m/s slides 3.00 m across a floor with μk = 0.200. Use the work–energy theorem to find its speed afterward.",
+      goal:"Goal → v after 3.00 m",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Theorem","Friction's work","New K","Range"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 2,0.05, 2.2,1.6, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"The work–energy theorem",
+          think:"What does the theorem promise about NET work and kinetic energy?",
+          model:"W_net = ΔK. No time, no acceleration bookkeeping required.",
+          pose:"talk",
+          say:"The work energy theorem: the net work done on a body equals its change in kinetic energy. Notice the luxuries we are promised — no stopwatch, no acceleration, no kinematics. Identify the works, total them, and the speeds must follow.",
+          board:[
+            {label:"The theorem", tex:"W_{\\rm net} = \\Delta K = \\tfrac12mv_2^2 - \\tfrac12mv_1^2", kind:"key"}
+          ]
+        },
+        { map:1, title:"Friction's negative work",
+          think:"f_k opposes the motion over all 3.00 m. Sign and size of its work?",
+          model:"W_f = −μk mg s = −(0.200)(4.00)(9.80)(3.00) = −23.5 J.",
+          pose:"write",
+          say:"Only friction works here — gravity and the normal are perpendicular bystanders. Friction drags backward along all three metres: minus mu k m g s — minus twenty three point five joules. Negative work is energy leaving the motion, mostly as a slightly warmer floor.",
+          board:[
+            {tex:"W_f = -\\mu_kmg\\,s = -(0.200)(4.00)(9.80)(3.00) = -23.5\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 2,0.05, 2.2,1.6, {fill:'rgba(46,109,164,.55)', stroke:'#1D4568'});
+       tween(u=>{ b.setAttribute('x', c.M.X(2+7.5*(2*u-u*u)-1.1)); }, 1800, c.instant);
+       arrow(c, 4,2.6, 1,2.6, {color:RED, w:2.5, label:'f_k', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Balance the energy books",
+          think:"K₁ = 50 J, withdrawal 23.5 J: what speed does the remainder buy?",
+          model:"K₂ = 50.0 − 23.5 = 26.5 J → v₂ = 3.64 m/s.",
+          pose:"write",
+          say:"Opening balance: half of four times twenty five — fifty joules. Withdrawal: twenty three point five. Remainder: twenty six point five joules, which converts back to speed as the root of two K over m — three point six four metres per second.",
+          board:[
+            {tex:"K_2 = 50.0 - 23.5 = 26.5\\ \\mathrm{J} \\;\\Rightarrow\\; v_2 = \\sqrt{\\frac{2(26.5)}{4.00}} = 3.64\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"How far could it go?",
+          think:"Set K₂ = 0: what total distance exhausts the account?",
+          model:"d_stop = K₁/f_k = 50.0/7.84 = 6.38 m.",
+          pose:"excited",
+          say:"The natural encore: how far until the account is empty? Divide the opening fifty joules by friction's rate of seven point eight four joules per metre: six point three eight metres in total. Friction is a perfectly predictable creditor — a fixed fee per metre — and the work energy theorem is the fastest way to read its books.",
+          board:[
+            {label:"Stopping range", tex:"d_{\\rm stop} = \\frac{K_1}{f_k} = \\frac{50.0}{7.84} = 6.38\\ \\mathrm{m}", kind:"answer"},
+            {label:"Reusable method", text:"list the working forces → total W_net → K₂ = K₁ + W_net → convert back to v; K/f gives the full range", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Work done by (and on) a spring",
+      problem:"A spring with k = 800 N/m is compressed from its natural length by 0.150 m. (a) How much work does the spring do on the object compressing it? (b) How much additional work must you do to compress it from 0.100 m to 0.150 m?",
+      goal:"Goal → W_spring, then the increment",
+      world:{"x0":-0.02,"x1":0.19,"y0":-15,"y1":140},
+      pathway:["Varying force","Integrate","Signs","Increments"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'|F| (N)'});
+    plotCurve(ctx, x=>800*x, 0, 0.17, {color:CHALKC, w:2.5, N:30});
+    label(ctx, 0.115,105, '|F| = kx', {fs:12, color:CHALKC, italic:true});
+  },
+      steps:[
+        { map:0, title:"A force that will not sit still",
+          think:"F = −kx varies along the path. Why is W = Fs now illegal?",
+          model:"Varying force ⇒ work is an integral: the area under F(x).",
+          pose:"talk",
+          say:"A spring's push grows with every millimetre of compression — the force refuses to sit still, so force-times-distance is no longer honest arithmetic. Work becomes an INTEGRAL: the area under the force-versus-position graph. Calculus enters exactly where constancy leaves.",
+          board:[
+            {label:"The upgrade", tex:"W = \\int F_x\\,dx \\quad\\text{(area under } F(x))", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): integrate the spring",
+          think:"∫(−kx)dx from 0 to 0.150 — what shape is this area?",
+          model:"W_spring = −½kx² = −½(800)(0.150)² = −9.00 J.",
+          pose:"write",
+          say:"Integrate the spring force from zero to fifteen centimetres: minus one half k x squared — minus nine joules. The area is a triangle: half base times height, half of point one five times one hundred twenty newtons. The formula and the picture are the same fact.",
+          board:[
+            {tex:"W_{\\rm spring} = \\int_0^{0.150}(-kx)\\,dx = -\\tfrac12(800)(0.150)^2 = -9.00\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0.15,0],[0.15,120]], {color:'rgba(232,172,86,.28)'});
+       label(c, 0.062,28, 'area = ½kx²', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"Mind the signs",
+          think:"The spring did −9 J. Who did +9 J, and where is it stored?",
+          model:"You do +9.00 J; it is banked as ½kx² of spring potential energy.",
+          pose:"point",
+          say:"The MINUS says the spring pushed against the motion throughout — it received energy rather than giving it. You, the compressor, did PLUS nine joules. Nothing is lost: the nine joules sit coiled in the spring, cataloged next chapter as one half k x squared of potential energy, awaiting release.",
+          board:[
+            {label:"Sign accounting", text:"Spring: −9.00 J (opposed the motion). You: +9.00 J, stored as elastic PE = ½kx².", kind:"key"}
+          ]
+        },
+        { map:3, title:"Part (b): the later centimetres cost more",
+          think:"Why is 0.100→0.150 m dearer than 0→0.100 m?",
+          model:"ΔW = ½k(0.150² − 0.100²) = 5.00 J, versus 4.00 J for the first 10 cm.",
+          pose:"excited",
+          say:"From ten to fifteen centimetres: the difference of the two triangle areas — half of eight hundred times the difference of squares — five joules. Compare: the FIRST ten centimetres cost only four. The last five centimetres cost more than the first ten, because you fight a stiffer opponent every step. Springs charge progressive rates; the x squared is the tax table.",
+          board:[
+            {tex:"\\Delta W = \\tfrac12(800)\\left[(0.150)^2 - (0.100)^2\\right] = 5.00\\ \\mathrm{J} \\ \\ (> 4.00\\ \\mathrm{J}\\ \\text{for the first } 0.100\\ \\mathrm{m})", kind:"answer"},
+            {label:"Reusable method", text:"varying force → W = area under F(x) → signs from who opposes whom → increments = difference of ½kx² values", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0.1,0],[0.15,0],[0.15,120],[0.1,80]], {color:'rgba(232,106,90,.35)'});
+       label(c, 0.152,45, '5.00 J', {fs:12, color:RED, italic:true});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Gravity and friction on an incline (work–energy)",
+      problem:"A 2.00 kg block is released from rest and slides 4.00 m down a 30.0° incline with μk = 0.150. Find its speed at the bottom using work and energy.",
+      goal:"Goal → v at the bottom",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Inventory","Gravity","Friction","Total","Frictionless twin"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(9)},${ctx.M.Y(0)} ${ctx.M.X(9)},${ctx.M.Y(5.2)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    boxAt(ctx, 7.2,4.16, 1.4,0.9, {fill:'#2E6DA4', stroke:'#1D4568'});
+    label(ctx, 1.6,0.45, '30°', {fs:12, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Inventory the workers",
+          think:"Three forces act. Which do work over the 4.00 m slide, and with what signs?",
+          model:"Gravity: +. Friction: −. Normal: 0. Then W_net = ΔK.",
+          pose:"talk",
+          say:"Three forces attend the slide; interview each. Gravity — a component along the motion — positive work. Friction — dead against the motion — negative work. The normal force — perpendicular as ever — zero. The theorem will simply sum the testimony.",
+          board:[
+            {label:"Inventory", text:"W_gravity > 0, W_friction < 0, W_normal = 0; then ΔK = the sum.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Gravity's contribution",
+          think:"Why does mg s sin30° equal mgh for the same slide?",
+          model:"W_g = mg s sin30° = (2.00)(9.80)(4.00)(0.500) = 39.2 J.",
+          pose:"write",
+          say:"Gravity: m g times the distance times sine thirty — thirty nine point two joules. Equivalently m g h, with h the two metre vertical drop: gravity bills by ALTITUDE, never by route. The slope is merely gravity's payment plan.",
+          board:[
+            {tex:"W_g = mgs\\sin30^{\\circ} = (2.00)(9.80)(4.00)(0.500) = 39.2\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 7.2,4.6, 7.2,2.4, {color:RED, w:2.5, label:'mg', fs:12});
+       dashLine(c, 7.2,4.16, 0.4,0.25, {});
+     }
+        },
+        { map:2, title:"Friction's toll",
+          think:"n = mg cos30° here. Assemble friction's negative work.",
+          model:"W_f = −μk(mg cos30°)s = −(0.150)(16.97)(4.00) = −10.2 J.",
+          pose:"write",
+          say:"Friction leans on the incline's normal force — m g cosine thirty, seventeen newtons — takes fifteen percent, and charges it over four metres: minus ten point two joules. Note the choreography: sine for the driver, cosine for the brake.",
+          board:[
+            {tex:"W_f = -\\mu_k(mg\\cos30^{\\circ})s = -(0.150)(16.97)(4.00) = -10.2\\ \\mathrm{J}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Total and convert",
+          think:"From rest: K at the bottom equals the net work. Convert to speed.",
+          model:"K = 29.0 J → v = √(2K/m) = 5.39 m/s.",
+          pose:"write",
+          say:"Net work: thirty nine point two minus ten point two — twenty nine joules, all of it now kinetic since we began at rest. Speed: root of two times twenty nine over two — five point three nine metres per second at the bottom.",
+          board:[
+            {tex:"K = 39.2 - 10.2 = 29.0\\ \\mathrm{J} \\;\\Rightarrow\\; v = \\sqrt{\\frac{2(29.0)}{2.00}} = 5.39\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The frictionless twin",
+          think:"Remove friction: what speed — and what does it match?",
+          model:"v = √(2·39.2/2) = 6.26 m/s = free-fall speed from h = 2.00 m.",
+          pose:"excited",
+          say:"Erase the friction and the speed would be six point two six — precisely the speed of a stone DROPPED two metres. The slope, you see, redirects gravity's work but neither adds nor subtracts a joule of it. Inclines are gravity's currency exchange: same value, different denomination. Friction is the only teller taking a commission.",
+          board:[
+            {label:"The twin", tex:"\\mu=0: \\ v = \\sqrt{2(39.2)/2.00} = 6.26\\ \\mathrm{m/s} = \\sqrt{2gh}\\ \\text{for } h = 2.00\\ \\mathrm{m}", kind:"key"},
+            {label:"Reusable method", text:"inventory works with signs → gravity pays mgh regardless of path → friction charges μn per metre → ΔK = the sum", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Engine power on a hill",
+      problem:"A 1500 kg car climbs a 5.00° grade at a steady 20.0 m/s against 400 N of air and rolling resistance. What power must the engine deliver to the wheels?",
+      goal:"Goal → P to the wheels",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":7},
+      pathway:["Force budget","Total F","Power","Breakdown"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0.5)} ${ctx.M.X(12)},${ctx.M.Y(0.5)} ${ctx.M.X(12)},${ctx.M.Y(1.55)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    boxAt(ctx, 6,1.05, 2.4,1.1, {fill:'#2E6DA4', stroke:'#1D4568'});
+    label(ctx, 1.2,0.05, '5° grade', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Steady speed: a force budget",
+          think:"At constant v on a grade, the drive force balances which two items?",
+          model:"F = mg sin5° + 400 N: gravity's slope tax plus air/rolling resistance.",
+          pose:"talk",
+          say:"A steady climb is an equilibrium along the road: the wheels' drive force must pay gravity's grade tax — m g sine five — plus the four hundred newton standing charge of air and rolling resistance. List the bills before touching the power.",
+          board:[
+            {label:"Force budget", tex:"F = mg\\sin5.00^{\\circ} + 400", kind:"key"}
+          ]
+        },
+        { map:1, title:"Total the force",
+          think:"mg sin5° for 1500 kg: how large is the grade term alone?",
+          model:"F = 1281 + 400 = 1681 N.",
+          pose:"write",
+          say:"The grade term: fifteen hundred times nine point eight times point zero eight seven two — twelve hundred eighty one newtons. Add the four hundred: sixteen hundred eighty one newtons of continuous drive force, merely to stand still on the speedometer.",
+          board:[
+            {tex:"F = (1500)(9.80)(0.0872) + 400 = 1281 + 400 = 1681\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 7.2,1.9, 10.4,2.18, {color:GREEN, w:3, label:'F = 1681 N', fs:11, side:-1});
+       arrow(c, 4.8,1.6, 1.6,1.32, {color:RED, w:2.5, label:'mg sinθ + drag', fs:10, at:'mid'});
+     }
+        },
+        { map:2, title:"Power = force × speed",
+          think:"P = Fv at 20 m/s: watts, then horsepower.",
+          model:"P = (1681)(20.0) = 3.36×10⁴ W ≈ 45 hp.",
+          pose:"write",
+          say:"Power: force times velocity — sixteen eighty one times twenty — thirty three point six kilowatts, about forty five horsepower, delivered continuously to the wheels. A modest engine handles a five degree grade at highway speed; marketing sells the other two hundred horses for moments of drama.",
+          board:[
+            {tex:"P = Fv = (1681)(20.0) = 3.36\\times10^{4}\\ \\mathrm{W} \\approx 45\\ \\mathrm{hp}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Where the power goes",
+          think:"Split P into the lifting share mgv sinθ and the drag share. Which dominates?",
+          model:"Lifting: 25.6 kW (76%); drag: 8.0 kW. On the flat, only 8 kW needed.",
+          pose:"excited",
+          say:"Audit the destination: the lifting share — m g v sine theta — is twenty five point six kilowatts, three quarters of the total, faithfully banked as altitude. The remaining eight kilowatts feeds the wind, unrecoverably. On level ground this car cruises on eight kilowatts alone — hills are expensive precisely because that expense is a savings account, refundable on the way down.",
+          board:[
+            {label:"Breakdown", tex:"P_{\\rm lift} = mgv\\sin\\theta = 25.6\\ \\mathrm{kW}\\ (76\\%); \\quad P_{\\rm drag} = 8.0\\ \\mathrm{kW}", kind:"key"},
+            {label:"Reusable method", text:"steady climb → F = mg sinθ + resistance → P = Fv → split the power into stored (lift) and lost (drag)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A force that weakens with distance",
+      problem:"A 2.00 kg object starts from rest at x = 0 on a frictionless track under F(x) = 20.0 − 4.00x (N, x in m). (a) Find the work from x = 0 to 5.00 m and the speed there. (b) Where is the speed greatest? (c) Find the speed at x = 8.00 m.",
+      goal:"Goal → W, v(5), x of v_max, v(8)",
+      world:{"x0":-0.5,"x1":9,"y0":-16,"y1":24},
+      pathway:["Picture","Integrate","Peak","Beyond","Graph = truth"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'F (N)'});
+    plotCurve(ctx, x=>20-4*x, 0, 8.5, {color:CHALKC, w:2.5, N:30});
+  },
+      steps:[
+        { map:0, title:"Read the force's story",
+          think:"F starts at 20 N, dies at x = 5, then turns negative. Sketch the plot mentally first.",
+          model:"F(x) = 20 − 4x: push until x = 5, drag beyond.",
+          pose:"talk",
+          say:"A force of twenty newtons that loses four with every metre: enthusiastic at the start, spent at five metres, and actively hostile beyond. The entire problem is legible in that one descending line — read the graph before the integrals.",
+          board:[
+            {label:"The force", tex:"F(x) = 20.0 - 4.00x: \\ \\text{zero at } x = 5.00\\ \\mathrm{m}, \\text{negative beyond}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): work to x = 5",
+          think:"Integrate F dx — or take the triangle's area. Same number?",
+          model:"W = [20x − 2x²]₀⁵ = 50.0 J → v = 7.07 m/s.",
+          pose:"write",
+          say:"Work to five metres: integrate — twenty x minus two x squared, evaluated at five — fifty joules. Or geometrically: a triangle, half of five times twenty — fifty again. The speed: root of two times fifty over two — seven point zero seven metres per second.",
+          board:[
+            {tex:"W = \\int_0^{5}(20.0-4.00x)dx = 100 - 50.0 = 50.0\\ \\mathrm{J}", kind:"answer"},
+            {tex:"v = \\sqrt{2(50.0)/2.00} = 7.07\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0,20],[5,0]], {color:'rgba(142,210,155,.3)'});
+       label(c, 1.6,7, '+50 J', {fs:13, color:GREEN, italic:true});
+     }
+        },
+        { map:2, title:"Part (b): where is v greatest?",
+          think:"Speed grows while F does what? So the peak is where?",
+          model:"v_max where F = 0: x = 5.00 m — no second calculation needed.",
+          pose:"think",
+          say:"Where is the speed greatest? Wherever the force still pushes forward, the object still gains — so the peak arrives exactly where F crosses zero: five metres. No new computation; the answer to part a WAS the maximum. Forces vote on velocity's direction of change; zero force is the election's turning point.",
+          board:[
+            {label:"The peak", tex:"v_{\\max}\\ \\text{at } F = 0: \\ x = 5.00\\ \\mathrm{m}, \\ v = 7.07\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Part (c): past the peak",
+          think:"From 5 to 8 the area is below the axis. What does W(0→8) total?",
+          model:"W(0→8) = 160 − 128 = 32.0 J → v = 5.66 m/s: slowing.",
+          pose:"write",
+          say:"To eight metres: the antiderivative gives one sixty minus one twenty eight — thirty two joules net, LESS than at five, because the region beyond five contributes negative area — eighteen joules withdrawn. Speed: root thirty two — five point six six. The object coasts uphill against a growing headwind of force.",
+          board:[
+            {tex:"W(0\\to8) = 160 - 128 = 32.0\\ \\mathrm{J} \\;\\Rightarrow\\; v = \\sqrt{32.0} = 5.66\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[5,0],[8,0],[8,-12]], {color:'rgba(232,106,90,.32)'});
+       label(c, 6.0,-8.5, '−18 J', {fs:13, color:RED, italic:true});
+     }
+        },
+        { map:4, title:"The graph was the answer",
+          think:"State all three answers by pointing at areas on the F–x plot.",
+          model:"W = signed area under F(x); v_max at the sign change. Geometry did the physics.",
+          pose:"excited",
+          say:"Look back at the picture: a green triangle worth fifty joules, a red one clawing back eighteen, and a zero crossing marking the peak of speed. Every answer of this problem is an AREA. When a force is given as a function of position, the graph is not an illustration of the solution; it IS the solution, wearing geometry.",
+          board:[
+            {label:"The lesson", text:"W = signed area under F(x). Positive lobes accelerate; negative lobes brake; the crossing is v_max.", kind:"key"},
+            {label:"Reusable method", text:"plot F(x) → integrate (or take areas) between the points of interest → v from K; v peaks where F changes sign", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Work along two different paths",
+      problem:"A force F = 3.00y i + 2.00x j (N, coordinates in m) acts on a particle. Find the work done from the origin to (2.00, 2.00) m (a) along the line y = x and (b) along the x axis then straight up. What do you conclude?",
+      goal:"Goal → W on two paths; conclusion",
+      world:{"x0":-0.5,"x1":3.2,"y0":-0.5,"y1":2.9},
+      pathway:["Line integral","Diagonal","Two legs","Verdict"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'x (m)', ylab:'y (m)'});
+    circleAt(ctx, 2,2, 0.07, {stroke:GOLD, w:3});
+    label(ctx, 2.1,2.25, '(2, 2)', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Work as a line integral",
+          think:"For a position-dependent force, what replaces W = Fs cosφ?",
+          model:"W = ∫F·dr = ∫(Fx dx + Fy dy), evaluated ALONG the chosen path.",
+          pose:"talk",
+          say:"When a force varies from place to place, work becomes a LINE integral: sum F x d x plus F y d y along the actual route taken. The route now matters — or does it? This problem is an experiment designed to find out.",
+          board:[
+            {label:"The tool", tex:"W = \\int\\vec F\\cdot d\\vec r = \\int(F_x\\,dx + F_y\\,dy)", kind:"key"}
+          ]
+        },
+        { map:1, title:"Path (a): the diagonal",
+          think:"On y = x, parametrise x = y = t. What does F·dr collapse to?",
+          model:"3t dt + 2t dt = 5t dt → W = ∫₀² 5t dt = 10.0 J.",
+          pose:"write",
+          say:"Along the diagonal, set x and y both equal to t: F x d x is three t d t, F y d y is two t d t — five t d t in all. Integrate from zero to two: ten joules.",
+          board:[
+            {tex:"\\text{On } y=x: \\ W = \\int_0^2 5t\\,dt = 10.0\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2,2, {color:GREEN, w:3, label:'path (a): 10 J', fs:11, at:'mid', side:-1});
+     }
+        },
+        { map:2, title:"Path (b): along and up",
+          think:"On the first leg y = 0 — what is Fx there? On the second, x = 2 — what is Fy?",
+          model:"Leg 1: Fx = 3y = 0 → 0 J. Leg 2: Fy = 4 N constant → 8.00 J. Total 8.00 J.",
+          pose:"write",
+          say:"The dog-leg: along the x axis, y is zero, so F x — three y — vanishes; the force works not at all. Then straight up at x equals two: F y is a constant four newtons over two metres — eight joules. Total: eight. A different route, and a different bill.",
+          board:[
+            {tex:"\\text{Leg 1: } W_1 = 0; \\quad \\text{Leg 2: } W_2 = \\int_0^2 4.00\\,dy = 8.00\\ \\mathrm{J}", kind:"answer"},
+            {tex:"W_{(b)} = 8.00\\ \\mathrm{J} \\ne W_{(a)} = 10.0\\ \\mathrm{J}", kind:"warn"}
+          ],
+          action(c){
+       arrow(c, 0,0, 2,0, {color:RED, w:3, label:'0 J', fs:11, at:'mid'});
+       arrow(c, 2,0, 2,2, {color:RED, w:3, label:'8 J', fs:11});
+     }
+        },
+        { map:3, title:"The verdict: not conservative",
+          think:"Path-dependent work: what concept is therefore FORBIDDEN for this force?",
+          model:"No potential energy can exist for it. Gravity and springs, by contrast, pay identically on all paths.",
+          pose:"excited",
+          say:"Ten joules one way, eight the other: this force's work depends on the route, and such a force is called NON-conservative. The verdict has teeth: no potential energy function can ever be written for it, because a stored energy that depended on how you arrived would be an accounting scandal. Gravity and springs pass the two-path test on every pair of routes — which is precisely why next tutorial can hand them potential energies. Today's little integral is tomorrow's constitution.",
+          board:[
+            {label:"Conclusion", text:"Path-dependent W ⇒ non-conservative force ⇒ no potential energy exists for it. (Gravity and springs pass this test.)", kind:"key"},
+            {label:"Reusable method", text:"parametrise each path → W = ∫(Fx dx + Fy dy) → compare routes; equal on all paths ⇔ a PE may be defined", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Instantaneous versus average power in an accelerating elevator",
+      problem:"A 1000 kg elevator starts from rest and accelerates upward at 1.00 m/s² for 3.00 s. Find (a) the cable tension, (b) the instantaneous power at t = 3.00 s, and (c) the average power over the 3.00 s.",
+      goal:"Goal → T, P(3), P_avg",
+      world:{"x0":-0.4,"x1":3.6,"y0":-3,"y1":36},
+      pathway:["Tension","P = Tv","Average","Energy audit"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'P (kW)'});
+  },
+      steps:[
+        { map:0, title:"Part (a): the tension",
+          think:"Accelerating upward: is T above or below mg, and by how much?",
+          model:"T = m(g + a) = 1000(10.8) = 1.08×10⁴ N.",
+          pose:"talk",
+          say:"First, dynamics: accelerating upward, the cable must exceed the weight — T equals m times g plus a: ten thousand eight hundred newtons. The familiar elevator result; now we ask what it COSTS per second.",
+          board:[
+            {tex:"T = m(g+a) = 1000(9.80 + 1.00) = 1.08\\times10^{4}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Part (b): instantaneous power",
+          think:"P = Tv needs v at t = 3. Get it from the kinematics.",
+          model:"v = at = 3.00 m/s → P = (10800)(3.00) = 3.24×10⁴ W.",
+          pose:"write",
+          say:"Instantaneous power is force times CURRENT velocity. At three seconds the car moves at three metres per second, so P equals ten thousand eight hundred times three: thirty two point four kilowatts — and climbing, every instant, for the velocity keeps growing under constant tension.",
+          board:[
+            {tex:"v = at = 3.00\\ \\mathrm{m/s}; \\quad P = Tv = 3.24\\times10^{4}\\ \\mathrm{W}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>10.8*t, 0, 3, {color:GOLD, w:3, N:30});
+       circleAt(c, 3,32.4, 0.09, {stroke:RED, w:3});
+       label(c, 2.0,34.2, 'P = Tv grows linearly', {fs:11, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"Part (c): the average",
+          think:"Work = T·Δy with Δy = ½at². Then divide by time — and compare with P(3).",
+          model:"Δy = 4.50 m; W = 4.86×10⁴ J; P_avg = 1.62×10⁴ W = exactly half of P(3).",
+          pose:"write",
+          say:"The average: the cable's work is T times the four and a half metres risen — forty eight point six kilojoules — over three seconds: sixteen point two kilowatts. EXACTLY half the final instantaneous power. No accident: P grows linearly from zero, and the average of a ramp is half its peak.",
+          board:[
+            {tex:"\\Delta y = \\tfrac12at^2 = 4.50\\ \\mathrm{m}; \\quad W = 4.86\\times10^{4}\\ \\mathrm{J}", kind:"key"},
+            {tex:"P_{\\rm avg} = \\frac{W}{t} = 1.62\\times10^{4}\\ \\mathrm{W} = \\tfrac12P(3.00)", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Audit: where the joules went",
+          think:"Split W into mgΔy and ½mv². Do the books close?",
+          model:"44.1 kJ of height + 4.5 kJ of speed = 48.6 kJ ✓.",
+          pose:"excited",
+          say:"Close the books: of the forty eight point six kilojoules, gravity's account received m g delta y — forty four point one — and the kinetic account one half m v squared — four and a half. Sum: forty eight point six, to the joule. Power problems end properly only one way: with an energy audit that balances. This one does.",
+          board:[
+            {label:"Energy audit", tex:"mg\\Delta y + \\tfrac12mv^2 = 44.1 + 4.5 = 48.6\\ \\mathrm{kJ} = W\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"T from Newton → P = Tv at the instant → average from W/t → audit: work = PE gained + KE gained", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

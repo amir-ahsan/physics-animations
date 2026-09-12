@@ -1396,6 +1396,678 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Average velocity versus average speed",
+      problem:"A runner jogs 100 m east in 12.0 s, turns, and jogs 40.0 m west in 8.00 s. Find her average velocity and her average speed for the whole trip.",
+      goal:"Goal → v_avg and speed_avg",
+      world:{"x0":-12,"x1":112,"y0":-14,"y1":26},
+      pathway:["Read","Displacement","Velocity","Speed","Compare"],
+      setup(ctx,w){
+    ground(ctx, -8, 108, 0);
+    for(let x=0;x<=100;x+=25){
+      dashLine(ctx, x,0, x,-2.5, {});
+      label(ctx, x,-7.5, x+' m', {fs:11, anchor:'middle'});
+    }
+  },
+      steps:[
+        { map:0, title:"Read the two legs",
+          think:"Which of the two quantities asked for will care about the turn-around?",
+          model:"Both legs take time; only the displacement forgives the backtracking.",
+          pose:"talk",
+          say:"A runner: one hundred metres east in twelve seconds, then forty metres back west in eight. Twenty seconds in all. Two innocent-sounding averages are requested — velocity and speed — and the whole lesson of this example is that they are NOT the same question.",
+          board:[
+            {label:"Given + find", text:"100 m east in 12.0 s, then 40.0 m west in 8.00 s. Find v_avg and average speed.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Displacement: the signed sum",
+          think:"East is +. What sign does the second leg carry, and why?",
+          model:"Δx = +100 − 40.0 = +60.0 m over Δt = 20.0 s.",
+          pose:"write",
+          say:"Take east as positive. The first leg contributes plus one hundred; the second, being westward, MINUS forty. Net displacement: plus sixty metres, achieved in twenty seconds. The minus sign is the turn-around, recorded in arithmetic.",
+          board:[
+            {tex:"\\Delta x = +100 - 40.0 = +60.0\\ \\mathrm{m}, \\qquad \\Delta t = 20.0\\ \\mathrm{s}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 0,10, 100,10, {color:GREEN, w:3, label:'100 m east', fs:12, at:'mid'});
+       arrow(c, 100,4.5, 60,4.5, {color:RED, w:3, label:'40 m west', fs:12, at:'mid', side:-1});
+       circleAt(c, 0,17, 1.6, {stroke:CHALKC, w:2.5});
+     }
+        },
+        { map:2, title:"Average velocity",
+          think:"Would v_avg change if she had jogged the legs in the other order?",
+          model:"v_avg = Δx/Δt = 60.0/20.0 = 3.00 m/s east.",
+          pose:"write",
+          say:"Average velocity is displacement over time: sixty over twenty — three metres per second, east. It cares only about where she started and where she ended; the story in between is none of its business.",
+          board:[
+            {label:"Velocity", tex:"v_{\\rm avg} = \\frac{\\Delta x}{\\Delta t} = \\frac{60.0}{20.0} = 3.00\\ \\mathrm{m/s\\ (east)}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,18, 60,18, {color:GOLD, w:3.5, label:'Δx = +60 m', fs:13, at:'mid'});
+     }
+        },
+        { map:3, title:"Average speed",
+          think:"Distance ignores signs. What total does the odometer read?",
+          model:"distance = 140 m → speed_avg = 140/20.0 = 7.00 m/s.",
+          pose:"write",
+          say:"Average speed uses DISTANCE — the odometer, not the map. One hundred plus forty: one hundred forty metres in twenty seconds. Seven metres per second. More than double the average velocity, because every backtracked metre still cost time and effort.",
+          board:[
+            {label:"Speed", tex:"\\text{speed}_{\\rm avg} = \\frac{140}{20.0} = 7.00\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"When do they agree?",
+          think:"State the one condition under which speed_avg equals |v_avg|.",
+          model:"Only for motion that never reverses. Speed ≥ |velocity|, always.",
+          pose:"excited",
+          say:"The comparison is the physics: average speed can never be LESS than the magnitude of average velocity, and the two agree only for motion that never reverses. Any turn-around inflates the odometer while the map shrugs. Two numbers, seven and three, telling two different truths about the same twenty seconds.",
+          board:[
+            {label:"The inequality", text:"speed_avg ≥ |v_avg|, with equality only if the motion never reverses.", kind:"key"},
+            {label:"Reusable method", text:"signed sum for Δx → v_avg = Δx/Δt → unsigned sum for distance → speed = distance/Δt → compare", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Acceleration and distance for a merging car",
+      problem:"A car enters a freeway ramp from rest and reaches 27.0 m/s in 9.00 s with constant acceleration. Find the acceleration and the length of ramp used.",
+      goal:"Goal → a and Δx",
+      world:{"x0":-10,"x1":135,"y0":-14,"y1":30},
+      pathway:["Read","Acceleration","Distance","Second road"],
+      setup(ctx,w){
+    ground(ctx, -6, 130, 0);
+  },
+      steps:[
+        { map:0, title:"From rest to freeway speed",
+          think:"'From rest' hands you which known, free of charge?",
+          model:"v₀ = 0, v = 27.0 m/s, t = 9.00 s. Constant a → toolkit applies.",
+          pose:"talk",
+          say:"A car on an entrance ramp: from rest to twenty seven metres per second — about a hundred kilometres per hour — in nine seconds flat, accelerating steadily. From rest is the problem quietly handing you v nought equals zero. Two asks: the acceleration, and the ramp length consumed.",
+          board:[
+            {label:"Given + find", text:"v₀ = 0, v = 27.0 m/s, t = 9.00 s, a constant. Find a and Δx.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Acceleration from the definition",
+          think:"No formula sheet needed — which ratio IS constant acceleration?",
+          model:"a = Δv/Δt = 27.0/9.00 = 3.00 m/s².",
+          pose:"write",
+          say:"Constant acceleration is nothing deeper than a steady rate of change of velocity: twenty seven metres per second gained in nine seconds — three metres per second, per second. Each second the speedometer climbs by another three.",
+          board:[
+            {label:"Definition", tex:"a = \\frac{\\Delta v}{\\Delta t} = \\frac{27.0}{9.00} = 3.00\\ \\mathrm{m/s^2}", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 8,1, 12,6, {fill:'#2E6DA4', stroke:'#1D4568'});
+       arrow(c, 16,12, 40,12, {color:GREEN, w:3, label:'v grows 3 m/s each second', fs:12});
+     }
+        },
+        { map:2, title:"Ramp length via the average",
+          think:"Under constant a, what is the average of 0 and 27 — and why is that legitimate?",
+          model:"Δx = ½(v₀+v)t = ½(27.0)(9.00) = 122 m.",
+          pose:"write",
+          say:"For distance, the friendliest route is the average velocity: with constant acceleration the average of nought and twenty seven is thirteen point five, sustained for nine seconds — one hundred twenty two metres of ramp. Constant acceleration is the one regime where averaging endpoints is honest.",
+          board:[
+            {label:"Average route", tex:"\\Delta x = \\tfrac12(v_0+v)\\,t = \\tfrac12(0+27.0)(9.00) = 122\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 8,1, 12,6, {fill:'rgba(46,109,164,.4)', stroke:'#1D4568'});
+       boxAt(c, 122,1, 12,6, {fill:'#2E6DA4', stroke:'#1D4568'});
+       arrow(c, 8,16, 122,16, {color:GOLD, dash:'7,5', w:2.5, label:'122 m', fs:14, at:'mid'});
+     }
+        },
+        { map:3, title:"The second road agrees",
+          think:"Why does ½at² have to reproduce the same 122 m?",
+          model:"½(3.00)(81.0) = 122 m ✓ — two independent routes, one answer.",
+          pose:"excited",
+          say:"Or take the other road: one half a t squared — one half times three times eighty one — one hundred twenty two metres again. Two roads, one answer: the cheapest self-check in kinematics. When two independent equations agree, your arithmetic has earned its keep.",
+          board:[
+            {label:"Cross-check", tex:"\\Delta x = \\tfrac12at^2 = \\tfrac12(3.00)(81.0) = 122\\ \\mathrm{m}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"a from Δv/Δt → distance from the endpoint average → confirm with ½at² (two roads, one answer)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Dropped from a bridge",
+      problem:"A stone is released from rest from a bridge 45.0 m above the water. Ignoring air resistance, how long does it fall and how fast is it moving on impact?",
+      goal:"Goal → t and v at the water",
+      world:{"x0":-4,"x1":10,"y0":-4,"y1":50},
+      pathway:["Signs","Time","Speed","Check"],
+      setup(ctx,w){
+    ground(ctx, -3, 9, 0);
+    label(ctx, 6.2,1.5, 'water', {fs:11, italic:true});
+    el('line',{x1:ctx.M.X(-3),y1:ctx.M.Y(45),x2:ctx.M.X(3),y2:ctx.M.Y(45),stroke:'#B0A488','stroke-width':4},ctx.svg);
+    label(ctx, -2.8,46.8, 'bridge, 45.0 m up', {fs:11});
+  },
+      steps:[
+        { map:0, title:"Choose up as positive",
+          think:"With up as +, list the signs of a and Δy before touching any equation.",
+          model:"a = −9.80 m/s², Δy = −45.0 m, v₀ = 0.",
+          pose:"talk",
+          say:"A stone released — not thrown — from forty five metres. Choose up as positive and be ruthless about it: the acceleration is minus nine point eight, the displacement to the water is minus forty five, and v nought is zero. Sign bookkeeping first; equations after.",
+          board:[
+            {label:"Signs first", tex:"v_0 = 0, \\quad a = -9.80\\ \\mathrm{m/s^2}, \\quad \\Delta y = -45.0\\ \\mathrm{m}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The time to fall",
+          think:"With v₀ = 0, which toolkit equation contains only Δy, g, and t?",
+          model:"Δy = −½gt² → t = √(2·45/9.8) = 3.03 s.",
+          pose:"write",
+          say:"With no initial velocity, displacement is minus one half g t squared. Solve: t equals the root of two times forty five over nine point eight — three point zero three seconds. Three seconds of silence, then the splash.",
+          board:[
+            {tex:"\\Delta y = -\\tfrac12gt^2 \\;\\Rightarrow\\; t = \\sqrt{\\frac{2(45.0)}{9.80}} = 3.03\\ \\mathrm{s}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 0,45, 0.9, {stroke:RED, w:3});
+       tween(u=>{ b.setAttribute('cy', c.M.Y(45-45*u*u)); }, 1800, c.instant);
+       arrow(c, 3.2,40, 3.2,20, {color:PURPLE, w:2.5, label:'a = −g', fs:12});
+     }
+        },
+        { map:2, title:"Impact speed, two ways",
+          think:"Why does v² = 2gΔh skip the time entirely?",
+          model:"v² = 2(9.80)(45.0) → |v| = 29.7 m/s; velocity −29.7 m/s (down).",
+          pose:"write",
+          say:"For the impact speed use the timeless equation: v squared equals v nought squared plus two a delta y — two times nine point eight times forty five, root it: twenty nine point seven metres per second. And mind the vector: the VELOCITY is minus twenty nine point seven — downward. Over a hundred kilometres per hour, from a three second fall.",
+          board:[
+            {tex:"v^2 = v_0^2 + 2a\\,\\Delta y = 2(9.80)(45.0) \\;\\Rightarrow\\; |v| = 29.7\\ \\mathrm{m/s}", kind:"answer"},
+            {label:"As a vector", tex:"v = -29.7\\ \\mathrm{m/s}\\ \\text{(downward)}", kind:"key"}
+          ]
+        },
+        { map:3, title:"Check with v = −gt",
+          think:"Two of your three numbers were derived independently. Which equation ties all three together?",
+          model:"v = −gt = −(9.80)(3.03) = −29.7 m/s ✓.",
+          pose:"excited",
+          say:"The audit: v equals minus g t — nine point eight times three point zero three — minus twenty nine point seven. It agrees with the timeless route to the decimal. Time, speed, and height now vouch for one another; a mistake in any one would have broken the triangle.",
+          board:[
+            {label:"Closing the triangle", tex:"v = -gt = -(9.80)(3.03) = -29.7\\ \\mathrm{m/s}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"signs from 'up +' → t from Δy = −½gt² → v from the timeless equation → cross-check with v = −gt", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"A ball thrown straight up",
+      problem:"A ball is thrown vertically upward at 15.0 m/s from a height called y = 0. Find (a) the maximum height, (b) the time to return to the launch height, and (c) the two times at which the ball is 8.00 m above the launch point.",
+      goal:"Goal → y_max, t_return, t at 8 m",
+      world:{"x0":-1,"x1":11,"y0":-1.5,"y1":13},
+      pathway:["Read","Top","Round trip","Quadratic","Two roots"],
+      setup(ctx,w){
+    ground(ctx, -0.5, 10.5, 0);
+    dashLine(ctx, 0,8, 9,8, {});
+    label(ctx, 7.4,8.6, 'y = 8.00 m', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Read: three questions, one flight",
+          think:"What is v at the very top — and what is a there?",
+          model:"At the apex v = 0 but a = −g still. Three sub-questions, one motion.",
+          pose:"talk",
+          say:"Straight up at fifteen metres per second. Three questions about one flight: how high, how long until it comes home, and WHEN is it eight metres up — note the plural, times. At the top the velocity vanishes but the acceleration does not; gravity takes no holidays at the apex.",
+          board:[
+            {label:"Given + find", text:"v₀ = +15.0 m/s, a = −g. Find y_max, the return time, and both times at y = 8.00 m.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the top",
+          think:"Which condition defines 'maximum height' in one short equation?",
+          model:"v = 0 at the top: y_max = v₀²/2g = 11.5 m.",
+          pose:"write",
+          say:"The top is where v equals zero. The timeless equation gives nought equals v nought squared minus two g y max, so y max is fifteen squared over twice nine point eight — eleven point five metres. A four-storey throw.",
+          board:[
+            {tex:"0 = v_0^2 - 2g\\,y_{\\max} \\;\\Rightarrow\\; y_{\\max} = \\frac{(15.0)^2}{2(9.80)} = 11.5\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 2,0.3, 0.35, {stroke:RED, w:3});
+       tween(u=>{ const t=1.53*u; b.setAttribute('cy', c.M.Y(15*t-4.9*t*t)); }, 1400, c.instant);
+       dashLine(c, 0.8,11.5, 3.2,11.5, {});
+       label(c, 3.4,11.6, 'y_max = 11.5 m, v = 0', {fs:11, color:GREEN});
+     }
+        },
+        { map:2, title:"Part (b): there and back",
+          think:"Why is the round-trip time exactly twice the rise time?",
+          model:"t = 2v₀/g = 3.06 s — symmetry of free flight.",
+          pose:"write",
+          say:"Home again when y returns to zero: nought equals v nought t minus half g t squared. Factor out t and the flight time is two v nought over g — three point zero six seconds, precisely twice the one point five three second climb. Free flight is symmetric: the film played backwards is also physics.",
+          board:[
+            {tex:"0 = v_0t - \\tfrac12gt^2 \\;\\Rightarrow\\; t = \\frac{2v_0}{g} = 3.06\\ \\mathrm{s}", kind:"answer"},
+            {label:"Symmetry", text:"Rise time 1.53 s = fall time. Up and down are mirror images.", kind:"note"}
+          ]
+        },
+        { map:3, title:"Part (c): set y = 8 and solve",
+          think:"Why should you EXPECT a quadratic — and therefore two answers?",
+          model:"4.90t² − 15.0t + 8.00 = 0.",
+          pose:"write",
+          say:"When is y eight metres? Set the position formula to eight and collect: four point nine t squared minus fifteen t plus eight equals zero. A quadratic — and rightly so, because the ball visits eight metres twice: once climbing, once descending. The algebra knows the physics before we do.",
+          board:[
+            {tex:"8.00 = 15.0\\,t - 4.90\\,t^2 \\;\\Rightarrow\\; 4.90\\,t^2 - 15.0\\,t + 8.00 = 0", kind:"key"}
+          ]
+        },
+        { map:4, title:"Two roots, both true",
+          think:"Interpret each root physically before accepting it.",
+          model:"t = 0.688 s (going up) and t = 2.37 s (coming down).",
+          pose:"excited",
+          say:"The quadratic formula: fifteen plus or minus eight point two six, all over nine point eight. Zero point six eight eight seconds — passing eight metres on the way up — and two point three seven seconds, on the way down. BOTH roots are physical; discard neither. When algebra offers you two answers, it is usually because nature has two.",
+          board:[
+            {tex:"t = \\frac{15.0 \\pm \\sqrt{225 - 156.8}}{9.80} = \\frac{15.0 \\pm 8.26}{9.80} = 0.688\\ \\mathrm{s},\\ 2.37\\ \\mathrm{s}", kind:"answer"},
+            {label:"Reusable method", text:"v = 0 at the top → symmetry for the round trip → quadratic for a crossing height → interpret BOTH roots", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>[2+ t*2.45, 15*t-4.9*t*t], 0, 3.06, {color:DIMC, w:2, dash:'5,4', N:70});
+       circleAt(c, 2+0.688*2.45, 8, 0.35, {stroke:GREEN, w:3});
+       circleAt(c, 2+2.37*2.45, 8, 0.35, {stroke:GOLD, w:3});
+       label(c, 2.0,9.1, '0.688 s ↑', {fs:11, color:GREEN});
+       label(c, 8.0,9.1, '2.37 s ↓', {fs:11, color:GOLD});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Catching a speeder",
+      problem:"A car passes a parked police cruiser at a constant 30.0 m/s. At that instant the cruiser starts from rest with constant acceleration 3.00 m/s². When and where does the cruiser catch the car, and how fast is it then moving?",
+      goal:"Goal → t, x, v at the catch",
+      world:{"x0":-30,"x1":660,"y0":-60,"y1":180},
+      pathway:["Two clocks","Equations","Meet","Speed","Why double"],
+      setup(ctx,w){
+    ground(ctx, -20, 640, 0);
+  },
+      steps:[
+        { map:0, title:"One origin, one clock, two motions",
+          think:"Why must both vehicles share the same origin and the same t = 0?",
+          model:"Measure x and t from the moment and place of passing — for both.",
+          pose:"talk",
+          say:"A car sails past a parked cruiser at a steady thirty; the cruiser gives chase from rest at three metres per second squared. The indispensable move: ONE origin, ONE clock, shared by both vehicles — the moment and place of passing. Chase problems die instantly when each vehicle keeps private time.",
+          board:[
+            {label:"Setup", text:"t = 0, x = 0 at the passing. Car: constant 30.0 m/s. Cruiser: rest, a = 3.00 m/s².", kind:"key"}
+          ]
+        },
+        { map:1, title:"Write both position functions",
+          think:"Which vehicle's x(t) is linear, and which quadratic — and why?",
+          model:"x_car = 30.0t; x_cruiser = 1.50t².",
+          pose:"write",
+          say:"The car, unaccelerated, walks a straight line through spacetime: thirty t. The cruiser, from rest, grows a parabola: one half times three t squared — one point five t squared. Two curves, and the catch is their intersection.",
+          board:[
+            {tex:"x_c = 30.0\\,t, \\qquad x_p = \\tfrac12(3.00)t^2 = 1.50\\,t^2", kind:"key"}
+          ],
+          action(c){
+       boxAt(c, 30,8, 55,28, {fill:'#2E6DA4', stroke:'#1D4568'});
+       boxAt(c, 0,8, 55,28, {fill:'#8a4444', stroke:'#5a2424'});
+       label(c, 60,52, 'car: 30 m/s, steady', {fs:11, color:BLUE});
+       label(c, -22,52, 'cruiser: from rest', {fs:11, color:RED});
+     }
+        },
+        { map:2, title:"Set them equal",
+          think:"The equation has roots t = 0 and t = 20. What does the t = 0 root mean?",
+          model:"30t = 1.5t² → t = 20.0 s, x = 600 m.",
+          pose:"write",
+          say:"Equal positions: thirty t equals one point five t squared. One solution is t equals zero — they were together at the passing; algebra never forgets. The interesting root: t equals twenty seconds, at which point x is thirty times twenty — six hundred metres down the road.",
+          board:[
+            {tex:"30.0\\,t = 1.50\\,t^2 \\;\\Rightarrow\\; t = 20.0\\ \\mathrm{s}, \\qquad x = 600\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>[t*30, 30*t*0.2], 0, 20, {color:BLUE, w:2.5, N:40});
+       plotCurve(c, t=>[1.5*t*t, 30*t*0.2], 0, 20, {color:RED, w:2.5, N:60});
+       circleAt(c, 600,120, 9, {stroke:GOLD, w:3});
+       label(c, 470,150, 'caught: 600 m, 20 s', {fs:12, color:GOLD});
+     }
+        },
+        { map:3, title:"The cruiser's speed at the catch",
+          think:"Before computing: should the cruiser be faster or slower than 30 at that moment?",
+          model:"v = at = 60.0 m/s — twice the car's speed.",
+          pose:"point",
+          say:"How fast is the cruiser moving as it draws level? v equals a t: three times twenty — sixty metres per second. Twice the car's speed, which sounds dramatic until you see it had to be.",
+          board:[
+            {tex:"v = at = (3.00)(20.0) = 60.0\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Why exactly double?",
+          think:"Same distance, same time, one from rest: what must the cruiser's AVERAGE speed be?",
+          model:"Averages must match: ½v_final = 30 → v_final = 60. Structure, not coincidence.",
+          pose:"excited",
+          say:"Both covered six hundred metres in the same twenty seconds, so their AVERAGE speeds are equal. The car's average is thirty. The cruiser's average, starting from rest with constant acceleration, is half its final speed. Half of final equals thirty — final is sixty. Not a numerical accident; a structural certainty. Every uniform-chase-from-rest ends at exactly double speed.",
+          board:[
+            {label:"The structural check", text:"Equal distance, equal time → equal averages. From rest, avg = ½v_final, so v_final = 2 × 30 = 60 m/s.", kind:"key"},
+            {label:"Reusable method", text:"shared origin + clock → write both x(t) → set equal, discard the trivial root → interpret the meeting with an average-speed check", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Reading a velocity–time graph",
+      problem:"A particle's velocity is v(t) = 2.00 + 1.50t m/s for 0 ≤ t ≤ 6. Sketch the v–t graph and use its geometry to find the displacement in the first 6.00 s and the average velocity over that interval.",
+      goal:"Goal → Δx and v_avg from the graph",
+      world:{"x0":-0.6,"x1":7,"y0":-1.5,"y1":12.5},
+      pathway:["Graph","Area","Split","Average"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (m/s)'});
+  },
+      steps:[
+        { map:0, title:"Draw the line",
+          think:"What do the intercept 2.00 and slope 1.50 each mean physically?",
+          model:"A straight v–t line: v₀ = 2.00 m/s, a = 1.50 m/s².",
+          pose:"talk",
+          say:"The velocity is a straight line in time: it starts at two metres per second and climbs one and a half per second. Intercept equals initial velocity; slope equals acceleration. A v t graph is not a picture OF the equations — it IS the equations, drawn.",
+          board:[
+            {label:"Read the line", tex:"v(t) = 2.00 + 1.50\\,t: \\quad v_0 = 2.00\\ \\mathrm{m/s}, \\ a = 1.50\\ \\mathrm{m/s^2}", kind:"key"}
+          ],
+          action(c){
+       plotCurve(c, t=>2+1.5*t, 0, 6, {color:GOLD, w:3});
+       label(c, 0.2,2.7, 'v₀ = 2', {fs:11, color:GOLD});
+     }
+        },
+        { map:1, title:"Displacement is the area",
+          think:"Which geometric shape sits under this line from 0 to 6?",
+          model:"A trapezoid: parallel sides 2.00 and 11.0, width 6.00.",
+          pose:"write",
+          say:"Displacement is the area under the velocity graph — here, a trapezoid: parallel sides two and eleven — the velocity at t six — and width six. Area: half the sum of the sides times the width. Half of thirteen times six: thirty nine metres.",
+          board:[
+            {tex:"\\Delta x = \\tfrac12\\,(v_0 + v_6)\\,t = \\tfrac12(2.00 + 11.0)(6.00) = 39.0\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0,2],[6,11],[6,0]], {color:'rgba(232,172,86,.28)'});
+       plotCurve(c, t=>2+1.5*t, 0, 6, {color:GOLD, w:3});
+       label(c, 3,4.2, 'area = Δx', {fs:14, color:GOLD, italic:true, anchor:'middle'});
+     }
+        },
+        { map:2, title:"Split it: rectangle + triangle", fresh:true,
+          think:"Which kinematic term does each piece of area correspond to?",
+          model:"Rectangle v₀t = 12 m; triangle ½at² = 27 m. Total 39 m ✓.",
+          pose:"write",
+          say:"Split the trapezoid and the kinematic formula appears in the geometry: the rectangle at the bottom is v nought t — twelve metres — and the triangle on top is one half a t squared — twenty seven. Together, thirty nine. The equation delta x equals v nought t plus half a t squared was a picture all along.",
+          board:[
+            {tex:"v_0t = (2.00)(6.00) = 12.0\\ \\mathrm{m}; \\quad \\tfrac12at^2 = \\tfrac12(1.50)(36.0) = 27.0\\ \\mathrm{m}", kind:"key"},
+            {tex:"12.0 + 27.0 = 39.0\\ \\mathrm{m}\\;\\checkmark", kind:"answer"}
+          ],
+          action(c){
+       shadePoly(c, [[0,0],[0,2],[6,2],[6,0]], {color:'rgba(46,109,164,.3)'});
+       shadePoly(c, [[0,2],[6,11],[6,2]], {color:'rgba(232,106,90,.28)'});
+       plotCurve(c, t=>2+1.5*t, 0, 6, {color:GOLD, w:3});
+       label(c, 3,0.8, 'v₀t', {fs:13, color:BLUE, anchor:'middle', italic:true});
+       label(c, 4.6,4.6, '½at²', {fs:13, color:RED, italic:true});
+     }
+        },
+        { map:3, title:"Average velocity, read off the middle", fresh:true,
+          think:"For a straight-line v(t), where on the graph does v_avg live?",
+          model:"v_avg = 39/6 = 6.50 m/s — the midpoint value of a linear v(t).",
+          pose:"excited",
+          say:"Average velocity: thirty nine metres in six seconds — six point five metres per second. And notice where that number sits: exactly midway between two and eleven, the value of v at t equals three, the middle instant. For LINEAR velocity the average is the midpoint — a symmetry gift, valid only while the graph stays straight.",
+          board:[
+            {tex:"v_{\\rm avg} = \\frac{39.0}{6.00} = 6.50\\ \\mathrm{m/s} = v(3.00\\ \\mathrm{s})", kind:"answer"},
+            {label:"Reusable method", text:"v–t line: intercept = v₀, slope = a → area = displacement (rectangle + triangle) → average = midpoint for linear v", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>2+1.5*t, 0, 6, {color:GOLD, w:3});
+       dashLine(c, 0,6.5, 6,6.5, {});
+       circleAt(c, 3,6.5, 0.16, {stroke:GREEN, w:3});
+       label(c, 0.25,7.3, 'v_avg = 6.5', {fs:11, color:GREEN});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Stopping distance with reaction time",
+      problem:"A driver traveling at 25.0 m/s sees a hazard, reacts after 0.750 s, then brakes at 8.00 m/s². Find the total stopping distance, and compare with the no-reaction ideal.",
+      goal:"Goal → total stopping distance",
+      world:{"x0":-8,"x1":68,"y0":-12,"y1":26},
+      pathway:["Two stages","Coast","Brake","Total"],
+      setup(ctx,w){
+    ground(ctx, -5, 64, 0);
+    label(ctx, 1,20.5, 'hazard seen at x = 0', {fs:11, color:RED});
+    dashLine(ctx, 0,0, 0,19, {});
+  },
+      steps:[
+        { map:0, title:"Recognise the two stages",
+          think:"During the reaction time, what is the car's acceleration?",
+          model:"Stage 1: constant v (a = 0). Stage 2: constant −8.00 m/s². Split at the join.",
+          pose:"talk",
+          say:"Between seeing and stopping live two entirely different motions: three quarters of a second of undiminished coasting while the driver reacts, then honest braking at eight metres per second squared. Multi-stage motion: split it at the join, and let one stage's end be the next one's beginning.",
+          board:[
+            {label:"The split", text:"Stage 1: v = 25.0 m/s constant for 0.750 s. Stage 2: brake, a = −8.00 m/s², to rest.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Stage 1: the coast",
+          think:"Why is this stage pure multiplication?",
+          model:"x₁ = vt = (25.0)(0.750) = 18.8 m — covered before the brakes exist.",
+          pose:"write",
+          say:"During the reaction: no acceleration, plain multiplication. Twenty five times point seven five — eighteen point eight metres. Nearly nineteen metres of road consumed before the brake pedal so much as hears about the problem.",
+          board:[
+            {label:"Reaction distance", tex:"x_1 = v\\,t_r = (25.0)(0.750) = 18.8\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 2,1, 9,5, {fill:'#2E6DA4', stroke:'#1D4568'});
+       arrow(c, 0,10, 18.8,10, {color:BLUE, w:3, label:'18.8 m coasting', fs:12, at:'mid'});
+     }
+        },
+        { map:2, title:"Stage 2: the brake",
+          think:"Which equation gives braking distance without needing the braking time?",
+          model:"Δx = v²/(2a) = 625/16 = 39.1 m.",
+          pose:"write",
+          say:"Braking, with time uninvited: v squared over twice the deceleration. Six hundred twenty five over sixteen — thirty nine point one metres. Add the join and the sum tells the story of the whole emergency.",
+          board:[
+            {label:"Braking distance", tex:"x_2 = \\frac{v^2}{2|a|} = \\frac{(25.0)^2}{2(8.00)} = 39.1\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 18.8,10, 57.9,10, {color:RED, w:3, label:'39.1 m braking', fs:12, at:'mid'});
+       boxAt(c, 55,1, 9,5, {fill:'rgba(46,109,164,.35)', stroke:'#1D4568'});
+     }
+        },
+        { map:3, title:"Total — and the human tax",
+          think:"What fraction of the total distance was pure reaction?",
+          model:"57.9 m total; 18.8 m (32%) is the human contribution.",
+          pose:"excited",
+          say:"Total: fifty seven point nine metres. Nearly a third of it — the eighteen point eight — was spent before physics was even consulted: that is the human tax on every emergency stop. Textbooks brake instantly; drivers do not. It is why tailgating arithmetic always loses.",
+          board:[
+            {label:"Total", tex:"x = 18.8 + 39.1 = 57.9\\ \\mathrm{m} \\quad(\\text{ideal, no reaction: } 39.1\\ \\mathrm{m})", kind:"answer"},
+            {label:"Reusable method", text:"split at the join → coast: x = vt → brake: x = v²/2|a| → add; compare against the no-reaction ideal", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0,17, 57.9,17, {color:GOLD, dash:'7,5', w:2.5, label:'57.9 m total', fs:13, at:'mid'});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Stone down, ball up: where do they meet?",
+      problem:"A stone is dropped from a 60.0 m cliff. At the same instant a ball is thrown straight up from the base at 20.0 m/s. When and where do they meet?",
+      goal:"Goal → meeting time and height",
+      world:{"x0":-4,"x1":12,"y0":-4,"y1":66},
+      pathway:["One frame","Two y(t)","Meet","Interpret"],
+      setup(ctx,w){
+    ground(ctx, -3, 11, 0);
+    el('line',{x1:ctx.M.X(-3),y1:ctx.M.Y(60),x2:ctx.M.X(2),y2:ctx.M.Y(60),stroke:'#B0A488','stroke-width':4},ctx.svg);
+    label(ctx, -2.8,62, 'cliff top, 60.0 m', {fs:11});
+  },
+      steps:[
+        { map:0, title:"One coordinate system for both",
+          think:"Both objects share the same g. What does that do to their separation rate?",
+          model:"y up from the ground, t = 0 at release — one frame for both bodies.",
+          pose:"talk",
+          say:"A stone drops from sixty metres just as a ball leaves the ground at twenty metres per second, rising to meet it. One coordinate frame for both: y measured up from the ground, one shared clock. And a marvellous secret sits inside this problem: both feel the same gravity, so gravity cancels from their relative motion entirely.",
+          board:[
+            {label:"Setup", text:"y up, ground = 0, t = 0 at release. Stone: from 60.0 m, rest. Ball: from 0, +20.0 m/s.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Write both altitude stories",
+          think:"The two y(t) share the −½gt² term. What survives in their difference?",
+          model:"y_s = 60 − 4.9t²; y_b = 20t − 4.9t².",
+          pose:"write",
+          say:"The stone: sixty minus four point nine t squared. The ball: twenty t minus four point nine t squared. Identical gravity terms — poised to annihilate each other the moment we compare the two.",
+          board:[
+            {tex:"y_s = 60.0 - 4.90\\,t^2, \\qquad y_b = 20.0\\,t - 4.90\\,t^2", kind:"key"}
+          ]
+        },
+        { map:2, title:"Set equal: gravity resigns",
+          think:"Why is the meeting equation linear rather than quadratic?",
+          model:"60 = 20t → t = 3.00 s. Relative velocity is constant at 20 m/s.",
+          pose:"write",
+          say:"Equate them and the quadratic terms vanish: sixty equals twenty t — t equals three seconds, no quadratic formula required. In the stone's falling frame, the ball closes at a steady twenty metres per second on a sixty metre gap. Sixty over twenty: three. Gravity, being common to both, resigned from the problem.",
+          board:[
+            {tex:"60.0 - 4.90t^2 = 20.0t - 4.90t^2 \\;\\Rightarrow\\; t = \\frac{60.0}{20.0} = 3.00\\ \\mathrm{s}", kind:"answer", move:"cancel −4.9t²"}
+          ],
+          action(c){
+       const s=circleAt(c, 0,60, 0.8, {stroke:RED, w:3});
+       const b=circleAt(c, 6,0.5, 0.8, {stroke:GREEN, w:3});
+       tween(u=>{ const t=3*u;
+         s.setAttribute('cy', c.M.Y(60-4.9*t*t));
+         b.setAttribute('cy', c.M.Y(Math.max(0.5,20*t-4.9*t*t))); }, 2000, c.instant);
+     }
+        },
+        { map:3, title:"Where — and in what state",
+          think:"At t = 3.00 s, is the ball still rising? Check its velocity.",
+          model:"y = 15.9 m; ball's v = 20 − 29.4 = −9.4 m/s: already falling.",
+          pose:"excited",
+          say:"Insert three seconds anywhere: the stone reads sixty minus forty four point one — fifteen point nine metres, and the ball agrees. One subtlety with a moral: the ball's velocity at that instant is twenty minus twenty nine point four — minus nine point four. It peaked at about two seconds and was already FALLING when the stone arrived. The meeting happens on the way down; check the state, not just the place.",
+          board:[
+            {tex:"y = 60.0 - 4.90(9.00) = 15.9\\ \\mathrm{m}", kind:"answer"},
+            {label:"State check", tex:"v_b(3.00) = 20.0 - 29.4 = -9.4\\ \\mathrm{m/s}\\ \\text{(falling)}", kind:"warn"},
+            {label:"Reusable method", text:"one frame, one clock → write both y(t) → equate (watch common terms cancel) → verify the meeting point in both equations", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 3,15.9, 1.0, {stroke:GOLD, w:3});
+       dashLine(c, -1,15.9, 10,15.9, {});
+       label(c, 6.6,17.5, 'meet at 15.9 m, t = 3 s', {fs:11, color:GOLD});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Distance versus displacement for a reversing particle",
+      problem:"A particle moves with x(t) = t³ − 6t² + 9t m (t in s). Find its displacement and the total distance traveled between t = 0 and t = 4.00 s.",
+      goal:"Goal → Δx and distance",
+      world:{"x0":-0.5,"x1":4.6,"y0":-1,"y1":5.4},
+      pathway:["v(t)","Turning points","Segments","Total"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'x (m)'});
+  },
+      steps:[
+        { map:0, title:"Differentiate first, ask questions later",
+          think:"Why is v(t), not x(t), the key to distance?",
+          model:"v = 3t² − 12t + 9 = 3(t−1)(t−3). Distance needs to know when v changes sign.",
+          pose:"talk",
+          say:"A cubic position function — and a trap. The displacement is easy: endpoints. The DISTANCE, though, needs to know every reversal, and reversals hide where velocity changes sign. Differentiate: v equals three t squared minus twelve t plus nine, which factors beautifully into three times t minus one times t minus three.",
+          board:[
+            {label:"Velocity", tex:"v(t) = \\frac{dx}{dt} = 3t^2 - 12t + 9 = 3(t-1)(t-3)", kind:"key"}
+          ],
+          action(c){
+       plotCurve(c, t=>t*t*t-6*t*t+9*t, 0, 4, {color:GOLD, w:3, N:80});
+     }
+        },
+        { map:1, title:"Find the turning points",
+          think:"Between which times is the particle moving backwards?",
+          model:"v = 0 at t = 1 and t = 3; v < 0 in between. Positions: x(0)=0, x(1)=4, x(3)=0, x(4)=4.",
+          pose:"write",
+          say:"Velocity vanishes at t equals one and t equals three, and is negative between them: forward, backward, forward again. Tabulate the milestones: x of nought is nought; x of one is four; x of three is back to nought; x of four is four again. The particle paces its room.",
+          board:[
+            {tex:"x(0)=0, \\quad x(1)=4.00, \\quad x(3)=0, \\quad x(4)=4.00\\ \\mathrm{m}", kind:"key"}
+          ],
+          action(c){
+       plotCurve(c, t=>t*t*t-6*t*t+9*t, 0, 4, {color:GOLD, w:3, N:80});
+       circleAt(c, 1,4, 0.13, {stroke:GREEN, w:3});
+       circleAt(c, 3,0, 0.13, {stroke:RED, w:3});
+       label(c, 0.85,4.55, 'v = 0', {fs:11, color:GREEN});
+       label(c, 3.1,0.5, 'v = 0', {fs:11, color:RED});
+     }
+        },
+        { map:2, title:"Displacement: endpoints only",
+          think:"Which parts of the journey does Δx simply never see?",
+          model:"Δx = x(4) − x(0) = 4.00 m.",
+          pose:"write",
+          say:"Displacement consults only the endpoints: four minus nought — four metres. The excursion to four, the retreat to zero, the second climb — invisible. Displacement is a before-and-after photograph; everything in between is off the record.",
+          board:[
+            {tex:"\\Delta x = x(4) - x(0) = 4.00 - 0 = 4.00\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Distance: sum the unsigned segments",
+          think:"Why must you add |each leg| rather than integrate v directly?",
+          model:"|0→4| + |4→0| + |0→4| = 12.0 m — three times the displacement.",
+          pose:"excited",
+          say:"Distance adds every leg without signs: out four metres, back four, out four again — twelve metres of actual travel to achieve four metres of net progress. Integrating v directly would have collapsed to the displacement; integrating the SPEED — the absolute value — is what odometers do. Know when v changes sign, or the distance will lie to you.",
+          board:[
+            {tex:"d = |4-0| + |0-4| + |4-0| = 12.0\\ \\mathrm{m}", kind:"answer"},
+            {label:"Reusable method", text:"v = dx/dt → roots of v mark reversals → tabulate x at the turning points → distance = Σ|legs|, displacement = endpoints", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 0.15,5.0, 1,5.0, {color:GREEN, w:2.5, label:'+4', fs:11, at:'mid'});
+       arrow(c, 1.6,5.0, 2.9,5.0, {color:RED, w:2.5, label:'−4', fs:11, at:'mid'});
+       arrow(c, 3.3,5.0, 4.2,5.0, {color:GREEN, w:2.5, label:'+4', fs:11, at:'mid'});
+     }
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Velocity-dependent deceleration",
+      problem:"A boat's engine quits at v₀ = 8.00 m/s, after which a = −kv with k = 0.500 s⁻¹. Find v(t), x(t), and the total distance the boat can coast.",
+      goal:"Goal → v(t), x(t), coasting limit",
+      world:{"x0":-0.6,"x1":10.5,"y0":-1,"y1":9},
+      pathway:["New physics","Separate","Integrate","Position","Limit"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (m/s)'});
+  },
+      steps:[
+        { map:0, title:"The toolkit does not apply",
+          think:"a depends on v here. Which sacred assumption of the four equations just failed?",
+          model:"a = −kv is NOT constant. Back to calculus — the toolkit's parent.",
+          pose:"talk",
+          say:"An engine dies and water drag takes over: deceleration proportional to velocity. Beware the reflex! The four constant-acceleration equations are forbidden here — their one sacred assumption has failed. When a depends on v, we return to the calculus from which the toolkit was carved.",
+          board:[
+            {label:"The situation", tex:"\\frac{dv}{dt} = -kv, \\quad k = 0.500\\ \\mathrm{s^{-1}}, \\quad v_0 = 8.00\\ \\mathrm{m/s}", kind:"warn"}
+          ]
+        },
+        { map:1, title:"Separate the variables",
+          think:"Which variables belong on which side before integrating?",
+          model:"dv/v = −k dt: velocities left, time right.",
+          pose:"write",
+          say:"Separate: all the v's to one side, all the t's to the other. d v over v equals minus k d t. Integrate both sides — the left gives a logarithm, the right a straight line. The natural log of v over v nought equals minus k t.",
+          board:[
+            {tex:"\\int_{v_0}^{v}\\frac{dv'}{v'} = -k\\int_0^t dt' \\;\\Rightarrow\\; \\ln\\frac{v}{v_0} = -kt", kind:"key"}
+          ]
+        },
+        { map:2, title:"Exponential decay of speed",
+          think:"After each time 1/k = 2 s, what happens to v?",
+          model:"v(t) = 8.00 e^(−0.5t): a third of the speed gone every 2 s... precisely, ×e⁻¹ per 2 s.",
+          pose:"write",
+          say:"Exponentiate: v equals eight e to the minus half t. The boat loses the same FRACTION of its speed every two seconds — the time constant one over k. Exponential decay: nature's favourite way of giving up gradually.",
+          board:[
+            {label:"Velocity", tex:"v(t) = v_0e^{-kt} = 8.00\\,e^{-0.500\\,t}\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>8*Math.exp(-0.5*t), 0, 10, {color:GOLD, w:3, N:70});
+       dashLine(c, 2,0, 2,8*Math.exp(-1), {});
+       label(c, 2.1,3.6, 't = 1/k = 2 s', {fs:11, color:DIMC});
+     }
+        },
+        { map:3, title:"Integrate once more for x",
+          think:"What shape must x(t) take if v(t) is a decaying exponential?",
+          model:"x(t) = (v₀/k)(1 − e^(−kt)) = 16.0(1 − e^(−0.5t)) m.",
+          pose:"write",
+          say:"Position is the integral of velocity: x equals v nought over k times one minus e to the minus k t — sixteen times one minus e to the minus half t. The boat forever approaches, never quite reaches, a final resting distance.",
+          board:[
+            {label:"Position", tex:"x(t) = \\frac{v_0}{k}\\left(1 - e^{-kt}\\right) = 16.0\\,(1 - e^{-0.500t})\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The coasting limit", solo:true,
+          think:"Infinite time, finite distance: why is v₀/k the whole story?",
+          model:"x(∞) = v₀/k = 16.0 m — finite despite never 'stopping'.",
+          pose:"excited",
+          say:"Let t run to infinity: the exponential dies and x approaches v nought over k — sixteen metres, full stop. A boat that technically never stops nevertheless cannot pass sixteen metres. Infinite patience, finite distance: the signature of exponential decay, and a first taste of how calculus handles motion the toolkit cannot touch.",
+          board:[
+            {label:"The limit", tex:"x_{\\max} = \\frac{v_0}{k} = \\frac{8.00}{0.500} = 16.0\\ \\mathrm{m}", kind:"answer"},
+            {label:"Reusable method", text:"a not constant → separate variables → integrate for v(t), again for x(t) → interrogate the t → ∞ limit", kind:"answer"}
+          ],
+          action(c){
+       axes2D(c.svg, c.M, {x0:-0.6,x1:10.5,y0:-1,y1:9}, {xlab:'t (s)', ylab:'x/2 (m)'});
+       plotCurve(c, t=>8*(1-Math.exp(-0.5*t)), 0, 10, {color:GREEN, w:3, N:70});
+       dashLine(c, 0,8, 10,8, {});
+       label(c, 6.4,8.6, 'x → 16 m (shown ÷2)', {fs:11, color:GREEN});
+     }
+        },
+      ]
+    }
     ];
 
     /* ============================================================

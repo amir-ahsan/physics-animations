@@ -1310,6 +1310,557 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"How weak is gravity between everyday objects?",
+      problem:"Two 1000 kg spheres have their centers 2.00 m apart. Find the gravitational force between them and compare it with the weight of a grain of sand (~10⁻⁵ N).",
+      goal:"Goal → F, and a feel for G",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["The law","Compute","Compare","Why astronomy"],
+      setup(ctx,w){
+    circleAt(ctx, 3,3, 1.2, {stroke:CHALKC, w:3});
+    circleAt(ctx, 8,3, 1.2, {stroke:CHALKC, w:3});
+    dashLine(ctx, 3,3, 8,3, {});
+    label(ctx, 5.0,3.5, '2.00 m', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Newton's universal law",
+          think:"Every pair of masses attracts. What sets the scale of the force?",
+          model:"F = Gm₁m₂/r², with G = 6.674×10⁻¹¹ — a fantastically small constant.",
+          pose:"talk",
+          say:"Newton's boldest sentence: EVERY two masses attract, with a force proportional to both and inverse in the square of their separation. The scale is set by G — six point six seven times ten to the MINUS ELEVEN. Hold that exponent in mind; it is about to embarrass two very heavy spheres.",
+          board:[
+            {label:"The law", tex:"F = \\frac{Gm_1m_2}{r^2}, \\quad G = 6.674\\times10^{-11}\\ \\mathrm{N\\cdot m^2/kg^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Two tonnes versus two tonnes",
+          think:"10⁻¹¹ × 10⁶ / 4: estimate the exponent before computing.",
+          model:"F = (6.674×10⁻¹¹)(10⁶)/4 = 1.67×10⁻⁵ N.",
+          pose:"write",
+          say:"Two full tonnes apiece, a mere two metres apart: G times ten to the sixth, over four — one point six seven times ten to the minus five newtons. All that mass, straining toward its neighbour with... almost nothing.",
+          board:[
+            {tex:"F = \\frac{(6.674\\times10^{-11})(1000)(1000)}{(2.00)^2} = 1.67\\times10^{-5}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The grain of sand",
+          think:"Compare 1.67×10⁻⁵ N with the sand grain's weight.",
+          model:"About one grain of sand's weight — the whole attraction between two cars.",
+          pose:"point",
+          say:"The comparison lands the punch: the pull between these industrial masses equals the WEIGHT OF ONE GRAIN OF SAND. Lean on either sphere with a fingertip and you overwhelm their mutual gravity ten-thousand-fold. Cavendish needed a torsion balance of heroic delicacy to detect this force at all — and in doing so, weighed the Earth.",
+          board:[
+            {label:"The comparison", text:"1.67×10⁻⁵ N ≈ the weight of a single grain of sand. Laboratory gravity is nearly invisible.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why gravity rules the sky anyway",
+          think:"Feeble per kilogram, yet it steers galaxies. What two properties rescue it?",
+          model:"Gravity is always attractive and never shielded: given planetary masses, it compounds without cancellation.",
+          pose:"excited",
+          say:"Then why does this weakling govern the cosmos? Two loyalties no other force can match: gravity only ever ATTRACTS — no cancelling charges — and nothing shields it. Pile up ten to the twenty-four kilograms and every one of them votes the same way. Electricity is stronger by forty orders of magnitude and neutralises itself into irrelevance; gravity, feeble but unanimous, inherits the universe.",
+          board:[
+            {label:"The resolution", text:"Always attractive, never shielded: mass accumulates influence. Feeble per kg; sovereign per planet.", kind:"key"},
+            {label:"Reusable method", text:"F = Gm₁m₂/r² → estimate exponents first → compare to a familiar force for scale", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Gravity at the altitude of the space station",
+      problem:"Find g at 400 km altitude, where the ISS orbits. Are the astronauts weightless because gravity is negligible there?",
+      goal:"Goal → g(400 km) and the real reason",
+      world:{"x0":-6,"x1":6,"y0":-5,"y1":6},
+      pathway:["Scale by r²","Compute","89%","True weightlessness"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 3.2, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 3.4, {stroke:DIMC, w:1.5, dash:'5,4'});
+    label(ctx, 2.7,4.0, 'ISS, +400 km', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"g is just the law per kilogram",
+          think:"g(h) = GM/r²: from where is r measured — surface or center?",
+          model:"g scales as (R_E/(R_E+h))² — r from the CENTER, always.",
+          pose:"talk",
+          say:"Surface gravity is nothing but Newton's law per kilogram, and it weakens as the inverse square of distance FROM THE CENTRE — not from the ground. The scaling shortcut: g at altitude equals nine point eight times the ratio of radii, squared. No G, no mass of Earth required.",
+          board:[
+            {label:"The scaling", tex:"g(h) = g_0\\left(\\frac{R_E}{R_E+h}\\right)^2", kind:"key"}
+          ]
+        },
+        { map:1, title:"Evaluate at 400 km",
+          think:"6371 vs 6771 km: the ratio is close to 1. Expect a mild reduction.",
+          model:"g = 9.80(6371/6771)² = 8.68 m/s².",
+          pose:"write",
+          say:"Six thousand three hundred seventy one over six thousand seven hundred seventy one, squared, times nine point eight: eight point six eight metres per second squared. The station orbits in gravity nearly as strong as your kitchen's.",
+          board:[
+            {tex:"g = 9.80\\left(\\frac{6371}{6771}\\right)^2 = 8.68\\ \\mathrm{m/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Eighty-nine percent",
+          think:"If gravity is 89% of surface strength, why do astronauts float?",
+          model:"Gravity is emphatically NOT negligible at the ISS. The floating needs another explanation.",
+          pose:"think",
+          say:"Eighty nine percent! The televised somersaults happen in gravity barely weaker than Earth's surface. So the popular explanation — 'no gravity in space' — is not merely imprecise; it is wrong by a factor of nine. Something subtler holds the astronauts aloft. Or rather — nothing does.",
+          board:[
+            {label:"The surprise", tex:"g_{\\rm ISS} = 89\\%\\ \\text{of } g_0\\ \\text{— gravity is nearly full strength up there}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"Weightlessness is free fall",
+          think:"What does a bathroom scale read in a freely falling elevator — and in orbit?",
+          model:"Station and astronaut fall together; no support force = no sensation of weight. Orbit IS perpetual falling.",
+          pose:"excited",
+          say:"The truth: astronaut and station are both FALLING, together, continuously — orbit is free fall that keeps missing the ground because of its sideways speed. What we call weight is really the floor's push, and in shared free fall no floor pushes. Cut an elevator's cable and its passengers float identically, briefly and less happily. Weightlessness is not the absence of gravity; it is the absence of everything else.",
+          board:[
+            {label:"The truth", text:"'Weightless' = no supporting force. Orbit = perpetual shared free fall; gravity is what MAKES the orbit.", kind:"key"},
+            {label:"Reusable method", text:"scale g by (R/(R+h))² from the center → distinguish gravity from the sensation of weight (a support force)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Kepler's third law in astronomical units",
+      problem:"Mars orbits the Sun at an average distance of 1.52 AU. Find its orbital period in years without using G or the Sun's mass.",
+      goal:"Goal → T_Mars via ratios",
+      world:{"x0":-2.3,"x1":2.3,"y0":-1.7,"y1":2},
+      pathway:["The law","Ratio trick","Mars","Jupiter"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.15, {stroke:GOLD, w:4});
+    circleAt(ctx, 0,0, 1.0, {stroke:DIMC, w:1.5, dash:'5,4'});
+    circleAt(ctx, 0,0, 1.52, {stroke:CHALKC, w:1.5, dash:'5,4'});
+    label(ctx, 0.55,1.12, 'Earth', {fs:10, color:DIMC});
+    label(ctx, 1.0,1.63, 'Mars', {fs:10, color:CHALKC});
+  },
+      steps:[
+        { map:0, title:"T² ∝ r³",
+          think:"Kepler's third law relates which two orbital quantities?",
+          model:"T² ∝ r³ for all bodies around the same central mass.",
+          pose:"talk",
+          say:"Kepler's third law: the square of the period grows as the cube of the orbital size, for every body circling the same sun. The proportionality constant hides G and the solar mass — but a well-chosen RATIO will make the constant vanish before we ever meet it.",
+          board:[
+            {label:"Kepler III", tex:"T^2 \\propto r^3\\ \\text{(same central body)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Divide by Earth",
+          think:"Using Earth (1 AU, 1 yr) as the ruler: what does the ratio give?",
+          model:"(T/1 yr) = (r/1 AU)^{3/2}: constants gone, units built in.",
+          pose:"write",
+          say:"Divide Mars's law by Earth's: every constant cancels, leaving T in years equal to r in astronomical units, raised to the three halves. Earth is the measuring stick, and the universe obliges by keeping the arithmetic clean.",
+          board:[
+            {tex:"\\frac{T}{1\\ \\mathrm{yr}} = \\left(\\frac{r}{1\\ \\mathrm{AU}}\\right)^{3/2}", kind:"key", move:"ratio: constants cancel"}
+          ]
+        },
+        { map:2, title:"Mars",
+          think:"1.52^1.5: estimate, then state.",
+          model:"T = 1.52^{3/2} = 1.87 yr ≈ 684 days.",
+          pose:"write",
+          say:"One point five two to the three halves: one point eight seven years — six hundred eighty four days, agreeing with every Mars mission planner's calendar. No gravitational constant was consulted; Kepler managed the same in sixteen nineteen without knowing gravity existed.",
+          board:[
+            {tex:"T_{\\rm Mars} = (1.52)^{3/2} = 1.87\\ \\mathrm{yr}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The law as a travel table",
+          think:"Jupiter at 5.20 AU: period? And what does the 3/2 power mean physically?",
+          model:"5.20^{3/2} = 11.9 yr. Farther is disproportionately slower: more track, less speed.",
+          pose:"excited",
+          say:"The same one-line ritual prices every itinerary: Jupiter at five point two AU — eleven point nine years. The three halves power has a physical voice: a farther planet travels a LONGER track at a SLOWER speed, and the two penalties compound. Ratios against a known orbit — no constants, no lookup, no apology — are the working astronomer's favourite instrument.",
+          board:[
+            {tex:"T_{\\rm Jup} = (5.20)^{3/2} = 11.9\\ \\mathrm{yr}", kind:"answer"},
+            {label:"Reusable method", text:"same central body → ratio T² ∝ r³ against a reference orbit → constants and units cancel", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Weighing the Sun",
+      problem:"Earth orbits at r = 1.496×10¹¹ m with period T = 3.156×10⁷ s. Determine the mass of the Sun.",
+      goal:"Goal → M_sun",
+      world:{"x0":-2.3,"x1":2.3,"y0":-1.7,"y1":2},
+      pathway:["Set the balance","Solve for M","Compute","Generalize"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.18, {stroke:GOLD, w:4});
+    circleAt(ctx, 0,0, 1.35, {stroke:DIMC, w:1.5, dash:'5,4'});
+    circleAt(ctx, 1.35,0, 0.09, {stroke:BLUE, w:3});
+  },
+      steps:[
+        { map:0, title:"Orbit = gravity funding a circle",
+          think:"Set GMm/r² equal to the centripetal need, written with T.",
+          model:"GMm/r² = m(4π²r/T²).",
+          pose:"talk",
+          say:"To weigh a star, use its customers: the Earth circles because solar gravity supplies exactly the centripetal force the orbit demands. Write the demand with the period — four pi squared r over T squared — and set gravity's supply against it. One equation, and the Sun's mass is the only stranger in it.",
+          board:[
+            {tex:"\\frac{GM_{\\odot}m}{r^2} = m\\,\\frac{4\\pi^2r}{T^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Earth's mass excuses itself",
+          think:"m cancels. Solve symbolically for M.",
+          model:"M = 4π²r³/(GT²) — the satellite's own mass is irrelevant.",
+          pose:"write",
+          say:"The Earth's own m cancels — the scale never needs to know the weight of the customer standing on it. M sun equals four pi squared r cubed over G T squared: the whole Sun, expressed in a radius and a calendar.",
+          board:[
+            {tex:"M_{\\odot} = \\frac{4\\pi^2r^3}{GT^2}", kind:"answer", move:"cancel m"}
+          ]
+        },
+        { map:2, title:"Insert the almanac",
+          think:"r³ ~ 3.35×10³³; GT² ~ 6.65×10⁴. The quotient?",
+          model:"M = 1.99×10³⁰ kg — two thousand billion billion billion kilograms.",
+          pose:"write",
+          say:"Numbers in: four pi squared times three point three five times ten to the thirty three, over six point six seven times ten to the minus eleven times ten to the fifteen — one point nine nine times ten to the THIRTY kilograms. We have weighed the Sun from a comfortable distance of one hundred fifty million kilometres, using a wristwatch and a survey of the sky.",
+          board:[
+            {tex:"M_{\\odot} = \\frac{4\\pi^2(1.496\\times10^{11})^3}{(6.674\\times10^{-11})(3.156\\times10^{7})^2} = 1.99\\times10^{30}\\ \\mathrm{kg}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"A universal scale",
+          think:"What does the Moon's orbit weigh? A moon of Jupiter? A star orbiting Sagittarius A*?",
+          model:"Any satellite weighs its central body: the formula is astronomy's balance.",
+          pose:"excited",
+          say:"And the formula is a UNIVERSAL scale: feed it the Moon's orbit and out comes the Earth's mass; feed it Io's, and Jupiter steps on the balance; feed it the frantic stars circling our galaxy's centre, and you weigh a black hole of four million suns. Anything that orbits is a measurement in progress. Kepler gave us the pattern; Newton turned it into a weighing machine.",
+          board:[
+            {label:"Universality", text:"Every orbit weighs its central body: Moon→Earth, Io→Jupiter, S2→Sagittarius A*.", kind:"key"},
+            {label:"Reusable method", text:"gravity = centripetal (in T form) → satellite mass cancels → M = 4π²r³/GT²", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Satellite at twice the Earth's radius",
+      problem:"A satellite is in circular orbit at r = 2R_E (altitude one Earth radius). Find its speed and period. (M_E = 5.97×10²⁴ kg, R_E = 6.37×10⁶ m.)",
+      goal:"Goal → v and T",
+      world:{"x0":-3.4,"x1":3.4,"y0":-2.6,"y1":3},
+      pathway:["Orbit speed","Evaluate","Period","Higher is slower"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 1.1, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 2.2, {stroke:DIMC, w:1.5, dash:'6,5'});
+    circleAt(ctx, 2.2,0, 0.1, {stroke:GOLD, w:3});
+  },
+      steps:[
+        { map:0, title:"The circular-orbit speed",
+          think:"Balance GMm/r² against mv²/r: what v results?",
+          model:"v = √(GM/r): one speed per radius, no choice about it.",
+          pose:"talk",
+          say:"For a circular orbit, gravity's supply must exactly meet the centripetal demand: G M m over r squared equals m v squared over r. Solve: v equals root G M over r. Notice the tyranny — for each radius there is ONE lawful speed. Orbits are not parked; they are precisely paced.",
+          board:[
+            {tex:"\\frac{GMm}{r^2} = \\frac{mv^2}{r} \\;\\Rightarrow\\; v = \\sqrt{\\frac{GM_E}{r}}", kind:"key", move:"cancel m"}
+          ]
+        },
+        { map:1, title:"Evaluate at 2R_E",
+          think:"GM_E ≈ 3.98×10¹⁴; r = 1.274×10⁷ m. v = ?",
+          model:"v = 5.59 km/s.",
+          pose:"write",
+          say:"At twice the Earth's radius: root of three point nine eight times ten to the fourteen over one point two seven four times ten to the seven — five point five nine kilometres per second. Twenty thousand kilometres per hour, and it counts as the SLOW lane.",
+          board:[
+            {tex:"v = \\sqrt{\\frac{(6.674\\times10^{-11})(5.97\\times10^{24})}{1.274\\times10^{7}}} = 5.59\\times10^{3}\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"The period",
+          think:"T = 2πr/v: circumference over speed.",
+          model:"T = 2π(1.274×10⁷)/5593 = 1.43×10⁴ s = 3.98 h.",
+          pose:"write",
+          say:"The period: circumference over speed — two pi times the radius, over five thousand five hundred ninety three — fourteen thousand three hundred seconds. Just under four hours per lap.",
+          board:[
+            {tex:"T = \\frac{2\\pi r}{v} = 1.43\\times10^{4}\\ \\mathrm{s} = 3.98\\ \\mathrm{h}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Higher orbits are slower",
+          think:"Compare with a skimming orbit: 7.9 km/s, 84 min. State the scalings.",
+          model:"v ∝ r^{−1/2}, T ∝ r^{3/2}: altitude buys serenity. Kepler III again.",
+          pose:"excited",
+          say:"Set the comparison: a surface-skimming orbit runs seven point nine kilometres per second and laps in eighty four minutes; ours, higher, is slower AND takes longer — v falls as one over root r while T grows as r to the three halves, Kepler's third law again in local dress. Counterintuitive but true: to catch a satellite AHEAD of you in the same orbit, you brake — dropping lower and thereby speeding up. Orbital mechanics rewards the counter-instinctive.",
+          board:[
+            {label:"Scalings", tex:"v \\propto r^{-1/2}, \\quad T \\propto r^{3/2}\\ \\text{(low orbit: 7.9 km/s, 84 min)}", kind:"key"},
+            {label:"Reusable method", text:"v = √(GM/r) → T = 2πr/v → higher = slower + longer; the scalings answer comparisons instantly", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Potential energy far from Earth: why mgh fails",
+      problem:"How much work lifts a 100 kg payload from the surface to r = 3R_E (height 2R_E), ignoring kinetic energy? Compare with the naive mgh.",
+      goal:"Goal → W, and mgh's error",
+      world:{"x0":-1,"x1":11,"y0":-4.2,"y1":0.8},
+      pathway:["True U","The work","mgh's failure","When mgh is fine"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'r/R_E', ylab:'U (arb)'});
+    plotCurve(ctx, r=>-3.5/r, 1, 10.5, {color:CHALKC, w:2.5, N:60});
+    label(ctx, 6.5,-1.0, 'U = −GMm/r', {fs:11, color:CHALKC, italic:true});
+  },
+      steps:[
+        { map:0, title:"The honest potential energy",
+          think:"U = −GMm/r: where is its zero, and why negative near a planet?",
+          model:"Zero at infinity; bound objects live at negative U. mgh is only its local linearization.",
+          pose:"talk",
+          say:"For journeys measured in Earth radii, the honest potential is minus G M m over r — zero at infinity, negative in a planet's grip. The schoolroom m g h is merely this curve's TANGENT LINE at the surface, and tangent lines are honest only near their point of tangency. We are about to leave the neighbourhood.",
+          board:[
+            {label:"The true U", tex:"U(r) = -\\frac{GM_Em}{r}\\ \\text{(zero at infinity)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Work = ΔU, done right",
+          think:"U_f − U_i between R_E and 3R_E: watch the 1/r difference.",
+          model:"W = GMm(1/R_E − 1/3R_E) = (2/3)mgR_E = 4.16×10⁹ J.",
+          pose:"write",
+          say:"The work is the difference of U: G M m times one over R E minus one over three R E — two thirds of G M m over R E. And by the lovely identity G M over R E squared equals g, that is two thirds m g R E: four point one six billion joules for our hundred kilograms.",
+          board:[
+            {tex:"W = GM_Em\\left(\\frac{1}{R_E}-\\frac{1}{3R_E}\\right) = \\tfrac23mgR_E = 4.16\\times10^{9}\\ \\mathrm{J}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 1,-3.5, 0.1, {stroke:GOLD, w:3});
+       circleAt(c, 3,-1.167, 0.1, {stroke:GREEN, w:3});
+       arrow(c, 1.25,-3.35, 2.75,-1.35, {color:GOLD, w:2.5, dash:'6,5'});
+     }
+        },
+        { map:2, title:"The naive estimate, audited",
+          think:"mgh with h = 2R_E: compute, compare, diagnose.",
+          model:"mgh = 1.25×10¹⁰ J — three times too large, assuming full g the whole climb.",
+          pose:"write",
+          say:"Now the naive bill: m g h with h equal to two Earth radii — twelve and a half billion joules, THREE TIMES the truth. Its sin: charging full surface gravity for the entire climb, when in fact g dwindles to a ninth of itself by journey's end. m g h is a flat-Earth formula; our itinerary was planetary.",
+          board:[
+            {tex:"mgh = (100)(9.80)(2\\times6.37\\times10^{6}) = 1.25\\times10^{10}\\ \\mathrm{J}\\ \\text{— } 3\\times\\ \\text{too big}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The boundary of validity",
+          think:"For what h is mgh trustworthy? State the criterion.",
+          model:"h ≪ R_E: airplanes yes, satellites no. Every formula carries its region of truth.",
+          pose:"excited",
+          say:"The moral is the criterion: m g h serves faithfully while h is SMALL compared with the Earth's radius — mountains, aircraft, the whole human theatre. Satellites and moons must pay the full one-over-r fare. Every formula in physics is a local map with edges; wisdom is knowing where yours ends. Ours ends about a hundred kilometres up.",
+          board:[
+            {label:"Validity", text:"mgh: fine for h ≪ R_E. Beyond that, use U = −GMm/r. Know your map's edges.", kind:"key"},
+            {label:"Reusable method", text:"W = ΔU with the 1/r potential → convert via GM/R² = g → compare with mgh to expose its bias", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Escape speeds: from the Moon and from a black hole",
+      problem:"(a) Find the escape speed from the Moon (M = 7.35×10²² kg, R = 1.74×10⁶ m). (b) To what radius must the Sun be compressed for its escape speed to equal c?",
+      goal:"Goal → v_esc, then R for c",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":7},
+      pathway:["Escape = E = 0","Moon","Invert for R","Schwarzschild"],
+      setup(ctx,w){
+    circleAt(ctx, 3,3, 1.6, {stroke:CHALKC, w:3});
+    arrow(ctx, 4.1,4.2, 6.2,6.0, {color:GOLD, w:2.5, dash:'6,5'});
+  },
+      steps:[
+        { map:0, title:"Escape is an energy statement",
+          think:"'Barely escapes' means what total energy at launch?",
+          model:"½mv² − GMm/R = 0 → v_esc = √(2GM/R).",
+          pose:"talk",
+          say:"To escape is to reach infinity with nothing left — total energy zero. Half m v squared minus G M m over R equals zero, and the escape speed is root two G M over R. No direction appears in it: energy does not care which way you leave, only whether you can afford to.",
+          board:[
+            {tex:"\\tfrac12mv^2 - \\frac{GMm}{R} = 0 \\;\\Rightarrow\\; v_{\\rm esc} = \\sqrt{\\frac{2GM}{R}}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Part (a): the Moon",
+          think:"Evaluate for the Moon; compare with Earth's 11.2 km/s.",
+          model:"v_esc = 2.37 km/s — a fifth of Earth's.",
+          pose:"write",
+          say:"For the Moon: root of two G times seven point three five ten to the twenty two, over one point seven four million metres — two point three seven kilometres per second, a fifth of Earth's eleven point two. Hence the Apollo ascent stage's almost casual departure — and hence, over aeons, the Moon's inability to keep any atmosphere: thermal molecules exceed lunar escape speed with ease.",
+          board:[
+            {tex:"v_{\\rm esc} = \\sqrt{\\frac{2(6.674\\times10^{-11})(7.35\\times10^{22})}{1.74\\times10^{6}}} = 2.37\\ \\mathrm{km/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Part (b): demand v_esc = c",
+          think:"Invert the formula for R with v = c and the Sun's mass.",
+          model:"R = 2GM/c² = 2.95 km.",
+          pose:"write",
+          say:"Now the audacious inversion: how small must the SUN become for light itself to fail to escape? Set v to c and solve: R equals two G M over c squared — two point nine five kilometres. The entire Sun, compressed within a market town.",
+          board:[
+            {tex:"R = \\frac{2GM_{\\odot}}{c^2} = \\frac{2(6.674\\times10^{-11})(1.99\\times10^{30})}{(3.00\\times10^{8})^2} = 2.95\\ \\mathrm{km}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"An accidental prophecy",
+          think:"This Newtonian estimate equals which relativistic radius — and is the Sun in danger?",
+          model:"It matches the Schwarzschild radius exactly (a happy accident). The Sun, at 700,000 km, is safe.",
+          pose:"excited",
+          say:"Here is the delicious footnote: our naive Newtonian calculation lands EXACTLY on the Schwarzschild radius of general relativity — a fortunate cancellation of wrongs, but a prophetic one, first made by Michell in seventeen eighty three. The actual Sun, at seven hundred thousand kilometres, is nowhere near its three kilometre threshold and lacks any mechanism to reach it. But heavier stars are not so safe — and the universe, it turns out, took the hint.",
+          board:[
+            {label:"The footnote", text:"2GM/c² is precisely the Schwarzschild radius. Michell guessed 'dark stars' in 1783. The Sun: safe.", kind:"key"},
+            {label:"Reusable method", text:"escape ⇔ E = 0 → v = √(2GM/R) → invert for R when the speed is prescribed", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Falling from far away",
+      problem:"An object is released from rest at 3R_E from the Earth's center. How fast is it moving when it strikes the surface? Why can't you use v = √(2gh)?",
+      goal:"Goal → impact v; the ban on √(2gh)",
+      world:{"x0":-6,"x1":6,"y0":-4.5,"y1":6.5},
+      pathway:["Energy setup","Solve","The absurdity test","Bound"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 1.6, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,4.8, 0.18, {stroke:GOLD, w:3});
+    dashLine(ctx, 0,4.8, 0,1.7, {});
+    label(ctx, 0.4,5.3, 'rest at 3R_E', {fs:10, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Energy with the honest U",
+          think:"From rest at 3R_E to the surface: write conservation with −GMm/r.",
+          model:"−GMm/3R_E = ½mv² − GMm/R_E.",
+          pose:"talk",
+          say:"Dropped from three Earth radii out — a journey across which g changes ninefold, disqualifying every constant-gravity formula on the books. Energy with the true potential: starting at minus G M m over three R E, arriving at minus G M m over R E plus the kinetic prize.",
+          board:[
+            {tex:"-\\frac{GM_Em}{3R_E} = \\tfrac12mv^2 - \\frac{GM_Em}{R_E}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Solve",
+          think:"v² = 2GM(1/R − 1/3R) = (4/3)gR_E. Evaluate.",
+          model:"v = √((4/3)(9.80)(6.37×10⁶)) = 9.12 km/s.",
+          pose:"write",
+          say:"Rearrange: v squared equals two G M times one over R minus one over three R — four thirds g R E, using our G M over R squared equals g conversion. Nine point one two kilometres per second at impact. A thoroughly interplanetary arrival.",
+          board:[
+            {tex:"v^2 = 2GM_E\\left(\\frac{1}{R_E}-\\frac{1}{3R_E}\\right) = \\tfrac43gR_E \\;\\Rightarrow\\; v = 9.12\\ \\mathrm{km/s}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 0,4.8, 0.18, {stroke:GOLD, w:3});
+       tween(u=>{ b.setAttribute('cy', c.M.Y(4.8-3.1*u*u)); }, 1500, c.instant);
+     }
+        },
+        { map:2, title:"√(2gh) fails an absurdity test",
+          think:"Compute √(2gh) with h = 2R_E and compare with the escape speed.",
+          model:"√(2gh) = 15.8 km/s > 11.2 km/s escape — absurd: even infinity delivers only 11.2.",
+          pose:"think",
+          say:"Try the forbidden formula and watch it disgrace itself: root two g h with h equal two R E gives FIFTEEN POINT EIGHT kilometres per second — faster than the escape speed! But an object falling from INFINITY arrives at exactly the escape speed, eleven point two; no drop from a finite height may exceed it. The naive formula has not merely erred; it has violated a theorem. Absurdity tests are cheap and merciless — run them.",
+          board:[
+            {tex:"\\sqrt{2g(2R_E)} = 15.8\\ \\mathrm{km/s} > v_{\\rm esc} = 11.2\\ \\mathrm{km/s}\\ \\text{— impossible}", kind:"warn"}
+          ]
+        },
+        { map:3, title:"The escape speed as a ceiling",
+          think:"Why does falling from infinity give exactly v_esc? Symmetry of what?",
+          model:"Fall-from-infinity is escape played backwards: 11.2 km/s bounds every gravitational arrival at Earth.",
+          pose:"excited",
+          say:"The bound deserves its own frame: falling from infinity is escaping, filmed in reverse, so eleven point two kilometres per second is the ceiling on ANY arrival by gravity alone — from three radii, from the Moon, from the Oort cloud. Our nine point one two sits properly beneath it. Time-reversibility hands you free theorems; collect them.",
+          board:[
+            {label:"The ceiling", tex:"v_{\\rm from\\ \\infty} = v_{\\rm esc} = 11.2\\ \\mathrm{km/s}: \\ \\text{no gravitational drop beats it}\\ (9.12 < 11.2\\checkmark)", kind:"key"},
+            {label:"Reusable method", text:"energy with −GMm/r → convert via gR² = GM → absurdity-check against the escape-speed ceiling", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A binary star",
+      problem:"Two identical stars, each 2.00×10³⁰ kg, orbit their common center of mass in circles, centers 2.00×10¹¹ m apart. Find each star's orbital speed and the system's period.",
+      goal:"Goal → v and T",
+      world:{"x0":-2.6,"x1":2.6,"y0":-1.9,"y1":2.2},
+      pathway:["The cm waltz","Two radii","Solve","Astronomers' trick"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 0.06, {stroke:DIMC, w:2});
+    circleAt(ctx, -1,0, 0.28, {stroke:GOLD, w:3});
+    circleAt(ctx, 1,0, 0.28, {stroke:CHALKC, w:3});
+    circleAt(ctx, 0,0, 1.0, {stroke:DIMC, w:1.2, dash:'5,4'});
+    label(ctx, -0.25,-0.4, 'cm', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Nobody sits still",
+          think:"Equal stars: where is the cm, and what circle does each trace?",
+          model:"cm midway; each star orbits it at radius d/2, always diametrically opposed.",
+          pose:"talk",
+          say:"Two equal stars, and neither is the monarch: both waltz about their common centre of mass, midway between them, each on a circle of radius HALF the separation, forever diametrically opposed. The Sun-and-planet picture, democratised.",
+          board:[
+            {label:"Geometry", text:"cm at the midpoint; each star's orbital radius = d/2; separation stays d.", kind:"key"}
+          ]
+        },
+        { map:1, title:"The two-radii trap",
+          think:"The FORCE uses distance d; the CIRCLE uses radius d/2. Set up Newton carefully.",
+          model:"GM²/d² = Mv²/(d/2) — different r's in the two slots.",
+          pose:"point",
+          say:"Here stands the problem's famous trap, and we shall walk around it in daylight: the GRAVITATIONAL force depends on the stars' separation — the full d — while the CENTRIPETAL requirement uses each star's orbital radius — d over two. Two different lengths, two different jobs, one equation.",
+          board:[
+            {tex:"\\frac{GM^2}{d^2} = \\frac{Mv^2}{d/2}\\ \\text{— force at } d, \\text{ circle of } d/2", kind:"warn"}
+          ]
+        },
+        { map:2, title:"Solve for the waltz",
+          think:"v = √(GM/2d); then T = 2π(d/2)/v.",
+          model:"v = 18.3 km/s; T = πd/v = 3.44×10⁷ s = 1.09 yr.",
+          pose:"write",
+          say:"Solve: v equals root G M over two d — eighteen point three kilometres per second for each partner. The period: circumference two pi times d over two, over v — pi d over v — three point four four times ten to the seven seconds. One point zero nine years per revolution of the pair.",
+          board:[
+            {tex:"v = \\sqrt{\\frac{GM}{2d}} = 18.3\\ \\mathrm{km/s}; \\qquad T = \\frac{\\pi d}{v} = 1.09\\ \\mathrm{yr}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, -1,0.35, -0.4,0.75, {color:GOLD, w:2.5});
+       arrow(c, 1,-0.35, 0.4,-0.75, {color:CHALKC, w:2.5});
+     }
+        },
+        { map:3, title:"Run it backwards: weigh the stars",
+          think:"Astronomers measure v and T from Doppler shifts. What do they infer?",
+          model:"Observed v, T → d and M: binaries are how stellar masses are actually known.",
+          pose:"excited",
+          say:"Now learn why astronomers ADORE binaries: run our algebra backwards. The Doppler shift of each star's light yields v; the shift's rhythm yields T; together they surrender d and then M. Nearly everything humanity knows about STELLAR MASSES — the calibration under all of astrophysics — comes from pairs of stars kindly weighing each other. The waltz is a measurement.",
+          board:[
+            {label:"The trick reversed", text:"Measure v and T (Doppler) → infer d, then M. Binary stars are the scales of astrophysics.", kind:"key"},
+            {label:"Reusable method", text:"cm fixes each radius → force at d, circle at d/2 → solve v, T → run backwards to weigh stars", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A tunnel through the Earth",
+      problem:"Treat the Earth as a uniform sphere with a frictionless tunnel through its center. Show a dropped object executes SHM; find the time to the far side and the speed at the center.",
+      goal:"Goal → SHM proof, T/2, v_max",
+      world:{"x0":-6,"x1":6,"y0":-5,"y1":6},
+      pathway:["Shell theorem","Hooke's law!","Period","Center speed","The twin orbit"],
+      setup(ctx,w){
+    circleAt(ctx, 0,0, 3.6, {stroke:CHALKC, w:3});
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(3.6),x2:ctx.M.X(0),y2:ctx.M.Y(-3.6),stroke:'#8a7d60','stroke-width':5},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Inside a sphere: shells resign",
+          think:"At radius r inside a uniform Earth, which mass attracts you — and which cancels?",
+          model:"Outer shells exert zero net force; only the inner M(r) = M_E(r/R_E)³ pulls.",
+          pose:"talk",
+          say:"The key is Newton's shell theorem, half of which is a miracle: INSIDE a uniform spherical shell, gravity cancels exactly — every outer layer becomes irrelevant the moment you pass beneath it. Falling through the tunnel, you are pulled only by the sphere still below you: a mass shrinking as the CUBE of your radius.",
+          board:[
+            {label:"Shell theorem", tex:"\\text{inside: only } M(r) = M_E\\left(\\frac{r}{R_E}\\right)^3\\ \\text{attracts}", kind:"key"}
+          ]
+        },
+        { map:1, title:"The force turns Hookean",
+          think:"Combine M(r) ∝ r³ with the 1/r² law. What dependence survives?",
+          model:"F = −(mg/R_E)r: linear restoring force — Hooke's law with k = mg/R_E.",
+          pose:"write",
+          say:"Combine: cube over square leaves the first power. F equals minus G M E m over R E cubed, times r — minus m g over R E, times r. A restoring force PROPORTIONAL to displacement: gravity, deep inside a planet, impersonates a spring flawlessly. The tunnel is an oscillator.",
+          board:[
+            {tex:"F = -\\frac{GM_Em}{R_E^3}\\,r = -\\frac{mg}{R_E}\\,r\\ \\text{— Hooke's law, } k = \\frac{mg}{R_E}", kind:"answer", move:"r³/r² = r"}
+          ]
+        },
+        { map:2, title:"The 84-minute period",
+          think:"ω = √(g/R_E): evaluate T and the one-way trip.",
+          model:"T = 2π√(R_E/g) = 5070 s = 84.4 min; far side in 42.2 min.",
+          pose:"write",
+          say:"Simple harmonic motion, omega equals root g over R E: period two pi root of six point three seven million over nine point eight — five thousand seventy seconds, eighty four point four minutes. The far side of the WORLD in forty two minutes, without fuel, the return trip complimentary and automatic.",
+          board:[
+            {tex:"T = 2\\pi\\sqrt{\\frac{R_E}{g}} = 84.4\\ \\mathrm{min}; \\quad \\text{one way: } 42.2\\ \\mathrm{min}", kind:"answer"}
+          ],
+          action(c){
+       const b=circleAt(c, 0,3.3, 0.2, {stroke:GOLD, w:3});
+       tween(u=>{ b.setAttribute('cy', c.M.Y(3.3*Math.cos(Math.PI*u))); }, 2200, c.instant);
+     }
+        },
+        { map:3, title:"Speed at the center",
+          think:"v_max = ωA with A = R_E. Recognize the number.",
+          model:"v = √(gR_E) = 7.90 km/s — precisely the skimming-orbit speed.",
+          pose:"write",
+          say:"Top speed, at the very centre: omega times the amplitude — root g R E — seven point nine zero kilometres per second. A number we have met before this hour: the speed of a satellite skimming the surface. Coincidence is not on today's syllabus...",
+          board:[
+            {tex:"v_{\\max} = \\omega R_E = \\sqrt{gR_E} = 7.90\\ \\mathrm{km/s}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The tunnel is an orbit's shadow",
+          think:"Grazing orbit period: also 84.4 min. What geometric fact links them?",
+          model:"The tunnel oscillation is the x-projection of the circular skimming orbit: same ω, same period.",
+          pose:"excited",
+          say:"...because it is not coincidence: the grazing orbit's period is ALSO eighty four point four minutes. Project that circular orbit onto a diameter — watch its shadow slide back and forth along the tunnel — and the shadow's motion is EXACTLY our oscillation: cosine position, same omega, same everything. Simple harmonic motion is circular motion seen edge-on, and here the Earth herself stages the demonstration. A tunnel, an orbit, one clock — and next tutorial, oscillations inherit all of it.",
+          board:[
+            {label:"The unification", text:"Tunnel SHM = the skimming orbit's projection onto a diameter: both run at ω = √(g/R_E), T = 84.4 min.", kind:"key"},
+            {label:"Reusable method", text:"shell theorem → F ∝ −r inside a uniform sphere → SHM with ω = √(g/R) → recognize the orbit connection", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

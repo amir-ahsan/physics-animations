@@ -1356,6 +1356,631 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Mass versus weight",
+      problem:"An astronaut has mass 60.0 kg. Find her weight on Earth and on the Moon (g_Moon = 1.62 m/s²). What is her mass on the Moon?",
+      goal:"Goal → w_Earth, w_Moon, m_Moon",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Distinguish","Earth","Moon","Instruments"],
+      steps:[
+        { map:0, title:"Two different quantities",
+          think:"Mass and weight: which one is a force, and which a property of the body?",
+          model:"Mass = inertia (kg, scalar, location-proof). Weight = mg (N, a force, local).",
+          pose:"talk",
+          say:"The chapter's most persistent confusion, dispatched with one astronaut. MASS is how much stuff resists acceleration — sixty kilograms of inertia, wherever she goes. WEIGHT is the gravitational force on that mass — m g — and g is a local opinion. Same traveller; different planets, different weights.",
+          board:[
+            {label:"The distinction", text:"Mass m: inertia, in kg, the same everywhere. Weight w = mg: a force, in newtons, set by the local g.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Weight on Earth",
+          think:"Units: kilograms times m/s² yields what?",
+          model:"w = mg = (60.0)(9.80) = 588 N.",
+          pose:"write",
+          say:"On Earth: sixty times nine point eight — five hundred eighty eight newtons. Roughly the force of six hundred apples, if you enjoy the classical imagery.",
+          board:[
+            {tex:"w_{\\rm Earth} = mg = (60.0)(9.80) = 588\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       circleAt(c, 2.5,5.2, 0.55, {stroke:CHALKC, w:3});
+       arrow(c, 2.5,4.6, 2.5,1.2, {color:RED, w:3.5, label:'588 N', fs:13});
+       ground(c, 0.5,4.5, 0.6);
+       label(c, 1.1,0.0, 'Earth: g = 9.80', {fs:11, color:DIMC});
+     }
+        },
+        { map:2, title:"Weight on the Moon",
+          think:"Which factor changed, and which emphatically did not?",
+          model:"w = (60.0)(1.62) = 97.2 N; mass still 60.0 kg.",
+          pose:"write",
+          say:"On the Moon g is one point six two: sixty times that is ninety seven point two newtons — a sixth of her Earth weight. Her MASS, though, remains a stubborn sixty kilograms. Push her on lunar ice and she resists precisely as hard as at home.",
+          board:[
+            {tex:"w_{\\rm Moon} = (60.0)(1.62) = 97.2\\ \\mathrm{N}", kind:"answer"},
+            {label:"The invariant", tex:"m = 60.0\\ \\mathrm{kg}\\ \\text{— on Earth, Moon, or in transit}", kind:"key"}
+          ],
+          action(c){
+       circleAt(c, 7.5,5.2, 0.55, {stroke:CHALKC, w:3});
+       arrow(c, 7.5,4.6, 7.5,4.0, {color:RED, w:3, label:'97 N', fs:12});
+       ground(c, 5.5,9.5, 0.6);
+       label(c, 6.1,0.0, 'Moon: g = 1.62', {fs:11, color:DIMC});
+     }
+        },
+        { map:3, title:"What the instruments say",
+          think:"A spring scale versus a two-pan balance on the Moon: which reading changes?",
+          model:"Scale (reads force) drops to 1/6; balance (compares masses) is unchanged.",
+          pose:"excited",
+          say:"The instrument test settles all arguments: a bathroom scale measures FORCE — it reads a sixth of its Earth value on the Moon. A two-pan balance compares MASSES — the standard masses weaken by exactly the same factor, so it balances identically. Know your instrument, and you know your quantity.",
+          board:[
+            {label:"Instruments", text:"Spring scale reads weight (drops to 1/6 on the Moon); a balance compares masses (unchanged).", kind:"key"},
+            {label:"Reusable method", text:"name the quantity first: inertia → mass (invariant); force of gravity → w = mg with the local g", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Cable tension in an accelerating elevator",
+      problem:"An 800 kg elevator car is pulled by a single cable. Find the tension when the car accelerates (a) upward at 1.20 m/s², (b) downward at 1.20 m/s², and (c) moves upward at constant speed.",
+      goal:"Goal → T in three cases",
+      world:{"x0":-2,"x1":12,"y0":-1,"y1":10},
+      pathway:["Forces","Law","Three cases","Moral"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(4),y:ctx.M.Y(6.4),width:ctx.M.X(8)-ctx.M.X(4),height:ctx.M.Y(2)-ctx.M.Y(6.4),fill:'none',stroke:'#c9b98a','stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(6),y1:ctx.M.Y(9.6),x2:ctx.M.X(6),y2:ctx.M.Y(6.4),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    label(ctx, 6.3,8.2, 'cable', {fs:11});
+  },
+      steps:[
+        { map:0, title:"Two forces, one axis",
+          think:"List every force on the car. Why is the passenger's fear not one of them?",
+          model:"T up, mg = 7840 N down. Nothing else touches the car.",
+          pose:"talk",
+          say:"An elevator car on a single cable: exactly two forces — tension up, weight down. Seven thousand eight hundred forty newtons of weight, every minute of the day. The drama of the ride lives entirely in how T negotiates with that fixed number.",
+          board:[
+            {label:"Forces on the car", tex:"T\\ \\text{(up)}, \\quad mg = (800)(9.80) = 7840\\ \\mathrm{N}\\ \\text{(down)}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6,6.4, 6,9.0, {color:GREEN, w:3.5, label:'T', fs:14});
+       arrow(c, 6,4.2, 6,1.4, {color:RED, w:3.5, label:'mg', fs:14});
+     }
+        },
+        { map:1, title:"Newton's law, up positive",
+          think:"Why write T − mg = ma once, and let the CASES supply the a?",
+          model:"T − mg = ma_y → T = m(g + a_y): one formula, all cases.",
+          pose:"write",
+          say:"With up as positive: T minus m g equals m a. Solve once, symbolically: T equals m times g plus a. One line of algebra now serves every elevator ride ever taken — we simply feed it accelerations.",
+          board:[
+            {label:"Per-axis Newton", tex:"\\Sigma F_y = T - mg = ma_y \\;\\Rightarrow\\; T = m(g + a_y)", kind:"key"}
+          ]
+        },
+        { map:2, title:"Feed it the three cases",
+          think:"Before computing: rank the three tensions by gut, then verify.",
+          model:"Up: 8800 N. Down: 6880 N. Constant v: 7840 N = mg exactly.",
+          pose:"write",
+          say:"Accelerating upward: g plus one point two — eight thousand eight hundred newtons; the cable strains hardest. Accelerating downward: g minus one point two — six thousand eight hundred eighty. And at constant speed — in EITHER direction — a is zero and T equals the weight exactly: seven thousand eight hundred forty.",
+          board:[
+            {tex:"\\text{(a) } T = 800(9.80+1.20) = 8800\\ \\mathrm{N}", kind:"answer"},
+            {tex:"\\text{(b) } T = 800(9.80-1.20) = 6880\\ \\mathrm{N}", kind:"answer"},
+            {tex:"\\text{(c) } a_y = 0: \\ T = mg = 7840\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Velocity never entered",
+          think:"Which quantity did all three answers depend on — and which never appeared?",
+          model:"T depends on a, never on v. Constant velocity = equilibrium, moving or not.",
+          pose:"excited",
+          say:"Notice the character who never spoke: velocity. Whether the car crawls up, plummets down at constant speed, or hangs still, the tension is the same seven thousand eight hundred forty. Newton's law reads accelerations, not velocities — the second law is blind to how fast, and cares only about how CHANGING. That blindness is the whole content of the first law.",
+          board:[
+            {label:"The moral", text:"Constant velocity — any direction — is equilibrium: T = mg. Only a changes the tension.", kind:"key"},
+            {label:"Reusable method", text:"list the forces → ΣF = ma with a sign convention → solve symbolically once → feed in each case's a", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Third-law pair: two skaters",
+      problem:"Two ice skaters, 50.0 kg and 70.0 kg, stand facing each other. The lighter one pushes the heavier with a force of 100 N. Find each skater's acceleration.",
+      goal:"Goal → both accelerations",
+      world:{"x0":-11,"x1":11,"y0":-2,"y1":9},
+      pathway:["Third law","Separate","Compute","No cancel"],
+      setup(ctx,w){
+    ground(ctx, -10, 10, 0);
+    circleAt(ctx, -3,3.2, 1.0, {stroke:GREEN, w:3});
+    circleAt(ctx, 3,3.4, 1.25, {stroke:BLUE, w:3});
+    label(ctx, -4.4,5.2, '50 kg', {fs:12, color:GREEN});
+    label(ctx, 2.2,5.6, '70 kg', {fs:12, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"The push comes back",
+          think:"The light skater pushes the heavy one. What force does the light one feel, and from whom?",
+          model:"Third law: the heavy skater pushes back with exactly 100 N, opposite direction.",
+          pose:"talk",
+          say:"The fifty kilogram skater pushes the seventy with one hundred newtons. Newton's third law replies instantly: the seventy pushes BACK on the fifty with one hundred newtons, no negotiation, no delay, no discount. Forces come only in pairs — equal in size, opposite in direction, and, crucially, acting on DIFFERENT bodies.",
+          board:[
+            {label:"Third law", text:"Skater-on-skater forces: equal magnitude 100 N, opposite directions, on different bodies.", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 1.75,3.4, 5.4,3.4, {color:RED, w:3, label:'100 N', fs:12});
+       arrow(c, -2,3.2, -5.65,3.2, {color:RED, w:3, label:'100 N', fs:12, side:-1});
+     }
+        },
+        { map:1, title:"Two separate second laws",
+          think:"Why must each skater get her own F = ma, never a shared one?",
+          model:"Each body is its own system: one force each, divided by its own mass.",
+          pose:"write",
+          say:"Now the second law — applied separately, once per skater, because the second law is a per-body statement. Each experiences a single horizontal force of one hundred newtons and answers with her own mass.",
+          board:[
+            {tex:"a_{50} = \\frac{100}{50.0} = 2.00\\ \\mathrm{m/s^2}, \\qquad a_{70} = \\frac{100}{70.0} = 1.43\\ \\mathrm{m/s^2}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, -3,1.1, -7,1.1, {color:GREEN, w:3, label:'2.00 m/s²', fs:11, at:'mid', side:-1});
+       arrow(c, 3,1.1, 6.5,1.1, {color:BLUE, w:3, label:'1.43 m/s²', fs:11, at:'mid'});
+     }
+        },
+        { map:2, title:"Equal forces, unequal responses",
+          think:"Same force on both — why do they not accelerate equally?",
+          model:"a = F/m: inertia is the exchange rate between force and response.",
+          pose:"point",
+          say:"Same hundred newtons, different verdicts: the lighter skater recoils at two metres per second squared, the heavier at one point four three. Mass is the exchange rate between force and acceleration; the third law fixes the forces equal, and the masses divide the consequences unequally. The pusher, note, recoils MORE.",
+          board:[
+            {label:"The asymmetry", text:"Equal forces, unequal accelerations — inertia distributes the consequences.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Why the pair never cancels",
+          think:"Equal and opposite — so why doesn't the pair sum to zero and nothing happen?",
+          model:"They act on different bodies; forces only cancel within one free-body diagram.",
+          pose:"excited",
+          say:"And the classic misconception, met head on: equal and opposite, so why don't they cancel? Because cancellation is bookkeeping WITHIN one body's ledger, and these two forces are entered in different ledgers — one per skater. Each skater's diagram contains one force, unopposed. That is why both of them move.",
+          board:[
+            {label:"The trap", text:"Third-law pairs NEVER cancel: they act on different bodies. Cancellation happens only within one free-body diagram.", kind:"warn"},
+            {label:"Reusable method", text:"identify the pair (different bodies) → one free-body diagram per skater → a = F/m each → check the lighter moves more", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Block on a frictionless incline",
+      problem:"A 2.00 kg block is released from rest on a frictionless 30.0° incline. Find its acceleration, the normal force, and the time to slide 5.00 m along the incline.",
+      goal:"Goal → a, n, t",
+      world:{"x0":-1,"x1":11,"y0":-1,"y1":8},
+      pathway:["Tilt axes","Resolve","Both axes","Kinematics","Check n"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(9.5)},${ctx.M.Y(0)} ${ctx.M.X(9.5)},${ctx.M.Y(5.48)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    label(ctx, 1.6,0.5, '30°', {fs:12, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Tilt the axes with the surface",
+          think:"Why do tilted axes make THIS problem one-dimensional?",
+          model:"x down the slope, y perpendicular. Then a lies entirely along x.",
+          pose:"talk",
+          say:"On an incline, be economical: point x down the slope and y perpendicular to it. The block can only ever move along the surface, so with these axes the whole motion is one dimensional and the normal direction is pure statics. Never fight geometry with vertical axes when the world is tilted.",
+          board:[
+            {label:"Axes", text:"x: down the incline; y: perpendicular to it. Motion lives on x alone.", kind:"key"}
+          ]
+        },
+        { map:1, title:"Resolve gravity, not the normal",
+          think:"Which force is already aligned with the tilted axes, and which must be split?",
+          model:"n is along +y already; split mg into mg sin30 (x) and −mg cos30 (y).",
+          pose:"write",
+          say:"With tilted axes, the normal force is already pure y — it is GRAVITY that must be resolved: m g sine thirty pulling down the slope, m g cosine thirty pressing into it. One resolution per problem; choose axes so it is the easy one.",
+          board:[
+            {tex:"\\text{along } x: \\ mg\\sin30^{\\circ}; \\qquad \\text{along } y: \\ -mg\\cos30^{\\circ}, \\ +n", kind:"key"}
+          ],
+          action(c){
+       boxAt(c, 4.75,2.74, 1.4,1.0, {fill:'#2E6DA4', stroke:'#1D4568'});
+       arrow(c, 4.75,3.3, 4.75,0.9, {color:RED, w:3, label:'mg', fs:13});
+       arrow(c, 4.75,3.3, 3.6,4.0, {color:GREEN, w:3, label:'n', fs:13, side:-1});
+     }
+        },
+        { map:2, title:"Newton on each axis",
+          think:"The mass cancels in the x equation. What universal fact does that encode?",
+          model:"x: a = g sin30° = 4.90 m/s². y: n = mg cos30° = 17.0 N.",
+          pose:"write",
+          say:"Per-axis Newton. Along x: m g sine thirty equals m a — the masses cancel, and a is g sine thirty: four point nine metres per second squared, for THIS block and for any block; frictionless slopes are democratic. Along y, nothing accelerates: n equals m g cosine thirty — seventeen point zero newtons.",
+          board:[
+            {label:"x — ΣFx = ma", tex:"mg\\sin30^{\\circ} = ma \\;\\Rightarrow\\; a = g\\sin30^{\\circ} = 4.90\\ \\mathrm{m/s^2}", kind:"answer", move:"cancel m"},
+            {label:"y — ΣFy = 0", tex:"n = mg\\cos30^{\\circ} = (2.00)(9.80)(0.866) = 17.0\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Kinematics finishes the job",
+          think:"Constant a from rest: which kinematic equation covers 5.00 m?",
+          model:"5.00 = ½(4.90)t² → t = 1.43 s.",
+          pose:"write",
+          say:"Dynamics has delivered a constant acceleration; kinematics now cashes it: five metres equals one half times four point nine times t squared. t is one point four three seconds. Dynamics finds a; kinematics spends it — the standard division of labour.",
+          board:[
+            {tex:"5.00 = \\tfrac12(4.90)t^2 \\;\\Rightarrow\\; t = 1.43\\ \\mathrm{s}", kind:"answer"}
+          ],
+          action(c){
+       const b=boxAt(c, 4.75,2.74, 1.4,1.0, {fill:'rgba(46,109,164,.5)', stroke:'#1D4568'});
+       tween(u=>{ const s=u*4.3; b.setAttribute('x', c.M.X(4.75+s*0.866-0.7)); b.setAttribute('y', c.M.Y(2.74-s*0.5+0.5)); }, 1600, c.instant);
+     }
+        },
+        { map:4, title:"Why n < mg",
+          think:"The surface pushes with 17.0 N but the block weighs 19.6 N. Where did the rest go?",
+          model:"The surface supports only the perpendicular part of the weight; the rest drives the slide.",
+          pose:"excited",
+          say:"A closing look at the normal force: seventeen newtons, though the block WEIGHS nineteen point six. No paradox — the surface's job is only to prevent penetration, so it answers only the perpendicular component of the weight. The unpaid remainder, m g sine thirty, is precisely the force sliding the block downhill. The books balance; they always do.",
+          board:[
+            {label:"Audit", tex:"n = 17.0 < mg = 19.6\\ \\mathrm{N}: \\ \\text{the difference } mg\\sin30^{\\circ}\\ \\text{drives the slide}", kind:"key"},
+            {label:"Reusable method", text:"tilt axes with the surface → resolve mg only → ΣF per axis (declare = 0 or = ma) → kinematics with the constant a", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Block on a table pulled by a hanging mass",
+      problem:"A 3.00 kg block on a frictionless table is connected by a light string over a frictionless pulley to a hanging 2.00 kg block. Find the acceleration of the system and the string tension.",
+      goal:"Goal → a and T",
+      world:{"x0":-1,"x1":11,"y0":-3.5,"y1":7},
+      pathway:["Constraints","Two diagrams","Eliminate","Check T"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(-0.5),y1:ctx.M.Y(3),x2:ctx.M.X(8.5),y2:ctx.M.Y(3),stroke:'#9fb4a3','stroke-width':3},ctx.svg);
+    circleAt(ctx, 8.5,3, 0.45, {stroke:CHALKC, w:2.5});
+    boxAt(ctx, 5,3.05, 1.8,1.2, {fill:'#2E6DA4', stroke:'#1D4568'});
+    el('line',{x1:ctx.M.X(5.9),y1:ctx.M.Y(3.65),x2:ctx.M.X(8.5),y2:ctx.M.Y(3.45),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    el('line',{x1:ctx.M.X(8.95),y1:ctx.M.Y(3),x2:ctx.M.X(8.95),y2:ctx.M.Y(0.2),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 8.95,-1.5, 1.3,1.5, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 4.2,4.9, '3.00 kg', {fs:11, color:BLUE});
+    label(ctx, 9.5,-0.6, '2.00 kg', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"What the string enforces",
+          think:"Why do both blocks share one |a|, and both string ends one T?",
+          model:"Inextensible string → same a magnitude; massless string + ideal pulley → same T.",
+          pose:"talk",
+          say:"Before any equations, read the hardware. The string cannot stretch, so both blocks move in lockstep: one shared acceleration magnitude. The string is massless and the pulley frictionless, so the tension is the same at both ends. Two facts, free of charge, from the equipment list.",
+          board:[
+            {label:"Constraints", text:"Same |a| for both blocks (inextensible string); same T at both ends (massless string, ideal pulley).", kind:"key"}
+          ]
+        },
+        { map:1, title:"A diagram per block",
+          think:"Choose each block's positive direction along its own motion. What does that buy you?",
+          model:"Table block: T = m₁a. Hanging block: m₂g − T = m₂a.",
+          pose:"write",
+          say:"One free-body diagram each, with each block's positive direction chosen ALONG its motion — rightward for the table block, downward for the hanger. Table block: only T pulls horizontally — T equals three a. Hanging block: weight minus tension — two g minus T equals two a. Two equations, two unknowns; the machinery is set.",
+          board:[
+            {tex:"\\text{table: } T = m_1a; \\qquad \\text{hanging: } m_2g - T = m_2a", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 5,3.65, 7,3.65, {color:GREEN, w:3, label:'T', fs:13, side:-1});
+       arrow(c, 8.95,-2.25, 8.95,-3.3, {color:RED, w:3, label:'m₂g − T pulls it down', fs:11});
+     }
+        },
+        { map:2, title:"Add and conquer",
+          think:"Adding the equations kills T. What 'single system' picture does the sum express?",
+          model:"a = m₂g/(m₁+m₂) = 19.6/5.00 = 3.92 m/s²; T = m₁a = 11.8 N.",
+          pose:"write",
+          say:"Add the equations and the tension — an internal force — cancels: two g equals five a. a is nineteen point six over five: three point nine two metres per second squared. The sum says something elegant: one driving weight, moving the TOTAL mass. Then T is three times a: eleven point eight newtons.",
+          board:[
+            {tex:"a = \\frac{m_2g}{m_1+m_2} = \\frac{19.6}{5.00} = 3.92\\ \\mathrm{m/s^2}", kind:"answer", move:"add: T cancels"},
+            {tex:"T = m_1a = (3.00)(3.92) = 11.8\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Bracket the tension",
+          think:"Why MUST T land strictly between 0 and 19.6 N?",
+          model:"0 < 11.8 < 19.6: the hanger must still fall; the table block must still be pulled.",
+          pose:"excited",
+          say:"Audit the tension by squeezing it: were T the full hanging weight, nineteen point six, the hanger would float serenely — no acceleration, contradiction. Were T zero, the table block would sit still while the string went taut — also absurd. Eleven point eight sits properly between the impossible extremes. Whenever a system accelerates, its internal tensions live strictly inside such brackets.",
+          board:[
+            {label:"Bracket check", tex:"0 < T = 11.8 < m_2g = 19.6\\ \\mathrm{N}\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"read constraints from the hardware → one diagram per body, positive along its motion → add to kill T → bracket-check the tension", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Tension inside a two-crate train",
+      problem:"A 10.0 kg crate is tied behind a 20.0 kg crate by a light rope, and the front crate is pulled horizontally by a 90.0 N force on a frictionless floor. Find the acceleration and the tension in the connecting rope.",
+      goal:"Goal → a and T",
+      world:{"x0":-2,"x1":16,"y0":-2,"y1":9},
+      pathway:["Whole train","Isolate rear","Cross-check","Insight"],
+      setup(ctx,w){
+    ground(ctx, -1, 15, 0);
+    boxAt(ctx, 3,0.05, 2.6,2.2, {fill:'#8a4444', stroke:'#5a2424'});
+    boxAt(ctx, 8.5,0.05, 3.2,2.8, {fill:'#2E6DA4', stroke:'#1D4568'});
+    el('line',{x1:ctx.M.X(4.3),y1:ctx.M.Y(1.1),x2:ctx.M.X(6.9),y2:ctx.M.Y(1.1),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    label(ctx, 2.0,2.9, '10 kg', {fs:11, color:RED});
+    label(ctx, 7.6,3.5, '20 kg', {fs:11, color:BLUE});
+  },
+      steps:[
+        { map:0, title:"Zoom out: the whole train",
+          think:"For the combined system, is the rope tension internal or external?",
+          model:"Whole system: internal T invisible. a = 90.0/30.0 = 3.00 m/s².",
+          pose:"talk",
+          say:"First move: refuse to see the rope at all. Take both crates as one thirty kilogram train; the rope's tension is then internal — invisible to Newton. Ninety newtons on thirty kilograms: three metres per second squared. The acceleration surrenders before the tension is even mentioned.",
+          board:[
+            {label:"System view", tex:"a = \\frac{F}{m_1+m_2} = \\frac{90.0}{30.0} = 3.00\\ \\mathrm{m/s^2}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 10.1,1.45, 14,1.45, {color:GOLD, w:3.5, label:'90 N', fs:13});
+       dashLine(c, 1.5,-1, 10.5,-1, {});
+       label(c, 4.2,-1.9, 'one system: 30 kg', {fs:11, italic:true});
+     }
+        },
+        { map:1, title:"Zoom in: the rear crate alone",
+          think:"What is the ONLY horizontal force on the rear crate?",
+          model:"T = m_rear·a = (10.0)(3.00) = 30.0 N.",
+          pose:"write",
+          say:"Now zoom in on the rear crate alone. Its entire horizontal world is the rope: T equals ten times three — thirty newtons. Isolating the body with the fewest forces is the cheapest path to an internal tension.",
+          board:[
+            {label:"Rear crate", tex:"T = m_{\\rm rear}\\,a = (10.0)(3.00) = 30.0\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 4.3,1.1, 6.7,1.1, {color:GREEN, w:3, label:'T = 30 N', fs:12, side:-1});
+     }
+        },
+        { map:2, title:"Cross-examine with the front crate",
+          think:"The front crate feels 90 N forward and T backward. Does its ledger balance?",
+          model:"90.0 − T = (20.0)(3.00) → T = 30.0 N ✓.",
+          pose:"write",
+          say:"Cross-examine using the front crate, which feels the ninety forward and the rope's thirty backward: ninety minus T equals twenty times three — T is thirty again. Two independent witnesses, one testimony. The bookkeeping is sound.",
+          board:[
+            {label:"Front crate check", tex:"90.0 - T = (20.0)(3.00) \\;\\Rightarrow\\; T = 30.0\\ \\mathrm{N}\\;\\checkmark", kind:"key"}
+          ]
+        },
+        { map:3, title:"What a coupling carries",
+          think:"T = 30 N is exactly one third of 90 N. What fraction of the train's mass rides behind the rope?",
+          model:"The rope carries only what's needed to accelerate the mass BEHIND it: 10/30 of the pull.",
+          pose:"excited",
+          say:"And the insight worth exporting to every train, tow-rope, and trailer hitch: the coupling carries only the force needed to accelerate what rides BEHIND it. One third of the mass sits behind the rope; the rope carries precisely one third of the pull. The last car of a train is always the easiest job on the roster.",
+          board:[
+            {label:"The insight", text:"An internal coupling transmits F × (mass behind it)/(total mass) — here 90 × 10/30 = 30 N.", kind:"key"},
+            {label:"Reusable method", text:"whole system for a → isolate the body with fewest forces for T → cross-check with the other body", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Pulling at an angle: the normal force drops",
+      problem:"A 15.0 kg sled on frictionless ice is pulled by a rope with 60.0 N of tension at 25.0° above horizontal. Find the sled's acceleration and the normal force from the ice.",
+      goal:"Goal → a and n",
+      world:{"x0":-2,"x1":14,"y0":-2,"y1":9},
+      pathway:["Resolve","x axis","y axis","Lift-off limit"],
+      setup(ctx,w){
+    ground(ctx, -1, 13, 0);
+    boxAt(ctx, 4,0.05, 3.2,1.6, {fill:'#2E6DA4', stroke:'#1D4568'});
+  },
+      steps:[
+        { map:0, title:"Resolve the pull",
+          think:"The 60 N does two different jobs. Name them before computing.",
+          model:"Tx = 54.4 N accelerates; Ty = 25.4 N un-weights the sled.",
+          pose:"talk",
+          say:"Sixty newtons at twenty five degrees: resolve it and discover it moonlights. Cosine gives fifty four point four newtons of forward pull; sine gives twenty five point four of LIFT. One rope, two jobs — acceleration and un-weighting — and each component reports to a different axis.",
+          board:[
+            {tex:"T_x = 60.0\\cos25.0^{\\circ} = 54.4\\ \\mathrm{N}, \\quad T_y = 60.0\\sin25.0^{\\circ} = 25.4\\ \\mathrm{N}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 5.6,1.2, 11,3.7, {color:GOLD, w:3.5, label:'60 N', fs:13});
+       arrow(c, 5.6,1.2, 11,1.2, {color:GREEN, w:2.5, dash:'6,5', label:'54.4', fs:11, at:'mid'});
+       arrow(c, 5.6,1.2, 5.6,3.7, {color:RED, w:2.5, dash:'6,5', label:'25.4', fs:11, side:-1});
+     }
+        },
+        { map:1, title:"x: the acceleration",
+          think:"Frictionless ice: what is the only horizontal force?",
+          model:"a = 54.4/15.0 = 3.63 m/s².",
+          pose:"write",
+          say:"Horizontally, on frictionless ice, the rope's fifty four point four newtons stands alone: a equals fifty four point four over fifteen — three point six three metres per second squared.",
+          board:[
+            {label:"x — ΣFx = ma", tex:"54.4 = 15.0\\,a \\;\\Rightarrow\\; a = 3.63\\ \\mathrm{m/s^2}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"y: the lighter-than-usual normal",
+          think:"Three vertical forces now. Write the zero-sum and watch n shrink.",
+          model:"n = mg − Ty = 147 − 25.4 = 122 N.",
+          pose:"write",
+          say:"Vertically nothing accelerates, but the ledger now has three entries: n up, weight down, and the rope's twenty five point four up. So n equals one forty seven minus twenty five point four: one hundred twenty two newtons. The ice is having an easier afternoon than usual — the rope has taken over part of the sled's weight.",
+          board:[
+            {label:"y — ΣFy = 0", tex:"n + 25.4 - (15.0)(9.80) = 0 \\;\\Rightarrow\\; n = 122\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Pull hard enough and it flies",
+          think:"What tension would make n = 0 — and what would that mean physically?",
+          model:"T sin25° = mg at T = 348 N: the sled leaves the ice.",
+          pose:"excited",
+          say:"Follow the trend to its punchline: pull harder and n keeps shrinking. At what tension does it vanish? When T sine twenty five equals the whole weight — three hundred forty eight newtons — the ice contributes nothing and the sled is airborne. The normal force is not a fixed fee; it is a balance item, and it can be argued all the way to zero.",
+          board:[
+            {label:"Lift-off", tex:"T\\sin25^{\\circ} = mg \\;\\Rightarrow\\; T = \\frac{147}{0.423} = 348\\ \\mathrm{N}: \\ n = 0", kind:"key"},
+            {label:"Reusable method", text:"resolve the pull → x: ΣF = ma → y: ΣF = 0 with the lift term → probe the n = 0 limit", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Incline–pulley system",
+      problem:"A 4.00 kg block on a frictionless 30.0° incline is connected over a pulley at the top of the incline to a hanging 3.00 kg block. Find the acceleration and the tension, and state which way the system moves.",
+      goal:"Goal → direction, a, T",
+      world:{"x0":-1,"x1":12,"y0":-2.5,"y1":8},
+      pathway:["Who wins","Per body","Solve","Verify"],
+      setup(ctx,w){
+    el('polygon',{points:`${ctx.M.X(0)},${ctx.M.Y(0)} ${ctx.M.X(8)},${ctx.M.Y(0)} ${ctx.M.X(8)},${ctx.M.Y(4.62)}`,fill:'rgba(159,180,163,.18)',stroke:'#9fb4a3','stroke-width':2},ctx.svg);
+    circleAt(ctx, 8.35,4.9, 0.4, {stroke:CHALKC, w:2.5});
+    boxAt(ctx, 4,2.31, 1.5,1.0, {fill:'#2E6DA4', stroke:'#1D4568'});
+    el('line',{x1:ctx.M.X(8.7),y1:ctx.M.Y(4.75),x2:ctx.M.X(8.7),y2:ctx.M.Y(1.6),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 8.7,0.2, 1.2,1.4, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 2.8,4.1, '4 kg on 30°', {fs:11, color:BLUE});
+    label(ctx, 9.4,1.0, '3 kg', {fs:11, color:RED});
+  },
+      steps:[
+        { map:0, title:"First, hold the trial",
+          think:"Compare m₂g against m₁g sin30° BEFORE assigning directions. Why must you?",
+          model:"29.4 N (hanging) vs 19.6 N (downhill): the hanger wins; incline block goes UP.",
+          pose:"talk",
+          say:"Two masses, two ambitions: the hanger wants to fall with twenty nine point four newtons; the incline block leans downhill with only m g sine thirty — nineteen point six. Hold this trial FIRST, because your sign convention must follow the actual verdict: the hanging block descends, and the four kilograms climbs the slope.",
+          board:[
+            {label:"The trial", tex:"m_2g = 29.4\\ \\mathrm{N} \\ \\ \\text{vs} \\ \\ m_1g\\sin30^{\\circ} = 19.6\\ \\mathrm{N}: \\ \\text{hanger wins}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Newton for each body",
+          think:"With each positive direction along its own motion, why do both equations get +a?",
+          model:"m₂g − T = m₂a; T − m₁g sin30° = m₁a.",
+          pose:"write",
+          say:"Each body, positive along its own motion. The hanger: twenty nine point four minus T equals three a. The climber: T minus nineteen point six equals four a. Same a in both — the string insists — and the same T at both ends.",
+          board:[
+            {tex:"m_2g - T = m_2a, \\qquad T - m_1g\\sin30^{\\circ} = m_1a", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 8.7,-0.5, 8.7,-2.0, {color:RED, w:3, label:'descends', fs:11});
+       arrow(c, 4.6,3.3, 6.3,4.28, {color:BLUE, w:3, label:'up the slope', fs:11, side:-1});
+     }
+        },
+        { map:2, title:"Add, solve, back-substitute",
+          think:"What plays the role of 'driving force' in the sum this time?",
+          model:"a = (29.4 − 19.6)/7.00 = 1.40 m/s²; T = m₂(g − a) = 25.2 N.",
+          pose:"write",
+          say:"Add: T cancels, and the NET driving force — twenty nine point four minus nineteen point six, the margin of victory — moves the total seven kilograms. a equals one point four zero. Back-substitute: T equals three times g minus a — twenty five point two newtons.",
+          board:[
+            {tex:"a = \\frac{29.4 - 19.6}{7.00} = 1.40\\ \\mathrm{m/s^2}", kind:"answer", move:"add: T cancels"},
+            {tex:"T = m_2(g - a) = 3.00(9.80 - 1.40) = 25.2\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Verify in the unused equation",
+          think:"Insert a and T into the climber's equation. What must come out?",
+          model:"25.2 − 19.6 = 5.6 = (4.00)(1.40) ✓.",
+          pose:"excited",
+          say:"The audit: feed the answers to the equation we did NOT use for back-substitution. Twenty five point two minus nineteen point six is five point six — and four times one point four is five point six. The second witness corroborates. Also note the tension sits between nineteen point six and twenty nine point four, exactly as an honest middleman should.",
+          board:[
+            {label:"Second-witness check", tex:"T - m_1g\\sin30^{\\circ} = 25.2 - 19.6 = 5.6 = (4.00)(1.40)\\;\\checkmark", kind:"key"},
+            {label:"Reusable method", text:"trial of driving forces fixes directions → per-body Newton along motion → add, solve, back-substitute → verify in the unused equation", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"A force that grows with time",
+      problem:"A 2.00 kg cart on a frictionless track starts from rest at x = 0 and is pushed by a horizontal force F(t) = 6.00t (N, t in seconds). Find v(t) and x(t), and evaluate both at t = 4.00 s.",
+      goal:"Goal → v(t), x(t) at 4 s",
+      world:{"x0":-0.4,"x1":4.6,"y0":-2,"y1":27},
+      pathway:["a(t)","Integrate v","Integrate x","Evaluate","Why not ½at²"],
+      setup(ctx,w){
+    axes2D(ctx, w, {xlab:'t (s)', ylab:'v (m/s)'});
+  },
+      steps:[
+        { map:0, title:"Newton first, calculus second",
+          think:"F varies with t. What does the second law give you at each instant?",
+          model:"a(t) = F/m = 3.00t — an instant-by-instant statement.",
+          pose:"talk",
+          say:"A push that grows with time: six t newtons on two kilograms. Newton's second law holds at every INSTANT: a equals F over m — three t. The law has done its work in one line; from here the problem belongs to calculus.",
+          board:[
+            {label:"Second law, per instant", tex:"a(t) = \\frac{F(t)}{m} = \\frac{6.00\\,t}{2.00} = 3.00\\,t\\ \\mathrm{m/s^2}", kind:"key"}
+          ]
+        },
+        { map:1, title:"First integration: velocity",
+          think:"What supplies the constant of integration here?",
+          model:"v(t) = ∫3t dt = 1.50t², using v(0) = 0.",
+          pose:"write",
+          say:"Integrate the acceleration from rest: v equals three halves t squared — one point five t squared. The initial condition, starting from rest, quietly disposed of the integration constant. Initial conditions are not decoration; they are half the answer.",
+          board:[
+            {tex:"v(t) = \\int_0^t 3.00\\,t'\\,dt' = 1.50\\,t^2\\ \\mathrm{m/s}", kind:"answer"}
+          ],
+          action(c){
+       plotCurve(c, t=>1.5*t*t, 0, 4, {color:GOLD, w:3, N:50});
+       label(c, 2.6,20.5, 'v = 1.5t²', {fs:12, color:GOLD, italic:true});
+     }
+        },
+        { map:2, title:"Second integration: position",
+          think:"Integrate 1.5t² — which power appears, and with what coefficient?",
+          model:"x(t) = ∫1.5t² dt = 0.500t³, using x(0) = 0.",
+          pose:"write",
+          say:"Integrate again for position: one point five t squared becomes one half t cubed. A linear force made a quadratic velocity and a cubic position — each integration promotes the power by one, like a bureaucracy of exponents.",
+          board:[
+            {tex:"x(t) = \\int_0^t 1.50\\,t'^2\\,dt' = 0.500\\,t^3\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Evaluate at t = 4.00 s",
+          think:"Sanity: is v(4) consistent with the average of a over the interval?",
+          model:"v = 1.5(16) = 24.0 m/s; x = 0.5(64) = 32.0 m.",
+          pose:"write",
+          say:"At four seconds: v is one point five times sixteen — twenty four metres per second; x is half of sixty four — thirty two metres. Quick plausibility: the acceleration averaged six over the interval, and six times four is twenty four. It coheres.",
+          board:[
+            {tex:"v(4.00) = 24.0\\ \\mathrm{m/s}, \\qquad x(4.00) = 32.0\\ \\mathrm{m}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"Why ½at² was never an option",
+          think:"If you insisted on x = ½at², which a would you even use?",
+          model:"The toolkit assumes constant a. With a(t) = 3t there is no single a to insert.",
+          pose:"excited",
+          say:"And the cautionary coda: had we reached reflexively for one half a t squared, which a would we insert? Three t at WHICH t? The constant-acceleration toolkit has one sacred prerequisite, and this problem fails it. When the force varies, return to the definitions and integrate — the toolkit is a corollary, not a birthright.",
+          board:[
+            {label:"The warning", text:"x = ½at² presumes constant a. For F(t), integrate: a → v → x, feeding in initial conditions.", kind:"warn"},
+            {label:"Reusable method", text:"a(t) = F(t)/m → integrate for v with v(0) → integrate for x with x(0) → evaluate; never borrow constant-a formulas", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Pendulum in an accelerating car",
+      problem:"A 0.500 kg ball hangs from a string in a car. When the car accelerates forward on a level road, the string settles at 15.0° from the vertical. Find the car's acceleration and the string tension.",
+      goal:"Goal → a and T",
+      world:{"x0":-2,"x1":12,"y0":-2,"y1":9},
+      pathway:["Read the tilt","Two axes","Divide","Tension","Accelerometer"],
+      setup(ctx,w){
+    ground(ctx, -1, 11, 0);
+    el('line',{x1:ctx.M.X(1),y1:ctx.M.Y(7.6),x2:ctx.M.X(9.5),y2:ctx.M.Y(7.6),stroke:'#9fb4a3','stroke-width':3},ctx.svg);
+    label(ctx, 1.2,8.3, 'car ceiling', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Which way does it hang?",
+          think:"The car accelerates forward. Why does the ball swing BACKWARD?",
+          model:"The string tilts opposite the acceleration so tension can gain a forward component.",
+          pose:"talk",
+          say:"A ball on a string in an accelerating car settles fifteen degrees from vertical — tilted BACKWARD, away from the acceleration. It must: the only forward force available is the horizontal component of the tension, and the string can only supply one by leaning back. The geometry is the physics.",
+          board:[
+            {label:"Setup", text:"Forces: T along the string, mg down. The net force must point forward, horizontal.", kind:"key"}
+          ],
+          action(c){
+       el('line',{x1:c.M.X(5.5),y1:c.M.Y(7.6),x2:c.M.X(4.47),y2:c.M.Y(3.75),stroke:CHALKC,'stroke-width':2.5},c.svg);
+       circleAt(c, 4.47,3.45, 0.45, {stroke:GOLD, w:3});
+       dashLine(c, 5.5,7.6, 5.5,3.2, {});
+       label(c, 5.7,5.2, '15°', {fs:12, color:GOLD});
+       arrow(c, 8,1.2, 10.5,1.2, {color:GREEN, w:3, label:'a', fs:13});
+     }
+        },
+        { map:1, title:"Newton on both axes",
+          think:"Vertically nothing happens; horizontally everything does. Write both statements.",
+          model:"y: T cos15° = mg. x: T sin15° = ma.",
+          pose:"write",
+          say:"Per-axis Newton, ground frame. Vertical: T cosine fifteen holds up the entire weight — equals m g, zero vertical acceleration. Horizontal: T sine fifteen, the lean's dividend, equals m a. Two equations, two unknowns, and a division about to work magic.",
+          board:[
+            {label:"y — ΣFy = 0", tex:"T\\cos15.0^{\\circ} - mg = 0", kind:"key"},
+            {label:"x — ΣFx = ma", tex:"T\\sin15.0^{\\circ} = ma", kind:"key"}
+          ]
+        },
+        { map:2, title:"Divide: the mass resigns",
+          think:"Divide x by y. What cancels, and what instrument is born?",
+          model:"a = g tan15° = 2.63 m/s² — mass-free.",
+          pose:"write",
+          say:"Divide the x equation by the y equation: T cancels, m cancels, and a equals g tangent fifteen — two point six three metres per second squared. MASS-FREE. Any ball, any string, the same angle for the same acceleration.",
+          board:[
+            {tex:"\\frac{T\\sin15^{\\circ}}{T\\cos15^{\\circ}} = \\frac{ma}{mg} \\;\\Rightarrow\\; a = g\\tan15.0^{\\circ} = 2.63\\ \\mathrm{m/s^2}", kind:"answer", move:"divide: T, m cancel"}
+          ]
+        },
+        { map:3, title:"The tension pays double",
+          think:"Why must T exceed mg here, even slightly?",
+          model:"T = mg/cos15° = 5.07 N > mg = 4.90 N.",
+          pose:"write",
+          say:"The tension: m g over cosine fifteen — five point zero seven newtons, a shade over the four point nine of plain weight. It must be: the string holds the ball up AND pushes it forward, and both services are billed to the same rope.",
+          board:[
+            {tex:"T = \\frac{mg}{\\cos15.0^{\\circ}} = \\frac{(0.500)(9.80)}{0.966} = 5.07\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"You have built an accelerometer",
+          think:"What does the driver read off directly: the angle, or the acceleration?",
+          model:"a = g tanθ: the angle IS the readout. Every phone does this electronically.",
+          pose:"excited",
+          say:"Step back: a string and a ball have become an instrument. The tilt angle reads acceleration directly — g tangent theta — needing no calibration for mass. Hang fuzzy dice from a mirror and you own an analogue accelerometer; your phone does the same trick with a silicon spring. Cheap physics, faithfully converting geometry into dynamics since Galileo.",
+          board:[
+            {label:"The instrument", tex:"a = g\\tan\\theta\\ \\text{— the tilt is the readout, mass-independent}", kind:"key"},
+            {label:"Reusable method", text:"tilt opposes a → per-axis Newton → divide to cancel T and m → tension = mg/cosθ, always > mg", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================

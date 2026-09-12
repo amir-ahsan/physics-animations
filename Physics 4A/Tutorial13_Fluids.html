@@ -834,6 +834,11 @@
         fill:'rgba(91,130,166,.30)',stroke:'none'},c.svg);
     }
 
+    function shadePoly(c, pts, opt = {}){
+      const P = pts.map(p => `${c.M.X(p[0])},${c.M.Y(p[1])}`).join(' ');
+      el('polygon',{points:P, fill:(opt.color || 'rgba(216,228,212,.18)'), stroke:'none'}, c.svg);
+    }
+
     const EXAMPLES = [
 
     {
@@ -1319,6 +1324,566 @@ diff:"Challenging",
         },
       ]
     },
+
+    {
+      diff:"Basic",
+      title:"Density and specific gravity",
+      problem:"A metal block of volume 250 cm³ has mass 0.675 kg. Find its density and specific gravity, and identify the likely metal.",
+      goal:"Goal → ρ, SG, identity",
+      world:{"x0":-2,"x1":12,"y0":-1,"y1":8},
+      pathway:["Convert units","Density","Specific gravity","Identify"],
+      steps:[
+        { map:0, title:"The unit trap first",
+          think:"1 cm³ = how many m³? By what factor do students err here?",
+          model:"250 cm³ = 250×10⁻⁶ m³. The 10⁻⁶ per cm³ is the classic factor-of-1000 trap.",
+          pose:"talk",
+          say:"Before any physics: units. A cubic centimetre is a hundredth of a metre, CUBED — ten to the minus six cubic metres, not ten to the minus three. Two hundred fifty of them: two point five times ten to the minus four cubic metres. This one conversion sinks more fluid homework than Archimedes could save.",
+          board:[
+            {label:"The conversion", tex:"250\\ \\mathrm{cm^3} = 250\\times10^{-6}\\ \\mathrm{m^3}\\ \\text{(cm}^3\\to\\text{m}^3: \\times10^{-6})", kind:"warn"}
+          ]
+        },
+        { map:1, title:"Density",
+          think:"ρ = m/V: assemble in SI.",
+          model:"ρ = 0.675/2.50×10⁻⁴ = 2700 kg/m³.",
+          pose:"write",
+          say:"Density: mass over volume — point six seven five over two point five ten to the minus four — two thousand seven hundred kilograms per cubic metre. Nearly three tonnes to the cube; metals are crowded neighbourhoods.",
+          board:[
+            {tex:"\\rho = \\frac{m}{V} = \\frac{0.675}{250\\times10^{-6}} = 2700\\ \\mathrm{kg/m^3}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Specific gravity",
+          think:"Divide by water's 1000 kg/m³. Why is the result dimensionless?",
+          model:"SG = 2700/1000 = 2.70 — a pure ratio to water.",
+          pose:"write",
+          say:"Specific gravity is density with water as the yardstick: twenty seven hundred over a thousand — two point seven zero, no units. Anything above one sinks in water, below one floats; the number is a swimming forecast.",
+          board:[
+            {tex:"\\mathrm{SG} = \\frac{2700}{1000} = 2.70\\ \\text{(dimensionless)}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Name the metal",
+          think:"2700 kg/m³: which common metal matches?",
+          model:"Aluminum (2700 kg/m³). Density is a fingerprint.",
+          pose:"excited",
+          say:"Consult the table: two thousand seven hundred is ALUMINUM, to three figures. Density is a material's fingerprint — how Archimedes convicted the goldsmith, and how a two-line laboratory measurement still identifies an unknown block twenty-three centuries later. Same method, same courtroom confidence.",
+          board:[
+            {label:"Identification", text:"2700 kg/m³ = aluminum. Density identifies materials — the original forensic physics.", kind:"key"},
+            {label:"Reusable method", text:"convert cm³ with 10⁻⁶ → ρ = m/V → SG = ρ/1000 → match the fingerprint", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Gauge and absolute pressure for a diver",
+      problem:"A diver descends to 12.0 m in fresh water. Find the gauge pressure and the absolute pressure at that depth (p_atm = 1.013×10⁵ Pa).",
+      goal:"Goal → p_gauge and p_abs",
+      world:{"x0":-2,"x1":12,"y0":-13.5,"y1":2.5},
+      pathway:["Two pressures","Gauge","Absolute","Rule of ten"],
+      setup(ctx,w){
+    shadePoly(ctx, [[-1.5,0],[11.5,0],[11.5,-13],[-1.5,-13]], {color:'rgba(46,109,164,.15)'});
+    ground(ctx, -1.5, 11.5, 0);
+    circleAt(ctx, 5,-12, 0.5, {stroke:GOLD, w:3});
+    label(ctx, 5.8,-12.2, 'diver, 12 m', {fs:11, color:GOLD});
+  },
+      steps:[
+        { map:0, title:"Gauge versus absolute",
+          think:"What does a tire gauge read at sea level: zero, or one atmosphere?",
+          model:"Gauge = excess over atmospheric; absolute = the whole thing. Instruments usually read gauge.",
+          pose:"talk",
+          say:"Pressure comes in two accounting conventions. ABSOLUTE counts everything, atmosphere included; GAUGE counts only the excess above it — which is why your tire gauge reads zero in open air rather than one hundred kilopascals. Divers, doctors, and mechanics all speak gauge; physics equations often want absolute. Label which one you hold.",
+          board:[
+            {label:"The two", tex:"p_{\\rm abs} = p_{\\rm atm} + p_{\\rm gauge}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Gauge pressure at depth",
+          think:"ρgh with 12 m of fresh water: compare to 1 atm.",
+          model:"p_gauge = (1000)(9.80)(12.0) = 1.18×10⁵ Pa — slightly over one atmosphere.",
+          pose:"write",
+          say:"The water's own contribution: rho g h — a thousand times nine point eight times twelve — one point one eight times ten to the five pascals. Twelve metres of pond outweighs, per square metre, the entire hundred-kilometre atmosphere above it. Water is heavy; air mostly bluffs.",
+          board:[
+            {tex:"p_{\\rm gauge} = \\rho gh = (1000)(9.80)(12.0) = 1.18\\times10^{5}\\ \\mathrm{Pa}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Absolute pressure",
+          think:"Add the atmosphere riding on the surface.",
+          model:"p = 1.013×10⁵ + 1.18×10⁵ = 2.19×10⁵ Pa ≈ 2.2 atm.",
+          pose:"write",
+          say:"Absolute: add the atmosphere pressing on the lake's surface — two point one nine times ten to the five pascals, about two point two atmospheres, squeezing the diver from all directions with perfect impartiality.",
+          board:[
+            {tex:"p = p_{\\rm atm} + \\rho gh = 2.19\\times10^{5}\\ \\mathrm{Pa} \\approx 2.2\\ \\mathrm{atm}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"The diver's rule of ten",
+          think:"Every 10 m adds how much? And why must scuba regulators track depth?",
+          model:"≈1 atm per 10 m. Lungs can't inflate against the excess: regulators serve air AT ambient pressure.",
+          pose:"excited",
+          say:"The field version: every ten metres of water adds one atmosphere. And the physiology: chest muscles cannot inflate lungs against even a tenth of that excess — hence the scuba regulator, whose whole genius is serving air at exactly the ambient pressure, breath by breath, depth by depth. A snorkel longer than half a metre is not equipment; it is a prank.",
+          board:[
+            {label:"Rule of ten", text:"≈1 atm per 10 m of water. Regulators supply air AT depth pressure — lungs cannot fight the difference.", kind:"key"},
+            {label:"Reusable method", text:"gauge = ρgh → absolute = + p_atm → sanity-check with the 1 atm/10 m rule", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Basic",
+      title:"Buoyant force and apparent weight",
+      problem:"An object of volume 0.0500 m³ and weight 800 N is fully submerged in water and suspended from a scale. What does the scale read?",
+      goal:"Goal → the scale reading",
+      world:{"x0":-2,"x1":12,"y0":-9,"y1":4},
+      pathway:["Archimedes","Buoyancy","Scale","Float test"],
+      setup(ctx,w){
+    shadePoly(ctx, [[-1.5,-0.5],[11.5,-0.5],[11.5,-8.5],[-1.5,-8.5]], {color:'rgba(46,109,164,.15)'});
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(3.5),x2:ctx.M.X(5),y2:ctx.M.Y(-2.5)},ctx.svg);
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(3.5),x2:ctx.M.X(5),y2:ctx.M.Y(-2.5),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    boxAt(ctx, 5,-5.5, 2.6,3, {fill:'#8a4444', stroke:'#5a2424'});
+    label(ctx, 5.7,2.6, 'scale', {fs:11, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Archimedes' principle",
+          think:"The buoyant force equals the weight of WHAT, exactly?",
+          model:"B = weight of the displaced FLUID — not of the object.",
+          pose:"talk",
+          say:"Archimedes, stated with the precision it deserves: the buoyant force equals the weight of the DISPLACED FLUID — the water shoved aside, not the object doing the shoving. The water neither knows nor cares what the intruder is made of; it bills purely by volume.",
+          board:[
+            {label:"Archimedes", tex:"B = \\rho_{\\rm fluid}V_{\\rm displaced}\\,g", kind:"key"}
+          ]
+        },
+        { map:1, title:"Compute the buoyancy",
+          think:"0.0500 m³ of water weighs what?",
+          model:"B = (1000)(0.0500)(9.80) = 490 N.",
+          pose:"write",
+          say:"Fifty litres displaced: a thousand times point zero five times nine point eight — four hundred ninety newtons of upward assistance, unconditional and immediate.",
+          board:[
+            {tex:"B = (1000)(0.0500)(9.80) = 490\\ \\mathrm{N}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 5,-4, 5,-1.5, {color:GREEN, w:3, label:'B = 490 N', fs:12, side:-1});
+       arrow(c, 5,-7, 5,-8.8, {color:RED, w:3, label:'800 N', fs:12});
+     }
+        },
+        { map:2, title:"The scale's share",
+          think:"Three forces on the object in equilibrium: T + B = w. Solve.",
+          model:"T = 800 − 490 = 310 N — the apparent weight.",
+          pose:"write",
+          say:"Equilibrium: scale plus buoyancy carries the weight. T equals eight hundred minus four ninety — three hundred ten newtons. The object has not lost a gram; it has merely found a partner willing to carry sixty percent of the load. Underwater, everything hires the water.",
+          board:[
+            {tex:"T = w - B = 800 - 490 = 310\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"Sink or float: the density verdict",
+          think:"The object's density vs water's: compute and compare. When would the scale read zero?",
+          model:"ρ = 800/(0.05·9.8) = 1630 kg/m³ > 1000: sinks. If w < B, it floats and T = 0.",
+          pose:"excited",
+          say:"The postscript: the object's density — weight over g V — is sixteen hundred thirty, denser than water: left alone it sinks, and the scale must hold the difference. Had it weighed under four hundred ninety newtons, buoyancy would win, the object would bob to the surface, and the scale would read a serene zero. The scale reading is a densitometer in disguise — which is precisely how jewellers and geologists still use it.",
+          board:[
+            {label:"The verdict", tex:"\\rho_{\\rm obj} = 1630\\ \\mathrm{kg/m^3} > 1000: \\ \\text{sinks; if } w<B, \\text{ floats and } T = 0", kind:"key"},
+            {label:"Reusable method", text:"B = ρ_fluid V g → T = w − B → compare densities for the float/sink verdict", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"How much of an iceberg is under water?",
+      problem:"Ice has density 917 kg/m³ and seawater 1025 kg/m³. What fraction of a floating iceberg's volume is submerged?",
+      goal:"Goal → V_sub/V",
+      world:{"x0":-2,"x1":12,"y0":-7,"y1":4},
+      pathway:["Float condition","The ratio","90%","Fresh water"],
+      setup(ctx,w){
+    shadePoly(ctx, [[-1.5,0],[11.5,0],[11.5,-6.5],[-1.5,-6.5]], {color:'rgba(46,109,164,.15)'});
+    el('polygon',{points:`${ctx.M.X(3)},${ctx.M.Y(0.9)} ${ctx.M.X(5.2)},${ctx.M.Y(1.4)} ${ctx.M.X(7)},${ctx.M.Y(0.7)} ${ctx.M.X(8)},${ctx.M.Y(-3.6)} ${ctx.M.X(5)},${ctx.M.Y(-5.2)} ${ctx.M.X(2.4)},${ctx.M.Y(-3.2)}`,fill:'rgba(216,228,212,.35)',stroke:CHALKC,'stroke-width':2},ctx.svg);
+    ground(ctx, -1.5, 11.5, 0);
+  },
+      steps:[
+        { map:0, title:"Floating is an exact balance",
+          think:"For anything floating at rest, B equals what — always?",
+          model:"ρ_sw V_sub g = ρ_ice V g: displaced water's weight = iceberg's whole weight.",
+          pose:"talk",
+          say:"A floating object is a completed negotiation: it sinks exactly until the water it displaces weighs as much as itself, and there it rests. Seawater density times the SUBMERGED volume equals ice density times the WHOLE volume — the entire iceberg problem in one line of balance.",
+          board:[
+            {label:"Float condition", tex:"\\rho_{\\rm sw}V_{\\rm sub}\\,g = \\rho_{\\rm ice}V\\,g", kind:"key"}
+          ]
+        },
+        { map:1, title:"The fraction is a density ratio",
+          think:"Cancel g and V where possible. What pure ratio remains?",
+          model:"V_sub/V = ρ_ice/ρ_sw = 917/1025 = 0.895.",
+          pose:"write",
+          say:"Cancel g, divide by the total volume: the submerged fraction is simply the density RATIO — nine seventeen over ten twenty five, zero point eight nine five. Size never entered; shape never entered. A berg the size of a county and an ice cube in gin obey the identical fraction.",
+          board:[
+            {tex:"\\frac{V_{\\rm sub}}{V} = \\frac{\\rho_{\\rm ice}}{\\rho_{\\rm sw}} = \\frac{917}{1025} = 0.895", kind:"answer", move:"cancel g, V"}
+          ]
+        },
+        { map:2, title:"Ninety percent hidden",
+          think:"What does 89.5% submerged mean for what a ship's lookout sees?",
+          model:"The visible tip is a tenth of the truth — the literal 'tip of the iceberg'.",
+          pose:"point",
+          say:"Ninety percent of every iceberg sails below the waterline, invisible to the lookout and unimpressed by the hull. The idiom 'tip of the iceberg' is not poetic license; it is a density ratio, and in nineteen twelve the White Star Line learned its exact value.",
+          board:[
+            {label:"The meaning", text:"~90% submerged, always. The visible tip understates the berg ninefold.", kind:"key"}
+          ]
+        },
+        { map:3, title:"Fresh water rides lower",
+          think:"In fresh water (1000): what fraction? Which sea lets a berg ride highest?",
+          model:"0.917 in fresh water: denser (saltier) water floats everything higher.",
+          pose:"excited",
+          say:"Swap in fresh water and the fraction worsens to point nine one seven — bergs ride LOWER in rivers than in the briny sea, because saltier means denser means more supportive per litre displaced. The same physics floats you noticeably higher in the Dead Sea, and lets a cargo ship's Plimsoll line mark different legal depths for salt, fresh, summer, and winter water. One ratio, an entire maritime bureaucracy.",
+          board:[
+            {tex:"\\text{fresh: } \\frac{917}{1000} = 0.917\\ \\text{submerged — saltier water floats things higher}", kind:"answer"},
+            {label:"Reusable method", text:"float ⇒ B = w → submerged fraction = ρ_object/ρ_fluid → independent of size and shape", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Flow speed in a hose and its nozzle",
+      problem:"Water flows through a garden hose of inside diameter 2.00 cm at 12.0 L/min. Find the flow speed in the hose and in a nozzle of diameter 0.500 cm.",
+      goal:"Goal → v_hose, v_nozzle",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":7},
+      pathway:["Q in SI","Hose","Nozzle","The thumb"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(4.2),x2:ctx.M.X(8),y2:ctx.M.Y(4.2),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(2.2),x2:ctx.M.X(8),y2:ctx.M.Y(2.2),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(8),y1:ctx.M.Y(4.2),x2:ctx.M.X(10),y2:ctx.M.Y(3.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(8),y1:ctx.M.Y(2.2),x2:ctx.M.X(10),y2:ctx.M.Y(2.9),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Put the flow rate in SI",
+          think:"12 L/min → m³/s: two conversions.",
+          model:"Q = 12.0×10⁻³ m³ / 60 s = 2.00×10⁻⁴ m³/s.",
+          pose:"talk",
+          say:"The tap delivers twelve litres a minute — garden units. Physics wants cubic metres per second: twelve thousandths of a cube, over sixty seconds — two times ten to the minus four. This Q is the river's identity; every cross-section downstream must pass it in full.",
+          board:[
+            {tex:"Q = \\frac{12.0\\times10^{-3}\\ \\mathrm{m^3}}{60\\ \\mathrm{s}} = 2.00\\times10^{-4}\\ \\mathrm{m^3/s}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Speed in the hose",
+          think:"v = Q/A with radius 1.00 cm.",
+          model:"v = 2×10⁻⁴/π(0.01)² = 0.637 m/s.",
+          pose:"write",
+          say:"In the hose, radius one centimetre: v equals Q over pi r squared — zero point six three seven metres per second. A gentle amble; you could outwalk your own hose water.",
+          board:[
+            {tex:"v_{\\rm hose} = \\frac{Q}{\\pi(0.0100)^2} = 0.637\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Speed in the nozzle",
+          think:"Diameter ÷4 → area ÷16 → speed ×16. Verify by direct computation.",
+          model:"v = 2×10⁻⁴/π(0.0025)² = 10.2 m/s.",
+          pose:"write",
+          say:"The nozzle quarters the diameter, so the area falls SIXTEENFOLD — and the same Q must squeeze through. Speed: ten point two metres per second, sixteen times the amble. Continuity, A one v one equals A two v two, is just the river refusing to lose water.",
+          board:[
+            {tex:"v_{\\rm nozzle} = \\frac{Q}{\\pi(0.00250)^2} = 10.2\\ \\mathrm{m/s} \\quad(\\times16)", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 2,3.2, 3.6,3.2, {color:BLUE, w:2.5, label:'0.64 m/s', fs:11, side:-1});
+       arrow(c, 10,3.2, 12.6,3.2, {color:GOLD, w:3, label:'10.2 m/s', fs:11});
+     }
+        },
+        { map:3, title:"The thumb on the hose",
+          think:"Why does a thumb over the hose end make the jet fly?",
+          model:"You shrink A; Q barely changes; v = Q/A soars. Continuity at the fingertip.",
+          pose:"excited",
+          say:"And the universal childhood experiment, explained at last: press a thumb across the hose mouth and the water leaps across the garden. You have narrowed the exit; the flow rate — set upstream by the tap — barely budges; the speed must multiply to compensate. Nozzles, print heads, and rocket throats are all a thumb over a hose, engineered to tolerance.",
+          board:[
+            {label:"The thumb", text:"Shrink A at fixed Q → v soars. Continuity is why nozzles exist.", kind:"key"},
+            {label:"Reusable method", text:"Q to SI → v = Q/A per section → speeds scale inversely with area (d⁻²)", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Pressure drop in a narrowing horizontal pipe",
+      problem:"Water flows at 2.00 m/s in a horizontal pipe of diameter 4.00 cm that narrows to 2.00 cm. Find the speed in the narrow section and the pressure difference between the sections.",
+      goal:"Goal → v₂ and p₁ − p₂",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":7},
+      pathway:["Continuity","Bernoulli","Δp","Cause and effect"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(4.6),x2:ctx.M.X(5),y2:ctx.M.Y(4.6),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(1.8),x2:ctx.M.X(5),y2:ctx.M.Y(1.8),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(4.6),x2:ctx.M.X(7),y2:ctx.M.Y(3.9),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(1.8),x2:ctx.M.X(7),y2:ctx.M.Y(2.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(7),y1:ctx.M.Y(3.9),x2:ctx.M.X(12.5),y2:ctx.M.Y(3.9),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(7),y1:ctx.M.Y(2.5),x2:ctx.M.X(12.5),y2:ctx.M.Y(2.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+  },
+      steps:[
+        { map:0, title:"Continuity sets the speed",
+          think:"Halve the diameter: what factor multiplies v?",
+          model:"v₂ = v₁(d₁/d₂)² = 2.00 × 4 = 8.00 m/s.",
+          pose:"talk",
+          say:"Half the diameter, a quarter the area, four times the speed: v two is eight metres per second. Continuity speaks first in every pipe problem — it needs no pressures, only geometry.",
+          board:[
+            {tex:"v_2 = v_1\\left(\\frac{d_1}{d_2}\\right)^2 = 2.00\\times4 = 8.00\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Bernoulli on the level",
+          think:"Horizontal pipe: which Bernoulli term dies, and what remains?",
+          model:"p + ½ρv² = const: pressure trades against speed alone.",
+          pose:"write",
+          say:"Bernoulli, with the height terms cancelling on a level run: p plus one half rho v squared is the same at both stations. An energy statement per cubic metre — pressure is potential energy in disguise, speed is kinetic, and their sum is conserved along the stream.",
+          board:[
+            {label:"Level Bernoulli", tex:"p_1 + \\tfrac12\\rho v_1^2 = p_2 + \\tfrac12\\rho v_2^2", kind:"key"}
+          ]
+        },
+        { map:2, title:"The pressure difference",
+          think:"½ρ(v₂² − v₁²) with 64 − 4: evaluate.",
+          model:"p₁ − p₂ = ½(1000)(60.0) = 3.00×10⁴ Pa ≈ 0.3 atm.",
+          pose:"write",
+          say:"The difference: half of a thousand times sixty four minus four — thirty thousand pascals, a third of an atmosphere LOWER in the narrow throat. Fast water is cheap water, pressure-wise.",
+          board:[
+            {tex:"p_1 - p_2 = \\tfrac12\\rho(v_2^2 - v_1^2) = \\tfrac12(1000)(60.0) = 3.00\\times10^{4}\\ \\mathrm{Pa}", kind:"answer"}
+          ],
+          action(c){
+       label(c, 1.6,5.4, 'high p, slow', {fs:11, color:BLUE});
+       label(c, 8.3,5.0, 'low p, fast', {fs:11, color:RED});
+     }
+        },
+        { map:3, title:"Cause, not coincidence",
+          think:"WHY must the pressure be lower where the flow is faster — argue with F = ma.",
+          model:"Water accelerates INTO the throat; only a pressure imbalance can push it. The Venturi principle.",
+          pose:"excited",
+          say:"And do not let the correlation float free of its cause: water entering the throat must ACCELERATE from two to eight metres per second, and the only agent available to push it is pressure itself. The upstream pressure must exceed the downstream — the drop is not a consequence of speed but its CAUSE. Meter that drop and you have a flow gauge with no moving parts: the Venturi, beloved of carburettors and anaesthesia machines alike.",
+          board:[
+            {label:"Causality", text:"The pressure difference is what accelerates the fluid into the throat. Venturi meters read flow from Δp.", kind:"key"},
+            {label:"Reusable method", text:"continuity for v₂ → level Bernoulli → Δp = ½ρΔ(v²) → read the causality, not just the numbers", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Intermediate",
+      title:"Bernoulli with a change in height",
+      problem:"Water enters a pipe at ground level at 1.50 m/s, cross-section 0.0200 m², pressure 2.00×10⁵ Pa. The pipe rises 3.00 m and narrows to 0.0100 m². Find the speed and pressure at the top.",
+      goal:"Goal → v₂ and p₂",
+      world:{"x0":-1,"x1":13,"y0":-1,"y1":7},
+      pathway:["Continuity","Full Bernoulli","Evaluate","Cavitation"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(0),y1:ctx.M.Y(1.6),x2:ctx.M.X(5),y2:ctx.M.Y(1.6),stroke:CHALKC,'stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(5),y1:ctx.M.Y(1.6),x2:ctx.M.X(9),y2:ctx.M.Y(5.2),stroke:CHALKC,'stroke-width':3},ctx.svg);
+    el('line',{x1:ctx.M.X(9),y1:ctx.M.Y(5.2),x2:ctx.M.X(12.5),y2:ctx.M.Y(5.2),stroke:CHALKC,'stroke-width':2},ctx.svg);
+    label(ctx, 9.6,6.0, 'up 3 m, narrower', {fs:10, color:DIMC});
+  },
+      steps:[
+        { map:0, title:"Continuity first, as always",
+          think:"Area halves: v₂ = ?",
+          model:"v₂ = v₁A₁/A₂ = 1.50 × 2 = 3.00 m/s.",
+          pose:"talk",
+          say:"The pipe halves its cross-section, so the speed doubles: three metres per second up top. Continuity is settled before Bernoulli is even consulted — the two laws work in that order, always.",
+          board:[
+            {tex:"v_2 = v_1\\frac{A_1}{A_2} = 1.50\\times2 = 3.00\\ \\mathrm{m/s}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Bernoulli, all three terms",
+          think:"Now height AND speed both change. Write the full statement, solved for p₂.",
+          model:"p₂ = p₁ − ρg(y₂−y₁) − ½ρ(v₂²−v₁²).",
+          pose:"write",
+          say:"Now the full Bernoulli, no term excused: pressure plus rho g y plus half rho v squared, conserved along the stream. Solve for the upper pressure: p one, minus the climb's toll, minus the speed-up's toll. Two separate taxes on the same account.",
+          board:[
+            {tex:"p_2 = p_1 - \\rho g(y_2-y_1) - \\tfrac12\\rho(v_2^2 - v_1^2)", kind:"key"}
+          ]
+        },
+        { map:2, title:"Evaluate the two tolls",
+          think:"Climb: ρg(3) = ? Speed-up: ½ρ(9−2.25) = ? Which dominates?",
+          model:"p₂ = 2.00×10⁵ − 29,400 − 3375 = 1.67×10⁵ Pa.",
+          pose:"write",
+          say:"The climb: rho g times three — twenty nine thousand four hundred pascals, the lion's share. The speed-up: half a thousand times six point seven five — a mere thirty four hundred. Together: one point six seven times ten to the five at the top. Height is expensive; in modest plumbing, speed is nearly free.",
+          board:[
+            {tex:"p_2 = 2.00\\times10^{5} - 29400 - 3375 = 1.67\\times10^{5}\\ \\mathrm{Pa}", kind:"answer"}
+          ]
+        },
+        { map:3, title:"When the pressure runs out",
+          think:"Keep raising or narrowing the pipe: what happens when p nears the vapor pressure?",
+          model:"p can fall below atmospheric, then to vapor pressure: the water boils cold — cavitation.",
+          pose:"excited",
+          say:"Follow the trend to its cliff: rise higher, narrow further, and the pressure keeps falling — below atmospheric, and eventually to water's VAPOUR pressure, at which point the liquid boils at room temperature, in the pipe, forming bubbles that collapse with hammer blows. CAVITATION: the pitted propellers of every navy, the growl of a failing pump. Bernoulli's ledger, when overdrawn, is repaid in shockwaves.",
+          board:[
+            {label:"The cliff", text:"p below vapor pressure → cold boiling (cavitation): bubble collapse erodes propellers and pumps.", kind:"warn"},
+            {label:"Reusable method", text:"continuity → full Bernoulli solved for the unknown p → itemize height vs speed tolls → watch for the vapor-pressure floor", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Total force on a dam",
+      problem:"A vertical dam 50.0 m wide holds back fresh water 10.0 m deep. Find the total horizontal force of the water on the dam and the height at which it effectively acts.",
+      goal:"Goal → F and its line of action",
+      world:{"x0":-2,"x1":12,"y0":-11,"y1":2},
+      pathway:["Pressure ramp","Integrate F","The centroid","h/3","Design"],
+      setup(ctx,w){
+    el('rect',{x:ctx.M.X(8),y:ctx.M.Y(0.5),width:9,height:ctx.M.Y(-10)-ctx.M.Y(0.5),fill:'#5a6b5e',opacity:.7},ctx.svg);
+    shadePoly(ctx, [[-1.5,0],[8,0],[8,-10],[-1.5,-10]], {color:'rgba(46,109,164,.15)'});
+    label(ctx, 8.7,0.9, 'dam', {fs:11});
+  },
+      steps:[
+        { map:0, title:"Pressure is a ramp, not a number",
+          think:"p(y) = ρgy: where is the load lightest, heaviest?",
+          model:"Zero at the surface, maximum ρgh at the base — force must be integrated.",
+          pose:"talk",
+          say:"The water does not push on the dam with one pressure but with a RAMP of them: nothing at the waterline, rho g h at the base. A single multiplication cannot bill a varying load; we slice the dam into horizontal strips and integrate.",
+          board:[
+            {label:"The ramp", tex:"p(y) = \\rho gy\\ \\text{(gauge), } y\\ \\text{measured down from the surface}", kind:"key"}
+          ],
+          action(c){
+       arrow(c, 6.4,-1, 7.9,-1, {color:RED, w:1.5});
+       arrow(c, 5.4,-4, 7.9,-4, {color:RED, w:2.2});
+       arrow(c, 4.2,-8.5, 7.9,-8.5, {color:RED, w:3});
+     }
+        },
+        { map:1, title:"Integrate the strips",
+          think:"Strip at depth y: dF = ρgy·w dy. Total?",
+          model:"F = ½ρgwh² = ½(1000)(9.80)(50)(100) = 2.45×10⁷ N.",
+          pose:"write",
+          say:"Each strip at depth y carries rho g y times its area w d y. Integrate: one half rho g w h squared — twenty four and a half MILLION newtons, the weight of a small ocean liner, applied sideways. Atmosphere, pressing equally on both faces, politely cancels.",
+          board:[
+            {tex:"F = \\int_0^h\\rho gy\\,w\\,dy = \\tfrac12\\rho gwh^2 = 2.45\\times10^{7}\\ \\mathrm{N}", kind:"answer"}
+          ]
+        },
+        { map:2, title:"Where does it act?",
+          think:"Torque about the base: ∫ρgy·w(h−y)dy. What height gives τ/F?",
+          model:"τ = ρgwh³/6 → acts at h/3 = 3.33 m above the base.",
+          pose:"write",
+          say:"A resultant needs an address. Take torques about the base: the integral delivers rho g w h cubed over six, and dividing by F places the equivalent force at h over THREE — three point three three metres up, not the halfway point. The deep strips, pushing hardest, drag the centroid downward.",
+          board:[
+            {tex:"\\bar y = \\frac{\\tau}{F} = \\frac{\\rho gwh^3/6}{\\rho gwh^2/2} = \\frac{h}{3}\\ \\text{above the base} = 3.33\\ \\mathrm{m}", kind:"answer"}
+          ],
+          action(c){
+       arrow(c, 5.2,-6.67, 7.9,-6.67, {color:GOLD, w:3.5, label:'F at h/3', fs:12, at:'mid', side:-1});
+     }
+        },
+        { map:3, title:"Why dams are wedges",
+          think:"Load ∝ h² concentrated low: what shape answers it?",
+          model:"Force grows as h², applied at h/3: dams thicken toward the base — the Hoover profile.",
+          pose:"excited",
+          say:"Now read the engineering off the mathematics: the total force grows as the SQUARE of the depth and applies itself low, a third of the way up. The rational response is a wall thin at the crest and massive at the root — and there stands every gravity dam on Earth, the Hoover's elegant wedge included, as a poured-concrete graph of today's two integrals.",
+          board:[
+            {label:"Design", text:"F ∝ h², acting at h/3: hence dams thicken toward the base. The shape IS the integral.", kind:"key"},
+            {label:"Reusable method", text:"slice into strips → F = ∫p dA = ½ρgwh² → torque/F locates the centroid at h/3", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Sinking a block of wood",
+      problem:"A 2.00 kg block of wood has density 600 kg/m³. (a) What fraction floats above water? (b) What mass of lead (11,300 kg/m³) attached BENEATH it makes the block just fully submerged?",
+      goal:"Goal → fraction, then m_lead",
+      world:{"x0":-2,"x1":12,"y0":-8,"y1":3.5},
+      pathway:["Float","Setup (b)","Solve","The placement twist"],
+      setup(ctx,w){
+    shadePoly(ctx, [[-1.5,0],[11.5,0],[11.5,-7.5],[-1.5,-7.5]], {color:'rgba(46,109,164,.15)'});
+    ground(ctx, -1.5, 11.5, 0);
+    boxAt(ctx, 5,-1.5, 3,2.4, {fill:'#8a5a24', stroke:'#5a3a14'});
+  },
+      steps:[
+        { map:0, title:"Part (a): the floating fraction",
+          think:"Submerged fraction = ρ_wood/ρ_water. Above water?",
+          model:"60% submerged, 40% proud of the surface.",
+          pose:"talk",
+          say:"Part a is the iceberg's cousin: the submerged fraction equals the density ratio, six hundred over a thousand — sixty percent under, FORTY percent riding high. Wood at six hundred kilograms per cubic metre is a confident floater.",
+          board:[
+            {tex:"\\frac{V_{\\rm sub}}{V} = \\frac{600}{1000} = 0.600 \\;\\Rightarrow\\; 40\\%\\ \\text{above}", kind:"answer"}
+          ]
+        },
+        { map:1, title:"Part (b): the full-submersion budget",
+          think:"Lead below the block displaces water TOO. Write the equilibrium with both volumes.",
+          model:"(2.00 + m)g = ρ_w(V_w + m/11300)g.",
+          pose:"write",
+          say:"Now sink it — barely — with lead slung underneath. At the threshold of full submersion, total weight equals total buoyancy, and note with care: the LEAD's volume also displaces water. Weight side: two plus m. Buoyancy side: the wood's three point three three litres plus the lead's m over eleven thousand three hundred, all times rho w g.",
+          board:[
+            {tex:"(2.00+m)g = \\rho_w\\left(V_w + \\frac{m}{11300}\\right)g, \\quad V_w = \\frac{2.00}{600} = 3.33\\times10^{-3}\\ \\mathrm{m^3}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Solve",
+          think:"2 + m = 3.33 + 0.0885m: extract m.",
+          model:"m = 1.33/0.9115 = 1.46 kg.",
+          pose:"write",
+          say:"Cancel g and collect: two plus m equals three point three three plus point zero eight eight five m. m equals one point three three over point nine one one five — one point four six kilograms of lead, hung below, and the wood's crown just kisses the surface.",
+          board:[
+            {tex:"2.00 + m = 3.33 + 0.0885m \\;\\Rightarrow\\; m = 1.46\\ \\mathrm{kg}", kind:"answer"}
+          ],
+          action(c){
+       boxAt(c, 5,-4.5, 1.1,0.9, {fill:'#555a66', stroke:'#333844'});
+       el('line',{x1:c.M.X(5),y1:c.M.Y(-3.6),x2:c.M.X(5),y2:c.M.Y(-2.7),stroke:CHALKC,'stroke-width':2},c.svg);
+       label(c, 6.0,-4.3, 'lead below', {fs:10, color:DIMC});
+     }
+        },
+        { map:3, title:"On top, the answer changes",
+          think:"Lead ON TOP of the block, dry: which term leaves the budget, and what m results?",
+          model:"Dry lead displaces nothing: m = 1.33 kg. Nine percent of the lead's weight was self-buoyed.",
+          pose:"excited",
+          say:"The twist that separates the careful: perch the lead ON TOP, dry, and its volume displaces no water at all — the buoyancy term vanishes and the requirement drops to one point three three kilograms. Underwater, even lead gets a nine percent discount on its own weight. WHERE mass sits, not just how much, writes the buoyancy books — a lesson every ship's load-master carries in her bones.",
+          board:[
+            {label:"The twist", tex:"\\text{lead on top (dry): } m = 3.33 - 2.00 = 1.33\\ \\mathrm{kg}\\ \\text{— placement matters}", kind:"key"},
+            {label:"Reusable method", text:"float fraction = density ratio → full submersion: weight = buoyancy of ALL submerged volumes → check what's wet", kind:"answer"}
+          ]
+        },
+      ]
+    },
+    {
+      diff:"Challenging",
+      title:"Draining a tank (Torricelli plus calculus)",
+      problem:"A cylindrical tank of cross-section A = 1.00 m² holds water to depth h₀ = 2.00 m. A hole of area a = 1.00 cm² opens at the bottom. Find the time to empty the tank.",
+      goal:"Goal → drain time",
+      world:{"x0":-2,"x1":12,"y0":-1,"y1":8},
+      pathway:["Torricelli","The ODE","Separate","Evaluate","The slow tail"],
+      setup(ctx,w){
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(7),x2:ctx.M.X(2),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(9),y1:ctx.M.Y(7),x2:ctx.M.X(9),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    el('line',{x1:ctx.M.X(2),y1:ctx.M.Y(0.5),x2:ctx.M.X(9),y2:ctx.M.Y(0.5),stroke:CHALKC,'stroke-width':2.5},ctx.svg);
+    shadePoly(ctx, [[2.1,0.6],[8.9,0.6],[8.9,5.5],[2.1,5.5]], {color:'rgba(46,109,164,.2)'});
+    arrow(ctx, 9.1,0.8, 10.6,0.5, {color:BLUE, w:2});
+  },
+      steps:[
+        { map:0, title:"Torricelli's efflux speed",
+          think:"Apply Bernoulli from the surface to the hole: what v emerges?",
+          model:"v = √(2gh) — the free-fall speed from the surface's height (valid for a ≪ A).",
+          pose:"talk",
+          say:"Torricelli's theorem, Bernoulli's prettiest corollary: water leaves a small hole at root two g h — precisely the speed it would gain FALLING from the surface to the hole. The tank converts pressure head to speed with the honesty of a dropped stone. But h shrinks as the tank drains, so the exit slows — and a differential equation is born.",
+          board:[
+            {label:"Torricelli", tex:"v = \\sqrt{2gh}\\ \\text{(} a\\ll A\\text{)}", kind:"key"}
+          ]
+        },
+        { map:1, title:"Write the drain ODE",
+          think:"Volume balance: A dh/dt = −(outflow). Assemble it.",
+          model:"A dh/dt = −a√(2gh).",
+          pose:"write",
+          say:"Bookkeeping on the volume: the level falls at A d h d t, and the hole exports a times root two g h. Equate with a minus sign and the tank's future is fully specified: a first order equation in h.",
+          board:[
+            {tex:"A\\frac{dh}{dt} = -a\\sqrt{2gh}", kind:"key"}
+          ]
+        },
+        { map:2, title:"Separate and integrate",
+          think:"dh/√h on one side, dt on the other. Integrate h₀ → 0.",
+          model:"2√h₀ = (a/A)√(2g)·t.",
+          pose:"write",
+          say:"Separate: d h over root h to the left, the constants and d t to the right. The left integrates to two root h; run it from full to empty and: two root h nought equals a over A, root two g, times the drain time. The calculus is three lines; the waiting is longer.",
+          board:[
+            {tex:"\\int_{h_0}^0\\frac{dh}{\\sqrt h} = -\\frac{a}{A}\\sqrt{2g}\\,t \\;\\Rightarrow\\; 2\\sqrt{h_0} = \\frac{a}{A}\\sqrt{2g}\\,t", kind:"key"}
+          ]
+        },
+        { map:3, title:"Evaluate",
+          think:"t = (A/a)√(2h₀/g): note the two factors' meanings.",
+          model:"t = 10⁴ × 0.639 s = 6.39×10³ s ≈ 1.8 h.",
+          pose:"write",
+          say:"Solve: t equals A over a — ten thousand — times root of two h nought over g — zero point six three nine seconds, the free-fall time from two metres. Six thousand four hundred seconds; a bit under two hours. The formula factors into pure meaning: the fall time, multiplied by how many hole-areas must share the exit.",
+          board:[
+            {tex:"t = \\frac{A}{a}\\sqrt{\\frac{2h_0}{g}} = 10^{4}\\times0.639 = 6.39\\times10^{3}\\ \\mathrm{s} \\approx 1.8\\ \\mathrm{h}", kind:"answer"}
+          ]
+        },
+        { map:4, title:"The long, slow tail",
+          think:"t ∝ √h₀ − √h: what fraction of time does the FIRST half of the water take?",
+          model:"First half out in 29% of the time; the last centimetres dawdle. √h dynamics have long tails.",
+          pose:"excited",
+          say:"One final richness: because the flow weakens with the level, the drainage is front-loaded — the first HALF of the water escapes in just twenty nine percent of the total time, while the last few centimetres dribble out at leisure. Every bathtub owner has observed the endless final gurgle without knowing it was a square root. Now you know: root h dynamics always save their patience for the end.",
+          board:[
+            {label:"The tail", tex:"t \\propto \\sqrt{h_0}-\\sqrt{h}: \\ \\text{half the water out in } 29\\%\\ \\text{of the time}", kind:"key"},
+            {label:"Reusable method", text:"Torricelli for v(h) → volume ODE → separate variables → t = (A/a)√(2h₀/g); expect the slow tail", kind:"answer"}
+          ]
+        },
+      ]
+    }
     ];
 
     /* ============================================================
