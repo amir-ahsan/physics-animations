@@ -48,7 +48,7 @@
             <div class="r" style="opacity:.85"><span class="k">total W</span> = <span id="rWt">–</span> J, <span class="k">v<sub>f</sub></span> = <span id="rvf">–</span> m/s</div>
           </div>
         </div>
-        <div class="cap">Red arrow = the push F at the block's current position (it flips when F turns negative). Green bar = kinetic energy.</div>
+        <div class="cap">Red arrow = the push F at the block's current position (it flips when F turns negative). Green bar = kinetic energy. If an opposing force uses up all the kinetic energy, the block stops right there — so the shaded work always equals &#916;KE exactly.</div>
       </div>
 
       <div class="panel">
@@ -114,7 +114,7 @@
   calc.setExpressions([
     {id:'F0',latex:'F_0=10'}, {id:'k',latex:'k=1.2'}, {id:'xi',latex:'x_i=0'}, {id:'xf',latex:'x_f=6'},
     {id:'m',latex:'m=2'}, {id:'vi',latex:'v_i=2'}, {id:'fp',latex:'f_p=1'},
-    {id:'xp',latex:'x_p=x_i+f_p(x_f-x_i)'},
+    {id:'xp',latex:'x_p=6'}, /* NOTE: x_p is set numerically from JS so the probe can stop where KE hits zero */
     {id:'Ff',latex:'F(x)=F_0-k x', hidden:true, secret:true},
     {id:'aFull',latex:'\\min(0,F(x))\\le y\\le\\max(0,F(x))\\left\\{x_i\\le x\\le x_f\\right\\}', color:'#B5793B', fillOpacity:0.12, lines:false},
     {id:'aWork',latex:'\\min(0,F(x))\\le y\\le\\max(0,F(x))\\left\\{x_i\\le x\\le x_p\\right\\}', color:'#B5793B', fillOpacity:0.45, lines:false},
@@ -135,17 +135,38 @@
     var ym=1.25*Math.max(Math.abs(Fat(S.xi)),Math.abs(Fat(S.xf)),1);
     calc.setMathBounds({left:xl-1.2, right:xr+1.2, bottom:-ym, top:ym});
   }
+  function stopX(){ // first x along the push where KE = Ki + W(x) reaches 0 (block stops there)
+    var Ki=0.5*S.m*S.vi*S.vi, d=S.xf-S.xi;
+    if(Math.abs(d)<1e-9) return S.xf;
+    if(Ki<=1e-12 && Fat(S.xi)*(d>0?1:-1)<=0) return S.xi; // starts at rest against the force: never moves
+    var N=600, prev=S.xi, prevKE=Ki;
+    for(var j=1;j<=N;j++){
+      var x=S.xi+d*j/N, ke=Ki+workTo(x);
+      if(ke<=0){ // bisect between prev and x
+        var a=prev,b=x;
+        for(var t=0;t<40;t++){ var mmid=0.5*(a+b); if(Ki+workTo(mmid)>0) a=mmid; else b=mmid; }
+        return 0.5*(a+b);
+      }
+      prev=x; prevKE=ke;
+    }
+    return S.xf;
+  }
   function update(){
-    var xp=S.xi+S.fp*(S.xf-S.xi);
-    var Wso=workTo(xp), Wtot=workTo(S.xf);
+    var d=S.xf-S.xi, xpReq=S.xi+S.fp*d, xs=stopX();
+    var xp=(d>=0)?Math.min(xpReq,xs):Math.max(xpReq,xs);       // probe cannot pass the stopping point
+    var xfEff=(d>=0)?Math.min(S.xf,xs):Math.max(S.xf,xs);      // neither can the end of the push
+    var stopped=Math.abs(xfEff-S.xf)>1e-6;
+    var Wso=workTo(xp), Wtot=workTo(xfEff);
     var Ki=0.5*S.m*S.vi*S.vi, KE=Math.max(0,Ki+Wso), Kf=Math.max(0,Ki+Wtot);
+    calc.setExpression({id:'xp',latex:'x_p='+xp.toFixed(4)});  // shading stops with the block
     document.getElementById('rW').textContent=Wso.toFixed(1);
     document.getElementById('rKE').textContent=KE.toFixed(1);
     document.getElementById('rv4').textContent=Math.sqrt(2*KE/S.m).toFixed(2);
     document.getElementById('rWt').textContent=Wtot.toFixed(1);
-    document.getElementById('rvf').textContent=Math.sqrt(2*Kf/S.m).toFixed(2);
-    // schematic: block position along fraction, force arrow, KE bar
-    var bx=40+S.fp*236, blk=document.getElementById('blk4'); blk.setAttribute('x',(bx-17).toFixed(1));
+    document.getElementById('rvf').textContent=Math.sqrt(2*Kf/S.m).toFixed(2)+(stopped?(' (stops at x = '+xs.toFixed(2)+' m)'):'');
+    // schematic: block position along effective fraction, force arrow, KE bar
+    var feff=Math.abs(d)<1e-9?0:(xp-S.xi)/d;
+    var bx=40+feff*236, blk=document.getElementById('blk4'); blk.setAttribute('x',(bx-17).toFixed(1));
     var F=Fat(xp), fa=document.getElementById('farr'), fl=Math.max(-90,Math.min(90,F*6.5));
     fa.setAttribute('x1',bx.toFixed(1)); fa.setAttribute('x2',(bx+fl).toFixed(1)); fa.setAttribute('opacity',Math.abs(F)<0.1?0:1);
     document.getElementById('fl4').setAttribute('x',(bx+fl+(fl>=0?4:-12)).toFixed(1));
