@@ -43,7 +43,8 @@
           </svg>
           <div class="readouts">
             <div class="r c-accent"><span class="k">work so far</span> = <span class="vb" id="rW">–</span> J</div>
-            <div class="r c-green"><span class="k">KE</span> = <span class="vb" id="rKE">–</span> J</div>
+            <div class="r c-accent"><span class="k">&#916;KE = KE &#8722; KE&#7522;</span> = <span class="vb" id="rDK">–</span> J &nbsp;<span class="k">(= W &#10003;)</span></div>
+            <div class="r c-green"><span class="k">KE</span> = <span class="vb" id="rKE">–</span> J <span class="k">(started at KE&#7522; = <span id="rKEi">–</span> J)</span></div>
             <div class="r c-green"><span class="k">speed</span> = <span class="vb" id="rv4">–</span> m/s</div>
             <div class="r" style="opacity:.85"><span class="k">total W</span> = <span id="rWt">–</span> J, <span class="k">v<sub>f</sub></span> = <span id="rvf">–</span> m/s</div>
           </div>
@@ -160,6 +161,8 @@
     var Ki=0.5*S.m*S.vi*S.vi, KE=Math.max(0,Ki+Wso), Kf=Math.max(0,Ki+Wtot);
     calc.setExpression({id:'xp',latex:'x_p='+xp.toFixed(4)});  // shading stops with the block
     document.getElementById('rW').textContent=Wso.toFixed(1);
+    document.getElementById('rDK').textContent=(KE-Ki).toFixed(1);
+    document.getElementById('rKEi').textContent=Ki.toFixed(1);
     document.getElementById('rKE').textContent=KE.toFixed(1);
     document.getElementById('rv4').textContent=Math.sqrt(2*KE/S.m).toFixed(2);
     document.getElementById('rWt').textContent=Wtot.toFixed(1);
